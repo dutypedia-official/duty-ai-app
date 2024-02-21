@@ -33,8 +33,11 @@ const source = axios.CancelToken.source();
 
 export default function ChatPro() {
   const { getToken } = useAuth();
+  const { user } = useUser();
+
   const { activeConversationId, setActiveConversationId } = useChat();
   const [eventSource, setEventSource] = useState<any>(null);
+  const [name, setName] = useState("");
   const [isStopped, setIsStopped] = useState(false);
   const [streaming, setStreaming] = useState<boolean>(false);
   const [messages, setMessages] = useState<any>([]);
@@ -83,48 +86,6 @@ export default function ChatPro() {
     }
   };
 
-  const duckSearch = async (query: string) => {
-    try {
-      const apiUrl = "https://html.duckduckgo.com/html";
-      const params: any = {
-        q: `${query} -youtube.com -facebook.com -portalsbd.com -pornhub.com -accuweather.com -nbcnews.com`,
-        kl: "us-en",
-        ex: "-2",
-      };
-
-      const queryString = Object.keys(params)
-        .map(
-          (key) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-        )
-        .join("&");
-
-      const urlWithParams = `${apiUrl}?${queryString}`;
-
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-      });
-
-      const res = await fetchWithTimeout(urlWithParams, {
-        method: "GET",
-        headers: headers,
-      });
-      const html = await res.text();
-
-      return html;
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "info",
-        text1: "Warning",
-        text2: "Can't connect to internet!",
-      });
-      return "";
-    }
-  };
-
   const prepareHistory = (msgs: any) => {
     const h: any = [];
     msgs.forEach((message: any) => {
@@ -141,41 +102,6 @@ export default function ChatPro() {
       }
     });
     return h.reverse();
-  };
-
-  const getFunctionQuery = async (query: string) => {
-    const history = prepareHistory(messages);
-    let historyStr = "";
-    history.slice(-4).forEach((h: any) => {
-      if (h.human) {
-        historyStr += `role: user\nparts: ${h.human}\n`;
-      } else if (h.ai) {
-        historyStr += `role: model\nparts: ${h.ai}\n`;
-      }
-    });
-    try {
-      const token = await getToken();
-      const { data } = await client.post(
-        "/tools/get-function",
-        {
-          query: query,
-          history: historyStr,
-          cancelToken: source.token,
-        },
-        token
-      );
-      if (data) {
-        return data;
-      } else {
-        return {
-          function: "general",
-          args: null,
-        };
-      }
-    } catch (error) {
-      console.log(error);
-      return query;
-    }
   };
 
   const onSend = useCallback(
@@ -236,15 +162,6 @@ export default function ChatPro() {
           token
         );
       }
-      const functions = await getFunctionQuery(query);
-      console.log(functions);
-
-      let duckResult = null;
-
-      if (functions.function == "search") {
-        updateMessage(id, "Getting data...");
-        duckResult = await duckSearch(functions?.args?.query || query);
-      }
 
       try {
         const history = prepareHistory(messages);
@@ -257,11 +174,10 @@ export default function ChatPro() {
           },
           body: JSON.stringify({
             query: query,
-            function: functions,
-            duckResult: duckResult,
             history: history,
             messageId: id,
             conversationId: activeConversationId || tConId,
+            name: name,
           }),
         };
 
@@ -280,8 +196,7 @@ export default function ChatPro() {
             } else if (event.type === "message") {
               if (event.data !== "[DONE]") {
                 const data = event.data;
-                localResponse =
-                  localResponse + JSON.parse(data).choices[0].text;
+                localResponse = localResponse + " " + data;
                 updateMessage(id, localResponse);
               } else {
                 setIsLoading(false);
@@ -444,6 +359,14 @@ export default function ChatPro() {
       setRelatedPrompts([]);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    setName(`${user.firstName} ${user.lastName}`);
+  }, [user]);
 
   return (
     <SafeAreaView

@@ -7,6 +7,7 @@
     "icon": "./assets/icon.png",
     "scheme": "dutyai",
     "userInterfaceStyle": "automatic",
+    "sdkVersion": "49.0.0",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -47,7 +48,7 @@
     },
     "owner": "easinarafat",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/a9c7442d-4903-4739-bc24-a5cec019bc6b"

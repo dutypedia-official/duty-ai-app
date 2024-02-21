@@ -41,24 +41,24 @@ export default function SettingScreen() {
   }, [user]);
 
   const generalSettings = [
-    // {
-    //   title: isBn ? "ভাষা" : "Language and Translator",
-    //   leftIcon: <Ionicons name="language" size={24} color={textColor} />,
-    //   rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
-    //   action: () => {
-    //     setLanguage(language == "Bn" ? "En" : "Bn");
-    //   },
-    // },
     {
       title: isBn ? "ভাষা" : "Language and Translator",
       leftIcon: <Ionicons name="language" size={24} color={textColor} />,
-      rightIcon: (
-        <Ionicons name="chevron-forward" size={24} color={textColor} />
-      ),
+      rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
       action: () => {
-        router.push("/main/setting/language");
+        setLanguage(language == "Bn" ? "En" : "Bn");
       },
     },
+    // {
+    //   title: isBn ? "ভাষা" : "Language and Translator",
+    //   leftIcon: <Ionicons name="language" size={24} color={textColor} />,
+    //   rightIcon: (
+    //     <Ionicons name="chevron-forward" size={24} color={textColor} />
+    //   ),
+    //   action: () => {
+    //     router.push("/main/setting/language");
+    //   },
+    // },
     {
       title: isBn ? "শর্তাবলি" : "Terms",
       leftIcon: <Ionicons name="reader-outline" size={24} color={textColor} />,
