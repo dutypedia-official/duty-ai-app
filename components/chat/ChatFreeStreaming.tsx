@@ -207,12 +207,9 @@ export default function ChatFreeStreaming() {
         };
 
         let localResponse = "";
-        const es = new EventSource(
-          `${process.env.EXPO_PUBLIC_API_URL}/web/stream`,
-          {
-            ...options,
-          }
-        );
+        const es = new EventSource(`https://www.dutyai.app/web/stream`, {
+          ...options,
+        });
 
         const listener = async (event: any) => {
           if (event.type === "open") {

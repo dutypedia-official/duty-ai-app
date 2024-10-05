@@ -1,4 +1,5 @@
 import he from "he";
+import Toast from "react-native-toast-message";
 
 export async function fetchWithTimeout(url: string, options: any = {}) {
   const { timeout = 5000 } = options;
@@ -75,4 +76,53 @@ export const translate = async (text: string, targetLang: string = "bn") => {
     console.error(err);
     return null;
   }
+};
+
+export const duckSearch = async (query: string) => {
+  try {
+    const apiUrl = "https://html.duckduckgo.com/html";
+    const params: any = {
+      q: `${query}`,
+      kl: "us-en",
+      ex: "-2",
+    };
+
+    const queryString = Object.keys(params)
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
+      )
+      .join("&");
+
+    const urlWithParams = `${apiUrl}?${queryString}`;
+
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+    });
+
+    const res = await fetchWithTimeout(urlWithParams, {
+      method: "GET",
+      headers: headers,
+    });
+    const html = await res.text();
+
+    return html;
+  } catch (error) {
+    console.log(error);
+    Toast.show({
+      type: "info",
+      text1: "Warning",
+      text2: "Can't connect to internet!",
+    });
+    return "";
+  }
+};
+
+export const slugify = (title: string): string => {
+  return title
+    .toLowerCase() // Convert to lowercase
+    .trim() // Remove leading and trailing whitespace
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-"); // Replace multiple hyphens with a single hyphen
 };

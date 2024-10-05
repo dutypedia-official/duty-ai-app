@@ -29,6 +29,7 @@ export default function ContactScreen() {
   const headerHeight = useHeaderHeight();
   const textColor = useThemeColor({}, "text");
   const router = useRouter();
+  const bgColor = useThemeColor({}, "background");
 
   const styles = StyleSheet.create({
     container: {
@@ -53,6 +54,9 @@ export default function ContactScreen() {
         options={{
           headerShown: true,
           title: isBn ? "কন্টাক্ট" : "Contact",
+          headerStyle: {
+            backgroundColor: bgColor,
+          },
         }}
       />
       <SafeAreaView style={styles.container}>
@@ -91,8 +95,7 @@ export default function ContactScreen() {
             style={{ borderRadius: 4, marginTop: 12 }}
             labelStyle={{ fontWeight: "bold" }}
             contentStyle={{ flexDirection: "row-reverse", paddingVertical: 4 }}
-            mode="contained"
-          >
+            mode="contained">
             {isBn ? "সাবমিট" : "Submit"}
           </Button>
           <ThemedView
@@ -106,8 +109,7 @@ export default function ContactScreen() {
               style={{
                 flexDirection: "row",
                 gap: 4,
-              }}
-            >
+              }}>
               <MaterialCommunityIcons
                 name="office-building-marker"
                 size={24}

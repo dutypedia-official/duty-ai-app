@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Dimensions } from "react-native";
+import { StyleSheet, Image, View, Dimensions, ScrollView } from "react-native";
 
 import useLang from "../../lib/hooks/useLang";
 import { Button } from "react-native-paper";
@@ -12,73 +12,81 @@ export default function Ins1Screen() {
   const { language } = langStore;
   const isBn = language === "Bn";
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerShown: false,
           title: "Instruction",
         }}
       />
-      <Image
-        style={styles.bgImage}
-        resizeMode="contain"
-        source={require("../../assets/icons/logo.png")}
-      />
-      <View style={{ gap: 48 }}>
-        <DummyChat
-          title={isBn ? "📚 শিক্ষা" : "📚 Education"}
-          subTitle={
-            isBn
-              ? `. যেকোনো বড় লেখা সংক্ষিপ্ত করুন
+      <View style={styles.container}>
+        <Image
+          style={styles.bgImage}
+          resizeMode="contain"
+          source={require("../../assets/icons/logo.png")}
+        />
+        <ScrollView contentContainerStyle={{ gap: 48 }}>
+          <DummyChat
+            title={isBn ? "📚 শিক্ষা" : "📚 Education"}
+            subTitle={
+              isBn
+                ? `. যেকোনো বড় লেখা সংক্ষিপ্ত করুন
 . একটি সুন্দর আবেদন তৈরি করুন`
-              : `. Summarize Your Text
+                : `. Summarize Your Text
 . Write a Winning Application`
-          }
-          direction="left"
-        />
-        <DummyChat
-          title={isBn ? "💼 চাকুরী" : "💼 Work"}
-          subTitle={
-            isBn ? "একটি শক্তিশালী সিবি তৈরি করুন" : `Craft a Winning Resume`
-          }
-          direction="right"
-        />
-        <DummyChat
-          title={isBn ? "🍿 বিনোদন" : "🍿 Entertainment"}
-          subTitle={
-            isBn
-              ? `ভাল মুভি,গান,ওয়েব সিরিজ এবং মজার বিনোদন সাজেস্ট নিন`
-              : `Recommendations for Movies, Series, Songs, and More`
-          }
-          direction="left"
-        />
-      </View>
-      <View style={{ zIndex: 10, position: "relative", gap: 12 }}>
-        <Text style={styles.title}>
-          {isBn ? (
-            "আপনার AI-কে যেকোনো বিষয়ে জিজ্ঞাসা করুন"
-          ) : (
-            <>
-              Ask your{" "}
-              <Text style={{ fontWeight: "bold", color: "rgb(105, 220, 163)" }}>
-                AI
-              </Text>{" "}
-              about anything
-            </>
-          )}
-        </Text>
+            }
+            direction="left"
+          />
+          <DummyChat
+            title={isBn ? "💼 চাকুরী" : "💼 Work"}
+            subTitle={
+              isBn ? "একটি শক্তিশালী সিবি তৈরি করুন" : `Craft a Winning Resume`
+            }
+            direction="right"
+          />
 
-        <Link href="/instruct2" asChild>
-          <Button
-            style={{ borderRadius: 100 }}
-            icon="chevron-right"
-            labelStyle={{ fontWeight: "bold" }}
-            contentStyle={{ flexDirection: "row-reverse", paddingVertical: 6 }}
-            mode="contained"
-          >
-            {isBn ? "পরবর্তী" : "Next"}
-          </Button>
-        </Link>
+          <DummyChat
+            title={isBn ? "🍿 বিনোদন" : "🍿 Entertainment"}
+            subTitle={
+              isBn
+                ? `ভাল মুভি,গান,ওয়েব সিরিজ এবং মজার বিনোদন সাজেস্ট নিন`
+                : `Recommendations for Movies, Series, Songs, and More`
+            }
+            direction="left"
+          />
+        </ScrollView>
+        <View style={{ zIndex: 10, position: "relative", gap: 12 }}>
+          <Text style={styles.title}>
+            {isBn ? (
+              "আপনার AI-কে যেকোনো বিষয়ে জিজ্ঞাসা করুন"
+            ) : (
+              <>
+                Ask your{" "}
+                <Text
+                  style={{ fontWeight: "bold", color: "rgb(105, 220, 163)" }}
+                >
+                  AI
+                </Text>{" "}
+                about anything
+              </>
+            )}
+          </Text>
+
+          <Link href="/instruct2" asChild>
+            <Button
+              style={{ borderRadius: 100 }}
+              icon="chevron-right"
+              labelStyle={{ fontWeight: "bold" }}
+              contentStyle={{
+                flexDirection: "row-reverse",
+                paddingVertical: 6,
+              }}
+              mode="contained"
+            >
+              {isBn ? "পরবর্তী" : "Next"}
+            </Button>
+          </Link>
+        </View>
       </View>
     </SafeAreaView>
   );

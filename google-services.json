@@ -1,0 +1,33 @@
+{
+  "project_info": {
+    "project_number": "389561372247",
+    "project_id": "duty-ai",
+    "storage_bucket": "duty-ai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389561372247:web:4fc20e96186dc98305dd12",
+        "android_client_info": {
+          "package_name": "com.easinarafat.dutyai"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS5ifVSHqAZjfumpDSMleQddho_YQUArY"
+        }
+      ]
+    }
+  ],
+  "type": "service_account",
+  "project_id": "duty-ai",
+  "private_key_id": "65ef9614c8f84477331de9d1374fc3e092bb7215",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCU+rvaT5Z/bdxw\nGZI4AH+WChhptrz1+4fpiWmwmC4WG3FSRR4veSqArX4EYtrd440jMC0Vzwsp9qzw\nEMHM4tSfTAlQ6we9vgCHwNmzpMVt5M6V0kzzv325apkv30I7avC97F6s67LSnZFX\n/Dyh7SPw7MatH+/S1OQ02UUPv1tfUmBblXwOj31WGH0p0AhRggSCoFcd+CWa1moc\nrwdsi0xxfSqKBVaZoWHnZJSbn5kSmrNGHlDvZ006AxEfh09bmAq3C6pa11B1S5CA\nNzFLyauqIY9GdI3AB/qzd8eLhNgjfMuxy/xqNnn7iSQpGAhqz6T3hNa54+DNagRC\nAebgZsdhAgMBAAECggEAP546reUirVPquGwTBpsf4KB7AFmqo5g/17h4S5MQyxv4\n7lrZowgo4D41/AWC1RIg6Q/fkNqTN95Ax1tAhw+uIEBGEinrallCvLXbwVzxehYl\nKdFeTxBMzer5c3nxPJJUL6ZKX6le+ZWTxXDPK46qtG1IAhILRYrn0LGfTjQ2/qL1\n6brNvLrPJrmUK2zubbnqYzGyVLw4Qwxr0fFShZZu+lya4eM+dA9yV3pgYFbisWsd\nLYA/MjOJ8jhxU2GnI+N0pPjWPk+LUoHLYCcK+re92DLO/YPiyFbayrKHURuCxRy6\nLQ6IlHo3s3OunXnmjVHhUFU/kfl2ueRefZeD8gPFaQKBgQDJIX2Ax28lCulfUboE\n/xnKSMWat8TszVjyQTPZ/d58dm9tBMnwEt6JXWHmjen0b/G37Pvoz4Yj2awoCDvm\n6bIK9FcY8darODxXWZXQfvfzE7D901r9mx7T888jcrM/lMcaRFY+ZptuGOg91hCM\nRGcLWcevg4jBGMr0R6sXFnWzCwKBgQC9nxyBWMtPvGd+P7KxBo2xvHXvgthE3Z6z\ntv2iRfXScXY6q8vj46BypYT1fQpgHkxsNBxhoDFmy1xig/5hwNEoBg2wgD0rEKEb\niDFr6EFCegDnW/xFMCWpESsoCvZCjDCMsYdTsYJiIVlUYCkE6UgQ5Y8yhpHIUR+1\nWHKkc93ywwKBgCN1dgzYHC4pqE8Xt3XeC4vwHHZUY7Fj2oSLHjsWWL0UnDxaFcfv\na7BH+FSPPGnNuo20iAzZWUrEu2crXHQvSyZHQXuyVyhEd87milUBrXD7Tb7SHj6L\ntHmliCU1uYhCEH//AD1sFYbpeTg9nxk7jfcgUuYMiHWSi2VZpT4ixYlVAoGBAKBm\nzegkwqdKioljPLc/AfGNqH3YwzVN+4eujdMNNyqzS/3JgYne7cTNezFmerZgKumF\nE1UJ+4AnGplDapYqU0N2C3J4qEWbpYzyokvThhDDv6v2ReoJFnJz0Xvn+fTFPfRl\n4EHN8Kst5rDXPxumco3Igl+NMhivdxEiJqgyU1edAoGAIN2N7atsQSwg34ozuqEi\nC+baBuNI0Lmu0/W5ZDPV7LlVvyW+mrvqEI4O2In102P3NclnJ0NHUs5NCubDQWSU\nYgHG6ZYR46xMWbrAJM2057IOWOg/JZMWMDJuOfrUFFXl94C302yXj+gKqCeA6gSy\n1zjmzXHaRDbHZxutEPGdQKw=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-ut957@duty-ai.iam.gserviceaccount.com",
+  "client_id": "111617955018552327960",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-ut957%40duty-ai.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

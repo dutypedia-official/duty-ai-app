@@ -28,6 +28,7 @@ import EventSource from "react-native-sse";
 import { Button } from "react-native-paper";
 import {
   containsNonEnglish,
+  duckSearch,
   fetchWithTimeout,
   getClassify,
   translate,
@@ -89,48 +90,6 @@ export default function ChatFree() {
       console.log(error);
     } finally {
       setIsFetchingNewMessages(false);
-    }
-  };
-
-  const duckSearch = async (query: string) => {
-    try {
-      const apiUrl = "https://html.duckduckgo.com/html";
-      const params: any = {
-        q: `${query} -youtube.com -facebook.com -portalsbd.com -pornhub.com -accuweather.com`,
-        kl: "us-en",
-        ex: "-2",
-      };
-
-      const queryString = Object.keys(params)
-        .map(
-          (key) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-        )
-        .join("&");
-
-      const urlWithParams = `${apiUrl}?${queryString}`;
-
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-      });
-
-      const res = await fetchWithTimeout(urlWithParams, {
-        method: "GET",
-        headers: headers,
-      });
-      const html = await res.text();
-
-      return html;
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "info",
-        text1: "Warning",
-        text2: "Can't connect to internet!",
-      });
-      return "";
     }
   };
 
@@ -264,7 +223,7 @@ export default function ChatFree() {
         setCancelTokenSource(source);
 
         const { data } = await axios.post(
-          `${process.env.EXPO_PUBLIC_API_URL}/web/`,
+          `https://api.dutyai.app/web/`,
           {
             query: newMessages[0].text,
             duckResult: duckResult,

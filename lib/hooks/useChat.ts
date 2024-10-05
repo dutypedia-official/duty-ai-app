@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 interface ChatStore {
   prompt: string;
+  template: "general" | "finance" | "forex";
+  setTemplate: (template: "general" | "finance" | "forex") => void;
   setPrompt: (prompt: string) => void;
   activeConversationId: string | null;
   setActiveConversationId: (conversationId: string | null) => void;
@@ -13,10 +15,14 @@ interface ChatStore {
   ) => void;
   messages: any;
   setMessages: (messages: any) => void;
+  histories: any;
+  setHistories: (histories: any) => void;
 }
 
 const useChat = create<ChatStore>((set, get) => ({
   prompt: "",
+  template: "finance",
+  setTemplate: (template) => set({ template }),
   setPrompt: (prompt) => set({ prompt }),
   activeConversationId: null,
   setActiveConversationId: (conversationId) =>
@@ -27,6 +33,8 @@ const useChat = create<ChatStore>((set, get) => ({
   setPromptInputRef: (promptInputRef) => set({ promptInputRef }),
   messages: [],
   setMessages: (messages) => set({ messages }),
+  histories: [],
+  setHistories: (histories) => set({ histories }),
 }));
 
 export default useChat;

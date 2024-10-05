@@ -9,6 +9,8 @@ interface LangStore {
   setAutoTranslateTo: (lang: string) => void;
   isTranslate: boolean;
   setIsTranslate: (val: boolean) => void;
+  updateInfo: any;
+  setUpdateInfo: (val: boolean) => void;
 }
 
 const useLang = create<LangStore>()(
@@ -20,6 +22,8 @@ const useLang = create<LangStore>()(
       setAutoTranslateTo: (lang) => set({ autoTranslateTo: lang }),
       isTranslate: false,
       setIsTranslate: (val) => set({ isTranslate: val }),
+      updateInfo: null,
+      setUpdateInfo: (val) => set({ updateInfo: val }),
     }),
     {
       name: "lang-storage",

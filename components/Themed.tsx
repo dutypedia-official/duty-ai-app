@@ -56,12 +56,13 @@ export function View(props: ViewProps) {
 
 export function SafeAreaView(props: any) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "background"
-  );
+  const colorScheme = useColorScheme();
+  const backgroundColor = Colors[colorScheme ?? "dark"].background;
 
   return (
-    <DefaultSafeAreaView style={[{ backgroundColor }, style]} {...otherProps} />
+    <DefaultSafeAreaView
+      style={[{ backgroundColor, color: "red" }, style]}
+      {...otherProps}
+    />
   );
 }

@@ -1,4 +1,9 @@
-import { ScrollView, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 
 import { SafeAreaView, View, useThemeColor } from "@/components/Themed";
 import { Button, Divider, Text } from "react-native-paper";
@@ -10,7 +15,6 @@ import { Ionicons } from "@expo/vector-icons";
 import useLang from "@/lib/hooks/useLang";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import * as WebBrowser from "expo-web-browser";
 
 export default function SettingScreen() {
@@ -24,6 +28,8 @@ export default function SettingScreen() {
   const langStore = useLang();
   const { language, setLanguage, setAutoTranslateTo } = langStore;
   const isBn = language === "Bn";
+  const isDark = useColorScheme() === "dark";
+  const bgColor = useThemeColor({}, "background");
 
   const test = async () => {
     const token = await getToken();
@@ -42,7 +48,7 @@ export default function SettingScreen() {
 
   const generalSettings = [
     {
-      title: isBn ? "ভাষা" : "Language and Translator",
+      title: isBn ? "ভাষা" : "Language",
       leftIcon: <Ionicons name="language" size={24} color={textColor} />,
       rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
       action: () => {
@@ -67,14 +73,19 @@ export default function SettingScreen() {
       ),
       action: () => {
         WebBrowser.openBrowserAsync(
-          "https://www.dutyai.app/legal/terms-and-conditions"
+          "https://www.dutyai.app/legal/terms-and-conditions",
+          {
+            showTitle: false,
+            toolbarColor: "#6200EE",
+            enableBarCollapsing: false,
+          }
         );
       },
     },
     {
       title: isBn ? "গোপনীয়তা নীতি" : "Privacy policy",
       leftIcon: (
-        <Ionicons name="ios-shield-checkmark" size={24} color={textColor} />
+        <Ionicons name="shield-checkmark" size={24} color={textColor} />
       ),
       rightIcon: (
         <Ionicons name="chevron-forward" size={24} color={textColor} />
@@ -108,26 +119,37 @@ export default function SettingScreen() {
   ];
 
   return (
-    <ScrollView>
-      <SafeAreaView style={styles.container}>
+    <ScrollView style={{ backgroundColor: bgColor }}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: "transparent",
+            paddingVertical: 40,
+          },
+        ]}>
         <View
           style={{
             flexDirection: "row",
             gap: 8,
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+            backgroundColor: "transparent",
+          }}>
           <View
             style={{
               flexDirection: "row",
               gap: 8,
               alignItems: "center",
               flex: 1,
-            }}
-          >
-            <Avatar.Image size={48} source={{ uri: user?.imageUrl }} />
-            <View>
+              backgroundColor: "transparent",
+            }}>
+            <Avatar.Image
+              size={48}
+              source={{ uri: user?.imageUrl }}
+              style={{ backgroundColor: "transparent" }}
+            />
+            <View style={{ backgroundColor: "transparent" }}>
               <Text numberOfLines={1} variant="titleMedium">
                 {firstName} {lastName}
               </Text>
@@ -137,7 +159,7 @@ export default function SettingScreen() {
           {/* <AntDesign name="edit" size={24} color={textColor} /> */}
         </View>
 
-        <View>
+        <View style={{ backgroundColor: "transparent" }}>
           <Text variant="titleSmall" style={{ marginBottom: 8 }}>
             {isBn ? "সাধারণ" : "General"}
           </Text>
@@ -150,16 +172,16 @@ export default function SettingScreen() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 12,
-                }}
-              >
+                  backgroundColor: "transparent",
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
                     gap: 8,
                     alignItems: "center",
                     flex: 1,
-                  }}
-                >
+                    backgroundColor: "transparent",
+                  }}>
                   {setting.leftIcon}
 
                   <Text numberOfLines={1}>{setting.title}</Text>
@@ -181,11 +203,10 @@ export default function SettingScreen() {
           style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
-          mode="outlined"
-        >
+          mode="outlined">
           {isBn ? "লগউট" : "Logout"}
         </Button>
-      </SafeAreaView>
+      </View>
     </ScrollView>
   );
 }

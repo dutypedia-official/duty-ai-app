@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState, useCallback, useEffect } from "react";
-import { SafeAreaView, useThemeColor } from "../../components/Themed";
+import { SafeAreaView, View, useThemeColor } from "../../components/Themed";
 import { GiftedChat } from "react-native-gifted-chat";
 import {
   RenderBubble,
@@ -22,26 +22,73 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { apiClient } from "@/lib/api";
 import { v4 as uuid } from "uuid";
 import EventSource from "react-native-sse";
-import { containsNonEnglish, fetchWithTimeout, getClassify } from "@/lib/utils";
+import {
+  containsNonEnglish,
+  duckSearch,
+  fetchWithTimeout,
+  getClassify,
+} from "@/lib/utils";
 import he from "he";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import useChat from "@/lib/hooks/useChat";
+import { throttle } from "lodash";
+import RenderChatEmpty from "./Empty";
+import { Button } from "react-native-paper";
+import useLang from "@/lib/hooks/useLang";
+import Constants from "expo-constants";
 
 const source = axios.CancelToken.source();
 
-export default function ChatPro() {
+export const financeRelated = [
+  {
+    label: "বাংলায় এই স্টকের বিষয়ে বল",
+    prompt: "বাংলায় এই স্টকের বিষয়ে বল",
+  },
+  {
+    label: "এই স্টকের গতকালকের পারফরম্যান্স কেমন ছিল?",
+    prompt: "এই স্টকের গতকালকের পারফরম্যান্স কেমন ছিল?",
+  },
+  {
+    prompt: "আজকের জন্য এই স্টকের পূর্বাভাস কী?",
+    label: "আজকের জন্য এই স্টকের পূর্বাভাস কী?",
+  },
+  {
+    prompt: "এই স্টকের জন্য ভবিষ্যৎ প্রবণতা কী হতে পারে?",
+    label: "এই স্টকের জন্য ভবিষ্যৎ প্রবণতা কী হতে পারে?",
+  },
+  {
+    label: "এই স্টকের জন্য আগামী মাসের পূর্বাভাস কী?",
+    prompt: "এই স্টকের জন্য আগামী মাসের পূর্বাভাস কী?",
+  },
+  {
+    label: "আগামী মাসে এই স্টকের জন্য সম্ভাব্য ঝুঁকি কী কী?",
+    prompt: "আগামী মাসে এই স্টকের জন্য সম্ভাব্য ঝুঁকি কী কী?",
+  },
+];
+
+export default function ChatPro({ fromPath }: any) {
   const { getToken } = useAuth();
   const { user } = useUser();
-
-  const { activeConversationId, setActiveConversationId } = useChat();
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [isFailed, setIsFailed] = useState<any>(false);
+  const { language, setLanguage } = useLang();
+  const isBn = language === "Bn";
+  const {
+    activeConversationId,
+    setActiveConversationId,
+    template,
+    prompt,
+    setPrompt,
+    setTemplate,
+  } = useChat();
   const [eventSource, setEventSource] = useState<any>(null);
   const [name, setName] = useState("");
   const [isStopped, setIsStopped] = useState(false);
   const [streaming, setStreaming] = useState<boolean>(false);
   const [messages, setMessages] = useState<any>([]);
-  const [relatedPrompts, setRelatedPrompts] = useState([]);
+  const [relatedPrompts, setRelatedPrompts] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFetchingNewMessages, setIsFetchingNewMessages] = useState(false);
   const primaryColor = useThemeColor({}, "primary");
@@ -52,7 +99,7 @@ export default function ChatPro() {
   const borderColor = useThemeColor({}, "border");
   const bubbleLeftBgColor = useThemeColor({}, "bubbleLeftBg");
   const tabBarHeight = useBottomTabBarHeight();
-  const [messageToUpdate, setMessageToUpdate] = useState<any>(null);
+  const isRunningInExpoGo = Constants.appOwnership === "expo";
   const modifiedMessages = messages.map((message: any) => ({
     ...message,
     _id: message.id || message._id,
@@ -70,6 +117,10 @@ export default function ChatPro() {
       return newLIst;
     });
   };
+
+  const throttledUpdateMessage = throttle((id, text) => {
+    updateMessage(id, text);
+  }, 200);
 
   const fetchMessages = async (id: string) => {
     if (!id) return;
@@ -106,11 +157,13 @@ export default function ChatPro() {
 
   const onSend = useCallback(
     async (newMessages: any = []) => {
+      setIsFailed(false);
       const token = await getToken();
       setIsStopped(false);
       setMessages((previousMessages: never[] | undefined) =>
         GiftedChat.append(previousMessages, newMessages)
       );
+      setTimeLeft(30);
       setIsLoading(true);
       const id = uuid();
       const hId = uuid();
@@ -166,6 +219,8 @@ export default function ChatPro() {
       try {
         const history = prepareHistory(messages);
 
+        let localResponse = "";
+
         const options = {
           method: "POST",
           headers: {
@@ -181,8 +236,20 @@ export default function ChatPro() {
           }),
         };
 
-        let localResponse = "";
-        es = new EventSource(`${process.env.EXPO_PUBLIC_API_URL}/chat/pro`, {
+        const url =
+          template == "finance"
+            ? `https://api.dutyai.app/chat/finance`
+            : template == "forex"
+            ? `https://api.dutyai.app/chat/forex`
+            : `https://api.dutyai.app/chat/pro`;
+
+        const urlLocal =
+          template == "finance"
+            ? `http://192.168.0.102:8000/chat/finance`
+            : template == "forex"
+            ? `http://192.168.0.102:8000/chat/forex`
+            : `http://192.168.0.102:8000/chat/pro`;
+        es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
           ...options,
           pollingInterval: 0,
         });
@@ -190,34 +257,72 @@ export default function ChatPro() {
         if (!isStopped) {
           const listener = (event: any) => {
             if (event.type === "open") {
+              setTimeLeft(0);
               setStreaming(true);
               console.log("Open SSE connection.");
               setIsLoading(false);
             } else if (event.type === "message") {
               if (event.data !== "[DONE]") {
                 const data = event.data;
-                localResponse = localResponse + " " + data;
-                updateMessage(id, localResponse);
+                localResponse += JSON.parse(data).content;
+                throttledUpdateMessage(id, localResponse);
+                // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               } else {
                 setIsLoading(false);
                 console.log("Done!");
+                if (template == "finance") {
+                  if (
+                    localResponse
+                      ?.toLowerCase()
+                      ?.includes("financial summary") ||
+                    localResponse
+                      ?.toLowerCase()
+                      ?.includes("current stock price") ||
+                    localResponse?.toLowerCase()?.includes("balance") ||
+                    localResponse?.toLowerCase()?.includes("income") ||
+                    localResponse?.toLowerCase()?.includes("dividend") ||
+                    localResponse?.toLowerCase()?.includes("cash flow") ||
+                    localResponse?.toLowerCase()?.includes("earning")
+                  ) {
+                    setRelatedPrompts(financeRelated);
+                  } else {
+                    Promise.all([
+                      client.post("/tools/get-related-prompt", {
+                        query: query,
+                        history: `${history.join("\n\n")}`,
+                      }),
+                    ])
+                      .then(function (responses) {
+                        const { data } = responses[0];
 
-                Promise.all([
-                  client.post("/tools/get-related-prompt", {
-                    query: query,
-                  }),
-                ])
-                  .then(function (responses) {
-                    const { data } = responses[0];
-                    setRelatedPrompts(data);
-                  })
-                  .catch(function (error) {
-                    console.log(error);
-                  });
+                        setRelatedPrompts(data);
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                      });
+                  }
+                } else {
+                  Promise.all([
+                    client.post("/tools/get-related-prompt", {
+                      query: query,
+                      history: `${history.join("\n\n")}`,
+                    }),
+                  ])
+                    .then(function (responses) {
+                      const { data } = responses[0];
+
+                      setRelatedPrompts(data);
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                    });
+                }
                 es?.close();
                 setStreaming(false);
               }
             } else if (event.type === "error") {
+              setIsFailed(query);
+
               console.error("Connection error:", event.message);
               setIsLoading(false);
               setStreaming(false);
@@ -225,6 +330,7 @@ export default function ChatPro() {
               console.error("Error:", event.message, event.error);
               setIsLoading(false);
               setStreaming(false);
+              setIsFailed(true);
             }
           };
 
@@ -340,19 +446,9 @@ export default function ChatPro() {
         fetchMessages(activeConversationId);
       }
     } else {
-      setMessages([defaultMessage]);
+      setMessages([]);
     }
   }, [activeConversationId]);
-
-  useEffect(() => {
-    setMessages([defaultMessage]);
-  }, []);
-
-  useEffect(() => {
-    if (messageToUpdate) {
-      updateMessage(messageToUpdate.id, messageToUpdate.text);
-    }
-  }, [messageToUpdate]);
 
   useEffect(() => {
     if (isLoading) {
@@ -368,24 +464,118 @@ export default function ChatPro() {
     setName(`${user.firstName} ${user.lastName}`);
   }, [user]);
 
+  useEffect(() => {
+    if (prompt && !activeConversationId) {
+      onSend([
+        {
+          _id: uuid(),
+          createdAt: new Date(),
+          text: prompt,
+          user: {
+            _id: 1,
+            avatar: "https://picsum.photos/200/300",
+            name: "human",
+          },
+        },
+      ]);
+      setPrompt("");
+    }
+  }, [prompt]);
+
+  useEffect(() => {
+    return () => {
+      setActiveConversationId(null);
+      setTemplate("finance");
+    };
+  }, []);
+
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
       style={{
         flex: 1,
+        marginTop: fromPath ? -50 : 0,
       }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 15 : 0}
-        style={{ flex: 1, justifyContent: "flex-end" }}
+        style={{
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
       >
         <GiftedChat
+          renderChatFooter={() => (
+            <>
+              {isFailed && (
+                <View
+                  style={{
+                    paddingVertical: 20,
+                  }}
+                >
+                  <Button
+                    onPress={() => {
+                      onSend([
+                        {
+                          _id: uuid(),
+                          createdAt: new Date(),
+                          text: isFailed,
+                          user: {
+                            _id: 1,
+                            avatar: "https://picsum.photos/200/300",
+                            name: "human",
+                          },
+                        },
+                      ]);
+                    }}
+                    icon="reload"
+                    mode="outlined"
+                    style={{
+                      alignSelf: "center",
+                    }}
+                  >
+                    {isBn ? "পুনরায় চেষ্টা করুন" : "Retry"}
+                  </Button>
+                </View>
+              )}
+            </>
+          )}
+          renderChatEmpty={() => (
+            <RenderChatEmpty
+              onPressRelated={(prompt: string) => {
+                onSend([
+                  {
+                    _id: uuid(),
+                    createdAt: new Date(),
+                    text: prompt,
+                    user: {
+                      _id: 1,
+                      avatar: "https://picsum.photos/200/300",
+                      name: "human",
+                    },
+                  },
+                ]);
+              }}
+            />
+          )}
           shouldUpdateMessage={(props, nextProps) => messages}
           // isTyping={isLoading}
           disableComposer={isLoading}
           isKeyboardInternallyHandled={false}
-          placeholder="Ask any question..."
+          placeholder={
+            isLoading
+              ? template == "general"
+                ? "Generating..."
+                : // : timeLeft > 0
+                  // ? `Fetching...${timeLeft.toFixed(1)}sec`
+                  `Answering...30sec`
+              : template == "general"
+              ? "Ask anything"
+              : template == "finance"
+              ? "Enter full company name"
+              : "Enter currency pair name"
+          }
           onPressActionButton={() => {
             setActiveConversationId(null);
             setRelatedPrompts([]);
@@ -469,7 +659,7 @@ export default function ChatPro() {
             avatar: "https://picsum.photos/200/300",
           }}
           onLongPress={(context, message) => {
-            const options = ["Copy", "Translate", "Share", "Cancel"];
+            const options = ["Copy", "Share", "Cancel"];
             const cancelButtonIndex = options.length - 1;
             context.actionSheet().showActionSheetWithOptions(
               {
@@ -486,10 +676,6 @@ export default function ChatPro() {
                     });
                     break;
                   case 1:
-                    //code to translate
-                    await translate(message.text, `${message._id}`);
-                    break;
-                  case 2:
                     await onShare(message.text);
                     break;
                 }

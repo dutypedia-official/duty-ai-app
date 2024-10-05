@@ -1,23 +1,26 @@
 {
   "expo": {
-    "name": "duty-ai",
+    "name": "Duty-AI",
     "slug": "duty-ai",
-    "version": "1.0.1",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "dutyai",
     "userInterfaceStyle": "automatic",
-    "sdkVersion": "49.0.0",
+    "sdkVersion": "50.0.0",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/splash-dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#050505"
+      "backgroundColor": "#06112d"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "4",
-      "bundleIdentifier": "com.easinarafat.dutyai"
+      "buildNumber": "22",
+      "bundleIdentifier": "com.easinarafat.dutyai",
+      "entitlements": {
+        "com.apple.developer.applesignin": ["Default"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -25,15 +28,32 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.easinarafat.dutyai",
-      "versionCode": 5,
-      "permissions": ["com.google.android.gms.permission.AD_ID"]
+      "versionCode": 25,
+      "permissions": ["com.google.android.gms.permission.AD_ID"],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "NSAllowsArbitraryLoads": true,
+            "deploymentTarget": "15.0"
+          }
+        }
+      ],
+      "expo-font",
+      "expo-secure-store"
+    ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true

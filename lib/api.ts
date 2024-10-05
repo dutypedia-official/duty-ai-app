@@ -1,13 +1,36 @@
 import axios from "axios";
+import Constants from "expo-constants";
 
-const BASE_URL = `${process.env.EXPO_PUBLIC_API_URL}`;
+export const isServerAvailable = async (url: string) => {
+  try {
+    await axios.get(`${url}/health`);
+    return true; // Server is up
+  } catch (error) {
+    console.log(url, "Server is down");
+
+    return false; // Server is down
+  }
+};
+
+export const MAIN_SERVER_URL = "https://api.dutyai.app";
+export const BACKUP_SERVER_URL = "https://api-backup.dutyai.app";
 
 export const apiClient = () => {
-  const addBaseUrl = (url: string) => `${BASE_URL}${url}`;
+  const isRunningInExpoGo = Constants.appOwnership === "expo";
+  const BASE_URL = isRunningInExpoGo
+    ? "http://192.168.0.102:8000"
+    : `https://api.dutyai.app`;
+  const addBaseUrl = (url: string, mainServer: boolean) =>
+    mainServer ? `${BASE_URL}${url}` : `${BACKUP_SERVER_URL}${url}`;
 
   return {
-    get: (url: string, token: any = null, options = {}) =>
-      axios.get(addBaseUrl(url), {
+    get: (
+      url: string,
+      token: any = null,
+      options = {},
+      mainServer: boolean = true
+    ) =>
+      axios.get(addBaseUrl(url, mainServer), {
         ...{
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -15,8 +38,14 @@ export const apiClient = () => {
         },
         ...options,
       }),
-    post: (url: string, data: any, token: any = null, options = {}) =>
-      axios.post(addBaseUrl(url), data, {
+    post: (
+      url: string,
+      data: any,
+      token: any = null,
+      options = {},
+      mainServer: boolean = true
+    ) =>
+      axios.post(addBaseUrl(url, mainServer), data, {
         ...{
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -24,8 +53,14 @@ export const apiClient = () => {
         },
         ...options,
       }),
-    put: (url: string, data: any, token: any = null, options = {}) =>
-      axios.put(addBaseUrl(url), data, {
+    put: (
+      url: string,
+      data: any,
+      token: any = null,
+      options = {},
+      mainServer: boolean = true
+    ) =>
+      axios.put(addBaseUrl(url, mainServer), data, {
         ...{
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -33,8 +68,13 @@ export const apiClient = () => {
         },
         ...options,
       }),
-    delete: (url: string, token: any = null, options = {}) =>
-      axios.delete(addBaseUrl(url), {
+    delete: (
+      url: string,
+      token: any = null,
+      options = {},
+      mainServer: boolean = true
+    ) =>
+      axios.delete(addBaseUrl(url, mainServer), {
         ...{
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
