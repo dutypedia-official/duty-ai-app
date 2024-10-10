@@ -19,6 +19,8 @@ import {
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { ActivityIndicator, Modal, Portal } from "react-native-paper";
+import Toast from "react-native-toast-message";
+import * as Clipboard from "expo-clipboard";
 
 export default function NotiDetails() {
   const { getToken } = useAuth();
@@ -316,7 +318,16 @@ export default function NotiDetails() {
               )}
 
               <View style={{ backgroundColor: "transparent" }}>
-                <View
+                <Pressable
+                  onLongPress={async () => {
+                    await Clipboard.setStringAsync(data?.content);
+                    Toast.show({
+                      type: "success",
+                      text1: "Copied to clipboard",
+                      visibilityTime: 2000,
+                      position: "top",
+                    });
+                  }}
                   style={{
                     gap: 16,
                     paddingHorizontal: 12,
@@ -420,7 +431,7 @@ export default function NotiDetails() {
                     }}>
                     {data?.content}
                   </Markdown>
-                </View>
+                </Pressable>
               </View>
             </View>
           </ScrollView>

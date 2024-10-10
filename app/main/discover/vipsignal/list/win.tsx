@@ -7,7 +7,7 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import ConfettiCannon from "react-native-confetti-cannon";
@@ -17,10 +17,11 @@ import useVipSignal from "@/lib/hooks/useVipSignal";
 import { slugify } from "@/lib/utils";
 
 export default function Win() {
-  const { answer } = useVipSignal();
+  const { answer, setAnswer } = useVipSignal();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { clearSelectStock } = useVipSignal();
+  const [confettiKey, setConfettiKey] = useState(0);
   const [halfwayDone, setHalfwayDone] = useState(false);
 
   const ChampionList = ({
@@ -43,16 +44,14 @@ export default function Win() {
       <View
         style={{
           backgroundColor: "transparent",
-        }}
-      >
+        }}>
         <View
           style={{
             borderTopLeftRadius: index === 0 ? 12 : 0,
             borderTopRightRadius: index === 0 ? 12 : 0,
             borderBottomLeftRadius: maxLength === index + 1 ? 12 : 0,
             borderBottomRightRadius: maxLength === index + 1 ? 12 : 0,
-          }}
-        >
+          }}>
           <LinearGradient
             colors={
               index === 0
@@ -73,16 +72,14 @@ export default function Win() {
               borderTopRightRadius: index === 0 ? 12 : 0,
               borderBottomLeftRadius: maxLength === index + 1 ? 12 : 0,
               borderBottomRightRadius: maxLength === index + 1 ? 12 : 0,
-            }}
-          >
+            }}>
             <View
               style={{
                 flexDirection: "row",
                 gap: 8,
                 alignItems: "center",
                 width: "65%",
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 24,
@@ -91,8 +88,7 @@ export default function Win() {
                   overflow: "hidden",
                   backgroundColor: "transparent",
                   position: "relative",
-                }}
-              >
+                }}>
                 <View
                   style={{
                     width: 24,
@@ -103,15 +99,13 @@ export default function Win() {
                     position: "absolute",
                     left: 0,
                     top: 0,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontWeight: "700",
                       fontSize: 12,
                       color: "#1E1E1E",
-                    }}
-                  >
+                    }}>
                     {name?.[0]}
                   </Text>
                 </View>
@@ -135,8 +129,7 @@ export default function Win() {
                     color:
                       index === 0 ? "#8B7500" : isDark ? "#F0F0F0" : "#6B6B6B",
                     fontSize: 14,
-                  }}
-                >
+                  }}>
                   {name}
                 </Text>
               </View>
@@ -146,8 +139,7 @@ export default function Win() {
                 flexDirection: "row",
                 gap: 20,
                 alignItems: "center",
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 24,
@@ -156,8 +148,7 @@ export default function Win() {
                   backgroundColor: "transparent",
                   position: "relative",
                   aspectRatio: 720 / 964,
-                }}
-              >
+                }}>
                 {index === 0 && (
                   <Image
                     source={require("../../../../../assets/images/winner.png")}
@@ -187,21 +178,18 @@ export default function Win() {
                   borderWidth: 1,
                   borderColor: isDark ? "#B08D57" : "#D4AF37",
                   borderRadius: 36,
-                }}
-              >
+                }}>
                 <LinearGradient
                   colors={["transparent", "transparent"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  style={{ borderRadius: 36 }}
-                >
+                  style={{ borderRadius: 36 }}>
                   <Text
                     style={{
                       color: "#8B7500",
                       paddingHorizontal: 12,
                       paddingVertical: 10,
-                    }}
-                  >
+                    }}>
                     View
                   </Text>
                 </LinearGradient>
@@ -212,6 +200,11 @@ export default function Win() {
       </View>
     );
   };
+
+  useLayoutEffect(() => {
+    // Force a re-render of ConfettiCannon
+    setConfettiKey((prev) => prev + 1);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -231,14 +224,16 @@ export default function Win() {
       colors={isDark ? ["#121212", "#000000"] : ["#F0F2F5", "#F0F2F5"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{ flex: 1, position: "relative" }}
-    >
+      style={{ flex: 1, position: "relative" }}>
       <ConfettiCannon
+        key={confettiKey}
         count={500}
         origin={{ x: 0, y: 0 }}
-        fallSpeed={2500}
         fadeOut={true}
         autoStart={true}
+        autoStartDelay={0}
+        // explosionSpeed={350}
+        fallSpeed={3000}
       />
       {halfwayDone && (
         <View
@@ -246,8 +241,7 @@ export default function Win() {
             position: "absolute",
             width: "100%",
             aspectRatio: 1,
-          }}
-        >
+          }}>
           <Image
             style={{
               width: "100%",
@@ -280,8 +274,7 @@ export default function Win() {
               elevation: 5,
               flexDirection: "row",
               marginTop: 80,
-            }}
-          >
+            }}>
             <LinearGradient
               colors={isDark ? ["#D1D5DB", "#A6A9AD"] : ["#FFFFFF", "#FFFFFF"]}
               start={{ x: 1, y: 0 }}
@@ -294,15 +287,13 @@ export default function Win() {
                 backgroundColor: "transparent",
                 width: "30%",
                 gap: 20,
-              }}
-            >
+              }}>
               <View
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     width: 38,
@@ -315,8 +306,7 @@ export default function Win() {
                     borderColor: isDark ? "#FFFFFF" : "#CBCBCB",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       width: "100%",
@@ -327,8 +317,7 @@ export default function Win() {
                       position: "absolute",
                       left: 0,
                       top: 0,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontWeight: "700",
@@ -337,8 +326,7 @@ export default function Win() {
                         alignSelf: "center",
                         justifyContent: "center",
                         alignItems: "center",
-                      }}
-                    >
+                      }}>
                       {answer?.leaderboard["2nd"].stock[0]}
                     </Text>
                   </View>
@@ -358,8 +346,7 @@ export default function Win() {
                     justifyContent: "center",
                     alignItems: "center",
                     gap: 4,
-                  }}
-                >
+                  }}>
                   <Text
                     ellipsizeMode="tail"
                     numberOfLines={1}
@@ -367,8 +354,7 @@ export default function Win() {
                       fontSize: 12,
                       color: isDark ? "#8B7500" : "#FFD700",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["2nd"].stock}
                   </Text>
 
@@ -377,8 +363,7 @@ export default function Win() {
                       fontWeight: "bold",
                       color: "#777777",
                       fontSize: 10,
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["2nd"].score} point
                   </Text>
                 </View>
@@ -389,15 +374,13 @@ export default function Win() {
                     backgroundColor: isDark ? "#C0C0C0" : "#EFEBEB",
                     paddingHorizontal: 5,
                     borderRadius: 100,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontWeight: "bold",
                       fontSize: 15,
                       color: isDark ? "#FFFFFF" : "#8B7500",
-                    }}
-                  >
+                    }}>
                     2nd
                   </Text>
                 </View>
@@ -414,15 +397,13 @@ export default function Win() {
                 width: "40%",
                 gap: 20,
                 overflow: "visible",
-              }}
-            >
+              }}>
               <View
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     position: "relative",
@@ -430,8 +411,7 @@ export default function Win() {
                     width: 83,
                     aspectRatio: isDark ? 720 / 894 : 720 / 868,
                     marginTop: isDark ? -84 : -80,
-                  }}
-                >
+                  }}>
                   <Image
                     source={
                       isDark
@@ -456,8 +436,7 @@ export default function Win() {
                     aspectRatio: 1,
                     borderRadius: 100,
                     overflow: "hidden",
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontWeight: "700",
@@ -468,8 +447,7 @@ export default function Win() {
                       alignItems: "center",
                       position: "absolute",
                       top: 17,
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["1st"].stock[0]}
                   </Text>
 
@@ -488,8 +466,7 @@ export default function Win() {
                     alignItems: "center",
                     gap: 4,
                     marginTop: 20,
-                  }}
-                >
+                  }}>
                   <Text
                     ellipsizeMode="tail"
                     numberOfLines={1}
@@ -497,8 +474,7 @@ export default function Win() {
                       fontSize: 12,
                       color: isDark ? "#FFD700" : "#8B7500",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["1st"].stock}
                   </Text>
 
@@ -507,8 +483,7 @@ export default function Win() {
                       fontWeight: "bold",
                       color: isDark ? "#FFFFFF" : "#777777",
                       fontSize: 10,
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["1st"].score} point
                   </Text>
                 </View>
@@ -519,15 +494,13 @@ export default function Win() {
                     backgroundColor: isDark ? "#E80000" : "#FAE773",
                     paddingHorizontal: 5,
                     borderRadius: 100,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontWeight: "bold",
                       fontSize: 15,
                       color: isDark ? "#fff" : "#8B7500",
-                    }}
-                  >
+                    }}>
                     1st
                   </Text>
                 </View>
@@ -545,15 +518,13 @@ export default function Win() {
                 backgroundColor: "transparent",
                 width: "30%",
                 gap: 20,
-              }}
-            >
+              }}>
               <View
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     width: 38,
@@ -566,8 +537,7 @@ export default function Win() {
                     borderColor: isDark ? "#FFFFFF" : "#CBCBCB",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       width: "100%",
@@ -578,8 +548,7 @@ export default function Win() {
                       position: "absolute",
                       left: 0,
                       top: 0,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontWeight: "700",
@@ -588,8 +557,7 @@ export default function Win() {
                         alignSelf: "center",
                         justifyContent: "center",
                         alignItems: "center",
-                      }}
-                    >
+                      }}>
                       {answer?.leaderboard["3rd"].stock[0]}
                     </Text>
                   </View>
@@ -609,8 +577,7 @@ export default function Win() {
                     justifyContent: "center",
                     alignItems: "center",
                     gap: 4,
-                  }}
-                >
+                  }}>
                   <Text
                     ellipsizeMode="tail"
                     numberOfLines={1}
@@ -618,8 +585,7 @@ export default function Win() {
                       fontSize: 12,
                       color: isDark ? "#8B7500" : "#FFD700",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["3rd"].stock}
                   </Text>
 
@@ -628,8 +594,7 @@ export default function Win() {
                       fontWeight: "bold",
                       color: "#777777",
                       fontSize: 10,
-                    }}
-                  >
+                    }}>
                     {answer?.leaderboard["3rd"].score} point
                   </Text>
                 </View>
@@ -640,15 +605,13 @@ export default function Win() {
                     backgroundColor: isDark ? "#C0C0C0" : "#EFEBEB",
                     paddingHorizontal: 5,
                     borderRadius: 100,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontWeight: "bold",
                       fontSize: 15,
                       color: isDark ? "#FFFFFF" : "#8B7500",
-                    }}
-                  >
+                    }}>
                     3rd
                   </Text>
                 </View>
@@ -662,14 +625,12 @@ export default function Win() {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 10,
-          }}
-        >
+          }}>
           <View
             style={{
               position: "relative",
               aspectRatio: 1,
-            }}
-          >
+            }}>
             <Image
               style={{
                 width: "100%",
@@ -688,8 +649,7 @@ export default function Win() {
           style={{
             backgroundColor: "transparent",
             flex: 1,
-          }}
-        >
+          }}>
           <FlatList
             scrollEnabled={false}
             data={answer?.stocks}
@@ -722,8 +682,7 @@ export default function Win() {
                 }
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={{ height: 1 }}
-              ></LinearGradient>
+                style={{ height: 1 }}></LinearGradient>
             )}
           />
         </View>
@@ -735,12 +694,11 @@ export default function Win() {
             position: "relative",
             paddingHorizontal: 10,
             paddingVertical: 10,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
-              clearSelectStock();
               router.push("/main/discover/");
+              clearSelectStock();
             }}
             style={{
               shadowColor: "#9B9B9B",
@@ -751,8 +709,7 @@ export default function Win() {
               shadowOpacity: 0.6,
               shadowRadius: 6,
               elevation: 6,
-            }}
-          >
+            }}>
             <LinearGradient
               colors={["#F6B253", "#FF9500"]}
               start={{ x: 0, y: 0 }}
@@ -760,14 +717,12 @@ export default function Win() {
               style={{
                 padding: 1,
                 borderRadius: 100,
-              }}
-            >
+              }}>
               <LinearGradient
                 colors={["#F6B253", "#FF9500"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={{ borderRadius: 100 }}
-              >
+                style={{ borderRadius: 100 }}>
                 <Text
                   style={{
                     opacity: 0.7,
@@ -776,8 +731,7 @@ export default function Win() {
                     fontWeight: "bold",
                     paddingVertical: 12,
                     textAlign: "center",
-                  }}
-                >
+                  }}>
                   Cancel
                 </Text>
               </LinearGradient>

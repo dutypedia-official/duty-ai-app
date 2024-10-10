@@ -6,7 +6,7 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
@@ -37,8 +37,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
             : ["#FFD700", "#F0F2F5"]
         }
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
+        end={{ x: 1, y: 0 }}>
         <LinearGradient
           style={{
             borderRadius: 8,
@@ -58,8 +57,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
               : ["#FFD700", "#F0F2F5"]
           }
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        >
+          end={{ x: 1, y: 0 }}>
           <Text
             style={{
               color:
@@ -74,8 +72,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
               width: "85%",
             }}
             numberOfLines={1}
-            ellipsizeMode="tail"
-          >
+            ellipsizeMode="tail">
             {selectStock.some((data) => item.label === data) && "Collecting"}{" "}
             {item.label}{" "}
             {selectStock.some((data) => item.label === data) && "Data"}
@@ -91,8 +88,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
                 borderRadius: 50,
                 alignItems: "center",
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <Feather name="check" size={16} color="#121212" />
             </LinearGradient>
           )}
@@ -106,8 +102,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
             width: "80%",
             alignSelf: "center",
             aspectRatio: 16 / 9,
-          }}
-        >
+          }}>
           {!item?.label.includes("Analysis fundamental") &&
             !item?.label.includes("Analysis technical") &&
             !item?.label.includes("Our Algorithm") && (
@@ -188,25 +183,21 @@ const Processing = () => {
       label: stock,
       isProcessing: false,
       isCompleted: false,
-      isLast: false,
     })),
     {
       label: "Analysis fundamental",
       isProcessing: false,
       isCompleted: false,
-      isLast: false,
     },
     {
       label: "Analysis technical",
       isProcessing: false,
       isCompleted: false,
-      isLast: false,
     },
     {
       label: "Our Algorithm",
       isProcessing: false,
       isCompleted: false,
-      isLast: true,
     },
   ]);
 
@@ -221,53 +212,54 @@ const Processing = () => {
   }, [answer]);
 
   useEffect(() => {
-    let isCancelled = false; // To prevent updates after unmount
+    let isCancelled = false;
+    let currentStep = 0;
 
-    // Function to update the processing steps sequentially
-    const updateStepsSequentially = (index = 0) => {
-      if (index >= processStep.length || isCancelled) return; // Stop if no more steps or cancelled
+    const updateStep = () => {
+      if (isCancelled || currentStep >= processStep.length) return;
 
-      // Set the current step to processing
       setProcessStep((prevSteps) =>
-        prevSteps.map((step, i) => {
-          if (i === index) {
-            return { ...step, isProcessing: step.isLast ? false : true };
+        prevSteps.map((step, index) => {
+          if (index === currentStep) {
+            return { ...step, isProcessing: true };
+          } else if (index === currentStep - 1) {
+            return { ...step, isProcessing: false, isCompleted: true };
           }
           return step;
         })
       );
 
+      // Process the current step
       setTimeout(() => {
-        if (isCancelled) return; // Prevent state updates after unmount
-        setProcessStep((prevSteps) =>
-          prevSteps.map((step, i) => {
-            if (i === index) {
-              return {
-                ...step,
-                isProcessing: step.isLast ? true : false,
-                isCompleted: step.isLast ? false : true,
-              };
-            }
-            return step;
-          })
-        );
+        if (isCancelled) return;
 
-        // Check if this is the last step and it's completed
-        if (index + 1 >= processStep.length) {
-          // router.push("/main/discover/vipsignal/list/win");
+        if (currentStep === processStep.length - 1) {
+          // Last step
+          if (answer) {
+            setProcessStep((prevSteps) =>
+              prevSteps.map((step, index) => {
+                if (index === currentStep) {
+                  return { ...step, isProcessing: false, isCompleted: true };
+                }
+                return step;
+              })
+            );
+          }
+          // Add this condition to stop the recursion
+          return;
         } else {
-          updateStepsSequentially(index + 1); // Continue to the next step
+          currentStep++;
+          updateStep();
         }
       }, 4000);
     };
 
-    updateStepsSequentially();
+    updateStep();
 
-    // Cleanup function to avoid memory leaks
     return () => {
       isCancelled = true;
     };
-  }, [processStep.length, router]); // Include router in dependency array
+  }, [processStep.length, answer]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -278,8 +270,7 @@ const Processing = () => {
           alignItems: "center",
           alignContent: "center",
           justifyContent: "space-between",
-        }}
-      >
+        }}>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
@@ -289,8 +280,7 @@ const Processing = () => {
             fontWeight: "bold",
             textAlign: "center",
             color: isDark ? "#FFD700" : "#8B7500",
-          }}
-        >
+          }}>
           Processing
         </Text>
       </View>
@@ -301,8 +291,7 @@ const Processing = () => {
             backgroundColor: "transparent",
             paddingHorizontal: 10,
             flex: 1,
-          }}
-        >
+          }}>
           <FlatList
             data={processStep}
             renderItem={({ item, index }: any) => (
@@ -318,8 +307,7 @@ const Processing = () => {
             width: Dimensions.get("window").width,
             position: "relative",
             paddingHorizontal: 10,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
               clearSelectStock();
@@ -334,8 +322,7 @@ const Processing = () => {
               shadowOpacity: 0.6,
               shadowRadius: 6,
               elevation: 6,
-            }}
-          >
+            }}>
             <LinearGradient
               colors={["#F6B253", "#FF9500"]}
               start={{ x: 0, y: 0 }}
@@ -343,14 +330,12 @@ const Processing = () => {
               style={{
                 padding: 1,
                 borderRadius: 100,
-              }}
-            >
+              }}>
               <LinearGradient
                 colors={["#F6B253", "#FF9500"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={{ borderRadius: 100 }}
-              >
+                style={{ borderRadius: 100 }}>
                 <Text
                   style={{
                     opacity: 0.7,
@@ -359,8 +344,7 @@ const Processing = () => {
                     fontWeight: "bold",
                     paddingVertical: 12,
                     textAlign: "center",
-                  }}
-                >
+                  }}>
                   Cancel
                 </Text>
               </LinearGradient>
