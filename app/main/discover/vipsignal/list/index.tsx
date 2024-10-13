@@ -208,7 +208,7 @@ const Signal = () => {
   const graDient = isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"];
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const videoUrl = "https://www.youtube.com/embed/eJdW7-zZCnU?autoplay=1";
+  const videoUrl = "https://www.youtube.com/embed/A4L792q0q9Q?autoplay=1";
   const pathname = usePathname();
   const router = useRouter();
   const { marketData, setMarketData } = useStockData();
