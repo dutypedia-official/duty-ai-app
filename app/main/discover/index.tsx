@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, useThemeColor } from "../../../components/Themed";
 import useUi from "@/lib/hooks/useUi";
 import VipSignal from "@/components/discover/VipSignal";
+import useVipSignal from "@/lib/hooks/useVipSignal";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
@@ -29,6 +30,7 @@ export default function DiscoverScreen() {
   const itemsRef = useRef<Array<any | null>>([]);
   const bgColor = useThemeColor({}, "background");
   const { setTemplate, template, setActiveConversationId } = useChat();
+  const { setAnswer } = useVipSignal();
 
   const selectCategory = (index: number) => {
     const selected = itemsRef.current[index];
@@ -54,6 +56,10 @@ export default function DiscoverScreen() {
 
       router.push("/main/discover/chart/");
     }
+  }, []);
+
+  useEffect(() => {
+    setAnswer(null);
   }, []);
 
   return (
