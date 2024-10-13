@@ -15,13 +15,14 @@ import { SafeAreaView } from "@/components/Themed";
 import { SvgUri } from "react-native-svg";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { slugify } from "@/lib/utils";
+import LottieView from "lottie-react-native";
 
 export default function Win() {
   const { answer, setAnswer } = useVipSignal();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { clearSelectStock } = useVipSignal();
-  const [confettiKey, setConfettiKey] = useState(0);
+  // const [confettiKey, setConfettiKey] = useState(0);
   const [halfwayDone, setHalfwayDone] = useState(false);
 
   const ChampionList = ({
@@ -201,23 +202,23 @@ export default function Win() {
     );
   };
 
-  useLayoutEffect(() => {
-    // Force a re-render of ConfettiCannon
-    setConfettiKey((prev) => prev + 1);
-  }, []);
+  // useLayoutEffect(() => {
+  //   // Force a re-render of ConfettiCannon
+  //   setConfettiKey((prev) => prev + 1);
+  // }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setHalfwayDone(true);
-    }, 300);
+    }, 400);
 
     return () => clearTimeout(timer);
   }, []);
 
-  if (!answer) {
-    clearSelectStock();
-    router.push("/main/discover/");
-  }
+  // if (!answer) {
+  //   clearSelectStock();
+  //   router.push("/main/discover/");
+  // }
 
   return (
     <LinearGradient
@@ -225,7 +226,7 @@ export default function Win() {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ flex: 1, position: "relative" }}>
-      <ConfettiCannon
+      {/* <ConfettiCannon
         key={confettiKey}
         count={500}
         origin={{ x: 0, y: 0 }}
@@ -234,7 +235,8 @@ export default function Win() {
         autoStartDelay={0}
         // explosionSpeed={350}
         fallSpeed={3000}
-      />
+      /> */}
+
       {halfwayDone && (
         <View
           style={{
@@ -258,6 +260,30 @@ export default function Win() {
         </View>
       )}
 
+      <LottieView
+        style={{
+          flex: 1,
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          marginTop: "-20%",
+        }}
+        source={require("@/assets/animations/confetti.json")}
+        autoPlay
+        loop={false}
+      />
+      <LottieView
+        style={{
+          flex: 1,
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          marginTop: "20%",
+        }}
+        source={require("@/assets/animations/confetti.json")}
+        autoPlay
+        loop={false}
+      />
       <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
         <View style={{ paddingHorizontal: 10 }}>
           <View
@@ -698,7 +724,7 @@ export default function Win() {
           <TouchableOpacity
             onPress={() => {
               router.push("/main/discover/");
-              clearSelectStock();
+              console.log("cancel");
             }}
             style={{
               shadowColor: "#9B9B9B",

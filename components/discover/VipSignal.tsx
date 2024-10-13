@@ -13,7 +13,7 @@ const VipSignal = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
-  const { clearSelectStock } = useVipSignal();
+  const { selectStock, clearSelectStock, answer, setAnswer } = useVipSignal();
   const vipSignals = [
     // {
     //   icon: (
@@ -42,6 +42,12 @@ const VipSignal = () => {
       title: "Golden Choice",
       subTitle: "Find Your Golden Stock with AI",
       action: () => {
+        if (selectStock.length > 0) {
+          clearSelectStock();
+        }
+        // if (answer) {
+        //   setAnswer(null);
+        // }
         router.push("/main/discover/vipsignal/list/");
       },
     },
@@ -136,7 +142,7 @@ const VipSignal = () => {
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
                         }}>
-                        Coming Soon
+                        Demo 🚀
                       </Text>
                       {/* <Entypo
                       name="chevron-right"

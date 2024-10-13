@@ -28,7 +28,7 @@ const useVipSignal = create<Store>((set, get) => ({
   clearSelectStock: () =>
     set(() => ({
       selectStock: [],
-      answer: null,
+      // answer: null,
     })),
   answer: null,
 
