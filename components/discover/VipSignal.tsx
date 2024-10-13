@@ -138,7 +138,7 @@ const VipSignal = () => {
                       }}>
                       <Text
                         style={{
-                          fontSize: 10,
+                          fontSize: 14,
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
                         }}>

@@ -16,6 +16,7 @@ import { SafeAreaView, useThemeColor } from "../../../components/Themed";
 import useUi from "@/lib/hooks/useUi";
 import VipSignal from "@/components/discover/VipSignal";
 import useVipSignal from "@/lib/hooks/useVipSignal";
+import { useIsFocused } from "@react-navigation/native";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
@@ -30,7 +31,8 @@ export default function DiscoverScreen() {
   const itemsRef = useRef<Array<any | null>>([]);
   const bgColor = useThemeColor({}, "background");
   const { setTemplate, template, setActiveConversationId } = useChat();
-  const { setAnswer } = useVipSignal();
+  const { setAnswer, clearSelectStock } = useVipSignal();
+  const isFocused = useIsFocused();
 
   const selectCategory = (index: number) => {
     const selected = itemsRef.current[index];
@@ -59,8 +61,9 @@ export default function DiscoverScreen() {
   }, []);
 
   useEffect(() => {
+    clearSelectStock();
     setAnswer(null);
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
