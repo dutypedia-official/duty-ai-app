@@ -73,7 +73,7 @@ const VipSignal = () => {
             fontWeight: "bold",
             color: isDark ? "#D2D2D2" : "black",
           }}>
-          Upcoming Features
+          New Feature
           {/* Vip <Foundation name="crown" size={24} color="black" /> */}
         </Text>
       </View>

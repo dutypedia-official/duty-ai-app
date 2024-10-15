@@ -154,6 +154,7 @@ const Processing = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { getToken } = useAuth();
   const { mainServerAvailable } = useUi();
+  const [restartCount, setRestartCount] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -214,9 +215,12 @@ const Processing = () => {
   useEffect(() => {
     let isCancelled = false;
     let currentStep = 0;
+    let stepStartTime: number;
 
     const updateStep = () => {
       if (isCancelled || currentStep >= processStep.length) return;
+
+      stepStartTime = Date.now();
 
       setProcessStep((prevSteps) =>
         prevSteps.map((step, index) => {
@@ -230,7 +234,7 @@ const Processing = () => {
       );
 
       // Process the current step
-      setTimeout(() => {
+      const stepTimeout = setTimeout(() => {
         if (isCancelled) return;
 
         if (currentStep === processStep.length - 1) {
@@ -244,14 +248,27 @@ const Processing = () => {
                 return step;
               })
             );
+          } else {
+            // If no answer after 2 minutes, restart the last step and server request
+            const elapsedTime = Date.now() - stepStartTime;
+            if (elapsedTime >= 120000) {
+              // 2 minutes in milliseconds
+              setRestartCount((prev) => prev + 1);
+              fetchData(); // Restart server request
+              updateStep(); // Restart last step
+              console.log("Restarting last step");
+            } else {
+              // Continue waiting
+              updateStep();
+            }
           }
-          // Add this condition to stop the recursion
-          return;
         } else {
           currentStep++;
           updateStep();
         }
       }, 4000);
+
+      return () => clearTimeout(stepTimeout);
     };
 
     updateStep();
@@ -259,7 +276,7 @@ const Processing = () => {
     return () => {
       isCancelled = true;
     };
-  }, [processStep.length, answer]);
+  }, [processStep.length, answer, restartCount]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
