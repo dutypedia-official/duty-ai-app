@@ -10,6 +10,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
@@ -41,188 +42,6 @@ export default function Win() {
     return unsubscribe;
   }, [navigation, router]);
 
-  const ChampionList = ({
-    name,
-    logoUrl,
-    item,
-    maxLength,
-    index,
-  }: {
-    name: any;
-    logoUrl: any;
-    item: any;
-    maxLength: number;
-    index: number;
-  }) => {
-    const colorScheme = useColorScheme();
-    const isDark = colorScheme === "dark";
-
-    return (
-      <View
-        style={{
-          backgroundColor: "transparent",
-        }}>
-        <View
-          style={{
-            borderTopLeftRadius: index === 0 ? 12 : 0,
-            borderTopRightRadius: index === 0 ? 12 : 0,
-            borderBottomLeftRadius: maxLength === index + 1 ? 12 : 0,
-            borderBottomRightRadius: maxLength === index + 1 ? 12 : 0,
-          }}>
-          <LinearGradient
-            colors={
-              index === 0
-                ? ["#FFD700", "#F0F2F5"]
-                : isDark
-                ? ["#D3D3D3", "#A9A9D3"]
-                : ["#F5F5F5", "#F5F5F5"]
-            }
-            start={index !== 0 && isDark ? { x: 1, y: 0 } : { x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 12,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderTopLeftRadius: index === 0 ? 12 : 0,
-              borderTopRightRadius: index === 0 ? 12 : 0,
-              borderBottomLeftRadius: maxLength === index + 1 ? 12 : 0,
-              borderBottomRightRadius: maxLength === index + 1 ? 12 : 0,
-            }}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 8,
-                alignItems: "center",
-                width: "65%",
-              }}>
-              <View
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: 100,
-                  overflow: "hidden",
-                  backgroundColor: "transparent",
-                  position: "relative",
-                }}>
-                <View
-                  style={{
-                    width: 24,
-                    height: 24,
-                    backgroundColor: "#fff",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                  }}>
-                  <Text
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 12,
-                      color: "#1E1E1E",
-                    }}>
-                    {name?.[0]}
-                  </Text>
-                </View>
-                {logoUrl && (
-                  <SvgUri
-                    uri={logoUrl}
-                    width={24}
-                    height={24}
-                    style={{
-                      backgroundColor: "transparent",
-                    }}
-                  />
-                )}
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text
-                  ellipsizeMode="tail"
-                  numberOfLines={1}
-                  style={{
-                    fontWeight: "normal",
-                    color:
-                      index === 0 ? "#8B7500" : isDark ? "#F0F0F0" : "#6B6B6B",
-                    fontSize: 14,
-                  }}>
-                  {name}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 20,
-                alignItems: "center",
-              }}>
-              <View
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: 100,
-                  backgroundColor: "transparent",
-                  position: "relative",
-                  aspectRatio: 720 / 964,
-                }}>
-                {index === 0 && (
-                  <Image
-                    source={require("../../../../../assets/images/winner.png")}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "transparent",
-                      objectFit: "contain",
-                    }}
-                  />
-                )}
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push({
-                    pathname: `/main/discover/vipsignal/list/${slugify(name)}`,
-                    params: {
-                      data: JSON.stringify({
-                        details: answer?.stocks[index],
-                        name,
-                      }),
-                    },
-                  });
-                }}
-                style={{
-                  backgroundColor: "transparent",
-                  borderWidth: 1,
-                  borderColor: isDark ? "#B08D57" : "#D4AF37",
-                  borderRadius: 36,
-                }}>
-                <LinearGradient
-                  colors={["transparent", "transparent"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ borderRadius: 36 }}>
-                  <Text
-                    style={{
-                      color: "#8B7500",
-                      paddingHorizontal: 12,
-                      paddingVertical: 10,
-                    }}>
-                    View
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
-        </View>
-      </View>
-    );
-  };
-
-  // useLayoutEffect(() => {
-  //   // Force a re-render of ConfettiCannon
-  //   setConfettiKey((prev) => prev + 1);
-  // }, []);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setHalfwayDone(true);
@@ -231,10 +50,8 @@ export default function Win() {
     return () => clearTimeout(timer);
   }, []);
 
-  // if (!answer) {
-  //   clearSelectStock();
-  //   router.push("/main/discover/");
-  // }
+  const specific = (details: any) =>
+    answer.stocks.find((stock: any) => stock.name === details);
 
   return (
     <LinearGradient
@@ -692,10 +509,8 @@ export default function Win() {
             backgroundColor: "transparent",
             flex: 1,
           }}>
-          <FlatList
-            scrollEnabled={false}
-            data={answer?.stocks}
-            contentContainerStyle={{
+          <View
+            style={{
               paddingHorizontal: 10,
               borderRadius: 12,
               shadowColor: isDark ? "transparent" : "#9B9B9B",
@@ -706,27 +521,443 @@ export default function Win() {
               shadowOpacity: 0.2,
               shadowRadius: 5,
               elevation: 6,
-            }}
-            renderItem={({ item }: any) => (
-              <ChampionList
-                item={item}
-                maxLength={answer?.stocks.length}
-                index={answer?.stocks?.indexOf(item)}
-                name={item?.name}
-                logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item?.name}.svg`}
-              />
-            )}
-            keyExtractor={(item) => item?.name}
-            ItemSeparatorComponent={() => (
-              <LinearGradient
-                colors={
-                  isDark ? ["#A9A9A9", "#D3D3D3"] : ["#FFD700", "#F0F2F5"]
-                }
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ height: 1 }}></LinearGradient>
-            )}
-          />
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+              }}>
+              <View
+                style={{
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                }}>
+                <LinearGradient
+                  colors={["#FFD700", "#F0F2F5"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 12,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderTopLeftRadius: 12,
+                    borderTopRightRadius: 12,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                      width: "65%",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        overflow: "hidden",
+                        backgroundColor: "transparent",
+                        position: "relative",
+                      }}>
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#fff",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                        }}>
+                        <Text
+                          style={{
+                            fontWeight: "700",
+                            fontSize: 12,
+                            color: "#1E1E1E",
+                          }}>
+                          {answer?.leaderboard["1st"]?.stock[0]}
+                        </Text>
+                      </View>
+                      {answer?.leaderboard["1st"]?.stock && (
+                        <SvgUri
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["1st"]?.stock}.svg`}
+                          width={24}
+                          height={24}
+                          style={{
+                            backgroundColor: "transparent",
+                          }}
+                        />
+                      )}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        ellipsizeMode="tail"
+                        numberOfLines={1}
+                        style={{
+                          fontWeight: "normal",
+                          color: "#8B7500",
+                          fontSize: 14,
+                        }}>
+                        {answer?.leaderboard["1st"]?.stock}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 20,
+                      alignItems: "center",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        backgroundColor: "transparent",
+                        position: "relative",
+                        aspectRatio: 720 / 964,
+                      }}>
+                      <Image
+                        source={require("../../../../../assets/images/winner.png")}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "transparent",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        router.push({
+                          pathname: `/main/discover/vipsignal/list/${slugify(
+                            answer?.leaderboard["1st"]?.stock
+                          )}`,
+                          params: {
+                            data: JSON.stringify({
+                              details: specific(
+                                answer?.leaderboard["1st"].stock
+                              ),
+                              name: answer?.leaderboard["1st"].stock,
+                            }),
+                          },
+                        });
+                      }}
+                      style={{
+                        backgroundColor: "transparent",
+                        borderWidth: 1,
+                        borderColor: isDark ? "#B08D57" : "#D4AF37",
+                        borderRadius: 36,
+                      }}>
+                      <LinearGradient
+                        colors={["transparent", "transparent"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{ borderRadius: 36 }}>
+                        <Text
+                          style={{
+                            color: "#8B7500",
+                            paddingHorizontal: 12,
+                            paddingVertical: 10,
+                          }}>
+                          View
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+                </LinearGradient>
+              </View>
+            </View>
+            <LinearGradient
+              colors={isDark ? ["#A9A9A9", "#D3D3D3"] : ["#FFD700", "#F0F2F5"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ height: 1 }}></LinearGradient>
+            <View
+              style={{
+                backgroundColor: "transparent",
+              }}>
+              <View>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#D3D3D3", "#A9A9D3"] : ["#F5F5F5", "#F5F5F5"]
+                  }
+                  start={isDark ? { x: 1, y: 0 } : { x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 12,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                      width: "65%",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        overflow: "hidden",
+                        backgroundColor: "transparent",
+                        position: "relative",
+                      }}>
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#fff",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                        }}>
+                        <Text
+                          style={{
+                            fontWeight: "700",
+                            fontSize: 12,
+                            color: "#1E1E1E",
+                          }}>
+                          {answer?.leaderboard["2nd"]?.stock[0]}
+                        </Text>
+                      </View>
+
+                      {answer?.leaderboard["2nd"]?.stock && (
+                        <SvgUri
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["2nd"]?.stock}.svg`}
+                          width={24}
+                          height={24}
+                          style={{
+                            backgroundColor: "transparent",
+                          }}
+                        />
+                      )}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        ellipsizeMode="tail"
+                        numberOfLines={1}
+                        style={{
+                          fontWeight: "normal",
+                          color: isDark ? "#F0F0F0" : "#6B6B6B",
+                          fontSize: 14,
+                        }}>
+                        {answer?.leaderboard["2nd"]?.stock}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 20,
+                      alignItems: "center",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        backgroundColor: "transparent",
+                        position: "relative",
+                        aspectRatio: 720 / 964,
+                      }}></View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        router.push({
+                          pathname: `/main/discover/vipsignal/list/${slugify(
+                            answer?.leaderboard["2nd"]?.stock
+                          )}`,
+                          params: {
+                            data: JSON.stringify({
+                              details: specific(
+                                answer?.leaderboard["2nd"].stock
+                              ),
+                              name: answer?.leaderboard["2nd"].stock,
+                            }),
+                          },
+                        });
+                      }}
+                      style={{
+                        backgroundColor: "transparent",
+                        borderWidth: 1,
+                        borderColor: isDark ? "#B08D57" : "#D4AF37",
+                        borderRadius: 36,
+                      }}>
+                      <LinearGradient
+                        colors={["transparent", "transparent"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{ borderRadius: 36 }}>
+                        <Text
+                          style={{
+                            color: "#8B7500",
+                            paddingHorizontal: 12,
+                            paddingVertical: 10,
+                          }}>
+                          View
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+                </LinearGradient>
+              </View>
+            </View>
+
+            <LinearGradient
+              colors={isDark ? ["#A9A9A9", "#D3D3D3"] : ["#FFD700", "#F0F2F5"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ height: 1 }}></LinearGradient>
+            <View
+              style={{
+                backgroundColor: "transparent",
+              }}>
+              <View
+                style={{
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                }}>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#D3D3D3", "#A9A9D3"] : ["#F5F5F5", "#F5F5F5"]
+                  }
+                  start={isDark ? { x: 1, y: 0 } : { x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 12,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderBottomLeftRadius: 12,
+                    borderBottomRightRadius: 12,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                      width: "65%",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        overflow: "hidden",
+                        backgroundColor: "transparent",
+                        position: "relative",
+                      }}>
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#fff",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                        }}>
+                        <Text
+                          style={{
+                            fontWeight: "700",
+                            fontSize: 12,
+                            color: "#1E1E1E",
+                          }}>
+                          {answer?.leaderboard["3rd"]?.stock?.[0]}
+                        </Text>
+                      </View>
+
+                      {answer?.leaderboard["3rd"]?.stock && (
+                        <SvgUri
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["3rd"]?.stock}.svg`}
+                          width={24}
+                          height={24}
+                          style={{
+                            backgroundColor: "transparent",
+                          }}
+                        />
+                      )}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        ellipsizeMode="tail"
+                        numberOfLines={1}
+                        style={{
+                          fontWeight: "normal",
+                          color: isDark ? "#F0F0F0" : "#6B6B6B",
+                          fontSize: 14,
+                        }}>
+                        {answer?.leaderboard["3rd"]?.stock}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 20,
+                      alignItems: "center",
+                    }}>
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        backgroundColor: "transparent",
+                        position: "relative",
+                        aspectRatio: 720 / 964,
+                      }}></View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        router.push({
+                          pathname: `/main/discover/vipsignal/list/${slugify(
+                            answer?.leaderboard["3rd"]?.stock
+                          )}`,
+                          params: {
+                            data: JSON.stringify({
+                              details: specific(
+                                answer?.leaderboard["3rd"].stock
+                              ),
+                              name: answer?.leaderboard["3rd"].stock,
+                            }),
+                          },
+                        });
+                      }}
+                      style={{
+                        backgroundColor: "transparent",
+                        borderWidth: 1,
+                        borderColor: isDark ? "#B08D57" : "#D4AF37",
+                        borderRadius: 36,
+                      }}>
+                      <LinearGradient
+                        colors={["transparent", "transparent"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{ borderRadius: 36 }}>
+                        <Text
+                          style={{
+                            color: "#8B7500",
+                            paddingHorizontal: 12,
+                            paddingVertical: 10,
+                          }}>
+                          View
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+                </LinearGradient>
+              </View>
+            </View>
+          </View>
         </View>
         <View
           style={{

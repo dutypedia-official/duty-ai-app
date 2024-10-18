@@ -28,6 +28,7 @@ import Toast from "react-native-toast-message";
 import * as Clipboard from "expo-clipboard";
 import { useIsFocused } from "@react-navigation/native";
 import useUi from "@/lib/hooks/useUi";
+import * as WebBrowser from "expo-web-browser";
 
 type Message = {
   text: string;
@@ -223,10 +224,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.102:8000/chat/finance`
+          ? `http://192.168.0.106:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.0.102:8000/chat/forex`
-          : `http://192.168.0.102:8000/chat/pro`;
+          ? `http://192.168.0.106:8000/chat/forex`
+          : `http://192.168.0.106:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -332,137 +333,239 @@ const ChatTurbo = ({ fromPath }: any) => {
     }
   };
 
-  const renderItem = ({ item }: { item: Message }) => (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: item?.user?._id == 1 ? "flex-end" : "flex-start",
-      }}>
-      <Pressable
-        onLongPress={async () => {
-          await Clipboard.setStringAsync(item.text);
-          Toast.show({
-            type: "success",
-            text1: "Copied to clipboard",
-            visibilityTime: 2000,
-            position: "top",
-          });
-        }}
+  const renderItem = ({ item }: { item: Message }) => {
+    const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const converted: any = item.text.split(regex).map((part, index) => {
+      if (
+        regex.test(item.text) &&
+        index % 3 === 2 &&
+        part.includes("https://www.tradingview.com/chart")
+      ) {
+        const text = item.text.split(regex)[index - 1]; // Get the previous text part for the link label
+        return {
+          text: text,
+          link: part,
+        };
+      }
+      return null;
+    });
+    console.log(converted, "converted");
+
+    return (
+      <View
         style={{
-          backgroundColor: item?.user?._id == 1 ? "#0084ff" : bubbleLeftBgColor,
-          padding: 10,
-          borderRadius: 12,
-          marginVertical: 5,
-          alignSelf: "flex-start",
-        }}>
-        {item?.user?._id == 1 ? (
-          <Text style={{ color: "white" }}>{item.text}</Text>
-        ) : item.text === "..." ? (
-          <TypingAnimation />
-        ) : (
-          <Markdown
-            style={{
-              body: {
-                color:
-                  item?.user?._id == 1 ? (isDark ? "#000" : "#fff") : textColor,
-                fontSize: 16,
-              },
-              // Headings
-              heading1: {
-                fontSize: 24,
-                fontWeight: "bold",
-                marginVertical: 10,
-              },
-              heading2: { fontSize: 22, fontWeight: "bold", marginVertical: 8 },
-              heading3: { fontSize: 20, fontWeight: "bold", marginVertical: 6 },
-              heading4: { fontSize: 18, fontWeight: "bold", marginVertical: 5 },
-              heading5: { fontSize: 16, fontWeight: "bold", marginVertical: 4 },
-              heading6: { fontSize: 14, fontWeight: "bold", marginVertical: 3 },
-              // Lists
-              bullet_list: { marginVertical: 5 },
-              ordered_list: { marginVertical: 5 },
-              list_item: { marginVertical: 3, flexDirection: "row" },
-              bullet_list_icon: {
-                marginRight: 5,
-                color: item?.user?._id == 1 ? "white" : textColor,
-              },
-              ordered_list_icon: {
-                marginRight: 5,
-                color: item?.user?._id == 1 ? "white" : textColor,
-              },
-              // Code
-              code_inline: {
-                fontFamily: "monospace",
-                backgroundColor: "rgba(0, 0, 0, 0.05)",
-                borderRadius: 3,
-                paddingHorizontal: 4,
-              },
-              fence: {
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                borderRadius: 5,
-                padding: 10,
-                marginVertical: 5,
-              },
-              // Table
-              table: {
-                borderWidth: 1,
-                borderColor: borderColor,
-                marginVertical: 10,
-              },
-              tr: {
-                borderBottomWidth: 1,
-                borderColor: borderColor,
-              },
-              th: {
-                fontWeight: "bold",
-                padding: 5,
-                borderRightWidth: 1,
-                borderColor: borderColor,
-              },
-              td: {
-                padding: 5,
-                borderRightWidth: 1,
-                borderColor: borderColor,
-              },
-              // Blockquote
-              blockquote: {
-                backgroundColor: "rgba(0, 0, 0, 0.05)",
-                borderLeftWidth: 4,
-                borderLeftColor: item?.user?._id == 1 ? "white" : textColor,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                marginVertical: 5,
-              },
-              // Horizontal rule
-              hr: {
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                height: 1,
-                marginVertical: 10,
-              },
-            }}>
-            {item.text}
-          </Markdown>
-        )}
-        <View
+          flexDirection: "row",
+          justifyContent: item?.user?._id == 1 ? "flex-end" : "flex-start",
+        }}
+      >
+        <Pressable
+          onLongPress={async () => {
+            await Clipboard.setStringAsync(item.text);
+            Toast.show({
+              type: "success",
+              text1: "Copied to clipboard",
+              visibilityTime: 2000,
+              position: "top",
+            });
+          }}
           style={{
-            backgroundColor: "transparent",
-            justifyContent: "flex-end",
-            flexDirection: "row",
-          }}>
-          <Text style={{ opacity: 0.5, fontSize: 10 }}>
-            {new Date(item.createdAt).toLocaleString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true, // Ensures 12-hour format with AM/PM
-            })}
-          </Text>
-        </View>
-      </Pressable>
-    </View>
-  );
+            backgroundColor:
+              item?.user?._id == 1 ? "#0084ff" : bubbleLeftBgColor,
+            padding: 10,
+            borderRadius: 12,
+            marginVertical: 5,
+            alignSelf: "flex-start",
+          }}
+        >
+          {item?.user?._id == 1 ? (
+            <Text style={{ color: "white" }}>{item.text}</Text>
+          ) : item.text === "..." ? (
+            <TypingAnimation />
+          ) : (
+            <Markdown
+              style={{
+                body: {
+                  color:
+                    item?.user?._id == 1
+                      ? isDark
+                        ? "#000"
+                        : "#fff"
+                      : textColor,
+                  fontSize: 16,
+                },
+                // Headings
+                heading1: {
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  marginVertical: 10,
+                },
+                heading2: {
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  marginVertical: 8,
+                },
+                heading3: {
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginVertical: 6,
+                },
+                heading4: {
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginVertical: 5,
+                },
+                heading5: {
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  marginVertical: 4,
+                },
+                heading6: {
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  marginVertical: 3,
+                },
+                // Lists
+                bullet_list: { marginVertical: 5 },
+                ordered_list: { marginVertical: 5 },
+                list_item: { marginVertical: 3, flexDirection: "row" },
+                bullet_list_icon: {
+                  marginRight: 5,
+                  color: item?.user?._id == 1 ? "white" : textColor,
+                },
+                ordered_list_icon: {
+                  marginRight: 5,
+                  color: item?.user?._id == 1 ? "white" : textColor,
+                },
+                // Code
+                code_inline: {
+                  fontFamily: "monospace",
+                  backgroundColor: "rgba(0, 0, 0, 0.05)",
+                  borderRadius: 3,
+                  paddingHorizontal: 4,
+                },
+                fence: {
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  borderRadius: 5,
+                  padding: 10,
+                  marginVertical: 5,
+                },
+                // Table
+                table: {
+                  borderWidth: 1,
+                  borderColor: borderColor,
+                  marginVertical: 10,
+                },
+                tr: {
+                  borderBottomWidth: 1,
+                  borderColor: borderColor,
+                },
+                th: {
+                  fontWeight: "bold",
+                  padding: 5,
+                  borderRightWidth: 1,
+                  borderColor: borderColor,
+                },
+                td: {
+                  padding: 5,
+                  borderRightWidth: 1,
+                  borderColor: borderColor,
+                },
+                // Blockquote
+                blockquote: {
+                  backgroundColor: "rgba(0, 0, 0, 0.05)",
+                  borderLeftWidth: 4,
+                  borderLeftColor: item?.user?._id == 1 ? "white" : textColor,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  marginVertical: 5,
+                },
+                // Horizontal rule
+                hr: {
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  height: 1,
+                  marginVertical: 10,
+                },
+              }}
+            >
+              {item.text}
+            </Markdown>
+          )}
+
+          {converted &&
+            converted.map(
+              (c: any) =>
+                c?.link && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 4,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      backgroundColor: "transparent",
+                      paddingBottom: 6,
+                    }}
+                  >
+                    <Text>View Chart</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        WebBrowser.openBrowserAsync(c?.link, {
+                          showTitle: false,
+                          enableBarCollapsing: false,
+                        });
+                      }}
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        padding: 6,
+                        borderRadius: 4,
+                        gap: 4,
+                        backgroundColor: isDark ? "#333333" : "#EAEDED",
+                        borderColor: isDark ? "#333333" : "#EAEDED",
+                      }}
+                    >
+                      <Text>
+                        <MaterialIcons
+                          name="show-chart"
+                          size={14}
+                          color={isDark ? "#ffffff" : "#5188D4"}
+                        />
+                      </Text>
+                      <Text
+                        style={{
+                          color: isDark ? "#FFFFFF" : "#000000",
+                          fontSize: 12,
+                        }}
+                      >
+                        Chart
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )
+            )}
+
+          <View
+            style={{
+              backgroundColor: "transparent",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ opacity: 0.5, fontSize: 10 }}>
+              {new Date(item.createdAt).toLocaleString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true, // Ensures 12-hour format with AM/PM
+              })}
+            </Text>
+          </View>
+        </Pressable>
+      </View>
+    );
+  };
 
   const fetchMessages = async (id: string) => {
     if (!id) return;
@@ -508,7 +611,8 @@ const ChatTurbo = ({ fromPath }: any) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}>
+        onPress={stopEventSource}
+      >
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -579,7 +683,8 @@ const ChatTurbo = ({ fromPath }: any) => {
         flex: 1,
         marginTop: fromPath ? -54 : 0,
         backgroundColor: bgColor,
-      }}>
+      }}
+    >
       <KeyboardAvoidingView enabled behavior={"padding"} style={{ flex: 1 }}>
         <FlashList
           ListEmptyComponent={() => (
@@ -606,11 +711,13 @@ const ChatTurbo = ({ fromPath }: any) => {
                       flex: 1,
                       marginRight: 12,
                       marginVertical: 8,
-                    }}>
+                    }}
+                  >
                     {relatedPrompts.map((p: any, i: number) => (
                       <TouchableOpacity
                         key={i}
-                        onPress={() => sendMessage(p.prompt || p.question)}>
+                        onPress={() => sendMessage(p.prompt || p.question)}
+                      >
                         <View
                           style={{
                             borderWidth: 1,
@@ -619,7 +726,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                             paddingHorizontal: 8,
                             paddingVertical: 8,
                             alignSelf: "flex-start",
-                          }}>
+                          }}
+                        >
                           <Text style={{ opacity: 0.5 }} numberOfLines={2}>
                             {p.prompt || p.question}
                           </Text>
@@ -643,13 +751,15 @@ const ChatTurbo = ({ fromPath }: any) => {
             borderTopWidth: 1,
             borderBottomWidth: 1,
             marginBottom: 0,
-          }}>
+          }}
+        >
           <TouchableOpacity
             style={{ padding: 4 }}
             onPress={() => {
               setActiveConversationId(null);
               setRelatedPrompts([]);
-            }}>
+            }}
+          >
             <MaterialIcons
               // style={{ opacity: inputText ? 1 : 0.3 }}
               name="post-add"
@@ -684,7 +794,8 @@ const ChatTurbo = ({ fromPath }: any) => {
           {/* {streaming && stopButton()} */}
           <TouchableOpacity
             style={{ padding: 4 }}
-            onPress={() => sendMessage(inputText)}>
+            onPress={() => sendMessage(inputText)}
+          >
             <Ionicons
               style={{ opacity: inputText ? 1 : 0.3 }}
               name="send"

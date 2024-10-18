@@ -172,6 +172,7 @@ export default function TabLayout() {
           display: hideTabBar ? "none" : "flex",
           backgroundColor: colorScheme === "dark" ? "#121212" : "white",
         },
+        height: hideTabBar ? 0 : undefined,
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
         tabBarHideOnKeyboard: Platform.OS === "ios" ? false : true,
         tabBarBackground: () => (
