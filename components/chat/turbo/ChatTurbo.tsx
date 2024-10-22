@@ -1,7 +1,7 @@
 // screens/ChatScreen.tsx
 import { SafeAreaView, Text, useThemeColor, View } from "@/components/Themed";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -22,7 +22,7 @@ import { financeRelated } from "../ChatPro";
 import Markdown from "react-native-markdown-display";
 import RenderChatEmpty from "../Empty";
 import axios from "axios";
-import { throttle } from "lodash";
+import { debounce, set, throttle } from "lodash";
 import TypingAnimation from "../TypingAnimation";
 import Toast from "react-native-toast-message";
 import * as Clipboard from "expo-clipboard";
@@ -68,6 +68,7 @@ const ChatTurbo = ({ fromPath }: any) => {
   const isRunningInExpoGo = Constants.appOwnership === "expo";
   const { user } = useUser();
   const [name, setName] = useState("");
+  const [typingSuggestion, setTypingSuggestion] = useState<any>([]);
   const flashListRef = React.useRef<FlashList<Message>>(null);
   const source = axios.CancelToken.source();
   let es: any = null;
@@ -105,6 +106,32 @@ const ChatTurbo = ({ fromPath }: any) => {
     });
     return h;
   };
+
+  const fetchSuggestedPrompts = async (inputText: string) => {
+    if (!inputText) {
+      setTypingSuggestion([]);
+      return;
+    }
+    try {
+      const { data } = await client.get(
+        `/messages/get-messages-suggestions/${inputText}`,
+        null,
+        {},
+        mainServerAvailable
+      );
+      setTypingSuggestion(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchSuggestedPrompts(inputText);
+    }, 700);
+
+    return () => clearTimeout(timeoutId);
+  }, [inputText]);
 
   const scrollToBottom = () => {
     if (flashListRef.current) {
@@ -224,10 +251,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.106:8000/chat/finance`
+          ? `http://192.168.0.109:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.0.106:8000/chat/forex`
-          : `http://192.168.0.106:8000/chat/pro`;
+          ? `http://192.168.0.109:8000/chat/forex`
+          : `http://192.168.0.109:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -740,69 +767,99 @@ const ChatTurbo = ({ fromPath }: any) => {
             );
           }}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            padding: 10,
-            alignItems: "center",
-            backgroundColor: inputBgColor,
-            borderBottomColor: borderColor,
-            borderTopColor: borderColor,
-            borderTopWidth: 1,
-            borderBottomWidth: 1,
-            marginBottom: 0,
-          }}
-        >
-          <TouchableOpacity
-            style={{ padding: 4 }}
-            onPress={() => {
-              setActiveConversationId(null);
-              setRelatedPrompts([]);
-            }}
-          >
-            <MaterialIcons
-              // style={{ opacity: inputText ? 1 : 0.3 }}
-              name="post-add"
-              size={28}
-              color={primaryColor}
-            />
-          </TouchableOpacity>
-          <TextInput
-            multiline
-            placeholderTextColor={placeholder}
+        <View>
+          {typingSuggestion && typingSuggestion.length > 0 && (
+            <View
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 8,
+                backgroundColor: inputBgColor,
+              }}
+            >
+              {typingSuggestion.map((p: any, i: number) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    sendMessage(p.text);
+                    setTypingSuggestion([]);
+                  }}
+                  key={i}
+                  style={{
+                    paddingVertical: 4,
+                    flexDirection: "row",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 20 }}>•</Text>
+                  <Text numberOfLines={2}>{p.text}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          <View
             style={{
-              flex: 1,
-              borderWidth: 0,
-              paddingHorizontal: 10,
-              marginRight: 10,
-              color: textColor,
-              fontSize: 16,
-              maxHeight: 100,
+              flexDirection: "row",
+              padding: 10,
+              alignItems: "center",
+              backgroundColor: inputBgColor,
+              borderBottomColor: borderColor,
+              borderTopColor: borderColor,
+              borderTopWidth: 1,
+              borderBottomWidth: 1,
+              marginBottom: 0,
             }}
-            value={inputText}
-            onChangeText={setInputText}
-            placeholder={
-              template == "general"
-                ? "Ask anything"
-                : template == "finance"
-                ? "Enter full company name"
-                : "Enter currency pair name"
-            }
-            editable={!streaming && !isLoading}
-            returnKeyType="send"
-          />
-          {/* {streaming && stopButton()} */}
-          <TouchableOpacity
-            style={{ padding: 4 }}
-            onPress={() => sendMessage(inputText)}
           >
-            <Ionicons
-              style={{ opacity: inputText ? 1 : 0.3 }}
-              name="send"
-              size={28}
-              color={primaryColor}
+            <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={() => {
+                setActiveConversationId(null);
+                setRelatedPrompts([]);
+              }}
+            >
+              <MaterialIcons
+                // style={{ opacity: inputText ? 1 : 0.3 }}
+                name="post-add"
+                size={28}
+                color={primaryColor}
+              />
+            </TouchableOpacity>
+            <TextInput
+              multiline
+              placeholderTextColor={placeholder}
+              style={{
+                flex: 1,
+                borderWidth: 0,
+                paddingHorizontal: 10,
+                marginRight: 10,
+                color: textColor,
+                fontSize: 16,
+                maxHeight: 100,
+              }}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder={
+                template == "general"
+                  ? "Ask anything"
+                  : template == "finance"
+                  ? "Enter full company name"
+                  : "Enter currency pair name"
+              }
+              editable={!streaming && !isLoading}
+              returnKeyType="send"
             />
-          </TouchableOpacity>
+            {/* {streaming && stopButton()} */}
+            <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={() => sendMessage(inputText)}
+            >
+              <Ionicons
+                style={{ opacity: inputText ? 1 : 0.3 }}
+                name="send"
+                size={28}
+                color={primaryColor}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
