@@ -194,7 +194,9 @@ const NotiItem = ({ item }: any) => {
                 backgroundColor: "transparent",
                 paddingTop: 8,
                 flexDirection: "row",
-                justifyContent: "flex-end",
+                justifyContent:
+                  item?.type === "analysis" ? "space-between" : "flex-end",
+                alignItems: "center",
                 flexShrink: 1,
               }}>
               <Text
@@ -205,6 +207,25 @@ const NotiItem = ({ item }: any) => {
                 }}>
                 {formatDate(item.createdAt, "dd/MM/yyy p")}
               </Text>
+              {item?.type === "analysis" && (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (item.type == "analysis") {
+                      router.push(
+                        `/main/notification/details/${item.entityId}`
+                      );
+                    }
+                  }}>
+                  <Text
+                    style={{
+                      color: isDark ? "#fff" : "#000000",
+                      fontSize: 12,
+                      fontWeight: "normal",
+                    }}>
+                    View
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
