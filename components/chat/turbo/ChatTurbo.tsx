@@ -68,7 +68,6 @@ const ChatTurbo = ({ fromPath }: any) => {
   const isRunningInExpoGo = Constants.appOwnership === "expo";
   const { user } = useUser();
   const [name, setName] = useState("");
-  const [typingSuggestion, setTypingSuggestion] = useState<any>([]);
   const flashListRef = React.useRef<FlashList<Message>>(null);
   const source = axios.CancelToken.source();
   let es: any = null;
@@ -106,32 +105,6 @@ const ChatTurbo = ({ fromPath }: any) => {
     });
     return h;
   };
-
-  const fetchSuggestedPrompts = async (inputText: string) => {
-    if (!inputText) {
-      setTypingSuggestion([]);
-      return;
-    }
-    try {
-      const { data } = await client.get(
-        `/messages/get-messages-suggestions/${inputText}`,
-        null,
-        {},
-        mainServerAvailable
-      );
-      setTypingSuggestion(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchSuggestedPrompts(inputText);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [inputText]);
 
   const scrollToBottom = () => {
     if (flashListRef.current) {
@@ -768,34 +741,6 @@ const ChatTurbo = ({ fromPath }: any) => {
           }}
         />
         <View>
-          {typingSuggestion && typingSuggestion.length > 0 && (
-            <View
-              style={{
-                paddingHorizontal: 20,
-                paddingVertical: 8,
-                backgroundColor: inputBgColor,
-              }}
-            >
-              {typingSuggestion.map((p: any, i: number) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    sendMessage(p.text);
-                    setTypingSuggestion([]);
-                  }}
-                  key={i}
-                  style={{
-                    paddingVertical: 4,
-                    flexDirection: "row",
-                    gap: 8,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 20 }}>•</Text>
-                  <Text numberOfLines={2}>{p.text}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
           <View
             style={{
               flexDirection: "row",

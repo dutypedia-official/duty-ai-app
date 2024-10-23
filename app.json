@@ -28,7 +28,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.easinarafat.dutyai",
-      "versionCode": 26,
+      "versionCode": 27,
       "permissions": ["com.google.android.gms.permission.AD_ID"],
       "googleServicesFile": "./google-services.json"
     },
