@@ -128,7 +128,7 @@ const ChatTurbo = ({ fromPath }: any) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchSuggestedPrompts(inputText);
-    }, 700);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [inputText]);
@@ -251,10 +251,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.109:8000/chat/finance`
+          ? `http://192.168.0.107:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.0.109:8000/chat/forex`
-          : `http://192.168.0.109:8000/chat/pro`;
+          ? `http://192.168.0.107:8000/chat/forex`
+          : `http://192.168.0.107:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
