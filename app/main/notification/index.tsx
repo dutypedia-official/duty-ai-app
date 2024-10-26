@@ -165,7 +165,7 @@ const NotiItem = ({ item }: any) => {
                   color: "#1E1E1E",
                 }}
               >
-                {item?.companyName[0]}
+                {`${Array.from(item?.companyName)[0]}`}
               </Text>
             </View>
             {logoUrl && <SvgUri uri={logoUrl} width={24} height={24} />}
