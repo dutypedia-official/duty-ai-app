@@ -685,6 +685,7 @@ export const StockListItem = ({
 const StockListScreen = () => {
   const { language } = useLang();
   const isBn = language === "Bn";
+  const [sortByName, setSortByName] = useState(false);
   const {
     refreash,
     setRefreash,
@@ -704,15 +705,22 @@ const StockListScreen = () => {
   const { getToken } = useAuth();
   const client = apiClient();
   const router = useRouter();
-  const initialStocks = !activeFilter
+  let initialStocks = !activeFilter
     ? marketData
     : marketData.filter((stock: any) => stock[activeFilter] == true) || [];
   const le5e5e5 = useThemeColor({}, "le5e5e5");
   const borderColor = useThemeColor({}, "border");
   // Filter stocks based on the search term
-  const filteredStocks = initialStocks?.filter((stock: any) =>
+  let filteredStocks = initialStocks?.filter((stock: any) =>
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (sortByName) {
+    filteredStocks = filteredStocks.sort(
+      (a: { symbol: string }, b: { symbol: any }) =>
+        a.symbol.localeCompare(b.symbol)
+    );
+  }
 
   const fetchAlerms = async () => {
     try {
@@ -815,31 +823,51 @@ const StockListScreen = () => {
           </Text>
         </TouchableOpacity>
         <View
-          style={[
-            styles.searchContainer,
-            { borderColor: isDark ? "#333333" : "#D1D1D1" },
-          ]}
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            gap: 12,
+            alignItems: "center",
+          }}
         >
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 14,
-              color: textColor,
-              height: "100%",
-              paddingLeft: 12, // 12-pixel gap from the left border
-              paddingVertical: 0,
+          <View
+            style={[
+              styles.searchContainer,
+              { borderColor: isDark ? "#333333" : "#D1D1D1" },
+            ]}
+          >
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 14,
+                color: textColor,
+                height: "100%",
+                paddingLeft: 12, // 12-pixel gap from the left border
+                paddingVertical: 0,
+              }}
+              placeholder="Search stock"
+              placeholderTextColor={isDark ? "#fff" : "#34495E"}
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+            />
+            <Feather
+              name="search"
+              size={20}
+              color={isDark ? "#333333" : "#34495E"}
+              style={styles.searchIcon}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setSortByName(!sortByName);
             }}
-            placeholder="Search stock"
-            placeholderTextColor={isDark ? "#fff" : "#34495E"}
-            value={searchTerm}
-            onChangeText={setSearchTerm}
-          />
-          <Feather
-            name="search"
-            size={20}
-            color={isDark ? "#333333" : "#34495E"}
-            style={styles.searchIcon}
-          />
+          >
+            <FontAwesome
+              name="sort-alpha-asc"
+              size={24}
+              color={sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"}
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
