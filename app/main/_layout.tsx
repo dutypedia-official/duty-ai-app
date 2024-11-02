@@ -56,7 +56,7 @@ export default function TabLayout() {
 
   useEffect(() => {
     const shouldHide = segments.some((segment: string) =>
-      ["details", "vipsignal"].includes(segment)
+      ["details", "vipsignal", "scanner"].includes(segment)
     );
     setHideTabBar(shouldHide);
   }, [segments, isFocused]);

@@ -8,22 +8,38 @@ import { LinearGradient } from "expo-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
 import { router } from "expo-router";
 import useVipSignal from "@/lib/hooks/useVipSignal";
+import useChat from "@/lib/hooks/useChat";
 
 const VipSignal = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const { selectStock, clearSelectStock, answer, setAnswer } = useVipSignal();
+  const { setTemplate } = useChat();
+
   const vipSignals = [
-    // {
-    //   icon: (
-    //     <MaterialCommunityIcons name="crown-circle" size={24} color="black" />
-    //   ),
-    //   bgColor: isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#FFD700"],
-    //   title: "Vip Signal",
-    //   subTitle: "Advanced stock analysis with AI",
-    //   action: () => {},
-    // },
+    {
+      icon: (
+        <MaterialCommunityIcons
+          name="search-web"
+          size={24}
+          color="#FFD700"
+          style={{
+            alignSelf: "center",
+            justifyContent: "center",
+            alignContent: "center",
+            margin: "auto",
+          }}
+        />
+      ),
+      bgColor: isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#FFD700"],
+      title: "Scanner",
+      subTitle: "Advanced stock analysis with AI",
+      action: () => {
+        setTemplate("scanner");
+        router.push("/main/discover/scanner");
+      },
+    },
     {
       icon: (
         <FontAwesome
@@ -58,8 +74,7 @@ const VipSignal = () => {
       style={{
         paddingHorizontal: 12,
         backgroundColor: bgColor,
-      }}
-    >
+      }}>
       <View
         style={{
           flexDirection: "row",
@@ -67,15 +82,13 @@ const VipSignal = () => {
           paddingVertical: 20,
           alignItems: "center",
           backgroundColor: "transparent",
-        }}
-      >
+        }}>
         <Text
           style={{
             fontSize: 24,
             fontWeight: "bold",
             color: isDark ? "#D2D2D2" : "black",
-          }}
-        >
+          }}>
           New Feature
           {/* Vip <Foundation name="crown" size={24} color="black" /> */}
         </Text>
@@ -92,15 +105,13 @@ const VipSignal = () => {
                 }}
                 colors={item?.bgColor}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
+                end={{ x: 1, y: 0 }}>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                     gap: 12,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       width: 36,
@@ -109,8 +120,7 @@ const VipSignal = () => {
                       justifyContent: "center",
                       alignContent: "center",
                       backgroundColor: "#000000",
-                    }}
-                  >
+                    }}>
                     {item.icon}
                   </View>
                   <View
@@ -118,16 +128,14 @@ const VipSignal = () => {
                       flex: 1,
                       flexDirection: "row",
                       justifyContent: "space-between",
-                    }}
-                  >
+                    }}>
                     <View style={{ gap: 4 }}>
                       <Text
                         style={{
                           fontSize: 20,
                           color: isDark ? "#FFD700" : "#8B7500",
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         {item.title}
                       </Text>
                       <Text
@@ -135,8 +143,7 @@ const VipSignal = () => {
                           fontSize: 10,
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
-                        }}
-                      >
+                        }}>
                         {item.subTitle}
                       </Text>
                     </View>
@@ -144,15 +151,13 @@ const VipSignal = () => {
                       style={{
                         alignContent: "center",
                         justifyContent: "center",
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           fontSize: 14,
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
-                        }}
-                      >
+                        }}>
                         Demo 🚀
                       </Text>
                       {/* <Entypo

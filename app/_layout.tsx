@@ -193,8 +193,7 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}
-    >
+      tokenCache={tokenCache}>
       <RootLayoutNav />
     </ClerkProvider>
   );

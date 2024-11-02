@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 interface ChatStore {
   prompt: string;
-  template: "general" | "finance" | "forex";
-  setTemplate: (template: "general" | "finance" | "forex") => void;
+  template: "general" | "finance" | "forex" | "scanner";
+  setTemplate: (template: "general" | "finance" | "forex" | "scanner") => void;
   setPrompt: (prompt: string) => void;
   activeConversationId: string | null;
   setActiveConversationId: (conversationId: string | null) => void;

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Platform,
   TouchableOpacity,
@@ -9,6 +10,11 @@ import useChat from "@/lib/hooks/useChat";
 import { useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import useLang from "@/lib/hooks/useLang";
+import { useRouter } from "expo-router";
+import Entypo from "@expo/vector-icons/Entypo";
+import { Modal, Portal } from "react-native-paper";
+import WebView from "react-native-webview";
+import MagicIcon from "../svgs/magic";
 
 const RenderChatEmpty = ({ onPressRelated }: any) => {
   const borderColor = useThemeColor({}, "border");
@@ -20,6 +26,15 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const isBn = language === "Bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
+  const router = useRouter();
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const videoUrl = "https://www.youtube.com/embed/eJdW7-zZCnU?autoplay=1";
+  const injectedJavaScript = `
+    document.getElementsByTagName('video')[0].play();
+    var iframe = document.querySelector('iframe');
+    iframe.requestFullscreen();
+  `;
 
   const generalPrompts = [
     "📰 Top news bangladesh",
@@ -39,21 +54,48 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const financePrompts = [
     "📰 Bangladesh stock market news",
     "📱 Should I Invest in GP BD",
-    "💊 Should I Invest in BEXIMCO BD",
-    "🏦 Should I Invest in Brac Bank BD",
-    "👚 Should I Invest in FEKDIL BD",
+    "⚖️ Golden choice",
+    "▶️ Duty AI ব্যাবহার ভিডিও 06 oct 2024",
+    "🔍 Stock Scanner",
   ];
 
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
 
-  const prompts =
-    template == "general"
-      ? isBn
-        ? generalPromptsBn
-        : generalPrompts
-      : template == "forex"
-      ? forexPrompts
-      : financePrompts;
+  const stockScreener = [
+    "আজকের সেরা ৫ স্টক খুঁজে দাও",
+    "৫০ MA উপরে আছে স্টক দাও",
+    "Index agamikal kemon hote pare",
+    "⚖️ Golden choice",
+    "📰 Bangladesh stock market news",
+  ];
+
+  const promptsFn = () => {
+    if (template == "general") {
+      return isBn ? generalPromptsBn : generalPrompts;
+    } else if (template == "forex") {
+      return forexPrompts;
+    } else if (template == "finance") {
+      return financePrompts;
+    } else if (template == "scanner") {
+      return stockScreener;
+    } else {
+      return isBn ? generalPromptsBn : generalPrompts;
+    }
+  };
+
+  const subTitleFn = () => {
+    if (template == "general") {
+      return "How can I help you today?";
+    } else if (template == "forex") {
+      return "Let's chat about stocks!";
+    } else if (template == "finance") {
+      return "Let's chat about stocks!";
+    } else if (template == "scanner") {
+      return "Scan some stock";
+    } else {
+      return "How can I help you today?";
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -63,57 +105,185 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     setName(`${user.firstName}`);
   }, [user]);
   return (
-    <View
-      style={{
-        // transform:
-        //   Platform.OS === "ios" ? "scaleY(-1)" : "scaleX(-1) scaleY(-1)",
-        paddingVertical: 20,
-        flex: 1,
-        justifyContent: "center",
-        height: Dimensions.get("window").height - 200,
-      }}>
-      <View style={{ marginBottom: 40 }}>
-        <Text
-          numberOfLines={1}
-          style={{ fontSize: 40, fontWeight: "700", lineHeight: 40 }}>
-          Hello, {name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 30,
-            fontWeight: "400",
-            opacity: 0.5,
-          }}>
-          {template == "finance"
-            ? "Let's chat about stocks!"
-            : "How can I help you today?"}
-        </Text>
-      </View>
-      {prompts.map((prompt, i) => (
-        <TouchableOpacity
-          key={i}
-          style={{ marginBottom: 16 }}
-          onPress={() => {
-            onPressRelated(prompt);
-          }}>
+    <>
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          style={
+            {
+              // paddingHorizontal: 12,
+            }
+          }>
           <View
             style={{
-              //   borderWidth: 1,
-              borderColor: borderColor,
-              borderRadius: 12,
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              alignSelf: "center",
-              width: "100%",
-              backgroundColor: isDark ? bubbleLeftBgColor : "white",
+              width: Dimensions.get("window").width,
+              height: Dimensions.get("window").height * 0.85,
+              backgroundColor: isDark ? "black" : "white",
             }}>
-            <Text style={{ opacity: 0.5, fontSize: 20 }} numberOfLines={2}>
-              {prompt}
-            </Text>
+            {loading && (
+              <View
+                style={
+                  {
+                    // width: Dimensions.get("window").width - 24,
+                    // height: Dimensions.get("window").width / videoAspectRatio,
+                  }
+                }>
+                <ActivityIndicator
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                />
+              </View>
+            )}
+            <WebView
+              style={{
+                height: Dimensions.get("window").width,
+                flex: 1,
+                backgroundColor: isDark ? "black" : "white",
+              }}
+              onLoadStart={() => setLoading(true)}
+              onLoad={() => setLoading(false)}
+              onLoadEnd={() => setLoading(false)}
+              onError={() => setLoading(false)}
+              javaScriptEnabled={true}
+              allowsFullscreenVideo={true}
+              source={{
+                uri: videoUrl,
+              }}
+              domStorageEnabled={true}
+              mediaPlaybackRequiresUserAction={false}
+              injectedJavaScript={injectedJavaScript}
+              onMessage={(event) => {
+                if (
+                  Platform.OS === "android" &&
+                  event.nativeEvent.data === "enterFullScreen"
+                ) {
+                  setVisible(false);
+                  setTimeout(() => setVisible(true), 0);
+                }
+              }}
+            />
           </View>
-        </TouchableOpacity>
-      ))}
-    </View>
+        </Modal>
+      </Portal>
+      <View
+        style={{
+          // transform:
+          //   Platform.OS === "ios" ? "scaleY(-1)" : "scaleX(-1) scaleY(-1)",
+          paddingVertical: template == "scanner" ? 0 : 20,
+          flex: 1,
+          justifyContent: "center",
+          height:
+            template == "scanner"
+              ? "auto"
+              : Dimensions.get("window").height - 200,
+          backgroundColor: "transparent",
+        }}>
+        <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
+          {template !== "scanner" ? (
+            <Text
+              numberOfLines={1}
+              style={{
+                fontSize: 40,
+                fontWeight: "700",
+                lineHeight: 40,
+              }}>
+              Hello, {name}
+            </Text>
+          ) : (
+            <Text
+              numberOfLines={1}
+              style={{
+                fontSize: 40,
+                fontWeight: "700",
+                lineHeight: 40,
+                color: "#6EA8D5",
+              }}>
+              Hello, {name}
+            </Text>
+          )}
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "400",
+              opacity: 0.5,
+            }}>
+            {subTitleFn()}
+          </Text>
+        </View>
+        {promptsFn().map((prompt, i) => {
+          const promptPress = (val: any) => {
+            if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও 06 oct 2024")) {
+              setVisible(true);
+            } else if (val.includes("⚖️ Golden choice")) {
+              router.push("/main/discover/vipsignal/list/");
+            } else if (val.includes("🔍 Stock Scanner")) {
+              router.push({
+                pathname: "/main/discover/scanner",
+                params: { sourcePath: "chat" },
+              });
+            } else {
+              onPressRelated(prompt);
+            }
+          };
+          return (
+            <TouchableOpacity
+              key={i}
+              style={{ marginBottom: 16 }}
+              onPress={() => promptPress(prompt)}>
+              <View
+                style={{
+                  borderWidth: template === "scanner" ? 1.5 : 0,
+                  borderColor:
+                    template === "scanner"
+                      ? isDark
+                        ? "#3A7CA5"
+                        : "#8AB4C9"
+                      : borderColor,
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                  alignSelf: "center",
+                  width: "100%",
+                  backgroundColor:
+                    template === "scanner"
+                      ? isDark
+                        ? "#2D2F34"
+                        : "#E8ECEF"
+                      : isDark
+                      ? bubbleLeftBgColor
+                      : "white",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}>
+                <Text
+                  style={{
+                    opacity: template === "scanner" ? 1 : 0.5,
+                    fontSize: 20,
+                    width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
+                  }}
+                  numberOfLines={2}>
+                  {prompt}
+                </Text>
+
+                {prompt.includes("⚖️ Golden choice") && (
+                  <Entypo
+                    name="chevron-small-right"
+                    size={24}
+                    color={isDark ? "#565656" : "#A4A1A1"}
+                  />
+                )}
+                {prompt.includes("🔍 Stock Scanner") && <MagicIcon />}
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </>
   );
 };
 

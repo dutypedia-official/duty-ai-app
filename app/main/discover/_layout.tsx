@@ -76,6 +76,14 @@ export default function Layout() {
           headerTintColor: isDark ? "#FFFFFF" : "#000306",
         }}
       />
+      <Stack.Screen
+        name="scanner"
+        options={{
+          title: "scanner",
+          headerShown: false,
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack>
   );
 }

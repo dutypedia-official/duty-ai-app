@@ -290,7 +290,7 @@ export default function FeedCom() {
           <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
         }>
         <View style={styles.container}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               setVisible(true);
             }}
@@ -336,8 +336,8 @@ export default function FeedCom() {
                 <MaterialIcons name="smart-display" size={40} color="#FF1414" />
               </View>
             </View>
-          </TouchableOpacity>
-          <Portal>
+          </TouchableOpacity> */}
+          {/* <Portal>
             <Modal
               visible={visible}
               onDismiss={() => setVisible(false)}
@@ -399,7 +399,7 @@ export default function FeedCom() {
                 />
               </View>
             </Modal>
-          </Portal>
+          </Portal> */}
 
           <View
             style={{

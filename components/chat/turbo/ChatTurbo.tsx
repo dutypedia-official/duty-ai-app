@@ -10,6 +10,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  Dimensions,
 } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import EventSource from "react-native-sse";
@@ -29,6 +30,12 @@ import * as Clipboard from "expo-clipboard";
 import { useIsFocused } from "@react-navigation/native";
 import useUi from "@/lib/hooks/useUi";
 import * as WebBrowser from "expo-web-browser";
+import { StatusBar } from "expo-status-bar";
+import ScreenerDark from "@/components/svgs/screener-dark";
+import Screener from "@/components/svgs/screener";
+import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { useLocalSearchParams } from "expo-router";
 
 type Message = {
   text: string;
@@ -41,9 +48,11 @@ type Message = {
 };
 
 const ChatTurbo = ({ fromPath }: any) => {
+  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const isFocused = useIsFocused();
+  const router = useRouter();
+  const { sourcePath } = useLocalSearchParams();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayMessages, setDisplayMessages] = useState<Message[]>([]);
@@ -224,10 +233,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.109:8000/chat/finance`
+          ? `http://192.168.197.188:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.0.109:8000/chat/forex`
-          : `http://192.168.0.109:8000/chat/pro`;
+          ? `http://192.168.197.188:8000/chat/forex`
+          : `http://192.168.197.188:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -356,8 +365,8 @@ const ChatTurbo = ({ fromPath }: any) => {
         style={{
           flexDirection: "row",
           justifyContent: item?.user?._id == 1 ? "flex-end" : "flex-start",
-        }}
-      >
+          backgroundColor: "transparent",
+        }}>
         <Pressable
           onLongPress={async () => {
             await Clipboard.setStringAsync(item.text);
@@ -370,15 +379,41 @@ const ChatTurbo = ({ fromPath }: any) => {
           }}
           style={{
             backgroundColor:
-              item?.user?._id == 1 ? "#0084ff" : bubbleLeftBgColor,
+              template === "scanner"
+                ? item?.user?._id == 1
+                  ? isDark
+                    ? "#3A7CA5"
+                    : "#DAE8F3"
+                  : isDark
+                  ? "#2A2D35"
+                  : "#F5F6F8"
+                : item?.user?._id == 1
+                ? "#0084ff"
+                : bubbleLeftBgColor,
             padding: 10,
             borderRadius: 12,
             marginVertical: 5,
             alignSelf: "flex-start",
-          }}
-        >
+            borderWidth: template === "scanner" ? 1 : 0,
+            borderColor:
+              template === "scanner"
+                ? isDark
+                  ? "#33353A"
+                  : "#DADCE0"
+                : "transparent",
+          }}>
           {item?.user?._id == 1 ? (
-            <Text style={{ color: "white" }}>{item.text}</Text>
+            <Text
+              style={{
+                color:
+                  template === "scanner"
+                    ? isDark
+                      ? "white"
+                      : "#3A3D42"
+                    : "white",
+              }}>
+              {item.text}
+            </Text>
           ) : item.text === "..." ? (
             <TypingAnimation />
           ) : (
@@ -485,8 +520,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                   height: 1,
                   marginVertical: 10,
                 },
-              }}
-            >
+              }}>
               {item.text}
             </Markdown>
           )}
@@ -503,8 +537,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                       alignItems: "center",
                       backgroundColor: "transparent",
                       paddingBottom: 6,
-                    }}
-                  >
+                    }}>
                     <Text>View Chart</Text>
                     <TouchableOpacity
                       onPress={() => {
@@ -522,8 +555,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                         gap: 4,
                         backgroundColor: isDark ? "#333333" : "#EAEDED",
                         borderColor: isDark ? "#333333" : "#EAEDED",
-                      }}
-                    >
+                      }}>
                       <Text>
                         <MaterialIcons
                           name="show-chart"
@@ -535,8 +567,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 12,
-                        }}
-                      >
+                        }}>
                         Chart
                       </Text>
                     </TouchableOpacity>
@@ -549,8 +580,7 @@ const ChatTurbo = ({ fromPath }: any) => {
               backgroundColor: "transparent",
               justifyContent: "flex-end",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Text style={{ opacity: 0.5, fontSize: 10 }}>
               {new Date(item.createdAt).toLocaleString(undefined, {
                 year: "numeric",
@@ -611,8 +641,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}
-      >
+        onPress={stopEventSource}>
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -677,14 +706,102 @@ const ChatTurbo = ({ fromPath }: any) => {
     setName(`${user.firstName} ${user.lastName}`);
   }, [user]);
 
+  const inputPlaceholderText = () => {
+    if (template == "general") {
+      return "Ask anything";
+    } else if (template == "finance") {
+      return "Enter full company name";
+    } else if (template == "scanner") {
+      return "Enter full company name";
+    } else {
+      return "Enter currency pair name";
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
         marginTop: fromPath ? -54 : 0,
-        backgroundColor: bgColor,
-      }}
-    >
+        backgroundColor: template === "scanner" ? "transparent" : bgColor,
+      }}>
+      {template === "scanner" && (
+        <>
+          <StatusBar translucent={true} backgroundColor="transparent" />
+
+          {isDark ? (
+            <ScreenerDark
+              style={{
+                flex: 1,
+                height: Dimensions.get("window").height,
+                width: Dimensions.get("window").width,
+                position: "absolute",
+              }}
+            />
+          ) : (
+            <Screener
+              style={{
+                flex: 1,
+                height: Dimensions.get("window").height,
+                width: Dimensions.get("window").width,
+                position: "absolute",
+              }}
+            />
+          )}
+
+          <View
+            style={{
+              backgroundColor: "transparent",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingVertical: 10,
+              paddingHorizontal: 12,
+              gap: 25,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                // if (sourcePath == "chat") {
+                //   router.replace("/main/discover");
+                // }
+                router.back();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDark ? "#00A6A6" : "#6EA8D5",
+                borderRadius: 50,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 5,
+                width: 36,
+                height: 36,
+              }}>
+              <Text>
+                <Ionicons
+                  name="chevron-back"
+                  size={24}
+                  style={{ color: "#FFFFFF" }}
+                />
+              </Text>
+            </TouchableOpacity>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{
+                flex: 1,
+                fontSize: 24,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}></Text>
+            <View style={{ backgroundColor: "transparent", width: 36 }}></View>
+          </View>
+        </>
+      )}
+
       <KeyboardAvoidingView enabled behavior={"padding"} style={{ flex: 1 }}>
         <FlashList
           ListEmptyComponent={() => (
@@ -711,13 +828,11 @@ const ChatTurbo = ({ fromPath }: any) => {
                       flex: 1,
                       marginRight: 12,
                       marginVertical: 8,
-                    }}
-                  >
+                    }}>
                     {relatedPrompts.map((p: any, i: number) => (
                       <TouchableOpacity
                         key={i}
-                        onPress={() => sendMessage(p.prompt || p.question)}
-                      >
+                        onPress={() => sendMessage(p.prompt || p.question)}>
                         <View
                           style={{
                             borderWidth: 1,
@@ -726,8 +841,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                             paddingHorizontal: 8,
                             paddingVertical: 8,
                             alignSelf: "flex-start",
-                          }}
-                        >
+                          }}>
                           <Text style={{ opacity: 0.5 }} numberOfLines={2}>
                             {p.prompt || p.question}
                           </Text>
@@ -746,26 +860,36 @@ const ChatTurbo = ({ fromPath }: any) => {
               flexDirection: "row",
               padding: 10,
               alignItems: "center",
-              backgroundColor: inputBgColor,
-              borderBottomColor: borderColor,
-              borderTopColor: borderColor,
+              backgroundColor:
+                template === "scanner"
+                  ? isDark
+                    ? "#2C2F33"
+                    : "#E8E9EC"
+                  : inputBgColor,
+              borderBottomColor:
+                template === "scanner" ? "transparent" : borderColor,
+              borderTopColor: template === "scanner" ? "#3A7CA5" : borderColor,
               borderTopWidth: 1,
-              borderBottomWidth: 1,
+              borderBottomWidth: template === "scanner" ? 0 : 1,
               marginBottom: 0,
-            }}
-          >
+            }}>
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() => {
                 setActiveConversationId(null);
                 setRelatedPrompts([]);
-              }}
-            >
+              }}>
               <MaterialIcons
                 // style={{ opacity: inputText ? 1 : 0.3 }}
                 name="post-add"
                 size={28}
-                color={primaryColor}
+                color={
+                  template === "scanner"
+                    ? isDark
+                      ? "#EAEAEA"
+                      : "#6EA8D5"
+                    : primaryColor
+                }
               />
             </TouchableOpacity>
             <TextInput
@@ -782,26 +906,25 @@ const ChatTurbo = ({ fromPath }: any) => {
               }}
               value={inputText}
               onChangeText={setInputText}
-              placeholder={
-                template == "general"
-                  ? "Ask anything"
-                  : template == "finance"
-                  ? "Enter full company name"
-                  : "Enter currency pair name"
-              }
+              placeholder={inputPlaceholderText()}
               editable={!streaming && !isLoading}
               returnKeyType="send"
             />
             {/* {streaming && stopButton()} */}
             <TouchableOpacity
               style={{ padding: 4 }}
-              onPress={() => sendMessage(inputText)}
-            >
+              onPress={() => sendMessage(inputText)}>
               <Ionicons
                 style={{ opacity: inputText ? 1 : 0.3 }}
                 name="send"
                 size={28}
-                color={primaryColor}
+                color={
+                  template === "scanner"
+                    ? isDark
+                      ? "#00D2FF"
+                      : "#6EA8D5"
+                    : primaryColor
+                }
               />
             </TouchableOpacity>
           </View>

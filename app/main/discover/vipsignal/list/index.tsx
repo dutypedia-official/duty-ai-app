@@ -252,7 +252,7 @@ const Signal = () => {
         }}>
         <TouchableOpacity
           onPress={() => {
-            router.back();
+            router.replace("/main/discover/");
           }}
           style={{
             flexDirection: "row",
