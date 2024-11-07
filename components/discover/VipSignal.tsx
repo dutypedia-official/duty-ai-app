@@ -37,7 +37,7 @@ const VipSignal = () => {
       subTitle: "Advanced stock analysis with AI",
       action: () => {
         setTemplate("scanner");
-        router.push("/main/discover/scanner");
+        router.push("/main/discover/scanner/");
       },
     },
     {

@@ -15,6 +15,7 @@ export default function ChatScreen() {
       setActiveConversationId(null);
       setTemplate("finance");
     }
-  }, [isFocused, template]);
+  }, [isFocused]);
+
   return <ChatTurbo key={template} />;
 }

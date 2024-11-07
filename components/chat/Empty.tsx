@@ -1,24 +1,26 @@
+import useChat from "@/lib/hooks/useChat";
+import useLang from "@/lib/hooks/useLang";
+import { useUser } from "@clerk/clerk-expo";
+import { AntDesign } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
   Platform,
+  Modal as RNModal,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Text, View, useThemeColor } from "../Themed";
-import useChat from "@/lib/hooks/useChat";
-import { useUser } from "@clerk/clerk-expo";
-import { useEffect, useState } from "react";
-import useLang from "@/lib/hooks/useLang";
-import { useRouter } from "expo-router";
-import Entypo from "@expo/vector-icons/Entypo";
 import { Modal, Portal } from "react-native-paper";
 import WebView from "react-native-webview";
 import MagicIcon from "../svgs/magic";
+import { Text, View, useThemeColor } from "../Themed";
 
 const RenderChatEmpty = ({ onPressRelated }: any) => {
   const borderColor = useThemeColor({}, "border");
-  const { activeConversationId, setActiveConversationId, template } = useChat();
+  const { template, setTemplate } = useChat();
   const bubbleLeftBgColor = useThemeColor({}, "bubbleLeftBg");
   const { user } = useUser();
   const [name, setName] = useState("");
@@ -29,6 +31,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const videoUrl = "https://www.youtube.com/embed/eJdW7-zZCnU?autoplay=1";
   const injectedJavaScript = `
     document.getElementsByTagName('video')[0].play();
@@ -214,6 +217,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {subTitleFn()}
           </Text>
         </View>
+
         {promptsFn().map((prompt, i) => {
           const promptPress = (val: any) => {
             if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও 06 oct 2024")) {
@@ -221,10 +225,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             } else if (val.includes("⚖️ Golden choice")) {
               router.push("/main/discover/vipsignal/list/");
             } else if (val.includes("🔍 Stock Scanner")) {
-              router.push({
-                pathname: "/main/discover/scanner",
-                params: { sourcePath: "chat" },
-              });
+              setTemplate("scanner");
+              router.push("/main/discover/scanner/");
             } else {
               onPressRelated(prompt);
             }

@@ -58,8 +58,7 @@ export default function DiscoverScreen() {
           right: 0,
           bottom: 0,
           width: "100%",
-        }}
-      >
+        }}>
         {colorScheme === "dark" && (
           <Image
             style={{
@@ -90,8 +89,7 @@ export default function DiscoverScreen() {
       <ScrollView
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         {/* <ScrollView
           style={{
             flexGrow: 0,
@@ -135,15 +133,13 @@ export default function DiscoverScreen() {
           style={{
             paddingHorizontal: 12,
             paddingVertical: 20,
-          }}
-        >
+          }}>
           {!isBn && (
             <Text
               style={{
                 fontSize: 32,
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               <Text style={{ color: "#0094FF", fontWeight: "bold" }}>
                 Bangladesh{"\n"}Stocks
               </Text>{" "}
@@ -159,8 +155,7 @@ export default function DiscoverScreen() {
               style={{
                 fontSize: 32,
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               <Text style={{ color: "#0094FF", fontWeight: "bold" }}>
                 বাংলাদেশ শেয়ার{"\n"}বাজার
               </Text>{" "}
@@ -185,12 +180,10 @@ export default function DiscoverScreen() {
                     router.push("/main");
                   }
                 }}
-                key={index}
-              >
+                key={index}>
                 <Card
                   mode="contained"
-                  style={{ backgroundColor: item.bgColor || bgColor }}
-                >
+                  style={{ backgroundColor: item.bgColor || bgColor }}>
                   <Card.Content>
                     <View style={{ flexDirection: "row", gap: 8 }}>
                       <View
@@ -203,23 +196,20 @@ export default function DiscoverScreen() {
                             pastelColors[index % pastelColors.length],
                           justifyContent: "center",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         {item.icon}
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text
                           style={{ color: "#FFF" }}
                           numberOfLines={1}
-                          variant="titleLarge"
-                        >
+                          variant="titleLarge">
                           {item.title}
                         </Text>
                         <Text
                           style={{ color: "#00D1FF" }}
                           numberOfLines={2}
-                          variant="bodyMedium"
-                        >
+                          variant="bodyMedium">
                           {item.subTitle}
                         </Text>
                       </View>

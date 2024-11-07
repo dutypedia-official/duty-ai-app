@@ -17,6 +17,8 @@ interface ChatStore {
   setMessages: (messages: any) => void;
   histories: any;
   setHistories: (histories: any) => void;
+  prevId: any;
+  setPrevId: (prevId: any) => void;
 }
 
 const useChat = create<ChatStore>((set, get) => ({
@@ -35,6 +37,8 @@ const useChat = create<ChatStore>((set, get) => ({
   setMessages: (messages) => set({ messages }),
   histories: [],
   setHistories: (histories) => set({ histories }),
+  prevId: null,
+  setPrevId: (prevId) => set({ prevId }),
 }));
 
 export default useChat;

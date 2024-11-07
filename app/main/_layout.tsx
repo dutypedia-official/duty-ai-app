@@ -53,12 +53,17 @@ export default function TabLayout() {
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const [hideTabBar, setHideTabBar] = useState(false);
+  const { setTemplate } = useChat();
 
   useEffect(() => {
     const shouldHide = segments.some((segment: string) =>
       ["details", "vipsignal", "scanner"].includes(segment)
     );
     setHideTabBar(shouldHide);
+
+    if (shouldHide) {
+      setTemplate("scanner");
+    }
   }, [segments, isFocused]);
 
   const getUnreadNotiCount = async () => {

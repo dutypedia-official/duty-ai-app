@@ -33,7 +33,7 @@ import * as WebBrowser from "expo-web-browser";
 import { StatusBar } from "expo-status-bar";
 import ScreenerDark from "@/components/svgs/screener-dark";
 import Screener from "@/components/svgs/screener";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
 
@@ -52,8 +52,8 @@ const ChatTurbo = ({ fromPath }: any) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const router = useRouter();
-  const { sourcePath } = useLocalSearchParams();
 
+  console.log(usePathname());
   const [messages, setMessages] = useState<Message[]>([]);
   const [displayMessages, setDisplayMessages] = useState<Message[]>([]);
 
@@ -97,6 +97,8 @@ const ChatTurbo = ({ fromPath }: any) => {
     prompt,
     setPrompt,
     setTemplate,
+    setPrevId,
+    prevId,
   } = useChat();
 
   const prepareHistory = (msgs: any) => {
@@ -186,6 +188,7 @@ const ChatTurbo = ({ fromPath }: any) => {
       );
       tConId = data.id;
       setActiveConversationId(data?.id);
+      setPrevId(data?.id);
     } else {
       await client.post(
         "/messages/new",
@@ -217,7 +220,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           query: query,
           history: history,
           messageId: id,
-          conversationId: activeConversationId || tConId,
+          conversationId:  activeConversationId || tConId,
           name: name,
         }),
       };
@@ -233,10 +236,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.197.188:8000/chat/finance`
+          ? `http://192.168.118.188:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.197.188:8000/chat/forex`
-          : `http://192.168.197.188:8000/chat/pro`;
+          ? `http://192.168.118.188:8000/chat/forex`
+          : `http://192.168.118.188:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -574,7 +577,46 @@ const ChatTurbo = ({ fromPath }: any) => {
                   </View>
                 )
             )}
-
+          {item?.user?._id !== 1 && (
+            <View
+              style={{
+                backgroundColor: "transparent",
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPrompt(`Grameenphon`);
+                  setActiveConversationId(null);
+                  router.push("/main/discover/scanner/grameenphone");
+                }}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 6,
+                  borderRadius: 4,
+                  gap: 4,
+                  backgroundColor: isDark ? "#333333" : "#EAEDED",
+                  borderColor: isDark ? "#333333" : "#EAEDED",
+                }}>
+                <Text>
+                  <MaterialIcons
+                    name="show-chart"
+                    size={14}
+                    color={isDark ? "#ffffff" : "#5188D4"}
+                  />
+                </Text>
+                <Text
+                  style={{
+                    color: isDark ? "#FFFFFF" : "#000000",
+                    fontSize: 12,
+                  }}>
+                  Ask AI
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View
             style={{
               backgroundColor: "transparent",
@@ -761,9 +803,7 @@ const ChatTurbo = ({ fromPath }: any) => {
             }}>
             <TouchableOpacity
               onPress={() => {
-                // if (sourcePath == "chat") {
-                //   router.replace("/main/discover");
-                // }
+                setActiveConversationId(null);
                 router.back();
               }}
               style={{
@@ -782,7 +822,7 @@ const ChatTurbo = ({ fromPath }: any) => {
               }}>
               <Text>
                 <Ionicons
-                  name="chevron-back"
+                  name={"chevron-back"}
                   size={24}
                   style={{ color: "#FFFFFF" }}
                 />
