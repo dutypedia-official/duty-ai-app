@@ -36,6 +36,7 @@ import Screener from "@/components/svgs/screener";
 import { usePathname, useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Message = {
   text: string;
@@ -48,6 +49,7 @@ type Message = {
 };
 
 const ChatTurbo = ({ fromPath }: any) => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -220,7 +222,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           query: query,
           history: history,
           messageId: id,
-          conversationId:  activeConversationId || tConId,
+          conversationId: activeConversationId || tConId,
           name: name,
         }),
       };
@@ -232,14 +234,16 @@ const ChatTurbo = ({ fromPath }: any) => {
           ? `${baseUrl}/chat/finance`
           : template == "forex"
           ? `${baseUrl}/chat/forex`
+          : template == "scanner"
+          ? `${baseUrl}/chat/screener`
           : `${baseUrl}/chat/pro`;
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.118.188:8000/chat/finance`
+          ? `http://192.168.149.188:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.118.188:8000/chat/forex`
-          : `http://192.168.118.188:8000/chat/pro`;
+          ? `http://192.168.149.188:8000/chat/forex`
+          : `http://192.168.149.188:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -577,7 +581,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                   </View>
                 )
             )}
-          {item?.user?._id !== 1 && (
+          {/* {item?.user?._id !== 1 && (
             <View
               style={{
                 backgroundColor: "transparent",
@@ -616,7 +620,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          )}
+          )} */}
           <View
             style={{
               backgroundColor: "transparent",
@@ -800,6 +804,9 @@ const ChatTurbo = ({ fromPath }: any) => {
               paddingVertical: 10,
               paddingHorizontal: 12,
               gap: 25,
+              position: "absolute",
+              paddingTop: insets.top,
+              zIndex: 10,
             }}>
             <TouchableOpacity
               onPress={() => {
@@ -828,16 +835,6 @@ const ChatTurbo = ({ fromPath }: any) => {
                 />
               </Text>
             </TouchableOpacity>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={{
-                flex: 1,
-                fontSize: 24,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}></Text>
-            <View style={{ backgroundColor: "transparent", width: 36 }}></View>
           </View>
         </>
       )}
@@ -860,7 +857,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           onLayout={() => setTimeout(scrollToBottom, 100)}
           ListFooterComponent={() => {
             return (
-              <View>
+              <View style={{ backgroundColor: "transparent" }}>
                 {relatedPrompts?.length > 0 && messages?.length > 0 && (
                   <View
                     style={{
@@ -868,6 +865,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                       flex: 1,
                       marginRight: 12,
                       marginVertical: 8,
+                      backgroundColor: "transparent",
                     }}>
                     {relatedPrompts.map((p: any, i: number) => (
                       <TouchableOpacity

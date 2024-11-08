@@ -179,10 +179,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           paddingVertical: template == "scanner" ? 0 : 20,
           flex: 1,
           justifyContent: "center",
-          height:
-            template == "scanner"
-              ? "auto"
-              : Dimensions.get("window").height - 200,
+          alignContent: "center",
+          height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
         }}>
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
