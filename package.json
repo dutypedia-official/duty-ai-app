@@ -17,6 +17,7 @@
     "@expo/config-plugins": "~7.8.0",
     "@expo/html-elements": "^0.10.1",
     "@expo/vector-icons": "^14.0.0",
+    "@gorhom/bottom-sheet": "^4.6.4",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/viewpager": "5.0.11",
     "@react-navigation/native": "^6.1.18",

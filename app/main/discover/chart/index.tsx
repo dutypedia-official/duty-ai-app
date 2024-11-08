@@ -613,7 +613,7 @@ export const StockListItem = ({
                 Chart
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -624,8 +624,7 @@ export const StockListItem = ({
                 backgroundColor: isDark ? "#333333" : "#EAEDED",
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
-              onPress={showModal}
-            >
+              onPress={showModal}>
               <Text style={{ color: "white" }}>
                 {currentAlerm ? (
                   <MaterialIcons
@@ -642,13 +641,12 @@ export const StockListItem = ({
                 )}
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
-              >
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
                 {currentAlerm ? "Edit Alerm" : "Set Alarm"}
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -681,7 +679,7 @@ export const StockListItem = ({
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
                 {currentAlerm ? "Edit Alerm" : "Set Alarm"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               onPress={() => {

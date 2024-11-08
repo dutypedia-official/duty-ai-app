@@ -33,6 +33,7 @@ import useSocket from "@/lib/hooks/useSocket";
 import useUi from "@/lib/hooks/useUi";
 import Colors from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const CURRENT_IOS_VERSION = 9;
 const CURRENT_ANDROID_VERSION = 9;
@@ -336,15 +337,17 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <PaperProvider theme={PaperTheme}>
         <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
-        <Stack>
-          <Stack.Screen name="(start)" options={{ headerShown: false }} />
-          <Stack.Screen name="main" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="update/index"
-            options={{ headerShown: true, title: "Update Available" }}
-          />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack>
+            <Stack.Screen name="(start)" options={{ headerShown: false }} />
+            <Stack.Screen name="main" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="update/index"
+              options={{ headerShown: true, title: "Update Available" }}
+            />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </GestureHandlerRootView>
       </PaperProvider>
       <Toast />
     </ThemeProvider>
