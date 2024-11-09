@@ -21,6 +21,7 @@ import React, {
   Fragment,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -35,12 +36,20 @@ import {
   RefreshControl,
   Modal as RNModal,
 } from "react-native";
-// import { GestureHandlerRootView } from "react-native-gesture-handler";
-// import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 
 import { ActivityIndicator, Button, Modal, Portal } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
 import Toast from "react-native-toast-message";
+import { BlurView } from "expo-blur";
+import MagicIcon from "@/components/svgs/magic";
+import { LinearGradient } from "expo-linear-gradient";
+import MagicInactiveDark from "@/components/svgs/magicInactiveDark";
+import MagicInactiveLight from "@/components/svgs/magicInactiveLight";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -99,6 +108,10 @@ export const StockListItem = ({
   favs,
   onFavList = false,
   trading,
+  sheetRef,
+  currentAlarm,
+  targetPrice,
+  setCompanyName,
 }: any) => {
   const isPositive = !change?.startsWith("-");
   const isPositivePer = !changePer?.startsWith("-");
@@ -130,11 +143,12 @@ export const StockListItem = ({
     useChat();
   const { getToken } = useAuth();
   const client = apiClient();
-  const currentAlerm = alerms?.find((alerm: any) => alerm.symbol === name);
   const isFav = favs?.find((fav: any) => fav.symbol === name);
-  const [targetPrice, setTargetPrice] = useState(
-    currentAlerm ? `${currentAlerm.price}` : ""
-  );
+  // const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
+  // const [targetPrice, setTargetPrice] = useState(
+  //   currentAlarm ? `${currentAlarm.price}` : ""
+  // );
+  const { setStockName } = useStockData();
   const [isFavorite, setIsFavorite] = useState(
     onFavList ? true : isFav ? true : false
   );
@@ -199,7 +213,8 @@ export const StockListItem = ({
       } else {
         setRefreash(!refreash);
       }
-      hideModal();
+      // hideModal();
+      sheetRef.current?.close();
     } catch (error) {
       console.log(error);
     } finally {
@@ -212,7 +227,7 @@ export const StockListItem = ({
       setLoading(true);
       const token = await getToken();
       await client.delete(
-        `/noti/delete-alerm/${currentAlerm.id}`,
+        `/noti/delete-alerm/${currentAlarm.id}`,
         token,
         {},
         mainServerAvailable
@@ -223,7 +238,8 @@ export const StockListItem = ({
       });
       setRefreash(!refreash);
       setRefreashFav(!refreashFav);
-      hideModal();
+      // hideModal();
+      sheetRef.current?.close();
     } catch (error) {
       console.log(error);
     } finally {
@@ -246,16 +262,9 @@ export const StockListItem = ({
     },
   ];
 
-  // const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // // callbacks
-  // const handleSheetChanges = useCallback((index: number) => {
-  //   console.log("handleSheetChanges", index);
-  // }, []);
-
   return (
     <View>
-      <Portal>
+      {/* <Portal>
         <Modal visible={visible} onDismiss={hideModal} dismissable={false}>
           <View
             style={{
@@ -305,7 +314,7 @@ export const StockListItem = ({
               disabled={
                 loading ||
                 parseFloat(targetPrice) < 1 ||
-                parseFloat(targetPrice) == currentAlerm?.price
+                parseFloat(targetPrice) == currentAlarm?.price
               }
               onPress={handelSetAlerm}
               style={{
@@ -313,7 +322,7 @@ export const StockListItem = ({
                 marginBottom: 10,
                 backgroundColor:
                   parseFloat(targetPrice) > 0 &&
-                  parseFloat(targetPrice) != currentAlerm?.price
+                  parseFloat(targetPrice) != currentAlarm?.price
                     ? "#152f4a"
                     : "#9ca7b1",
                 borderRadius: 8,
@@ -324,7 +333,7 @@ export const StockListItem = ({
               </Text>
             </TouchableOpacity>
 
-            {currentAlerm && (
+            {currentAlarm && (
               <TouchableOpacity
                 onPress={handelDeleteAlerm}
                 style={{
@@ -341,23 +350,7 @@ export const StockListItem = ({
             )}
           </View>
         </Modal>
-        {/* <GestureHandlerRootView
-          style={{ flex: 1, backgroundColor: "transparent" }}>
-          <BottomSheet ref={bottomSheetRef} onChange={handleSheetChanges}>
-            <TouchableOpacity
-              onPress={() => {
-                bottomSheetRef.current?.close();
-              }}>
-              <AntDesign name="close" size={24} color="black" />
-            </TouchableOpacity>
-
-            <BottomSheetView
-              style={{ flex: 1, padding: 36, alignItems: "center" }}>
-              <Text>Awesome 🎉</Text>
-            </BottomSheetView>
-          </BottomSheet>
-        </GestureHandlerRootView> */}
-      </Portal>
+      </Portal> */}
       <View
         style={{
           flexDirection: "column",
@@ -613,7 +606,7 @@ export const StockListItem = ({
                 Chart
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -626,7 +619,7 @@ export const StockListItem = ({
               }}
               onPress={showModal}>
               <Text style={{ color: "white" }}>
-                {currentAlerm ? (
+                {currentAlarm ? (
                   <MaterialIcons
                     color="#CE1300"
                     name="edit-notifications"
@@ -639,14 +632,14 @@ export const StockListItem = ({
                     color={isDark ? "#ffffff" : "#5188D4"}
                   />
                 )}
-              </Text>
+              </Text>a
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlerm ? "Edit Alerm" : "Set Alarm"}
+                {currentAlarm ? "Edit Alerm" : "Set Alarm"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -658,10 +651,11 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
               onPress={() => {
-                // bottomSheetRef.current?.expand();
+                sheetRef?.current?.expand();
+                setCompanyName(name);
               }}>
               <Text style={{ color: "white" }}>
-                {currentAlerm ? (
+                {currentAlarm ? (
                   <MaterialIcons
                     color="#CE1300"
                     name="edit-notifications"
@@ -677,9 +671,9 @@ export const StockListItem = ({
               </Text>
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlerm ? "Edit Alerm" : "Set Alarm"}
+                {currentAlarm ? "Edit Alerm" : "Set Alarm"}
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {
@@ -736,10 +730,14 @@ const StockListScreen = () => {
 
   const isDark = useColorScheme() === "dark";
   const textColor = useThemeColor({}, "text");
-  const { marketData, setMarketData, favorites, setFavorites } = useStockData();
+  const { marketData, setMarketData, favorites, setFavorites, stockName } =
+    useStockData();
 
   const [activeFilter, setActiveFilter] = useState("topGainer");
   const [alerms, setAlerms] = useState([]);
+  const [activeTab, setActiveTab] = useState("priceAlarm");
+  const [inputText, setInputText] = useState("");
+
   const { getToken } = useAuth();
   const client = apiClient();
   const router = useRouter();
@@ -747,6 +745,7 @@ const StockListScreen = () => {
     ? marketData
     : marketData.filter((stock: any) => stock[activeFilter] == true) || [];
   const le5e5e5 = useThemeColor({}, "le5e5e5");
+  const lf6f6f6 = useThemeColor({}, "lf6f6f6");
   const borderColor = useThemeColor({}, "border");
   // Filter stocks based on the search term
   let filteredStocks = initialStocks?.filter((stock: any) =>
@@ -830,6 +829,31 @@ const StockListScreen = () => {
       setScreenRefresh(false);
     }, 2000);
   }, []);
+
+  const [companyName, setCompanyName] = useState(null);
+  const [currentAlarm, setCurrentAlarm] = useState<any>(
+    alerms?.find((alerm: any) => alerm.symbol === companyName)
+  );
+  const [targetPrice, setTargetPrice] = useState(
+    currentAlarm ? `${currentAlarm?.price}` : ""
+  );
+
+  console.log("currentAlarm", currentAlarm, "targetPrice", targetPrice);
+
+  // Reference for the bottom sheet
+  const bottomSheetRef = useRef<any>(null);
+
+  // Snap points define the collapsed and expanded heights of the bottom sheet
+  const snapPoints = useMemo(() => ["70%"], []);
+
+  const renderBackdrop = (props: BottomSheetBackdropProps) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1} // Disappears when fully collapsed
+      appearsOnIndex={0} // Appears when opened
+      opacity={0.6} // Set the backdrop opacity
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -966,6 +990,10 @@ const StockListScreen = () => {
             alerms={alerms}
             favs={favorites}
             trading={item.trade}
+            sheetRef={bottomSheetRef}
+            currentAlarm={currentAlarm}
+            targetPrice={targetPrice}
+            setCompanyName={setCompanyName}
           />
         )}
         keyExtractor={(item) => item.symbol}
@@ -974,6 +1002,353 @@ const StockListScreen = () => {
           <RefreshControl refreshing={screenRefresh} onRefresh={onRefresh} />
         }
       />
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        // onChange={handleSheetChanges}
+        backgroundStyle={{ backgroundColor: "transparent" }}
+        backdropComponent={renderBackdrop}
+        handleComponent={(props) => <View style={{ display: "none" }}></View>}
+        style={{
+          backgroundColor: "transparent",
+        }}>
+        <LinearGradient
+          colors={isDark ? ["#1C1C1E", "#2A2A2D"] : ["#FFFFFF", "#F3F4F6"]}
+          style={{
+            flex: 1,
+            borderTopLeftRadius: 28,
+            borderTopRightRadius: 28,
+            borderTopWidth: 1,
+            borderTopColor: "#CFCFCF",
+          }}>
+          {/* close button */}
+          <View
+            style={{
+              backgroundColor: "transparent",
+              paddingHorizontal: 14,
+              paddingVertical: 14,
+            }}>
+            <TouchableOpacity
+              onPress={() => bottomSheetRef.current?.close()}
+              style={{
+                position: "relative",
+                alignSelf: "flex-end",
+                backgroundColor: "transparent",
+              }}>
+              <AntDesign
+                name="close"
+                size={20}
+                color={isDark ? "white" : "black"}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* tabs */}
+          <View
+            style={{
+              backgroundColor: "transparent",
+              paddingHorizontal: 14,
+            }}>
+            <View
+              style={{ backgroundColor: "transparent", flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveTab("priceAlarm");
+                }}
+                style={{
+                  backgroundColor: isDark
+                    ? activeTab === "priceAlarm"
+                      ? "#245254"
+                      : "#2A2A2D"
+                    : activeTab === "priceAlarm"
+                    ? "#D6F7F9"
+                    : "#E0E0E0",
+                  padding: 10,
+                  borderTopLeftRadius: 12,
+                  borderBottomLeftRadius: 12,
+                  width: "50%",
+                }}>
+                <Text
+                  style={{
+                    color: isDark
+                      ? activeTab === "priceAlarm"
+                        ? "#FFFFFF"
+                        : "#D1D1D1"
+                      : activeTab === "priceAlarm"
+                      ? "#00796B"
+                      : "#757575",
+                    fontWeight: "bold",
+                    fontSize: 16,
+                    textAlign: "center",
+                  }}>
+                  Price alarm
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveTab("aiAlarm");
+                }}
+                style={{
+                  backgroundColor: isDark
+                    ? activeTab === "aiAlarm"
+                      ? "#245254"
+                      : "#2A2A2D"
+                    : activeTab === "aiAlarm"
+                    ? "#D6F7F9"
+                    : "#E0E0E0",
+                  padding: 10,
+                  borderTopRightRadius: 12,
+                  borderBottomRightRadius: 12,
+                  width: "50%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "transparent",
+                    justifyContent: "center",
+                    alignContent: "center",
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: "transparent",
+                      width: 20,
+                      height: 20,
+                      justifyContent: "center",
+                      alignContent: "center",
+                      marginRight: 5,
+                    }}>
+                    {activeTab === "aiAlarm" ? (
+                      <MagicIcon />
+                    ) : isDark ? (
+                      <MagicInactiveDark />
+                    ) : (
+                      <MagicInactiveLight />
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      backgroundColor: "transparent",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      marginTop: -1,
+                    }}>
+                    <Text
+                      style={{
+                        color: isDark
+                          ? activeTab === "aiAlarm"
+                            ? "#FFFFFF"
+                            : "#D1D1D1"
+                          : activeTab === "aiAlarm"
+                          ? "#00796B"
+                          : "#757575",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignContent: "center",
+                      }}>
+                      Ai alarm
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* content */}
+          <View
+            style={{
+              paddingHorizontal: 14,
+              paddingVertical: 12,
+              flex: 1,
+              backgroundColor: "transparent",
+              marginTop: 28, //40 top to tabs
+            }}>
+            <BottomSheetScrollView
+              contentContainerStyle={{
+                backgroundColor: "transparent",
+              }}>
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                }}>
+                {activeTab === "priceAlarm" && (
+                  <View
+                    style={{
+                      backgroundColor: "transparent",
+                      gap: 12,
+                    }}>
+                    <Text
+                      style={{
+                        color: isDark ? "#F5F5F5" : "#424242",
+                        fontSize: 16,
+                        fontWeight: "600",
+                      }}>
+                      Enter Price
+                    </Text>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
+                        borderRadius: 8,
+                        borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
+                      }}>
+                      <TextInput
+                        maxLength={8}
+                        style={{
+                          paddingVertical: 12,
+                          paddingHorizontal: 12,
+                          textAlign: "center",
+                          color: textColor,
+                        }}
+                        placeholder="00:00"
+                        placeholderTextColor="#888"
+                        value={targetPrice}
+                        onChangeText={(text) =>
+                          setTargetPrice(text.replace(/[^0-9.]/g, ""))
+                        }
+                        keyboardType="numeric"
+                      />
+                    </View>
+                  </View>
+                )}
+
+                {activeTab === "aiAlarm" && (
+                  <View
+                    style={{
+                      backgroundColor: "transparent",
+                      gap: 12,
+                    }}>
+                    <Text
+                      style={{
+                        color: isDark ? "#F5F5F5" : "#424242",
+                        fontSize: 16,
+                        fontWeight: "600",
+                      }}>
+                      Type your Instruction
+                    </Text>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
+                        borderRadius: 8,
+                        borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
+                      }}>
+                      <TextInput
+                        multiline
+                        maxLength={120}
+                        style={{
+                          paddingVertical: 12,
+                          paddingHorizontal: 12,
+                          textAlign: "left",
+                          color: textColor,
+                          minHeight: 80,
+                          maxHeight: 100,
+                        }}
+                        placeholder="If market go 50% above the moving avarage give em signal also if this stock perform so goodthen  give em signal"
+                        placeholderTextColor="#888"
+                        value={inputText}
+                        onChangeText={setInputText}
+                        // editable={!streaming && !isLoading}
+                        returnKeyType="send"
+                      />
+                    </View>
+
+                    {inputText.length === 120 && (
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: isDark ? "#D1D1D1" : "#595959",
+                        }}>
+                        Write what you want the AI to do (max 120 characters).
+                        Clear instructions help the AI understand better. The AI
+                        will watch your stock 24/7 and notify you.
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </View>
+            </BottomSheetScrollView>
+          </View>
+
+          {/* bottom actions */}
+          <View
+            style={{
+              paddingHorizontal: 14,
+              paddingBottom: 14,
+              backgroundColor: "transparent",
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                gap: 12,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  // setAddNewAlarm(true);
+                }}
+                // disabled={}
+                style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
+                  }
+                  style={{
+                    paddingHorizontal: 4,
+                    paddingVertical: 12,
+                    borderRadius: 12,
+                  }}>
+                  <Text
+                    style={{
+                      color: "#FFFFFF",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                      textAlign: "center",
+                      height: 19,
+                    }}>
+                    Set alarm
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              {currentAlarm && (
+                <TouchableOpacity
+                  onPress={() => {
+                    // setDeleteAlarm(true);
+                  }}>
+                  <LinearGradient
+                    colors={
+                      isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
+                    }
+                    style={{
+                      paddingHorizontal: 4,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                    }}>
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        textAlign: "center",
+                        height: 19,
+                      }}>
+                      Delete alarm
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </LinearGradient>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
