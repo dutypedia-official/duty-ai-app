@@ -34,8 +34,7 @@ export default function Details() {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: bgColor,
-        }}
-      >
+        }}>
         <ActivityIndicator
           size="large"
           color={isDark ? "#FFFFFF" : "#171B26"}
@@ -49,8 +48,7 @@ export default function Details() {
       style={{
         backgroundColor: bgColor,
         flex: 1,
-      }}
-    >
+      }}>
       <StatusBar backgroundColor={bgColor} />
       <View
         style={{
@@ -61,8 +59,7 @@ export default function Details() {
           paddingVertical: 10,
           paddingHorizontal: 12,
           gap: 25,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             router.back();
@@ -80,8 +77,7 @@ export default function Details() {
             elevation: 5,
             width: 36,
             height: 36,
-          }}
-        >
+          }}>
           <Text>
             <Ionicons
               name="chevron-back"
@@ -99,8 +95,7 @@ export default function Details() {
             fontWeight: "bold",
             textAlign: "center",
             color: isDark ? "#FFFFFF" : "#8B7500",
-          }}
-        >
+          }}>
           {data?.name}
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
@@ -113,16 +108,14 @@ export default function Details() {
                 gap: 16,
                 paddingHorizontal: 12,
                 paddingVertical: 10,
-              }}
-            >
+              }}>
               <View style={{ backgroundColor: "transparent" }}>
                 <Text
                   style={{
                     fontWeight: "bold",
                     fontSize: 18,
                     color: !isDark ? "#8B7500" : "#FFD700",
-                  }}
-                >
+                  }}>
                   Score
                 </Text>
                 <Text style={{ fontWeight: "900", fontSize: 48 }}>
@@ -130,15 +123,13 @@ export default function Details() {
                 </Text>
               </View>
               <View
-                style={{ backgroundColor: "transparent", marginBottom: 20 }}
-              >
+                style={{ backgroundColor: "transparent", marginBottom: 20 }}>
                 <Text
                   style={{
                     fontWeight: "bold",
                     fontSize: 18,
                     color: !isDark ? "#8B7500" : "#FFD700",
-                  }}
-                >
+                  }}>
                   Financial Performance
                 </Text>
                 {Object.keys(data?.details?.financial_performance).map(
@@ -151,8 +142,7 @@ export default function Details() {
                         borderBottomWidth: 1,
                         borderColor: borderColor,
                         paddingVertical: 16,
-                      }}
-                    >
+                      }}>
                       <Text style={{ textTransform: "capitalize" }}>
                         {key.replace("_", " ")}
                       </Text>
@@ -162,15 +152,13 @@ export default function Details() {
                 )}
               </View>
               <View
-                style={{ backgroundColor: "transparent", marginBottom: 20 }}
-              >
+                style={{ backgroundColor: "transparent", marginBottom: 20 }}>
                 <Text
                   style={{
                     fontWeight: "bold",
                     fontSize: 18,
                     color: !isDark ? "#8B7500" : "#FFD700",
-                  }}
-                >
+                  }}>
                   Key Performance Metrics
                 </Text>
                 {Object.keys(data?.details?.key_performance_metrics).map(
@@ -183,8 +171,7 @@ export default function Details() {
                         borderColor: borderColor,
                         paddingVertical: 16,
                       }}
-                      key={key}
-                    >
+                      key={key}>
                       <Text style={{ textTransform: "capitalize" }}>
                         {key.replace("_", " ")}
                       </Text>
@@ -198,8 +185,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Technical Analysis
               </Text>
 
@@ -226,10 +212,10 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Investment Analysis
               </Text>
+
               <Text>{data?.details?.investment_analysis}</Text>
 
               <Text
@@ -237,8 +223,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Overview
               </Text>
               <Text>{data?.details?.overview}</Text>
@@ -247,8 +232,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Fair Value
               </Text>
               <Text>{data?.details?.fair_value}</Text>
@@ -257,8 +241,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Total Liabilities
               </Text>
               <Text>{data?.details?.total_liabilities}</Text>
@@ -267,8 +250,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Overall Assessment
               </Text>
               <Text>{data?.details?.overall_assessment}</Text>
@@ -277,8 +259,7 @@ export default function Details() {
                   fontWeight: "bold",
                   fontSize: 18,
                   color: !isDark ? "#8B7500" : "#FFD700",
-                }}
-              >
+                }}>
                 Valuation
               </Text>
               <Text>{data?.details?.valuation}</Text>

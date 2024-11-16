@@ -35,7 +35,7 @@ enum Strategy {
   Apple = "oauth_apple",
   Facebook = "oauth_facebook",
 }
-export default function Login() {
+export default function Signup() {
   const insets = useSafeAreaInsets();
   useWarmUpBrowser();
   const router = useRouter();
@@ -55,10 +55,10 @@ export default function Login() {
   const bgColor = useThemeColor({}, "background");
 
   const injectedJavaScript = `
-  document.getElementsByTagName('video')[0].play();
-  var iframe = document.querySelector('iframe');
-  iframe.requestFullscreen();
-`;
+    document.getElementsByTagName('video')[0].play();
+    var iframe = document.querySelector('iframe');
+    iframe.requestFullscreen();
+  `;
 
   const onSelectAuth = async (strategy: Strategy) => {
     const selectedAuth = {
@@ -255,10 +255,10 @@ export default function Login() {
                     textAlign: "center",
                     paddingBottom: 8,
                   }}>
-                  Login
+                  Create an account
                 </Text>
                 <TouchableOpacity
-                  onPress={() => router.push("/user-login")}
+                  onPress={() => router.push("/signup-form")}
                   style={{
                     width: "100%",
                   }}>
@@ -273,7 +273,7 @@ export default function Login() {
                       source={require("../../assets/icons/email.png")}
                     />
                     <Text style={{ color: "#fff", fontWeight: "700" }}>
-                      {isBn ? "ইমেইল দিয়ে লগইন করুন" : "Login with email"}
+                      {isBn ? "ইমেইল দিয়ে লগইন করুন" : "Signup with email"}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -291,7 +291,7 @@ export default function Login() {
                       source={require("../../assets/icons/google.png")}
                     />
                     <Text style={{ color: "#fff", fontWeight: "700" }}>
-                      {isBn ? "গুগল দিয়ে লগইন করুন" : "Login with Google"}
+                      {isBn ? "গুগল দিয়ে লগইন করুন" : "Signup with Google"}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -315,11 +315,11 @@ export default function Login() {
                         fontWeight: "700",
                         paddingLeft: 8,
                       }}>
-                      {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Login with Apple"}
+                      {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Signup with Apple"}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                {Platform.OS === "android" && (
+                {/* {Platform.OS === "android" && (
                   <TouchableOpacity
                     onPress={() => {
                       setVisible(true);
@@ -337,7 +337,7 @@ export default function Login() {
                       <Ionicons name="play-circle" size={24} />
                     </Text>
                   </TouchableOpacity>
-                )}
+                )} */}
               </View>
 
               <Button
@@ -347,15 +347,15 @@ export default function Login() {
                   fontSize: 16,
                   color: "#FFFFFF",
                 }}>
-                Don’t have an account?{" "}
-                <Link href="/signup" asChild>
+                Already have an account?{" "}
+                <Link href="/login" asChild>
                   <Text
                     style={{
                       color: "#2ECC71",
                       fontWeight: "bold",
                       fontSize: 16,
                     }}>
-                    Sign up
+                    Login
                   </Text>
                 </Link>
               </Button>
