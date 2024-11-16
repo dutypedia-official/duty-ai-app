@@ -8,6 +8,8 @@ interface Store {
   setScreenRefresh: (screenRefresh: boolean) => void;
   mainServerAvailable: boolean;
   setMainServerAvailable: (mainServerAvailable: boolean) => void;
+  selectedStock: any;
+  setSelectedStock: (selectedStock: any) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -20,6 +22,8 @@ const useUi = create<Store>((set, get) => ({
   mainServerAvailable: false,
   setMainServerAvailable: (mainServerAvailable: boolean) =>
     set({ mainServerAvailable }),
+  selectedStock: null,
+  setSelectedStock: (selectedStock: any) => set({ selectedStock }),
 }));
 
 export default useUi;

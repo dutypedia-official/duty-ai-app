@@ -7,7 +7,12 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
 import { formatDate } from "date-fns/format";
@@ -36,7 +41,7 @@ const Noti = () => {
         {},
         mainServerAvailable
       );
-      console.log(data);
+      console.log("jjjj", data);
       setRefreash(!refreash);
       setNotifications(data);
     } catch (error) {
@@ -82,6 +87,9 @@ const Noti = () => {
             {isBn ? "নোটিফিকেশান নেই" : "No notifications"}
           </Text>
         </View>
+        <Pressable onPress={() => fetchData()}>
+          <Text>jhgjh</Text>
+        </Pressable>
       </View>
     );
   }
