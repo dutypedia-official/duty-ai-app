@@ -50,6 +50,7 @@ import MagicIcon from "@/components/svgs/magic";
 import { LinearGradient } from "expo-linear-gradient";
 import MagicInactiveDark from "@/components/svgs/magicInactiveDark";
 import MagicInactiveLight from "@/components/svgs/magicInactiveLight";
+import { date } from "zod";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -827,6 +828,46 @@ const StockListScreen = () => {
     }
   };
 
+  const handelSetAiAlerm = async () => {
+    if (!selectedStock) {
+      return Toast.show({
+        type: "error",
+        text1: "Select a stock first!",
+      });
+    }
+    try {
+      setLoading(true);
+      const token = await getToken();
+      await client.post(
+        "/noti/create-ai-alerm",
+        {
+          symbol: selectedStock?.name,
+          prompt: inputText,
+        },
+        token,
+        mainServerAvailable
+      );
+
+      Toast.show({
+        type: "success",
+        text1: "Alarm set successfully",
+      });
+
+      setRefreash(!refreash);
+
+      // hideModal();
+      bottomSheetRef.current?.close();
+    } catch (error: any) {
+      console.log(error.response?.data);
+      Toast.show({
+        type: "error",
+        text1: error.response?.data?.detail,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handelDeleteAlerm = async () => {
     try {
       setLoading(true);
@@ -1487,7 +1528,9 @@ const StockListScreen = () => {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      handelSetAiAlerm();
+                    }}
                     // disabled={}
                     style={{ opacity: 0.5 }}
                   >

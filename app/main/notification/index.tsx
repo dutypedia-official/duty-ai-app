@@ -87,9 +87,6 @@ const Noti = () => {
             {isBn ? "নোটিফিকেশান নেই" : "No notifications"}
           </Text>
         </View>
-        <Pressable onPress={() => fetchData()}>
-          <Text>jhgjh</Text>
-        </Pressable>
       </View>
     );
   }
@@ -117,7 +114,7 @@ const NotiItem = ({ item }: any) => {
 
   return (
     <TouchableOpacity
-      activeOpacity={item.type == "analysis" ? 0.7 : 1}
+      activeOpacity={item.type == "analysis" || item.type == "AI" ? 0.7 : 1}
       onPress={() => {
         if (item.type == "analysis") {
           router.push(`/main/notification/details/${item.entityId}`);
@@ -207,7 +204,7 @@ const NotiItem = ({ item }: any) => {
                 fontWeight: "normal",
               }}
             >
-              {item.message}
+              {item.title || item.message}
             </Text>
             <View
               style={{
@@ -215,7 +212,9 @@ const NotiItem = ({ item }: any) => {
                 paddingTop: 8,
                 flexDirection: "row",
                 justifyContent:
-                  item?.type === "analysis" ? "space-between" : "flex-end",
+                  item?.type === "analysis" || item?.type === "AI"
+                    ? "space-between"
+                    : "flex-end",
                 alignItems: "center",
                 flexShrink: 1,
               }}
@@ -229,10 +228,10 @@ const NotiItem = ({ item }: any) => {
               >
                 {formatDate(item.createdAt, "dd/MM/yyy p")}
               </Text>
-              {item?.type === "analysis" && (
+              {(item?.type === "analysis" || item?.type === "AI") && (
                 <TouchableOpacity
                   onPress={() => {
-                    if (item.type == "analysis") {
+                    if (item.type == "analysis" || item.type == "AI") {
                       router.push(
                         `/main/notification/details/${item.entityId}`
                       );
