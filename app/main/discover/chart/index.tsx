@@ -110,7 +110,6 @@ export const StockListItem = ({
   onFavList = false,
   trading,
   sheetRef,
-  currentAlarm,
   targetPrice,
   setCompanyName,
 }: any) => {
@@ -146,10 +145,11 @@ export const StockListItem = ({
   const { getToken } = useAuth();
   const client = apiClient();
   const isFav = favs?.find((fav: any) => fav.symbol === name);
-  // const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
+  const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
   // const [targetPrice, setTargetPrice] = useState(
   //   currentAlarm ? `${currentAlarm.price}` : ""
   // );
+
   const { setStockName } = useStockData();
   const [isFavorite, setIsFavorite] = useState(
     onFavList ? true : isFav ? true : false
@@ -745,6 +745,8 @@ const StockListScreen = () => {
         {},
         mainServerAvailable
       );
+      console.log(data, "--alermsssss");
+
       setAlerms(data);
     } catch (error) {
       console.log(error);
@@ -888,6 +890,38 @@ const StockListScreen = () => {
       bottomSheetRef.current?.close();
     } catch (error) {
       console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Error deleting alarm",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handelDeleteAiAlerm = async () => {
+    try {
+      setLoading(true);
+      const token = await getToken();
+      await client.delete(
+        `/noti/delete-ai-alerm/${selectedStock.name}`,
+        token,
+        {},
+        mainServerAvailable
+      );
+      Toast.show({
+        type: "success",
+        text1: "Alarm deleted successfully",
+      });
+      setRefreash(!refreash);
+      setRefreashFav(!refreashFav);
+      // hideModal();
+      bottomSheetRef.current?.close();
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Error deleting alarm",
+      });
     } finally {
       setLoading(false);
     }
@@ -1087,7 +1121,6 @@ const StockListScreen = () => {
             favs={favorites}
             trading={item.trade}
             sheetRef={bottomSheetRef}
-            currentAlarm={currentAlarm}
             targetPrice={targetPrice}
             setCompanyName={setCompanyName}
           />
@@ -1481,7 +1514,7 @@ const StockListScreen = () => {
                   {currentAlarm && (
                     <TouchableOpacity
                       onPress={() => {
-                        // setDeleteAlarm(true);
+                        handelDeleteAlerm();
                       }}
                     >
                       <LinearGradient
@@ -1557,7 +1590,11 @@ const StockListScreen = () => {
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handelDeleteAiAlerm();
+                    }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
