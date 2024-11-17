@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
@@ -19,23 +19,26 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoginLogo from "@/components/svgs/login-logo";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
 
 const schema = z
   .object({
-    name: z
-      .string()
-      .min(4, { message: "min 4 max 20 cherecters" })
-      .max(20, { message: "min 4 max 20 cherecters" })
-      .regex(/^[A-Za-z]+$/),
     password: z
       .string()
       .min(8, { message: "Password must be between 8 and 20 characters long." })
       .max(20, {
         message: "Password must be between 8 and 20 characters long.",
-      }),
-    retypePassword: z.string({ message: "Password confirmation is required." }),
+      })
+      .refine(
+        (value) =>
+          /^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/.test(value),
+        {
+          message:
+            "Password can only contain letters, numbers, and special characters.",
+        }
+      ),
+    retypePassword: z.string({ message: "Passwords do not match." }),
   })
   .refine((data) => data.password === data.retypePassword, {
     message: "Passwords do not match.",
@@ -44,25 +47,100 @@ const schema = z
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showPass, setShowPass] = React.useState(false);
+  const [showRePass, setShowRePass] = React.useState(false);
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
+  const [name, setName] = React.useState("");
+  const [isFocused, setIsFocused] = React.useState(false);
+  const [error, setError] = React.useState<any>(null);
+
+  useEffect(() => {
+    const specialCharacters = [
+      "!",
+      '"',
+      "#",
+      "$",
+      "%",
+      "&",
+      "'",
+      "(",
+      ")",
+      "*",
+      "+",
+      ",",
+      "-",
+      ".",
+      "/",
+      ":",
+      ";",
+      "<",
+      "=",
+      ">",
+      "?",
+      "@",
+      "[",
+      "\\",
+      "]",
+      "^",
+      "_",
+      "`",
+      "{",
+      "|",
+      "}",
+      "~",
+      `“`,
+      "'",
+    ];
+
+    const containsSpecialCharacter = specialCharacters.some((char) =>
+      name.includes(char)
+    );
+
+    if (containsSpecialCharacter) {
+      setError("Use only letters and numbers.");
+    } else if (name.length < 4) {
+      setError("Min 4 max 20 characters also");
+    } else if (name.length > 20) {
+      setError("Min 4 max 20 characters also");
+    } else {
+      setError(null);
+    }
+  }, [name]);
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    setError(null);
+  };
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: "",
       password: "",
       retypePassword: "",
     },
   });
 
+  const values = watch();
+  const isFormValid = Object.values(values).every((val) => val.trim() !== "");
+
   const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
+    if (error === null) {
+      if (data) {
+        console.log("Form submitted:", "name", name, "Password", data.password);
+        // router.push("/main/discover/chat");
+      }
+    }
   };
 
   return (
@@ -220,90 +298,104 @@ export default function LoginForm() {
                 </Text>
               </View>
               <View style={{ gap: 12 }}>
-                <Controller
+                <View style={{ backgroundColor: "transparent" }}>
+                  <Text
+                    style={{ color: "#FFFFFF", fontSize: 16, marginBottom: 8 }}>
+                    Your Name
+                  </Text>
+
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { paddingRight: 12 },
+                      isFocused && styles.focusedInput,
+                    ]}
+                    placeholder={"Enter your name"}
+                    placeholderTextColor="#BDC3C7"
+                    onBlur={handleBlur}
+                    onFocus={handleFocus}
+                    onChangeText={setName}
+                    value={name}
+                  />
+
+                  {error && <Text style={styles.errorText}>{error}</Text>}
+                </View>
+                {/* <FormInput
                   control={control}
                   name={"name"}
-                  render={({
-                    field: { onChange, onBlur, value },
-                    fieldState: { error },
-                  }) => {
-                    return (
-                      <View style={styles.container}>
-                        <Text
-                          style={{
-                            color: "#FFFFFF",
-                            fontSize: 16,
-                            marginBottom: 8,
-                          }}>
-                          Your Name
-                        </Text>
-
-                        <TextInput
-                          style={[
-                            styles.input,
-                            error ? styles.errorInput : null,
-                          ]}
-                          placeholder={"Enter your name"}
-                          placeholderTextColor="#BDC3C7" // Added placeholder text color
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                          value={value}
-                        />
-
-                        {error && (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                            }}>
-                            {error?.type === "invalid_string" ? (
-                              <Text style={styles.errorText}>
-                                Use only letters
-                              </Text>
-                            ) : (
-                              <Text></Text>
-                            )}
-
-                            {error?.message === "min 4 max 20 cherecters" ? (
-                              <Text style={styles.errorText}>
-                                min 4 max 20 cherecters
-                              </Text>
-                            ) : (
-                              <Text></Text>
-                            )}
-                          </View>
-                        )}
-                      </View>
-                    );
+                  label="Your Name"
+                  placeholder={"Enter your name"}
+                  rules={{
+                    required: "Name is required",
+                    pattern: {
+                      value: /^[A-Za-z0-9 ]+$/, // Regex to allow only letters, numbers, and spaces
+                      message:
+                        "Name can only contain letters, numbers, and spaces",
+                    },
                   }}
-                />
+                /> */}
 
                 <FormInput
                   control={control}
                   name="password"
                   label="Password"
                   placeholder="Password"
-                  secureTextEntry
+                  secureTextEntry={!showPass}
+                  type={"password"}
+                  icon={
+                    <TouchableOpacity
+                      onPress={() => setShowPass(!showPass)}
+                      style={{
+                        position: "absolute",
+                        right: 10,
+                        top: 40,
+                        zIndex: 10,
+                      }}>
+                      <Ionicons
+                        name={!showPass ? "eye" : "eye-off"}
+                        size={24}
+                        color="#BDC3C7"
+                      />
+                    </TouchableOpacity>
+                  }
                 />
                 <FormInput
                   control={control}
                   name="retypePassword"
                   label="Retype"
                   placeholder="Retype"
-                  secureTextEntry
+                  secureTextEntry={!showRePass}
+                  icon={
+                    <TouchableOpacity
+                      onPress={() => setShowRePass(!showRePass)}
+                      style={{
+                        position: "absolute",
+                        right: 10,
+                        top: 40,
+                        zIndex: 10,
+                      }}>
+                      <Ionicons
+                        name={!showRePass ? "eye" : "eye-off"}
+                        size={24}
+                        color="#BDC3C7"
+                      />
+                    </TouchableOpacity>
+                  }
                 />
               </View>
             </View>
 
             <View style={{}}>
               <TouchableOpacity
-                disabled={!isValid}
+                disabled={!isFormValid}
                 onPress={handleSubmit(onSubmit)}>
                 <LinearGradient
                   colors={
-                    !isValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
+                    !isFormValid
+                      ? ["#4F5A5F", "#3A3D3F"]
+                      : ["#8E44AD", "#4E73DF"]
                   }
-                  {...(isValid && {
+                  {...(isFormValid && {
                     start: { x: 0, y: 0 },
                     end: { x: 1, y: 1 },
                   })}
@@ -329,7 +421,7 @@ export default function LoginForm() {
                         fontWeight: "bold",
                         fontSize: 20,
                         textAlign: "center",
-                        opacity: isValid ? 1 : 0.5,
+                        opacity: isFormValid ? 1 : 0.5,
                       }}>
                       {isLoading && (
                         <ActivityIndicator
@@ -348,7 +440,10 @@ export default function LoginForm() {
                       <Ionicons
                         name="chevron-forward"
                         size={24}
-                        style={{ color: "#FFFFFF", opacity: isValid ? 1 : 0.5 }}
+                        style={{
+                          color: "#FFFFFF",
+                          opacity: isFormValid ? 1 : 0.5,
+                        }}
                       />
                     </View>
                   </View>
@@ -369,7 +464,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     color: "#ffffff",
     borderWidth: 1,
-    paddingHorizontal: 12,
+    paddingLeft: 12,
     paddingVertical: 16,
     fontSize: 16,
     borderColor: "#4F5A5F",
@@ -380,5 +475,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#EC2700",
     marginTop: 8,
+  },
+  focusedInput: {
+    borderColor: "#4E73DF",
   },
 });

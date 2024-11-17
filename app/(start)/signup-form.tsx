@@ -37,6 +37,7 @@ export default function Forgot() {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -44,8 +45,14 @@ export default function Forgot() {
     },
   });
 
+  const values = watch();
+  const isFormValid = Object.values(values).every((val) => val.trim() !== "");
+
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
+    if (data) {
+      router.push("/verify-email");
+    }
   };
 
   return (
@@ -181,16 +188,15 @@ export default function Forgot() {
 
             <View style={{}}>
               <TouchableOpacity
-                disabled={!isValid}
-                onPress={() => {
-                  handleSubmit(onSubmit);
-                  router.push("/verify-email");
-                }}>
+                disabled={!isFormValid}
+                onPress={handleSubmit(onSubmit)}>
                 <LinearGradient
                   colors={
-                    !isValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
+                    !isFormValid
+                      ? ["#4F5A5F", "#3A3D3F"]
+                      : ["#8E44AD", "#4E73DF"]
                   }
-                  {...(isValid && {
+                  {...(isFormValid && {
                     start: { x: 0, y: 0 },
                     end: { x: 1, y: 1 },
                   })}
@@ -216,7 +222,7 @@ export default function Forgot() {
                         fontWeight: "bold",
                         fontSize: 20,
                         textAlign: "center",
-                        opacity: isValid ? 1 : 0.5,
+                        opacity: isFormValid ? 1 : 0.5,
                       }}>
                       {isLoading && (
                         <ActivityIndicator
@@ -235,7 +241,10 @@ export default function Forgot() {
                       <Ionicons
                         name="chevron-forward"
                         size={24}
-                        style={{ color: "#FFFFFF", opacity: isValid ? 1 : 0.5 }}
+                        style={{
+                          color: "#FFFFFF",
+                          opacity: isFormValid ? 1 : 0.5,
+                        }}
                       />
                     </View>
                   </View>

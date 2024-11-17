@@ -48,7 +48,7 @@ const schema = z.object({
     message: "Please enter a valid email address.",
   }),
   password: z
-    .string()
+    .string({ message: "Invalid password" })
     .min(8, { message: "Password must be between 8 and 20 characters long." })
     .max(20, {
       message: "Password must be between 8 and 20 characters long.",
@@ -57,6 +57,7 @@ const schema = z.object({
 
 export default function UserLoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const insets = useSafeAreaInsets();
   useWarmUpBrowser();
   const router = useRouter();
@@ -79,6 +80,7 @@ export default function UserLoginScreen() {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -87,8 +89,14 @@ export default function UserLoginScreen() {
     },
   });
 
+  const values = watch();
+  const isFormValid = Object.values(values).every((val) => val.trim() !== "");
+
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
+    if (data) {
+      router.push("/main/discover/chat");
+    }
   };
 
   const injectedJavaScript = `
@@ -241,6 +249,9 @@ export default function UserLoginScreen() {
                         <TextInput
                           style={[
                             styles.input,
+                            {
+                              paddingRight: 40,
+                            },
                             error ? styles.errorInput : null,
                             isFocused ? styles.focusedInput : null,
                           ]}
@@ -253,7 +264,22 @@ export default function UserLoginScreen() {
                           onFocus={() => setIsFocused(true)}
                           onChangeText={onChange}
                           value={value}
+                          secureTextEntry={!showPass}
                         />
+                        <TouchableOpacity
+                          onPress={() => setShowPass(!showPass)}
+                          style={{
+                            position: "absolute",
+                            right: 10,
+                            top: 15,
+                            zIndex: 10,
+                          }}>
+                          <Ionicons
+                            name={!showPass ? "eye" : "eye-off"}
+                            size={24}
+                            color="#BDC3C7"
+                          />
+                        </TouchableOpacity>
 
                         {/* {error && ( */}
                         <View
@@ -265,7 +291,7 @@ export default function UserLoginScreen() {
                           }}>
                           {error?.message ? (
                             <Text style={styles.errorText}>
-                              Invalid email or password
+                              {error?.message}
                             </Text>
                           ) : (
                             <Text></Text>
@@ -291,14 +317,15 @@ export default function UserLoginScreen() {
                   style={{
                     backgroundColor: "transparent",
                   }}
-                  disabled={!isValid}
+                  disabled={!isFormValid}
                   onPress={() => {
-                    handleSubmit(onSubmit);
-                    router.push("/verify-email");
+                    handleSubmit(onSubmit)();
                   }}>
                   <LinearGradient
                     colors={
-                      !isValid ? ["#BDC3C7", "#AAB2B8"] : ["#8E44AD", "#4E73DF"]
+                      !isFormValid
+                        ? ["#BDC3C7", "#AAB2B8"]
+                        : ["#8E44AD", "#4E73DF"]
                     }
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -325,7 +352,7 @@ export default function UserLoginScreen() {
                           fontWeight: "bold",
                           fontSize: 20,
                           textAlign: "center",
-                          opacity: isValid ? 1 : 0.5,
+                          opacity: isFormValid ? 1 : 0.5,
                         }}>
                         {isLoading && (
                           <ActivityIndicator
@@ -347,7 +374,7 @@ export default function UserLoginScreen() {
                           size={24}
                           style={{
                             color: "#FFFFFF",
-                            opacity: isValid ? 1 : 0.5,
+                            opacity: isFormValid ? 1 : 0.5,
                           }}
                         />
                       </View>
@@ -516,7 +543,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#EC2700",
-    marginTop: 8,
+    flex: 1,
   },
   focusedInput: {
     borderColor: "#4E73DF",

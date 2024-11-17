@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import React, { ReactNode, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Controller } from "react-hook-form";
 
 const FormInput = ({
@@ -11,6 +17,8 @@ const FormInput = ({
   rules = {},
   secureTextEntry = false,
   inputMode = "text",
+  icon,
+  type,
 }: {
   control: any;
   name: string;
@@ -20,17 +28,11 @@ const FormInput = ({
   rules?: object;
   secureTextEntry?: boolean;
   inputMode?: "email" | "none" | "numeric" | "search" | "tel" | "text" | "url";
+  icon?: ReactNode;
+  type?: string;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const handleChangeText =
-    (onChange: (value: string) => void) => (text: string) => {
-      // Filter out non-English characters (Bangla, etc.)
-      const filteredText = text.replace(
-        /[^a-zA-Z0-9\s\.,!?@#$%^&*()_+=-]/g,
-        ""
-      );
-      onChange(filteredText);
-    };
+
   return (
     <Controller
       control={control}
@@ -54,6 +56,7 @@ const FormInput = ({
           <TextInput
             style={[
               styles.input,
+              { paddingRight: icon ? 44 : 12 },
               error ? styles.errorInput : null,
               isFocused ? styles.focusedInput : null,
             ]}
@@ -66,10 +69,13 @@ const FormInput = ({
               setIsFocused(false);
             }}
             onFocus={() => setIsFocused(true)}
-            onChangeText={handleChangeText(onChange)}
+            onChangeText={onChange}
             value={value}
             inputMode={inputMode}
           />
+
+          {icon && icon}
+
           {error && <Text style={styles.errorText}>{error.message}</Text>}
         </View>
       )}
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     color: "#ffffff",
     borderWidth: 1,
-    paddingHorizontal: 12,
+    paddingLeft: 12,
     paddingVertical: 16,
     fontSize: 16,
     borderColor: "#4F5A5F",

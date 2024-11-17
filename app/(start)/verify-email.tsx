@@ -22,7 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 const schema = z.object({
-  otp: z.string().min(4),
+  otp: z
+    .string()
+    .min(4, {
+      message: "OTP must be 4 digits",
+    })
+    .regex(/^\d{4}$/, { message: "OTP must be 4 digits" }),
 });
 
 export default function VerifyEmail() {
@@ -31,7 +36,7 @@ export default function VerifyEmail() {
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
   const [invalidCode, setInvalidCode] = React.useState(false);
-  const _3M = 180;
+  const _3M = 179;
   const [timeLeft, setTimeLeft] = React.useState(_3M);
   const [isCounting, setIsCounting] = React.useState(false);
 
@@ -39,6 +44,7 @@ export default function VerifyEmail() {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -46,8 +52,14 @@ export default function VerifyEmail() {
     },
   });
 
+  const values = watch();
+  const isFormValid = Object.values(values).every((val) => val.trim() !== "");
+
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
+    if (data) {
+      router.push("/login-form");
+    }
   };
 
   React.useEffect(() => {
@@ -258,15 +270,15 @@ export default function VerifyEmail() {
 
             <View>
               <TouchableOpacity
-                disabled={!isValid}
-                onPress={() => {
-                  router.push("/login-form");
-                }}>
+                disabled={!isFormValid}
+                onPress={handleSubmit(onSubmit)}>
                 <LinearGradient
                   colors={
-                    !isValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
+                    !isFormValid
+                      ? ["#4F5A5F", "#3A3D3F"]
+                      : ["#8E44AD", "#4E73DF"]
                   }
-                  {...(isValid && {
+                  {...(isFormValid && {
                     start: { x: 0, y: 0 },
                     end: { x: 1, y: 1 },
                   })}
@@ -292,7 +304,7 @@ export default function VerifyEmail() {
                         fontWeight: "bold",
                         fontSize: 20,
                         textAlign: "center",
-                        opacity: isValid ? 1 : 0.5,
+                        opacity: isFormValid ? 1 : 0.5,
                       }}>
                       {isLoading && (
                         <ActivityIndicator
@@ -313,7 +325,7 @@ export default function VerifyEmail() {
                         size={24}
                         style={{
                           color: "#FFFFFF",
-                          opacity: isValid ? 1 : 0.5,
+                          opacity: isFormValid ? 1 : 0.5,
                         }}
                       />
                     </View>
