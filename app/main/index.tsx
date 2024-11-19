@@ -1,6 +1,3 @@
-import ChatFree from "@/components/chat/ChatFree";
-import ChatPro from "@/components/chat/ChatPro";
-import CustomChat from "@/components/chat/CustomChat";
 import ChatTurbo from "@/components/chat/turbo/ChatTurbo";
 import useChat from "@/lib/hooks/useChat";
 import { useIsFocused } from "@react-navigation/native";

@@ -105,6 +105,7 @@ export const StockListItem = ({
   logoUrl,
   volume,
   alerms,
+  aiAlerms,
   changePer,
   favs,
   onFavList = false,
@@ -146,6 +147,7 @@ export const StockListItem = ({
   const client = apiClient();
   const isFav = favs?.find((fav: any) => fav.symbol === name);
   const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
+  const currentAiAlerm = aiAlerms?.find((alerm: any) => alerm.symbol === name);
   // const [targetPrice, setTargetPrice] = useState(
   //   currentAlarm ? `${currentAlarm.price}` : ""
   // );
@@ -625,7 +627,7 @@ export const StockListItem = ({
               }}
             >
               <Text style={{ color: "white" }}>
-                {currentAlarm ? (
+                {currentAlarm || currentAiAlerm ? (
                   <MaterialIcons
                     color="#CE1300"
                     name="edit-notifications"
@@ -642,7 +644,7 @@ export const StockListItem = ({
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
               >
-                {currentAlarm ? "Edit Alerm" : "Set Alarm"}
+                {currentAlarm || currentAiAlerm ? "Edit Alerm" : "Set Alarm"}
               </Text>
             </TouchableOpacity>
 
@@ -711,6 +713,7 @@ const StockListScreen = () => {
 
   const [activeFilter, setActiveFilter] = useState("topGainer");
   const [alerms, setAlerms] = useState([]);
+  const [aiAlerms, setAiAlerms] = useState([]);
   const [activeTab, setActiveTab] = useState("priceAlarm");
   const [inputText, setInputText] = useState("");
 
@@ -745,9 +748,9 @@ const StockListScreen = () => {
         {},
         mainServerAvailable
       );
-      console.log(data, "--alermsssss");
 
-      setAlerms(data);
+      setAlerms(data?.alerms);
+      setAiAlerms(data?.aiAlerms);
     } catch (error) {
       console.log(error);
     } finally {
@@ -960,8 +963,6 @@ const StockListScreen = () => {
     currentAlarm ? `${currentAlarm?.price}` : ""
   );
 
-  console.log("currentAlarm", currentAlarm, "targetPrice", targetPrice);
-
   // Reference for the bottom sheet
   const bottomSheetRef = useRef<any>(null);
 
@@ -1118,6 +1119,7 @@ const StockListScreen = () => {
             volume={item.volume}
             value={item.value}
             alerms={alerms}
+            aiAlerms={aiAlerms}
             favs={favorites}
             trading={item.trade}
             sheetRef={bottomSheetRef}
