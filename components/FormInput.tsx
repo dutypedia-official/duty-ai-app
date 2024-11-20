@@ -53,28 +53,34 @@ const FormInput = ({
               {label}
             </Text>
           )}
-          <TextInput
-            style={[
-              styles.input,
-              { paddingRight: icon ? 44 : 12 },
-              error ? styles.errorInput : null,
-              isFocused ? styles.focusedInput : null,
-            ]}
-            placeholder={placeholder}
-            placeholderTextColor="#BDC3C7" // Added placeholder text color
-            keyboardType={keyboardType}
-            secureTextEntry={secureTextEntry}
-            onBlur={() => {
-              onBlur();
-              setIsFocused(false);
-            }}
-            onFocus={() => setIsFocused(true)}
-            onChangeText={onChange}
-            value={value}
-            inputMode={inputMode}
-          />
+          <View
+            style={{
+              position: "relative",
+              backgroundColor: "transparent",
+            }}>
+            <TextInput
+              style={[
+                styles.input,
+                { paddingRight: icon ? 44 : 12 },
+                error ? styles.errorInput : null,
+                isFocused ? styles.focusedInput : null,
+              ]}
+              placeholder={placeholder}
+              placeholderTextColor="#BDC3C7" // Added placeholder text color
+              keyboardType={keyboardType}
+              secureTextEntry={secureTextEntry}
+              onBlur={() => {
+                onBlur();
+                setIsFocused(false);
+              }}
+              onFocus={() => setIsFocused(true)}
+              onChangeText={onChange}
+              value={value}
+              inputMode={inputMode}
+            />
 
-          {icon && icon}
+            {icon && icon}
+          </View>
 
           {error && <Text style={styles.errorText}>{error.message}</Text>}
         </View>

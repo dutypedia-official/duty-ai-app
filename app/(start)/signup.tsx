@@ -360,7 +360,11 @@ export default function Signup() {
                 </Link>
               </Button>
             </View>
-            <View style={{ backgroundColor: "transparent" }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                paddingBottom: insets.bottom + 32,
+              }}>
               <View
                 style={{
                   backgroundColor: "transparent",

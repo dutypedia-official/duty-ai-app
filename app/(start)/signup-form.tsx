@@ -355,8 +355,9 @@ export default function Forgot() {
                     onPress={() => setShowPass(!showPass)}
                     style={{
                       position: "absolute",
-                      right: 10,
-                      top: 40,
+                      right: 15, // Padding from the right
+                      top: "50%", // Center vertically
+                      transform: [{ translateY: -12 }], // Adjust for icon size
                       zIndex: 10,
                     }}>
                     <Ionicons
@@ -378,8 +379,9 @@ export default function Forgot() {
                     onPress={() => setShowRePass(!showRePass)}
                     style={{
                       position: "absolute",
-                      right: 10,
-                      top: 40,
+                      right: 15, // Padding from the right
+                      top: "50%", // Center vertically
+                      transform: [{ translateY: -12 }], // Adjust for icon size
                       zIndex: 10,
                     }}>
                     <Ionicons
