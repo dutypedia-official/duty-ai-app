@@ -58,7 +58,7 @@ export default function VerifyEmail() {
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
     if (data) {
-      router.push("/login-form");
+      router.push("/main/");
     }
   };
 
@@ -268,7 +268,7 @@ export default function VerifyEmail() {
               </View>
             </View>
 
-            <View>
+            <View style={{ paddingBottom: insets.bottom + 32 }}>
               <TouchableOpacity
                 disabled={!isFormValid}
                 onPress={handleSubmit(onSubmit)}>
