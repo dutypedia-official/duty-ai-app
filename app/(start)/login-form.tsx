@@ -21,6 +21,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
+import { useSignIn } from "@clerk/clerk-expo";
 
 const schema = z
   .object({
@@ -55,6 +56,7 @@ export default function LoginForm() {
   const [name, setName] = React.useState("");
   const [isFocused, setIsFocused] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
+  const { signIn, isLoaded } = useSignIn();
 
   useEffect(() => {
     const specialCharacters = [
@@ -162,7 +164,8 @@ export default function LoginForm() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
           <StatusBar style="light" />
 
@@ -182,7 +185,8 @@ export default function LoginForm() {
               backgroundColor: "transparent",
               marginLeft: 20,
               paddingVertical: 10,
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 router.back();
@@ -191,7 +195,8 @@ export default function LoginForm() {
                 {
                   // position: "absolute",
                 }
-              }>
+              }
+            >
               <LinearGradient
                 colors={["#6A4E9D", "#8E44AD"]}
                 start={{ x: 0, y: 0 }}
@@ -208,7 +213,8 @@ export default function LoginForm() {
                   elevation: 5,
                   width: 36,
                   height: 36,
-                }}>
+                }}
+              >
                 <Text>
                   <Ionicons
                     name="chevron-back"
@@ -228,7 +234,8 @@ export default function LoginForm() {
               bottom: "35%",
               left: "50%",
               transform: [{ translateX: -50 }],
-            }}>
+            }}
+          >
             <LoginLogo
               width={Dimensions.get("screen").width / 6.5}
               height={Dimensions.get("screen").width / 6.5}
@@ -241,18 +248,21 @@ export default function LoginForm() {
               paddingTop: 20,
               justifyContent: "space-between",
               flex: 1,
-            }}>
+            }}
+          >
             <View
               style={{
                 gap: 24,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 32,
                   fontWeight: "bold",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Name and password
               </Text>
               <View>
@@ -263,7 +273,8 @@ export default function LoginForm() {
                     fontWeight: "normal",
                     textAlign: "left",
                     lineHeight: 24,
-                  }}>
+                  }}
+                >
                   Use alphabetic characters only. Name should be{" "}
                   <Text
                     style={{
@@ -271,7 +282,8 @@ export default function LoginForm() {
                       fontSize: 14,
                       fontWeight: "bold",
                       textAlign: "left",
-                    }}>
+                    }}
+                  >
                     {" "}
                     4-20 characters.
                   </Text>
@@ -283,7 +295,8 @@ export default function LoginForm() {
                     fontWeight: "normal",
                     textAlign: "left",
                     lineHeight: 24,
-                  }}>
+                  }}
+                >
                   Please create a strong password between&nbsp;
                   <Text
                     style={{
@@ -291,7 +304,8 @@ export default function LoginForm() {
                       fontSize: 14,
                       fontWeight: "bold",
                       textAlign: "left",
-                    }}>
+                    }}
+                  >
                     8 and 20 characters&nbsp;
                   </Text>
                   to ensure the security of your account.
@@ -300,7 +314,8 @@ export default function LoginForm() {
               <View style={{ gap: 12 }}>
                 <View style={{ backgroundColor: "transparent" }}>
                   <Text
-                    style={{ color: "#FFFFFF", fontSize: 16, marginBottom: 8 }}>
+                    style={{ color: "#FFFFFF", fontSize: 16, marginBottom: 8 }}
+                  >
                     Your Name
                   </Text>
 
@@ -350,7 +365,8 @@ export default function LoginForm() {
                         right: 10,
                         top: 40,
                         zIndex: 10,
-                      }}>
+                      }}
+                    >
                       <Ionicons
                         name={!showPass ? "eye" : "eye-off"}
                         size={24}
@@ -373,7 +389,8 @@ export default function LoginForm() {
                         right: 10,
                         top: 40,
                         zIndex: 10,
-                      }}>
+                      }}
+                    >
                       <Ionicons
                         name={!showRePass ? "eye" : "eye-off"}
                         size={24}
@@ -388,7 +405,8 @@ export default function LoginForm() {
             <View style={{}}>
               <TouchableOpacity
                 disabled={!isFormValid}
-                onPress={handleSubmit(onSubmit)}>
+                onPress={handleSubmit(onSubmit)}
+              >
                 <LinearGradient
                   colors={
                     !isFormValid
@@ -408,13 +426,15 @@ export default function LoginForm() {
                     shadowOpacity: 0.2,
                     shadowRadius: 8,
                     elevation: 3,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
                       position: "relative",
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         color: "#FFFFFF",
@@ -422,7 +442,8 @@ export default function LoginForm() {
                         fontSize: 20,
                         textAlign: "center",
                         opacity: isFormValid ? 1 : 0.5,
-                      }}>
+                      }}
+                    >
                       {isLoading && (
                         <ActivityIndicator
                           size="small"
@@ -436,7 +457,8 @@ export default function LoginForm() {
                       style={{
                         position: "absolute",
                         right: 0,
-                      }}>
+                      }}
+                    >
                       <Ionicons
                         name="chevron-forward"
                         size={24}

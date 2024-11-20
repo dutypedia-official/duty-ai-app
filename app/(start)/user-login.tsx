@@ -36,6 +36,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
+import { useSignIn } from "@clerk/clerk-expo";
+import Toast from "react-native-toast-message";
 
 enum Strategy {
   Google = "oauth_google",
@@ -57,6 +59,7 @@ const schema = z.object({
 
 export default function UserLoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
+  const { signIn, isLoaded } = useSignIn();
   const [showPass, setShowPass] = useState(false);
   const insets = useSafeAreaInsets();
   useWarmUpBrowser();
@@ -92,10 +95,25 @@ export default function UserLoginScreen() {
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log("Form submitted:", data);
     if (data) {
-      router.push("/main/discover/chat");
+      // router.push("/main/discover/chat");
+      if (!isLoaded) return;
+
+      try {
+        await signIn.create({
+          identifier: values.email,
+          password: values.password,
+        });
+        console.log("Logged in successfully!");
+      } catch (err) {
+        console.error(err);
+        Toast.show({
+          type: "error",
+          text1: "Login failed",
+        });
+      }
     }
   };
 
@@ -159,7 +177,8 @@ export default function UserLoginScreen() {
             backgroundColor: "transparent",
             marginLeft: 20,
             paddingVertical: 10,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               router.back();
@@ -168,7 +187,8 @@ export default function UserLoginScreen() {
               {
                 // position: "absolute",
               }
-            }>
+            }
+          >
             <LinearGradient
               colors={["#6A4E9D", "#8E44AD"]}
               start={{ x: 0, y: 0 }}
@@ -185,7 +205,8 @@ export default function UserLoginScreen() {
                 elevation: 5,
                 width: 36,
                 height: 36,
-              }}>
+              }}
+            >
               <Text>
                 <Ionicons
                   name="chevron-back"
@@ -208,26 +229,30 @@ export default function UserLoginScreen() {
             backgroundColor: "transparent",
             justifyContent: "space-between",
             paddingHorizontal: 20,
-          }}>
+          }}
+        >
           <View
             style={{
               backgroundColor: "transparent",
               flex: 1,
               justifyContent: "space-between",
-            }}>
+            }}
+          >
             <View
               style={{
                 backgroundColor: "transparent",
                 paddingTop: 40,
                 gap: 24,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: "bold",
                   fontSize: 30,
                   color: "#FFFFFF",
                   textAlign: "center",
-                }}>
+                }}
+              >
                 Login
               </Text>
               <View style={{ gap: 12, backgroundColor: "transparent" }}>
@@ -273,7 +298,8 @@ export default function UserLoginScreen() {
                             right: 10,
                             top: 15,
                             zIndex: 10,
-                          }}>
+                          }}
+                        >
                           <Ionicons
                             name={!showPass ? "eye" : "eye-off"}
                             size={24}
@@ -288,7 +314,8 @@ export default function UserLoginScreen() {
                             justifyContent: "space-between",
                             backgroundColor: "transparent",
                             marginTop: 10,
-                          }}>
+                          }}
+                        >
                           {error?.message ? (
                             <Text style={styles.errorText}>
                               {error?.message}
@@ -299,11 +326,13 @@ export default function UserLoginScreen() {
                           <TouchableOpacity
                             onPress={() => {
                               router.push("/forgot");
-                            }}>
+                            }}
+                          >
                             <Text
                               style={{
                                 color: "#F0F2F5",
-                              }}>
+                              }}
+                            >
                               Forgot Password?
                             </Text>
                           </TouchableOpacity>
@@ -320,7 +349,8 @@ export default function UserLoginScreen() {
                   disabled={!isFormValid}
                   onPress={() => {
                     handleSubmit(onSubmit)();
-                  }}>
+                  }}
+                >
                   <LinearGradient
                     colors={
                       !isFormValid
@@ -338,14 +368,16 @@ export default function UserLoginScreen() {
                       shadowOpacity: 0.2,
                       shadowRadius: 8,
                       elevation: 3,
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         flexDirection: "row",
                         justifyContent: "center",
                         position: "relative",
                         backgroundColor: "transparent",
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: "#FFFFFF",
@@ -353,7 +385,8 @@ export default function UserLoginScreen() {
                           fontSize: 20,
                           textAlign: "center",
                           opacity: isFormValid ? 1 : 0.5,
-                        }}>
+                        }}
+                      >
                         {isLoading && (
                           <ActivityIndicator
                             size="small"
@@ -368,7 +401,8 @@ export default function UserLoginScreen() {
                           position: "absolute",
                           right: 0,
                           backgroundColor: "transparent",
-                        }}>
+                        }}
+                      >
                         <Ionicons
                           name="chevron-forward"
                           size={24}
@@ -387,7 +421,8 @@ export default function UserLoginScreen() {
                     fontWeight: "600",
                     fontSize: 16,
                     color: "#FFFFFF",
-                  }}>
+                  }}
+                >
                   Don’t have an account?{" "}
                   <Link href="/signup" asChild>
                     <Text
@@ -395,7 +430,8 @@ export default function UserLoginScreen() {
                         color: "#2ECC71",
                         fontWeight: "bold",
                         fontSize: 16,
-                      }}>
+                      }}
+                    >
                       Sign up
                     </Text>
                   </Link>
@@ -408,13 +444,15 @@ export default function UserLoginScreen() {
                 alignItems: "center",
                 flex: 1,
                 backgroundColor: "transparent",
-              }}>
+              }}
+            >
               <View
                 style={{
                   width: "46%",
                   padding: 1,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <Text
                   numberOfLines={1}
                   style={{
@@ -422,7 +460,8 @@ export default function UserLoginScreen() {
                     fontSize: 14,
                     textAlign: "center",
                     marginTop: -5,
-                  }}>
+                  }}
+                >
                   .................................................................................
                 </Text>
               </View>
@@ -432,7 +471,8 @@ export default function UserLoginScreen() {
                     color: "#AAAAAA",
                     fontSize: 14,
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   Or
                 </Text>
               </View>
@@ -441,7 +481,8 @@ export default function UserLoginScreen() {
                   width: "46%",
                   padding: 1,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <Text
                   numberOfLines={1}
                   style={{
@@ -449,7 +490,8 @@ export default function UserLoginScreen() {
                     fontSize: 14,
                     textAlign: "center",
                     marginTop: -5,
-                  }}>
+                  }}
+                >
                   .................................................................................
                 </Text>
               </View>
@@ -459,15 +501,18 @@ export default function UserLoginScreen() {
             style={{
               backgroundColor: "transparent",
               gap: 24,
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => onSelectAuth(Strategy.Google)}
-              style={{ width: "100%" }}>
+              style={{ width: "100%" }}
+            >
               <LinearGradient
                 colors={["#34A853", "#4285F4"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={styles.btnOutline}>
+                style={styles.btnOutline}
+              >
                 <Image
                   style={{ height: 40, width: 40 }}
                   resizeMode="contain"
@@ -480,12 +525,14 @@ export default function UserLoginScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ width: "100%" }}
-              onPress={() => onSelectAuth(Strategy.Apple)}>
+              onPress={() => onSelectAuth(Strategy.Apple)}
+            >
               <LinearGradient
                 colors={["#000000", "#2E2E2E"]}
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 0.5, y: 1 }}
-                style={styles.btnOutline}>
+                style={styles.btnOutline}
+              >
                 <FontAwesome
                   style={{ paddingLeft: 20 }}
                   name="apple"
@@ -497,7 +544,8 @@ export default function UserLoginScreen() {
                     color: "#fff",
                     fontWeight: "700",
                     paddingLeft: 8,
-                  }}>
+                  }}
+                >
                   {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Login with Apple"}
                 </Text>
               </LinearGradient>

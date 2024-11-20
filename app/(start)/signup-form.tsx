@@ -20,6 +20,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/FormInput";
+import { useSignUp } from "@clerk/clerk-expo";
 
 const schema = z.object({
   email: z.string().email({
@@ -28,6 +29,7 @@ const schema = z.object({
 });
 
 export default function Forgot() {
+  const { isLoaded, signUp, setActive } = useSignUp();
   const [isLoading, setIsLoading] = React.useState(false);
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
@@ -48,10 +50,26 @@ export default function Forgot() {
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log("Form submitted:", data);
     if (data) {
-      router.push("/verify-email");
+      if (!isLoaded) {
+        return;
+      }
+
+      try {
+        await signUp.create({
+          emailAddress: data.email,
+          password: "12345678",
+        });
+
+        await signUp.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
+        router.push("/verify-email");
+      } catch (err: any) {
+        console.error(JSON.stringify(err, null, 2));
+      }
     }
   };
 
@@ -74,7 +92,8 @@ export default function Forgot() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
           <StatusBar style="light" />
 
@@ -94,7 +113,8 @@ export default function Forgot() {
               backgroundColor: "transparent",
               marginLeft: 20,
               paddingVertical: 10,
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 router.back();
@@ -103,7 +123,8 @@ export default function Forgot() {
                 {
                   // position: "absolute",
                 }
-              }>
+              }
+            >
               <LinearGradient
                 colors={["#6A4E9D", "#8E44AD"]}
                 start={{ x: 0, y: 0 }}
@@ -120,7 +141,8 @@ export default function Forgot() {
                   elevation: 5,
                   width: 36,
                   height: 36,
-                }}>
+                }}
+              >
                 <Text>
                   <Ionicons
                     name="chevron-back"
@@ -140,7 +162,8 @@ export default function Forgot() {
               bottom: "35%",
               left: "50%",
               transform: [{ translateX: -50 }],
-            }}>
+            }}
+          >
             <LoginLogo
               width={Dimensions.get("screen").width / 6.5}
               height={Dimensions.get("screen").width / 6.5}
@@ -153,18 +176,21 @@ export default function Forgot() {
               paddingTop: 20,
               justifyContent: "space-between",
               flex: 1,
-            }}>
+            }}
+          >
             <View
               style={{
                 gap: 24,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 32,
                   fontWeight: "bold",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Enter your email address
               </Text>
               <Text
@@ -173,7 +199,8 @@ export default function Forgot() {
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Your privacy is important to us. Rest assured, your email
                 address will only be used for verification purposes.
               </Text>
@@ -189,7 +216,8 @@ export default function Forgot() {
             <View style={{}}>
               <TouchableOpacity
                 disabled={!isFormValid}
-                onPress={handleSubmit(onSubmit)}>
+                onPress={handleSubmit(onSubmit)}
+              >
                 <LinearGradient
                   colors={
                     !isFormValid
@@ -209,13 +237,15 @@ export default function Forgot() {
                     shadowOpacity: 0.2,
                     shadowRadius: 8,
                     elevation: 3,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
                       position: "relative",
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         color: "#FFFFFF",
@@ -223,7 +253,8 @@ export default function Forgot() {
                         fontSize: 20,
                         textAlign: "center",
                         opacity: isFormValid ? 1 : 0.5,
-                      }}>
+                      }}
+                    >
                       {isLoading && (
                         <ActivityIndicator
                           size="small"
@@ -237,7 +268,8 @@ export default function Forgot() {
                       style={{
                         position: "absolute",
                         right: 0,
-                      }}>
+                      }}
+                    >
                       <Ionicons
                         name="chevron-forward"
                         size={24}
