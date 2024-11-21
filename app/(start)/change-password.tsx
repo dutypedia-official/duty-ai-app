@@ -64,6 +64,7 @@ export default function ChangePassword() {
   const _3M = 179;
   const [timeLeft, setTimeLeft] = useState(_3M);
   const [isCounting, setIsCounting] = useState(false);
+  const { signIn, isLoaded, setActive } = useSignIn();
 
   const {
     control,
@@ -103,6 +104,13 @@ export default function ChangePassword() {
 
   const handleStartCount = async () => {
     try {
+      if (!isLoaded) {
+        return;
+      }
+      await signIn.create({
+        strategy: "reset_password_email_code",
+        identifier: params?.email as string,
+      });
       setTimeLeft(_3M); // Reset to 3 minutes
       setIsCounting(true);
       Toast.show({
@@ -119,7 +127,27 @@ export default function ChangePassword() {
   };
 
   const onSubmit = async (data: any) => {
-    console.log("Form submitted:", data);
+    if (!isLoaded) {
+      return;
+    }
+    try {
+      const completeSignIn = await signIn?.attemptFirstFactor({
+        strategy: "reset_password_email_code",
+        code: data.otp,
+        password: data.password,
+      });
+
+      if (completeSignIn?.status === "complete") {
+        await setActive({ session: completeSignIn.createdSessionId });
+        router.push("/main/");
+      }
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+      Toast.show({
+        type: "error",
+        text1: err.errors[0]?.longMessage || "Invalid OTP",
+      });
+    }
   };
   return (
     <>
@@ -156,7 +184,8 @@ export default function ChangePassword() {
             backgroundColor: "transparent",
             marginLeft: 20,
             paddingVertical: 10,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               router.back();
@@ -165,7 +194,8 @@ export default function ChangePassword() {
               {
                 // position: "absolute",
               }
-            }>
+            }
+          >
             <LinearGradient
               colors={["#6A4E9D", "#8E44AD"]}
               start={{ x: 0, y: 0 }}
@@ -182,7 +212,8 @@ export default function ChangePassword() {
                 elevation: 5,
                 width: 36,
                 height: 36,
-              }}>
+              }}
+            >
               <Text>
                 <Ionicons
                   name="chevron-back"
@@ -202,7 +233,8 @@ export default function ChangePassword() {
             bottom: "35%",
             left: "50%",
             transform: [{ translateX: -50 }],
-          }}>
+          }}
+        >
           <LoginLogo
             width={Dimensions.get("screen").width / 6.5}
             height={Dimensions.get("screen").width / 6.5}
@@ -215,18 +247,21 @@ export default function ChangePassword() {
             paddingTop: 20,
             justifyContent: "space-between",
             flex: 1,
-          }}>
+          }}
+        >
           <View
             style={{
               gap: 24,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: "#FFFFFF",
                 fontSize: 32,
                 fontWeight: "bold",
                 textAlign: "left",
-              }}>
+              }}
+            >
               Change Password
             </Text>
 
@@ -237,7 +272,8 @@ export default function ChangePassword() {
                 fontWeight: "normal",
                 textAlign: "left",
                 lineHeight: 24,
-              }}>
+              }}
+            >
               A verification code has been sent to {"\n"}
               {params?.email}. Check your spam if you don't see it. {"\n"}
               Please create a strong password (8-20 characters).
@@ -245,11 +281,13 @@ export default function ChangePassword() {
 
             <View style={{ gap: 12 }}>
               <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+              >
                 <View
                   style={{
                     gap: 24,
-                  }}>
+                  }}
+                >
                   <View style={{ gap: 12 }}>
                     <FormInput
                       control={control}
@@ -264,7 +302,8 @@ export default function ChangePassword() {
                             color: "#EC2700",
                             fontWeight: "normal",
                             fontSize: 14,
-                          }}>
+                          }}
+                        >
                           The code you entered does not match.{" "}
                         </Text>
                       </View>
@@ -276,7 +315,8 @@ export default function ChangePassword() {
                           color: "#FFFFFF",
                           fontWeight: "normal",
                           fontSize: 14,
-                        }}>
+                        }}
+                      >
                         Wait {formatTime(timeLeft)} before requesting another
                         code
                       </Text>
@@ -284,14 +324,16 @@ export default function ChangePassword() {
                       <View
                         style={{
                           flexDirection: "row",
-                        }}>
+                        }}
+                      >
                         <View>
                           <Text
                             style={{
                               color: "#FFFFFF",
                               fontWeight: "normal",
                               fontSize: 14,
-                            }}>
+                            }}
+                          >
                             Did not receive it yet?{" "}
                           </Text>
                         </View>
@@ -301,7 +343,8 @@ export default function ChangePassword() {
                               color: "#EC2700",
                               fontWeight: "normal",
                               fontSize: 14,
-                            }}>
+                            }}
+                          >
                             Send again.
                           </Text>
                         </TouchableOpacity>
@@ -324,7 +367,8 @@ export default function ChangePassword() {
                           top: "50%", // Center vertically
                           transform: [{ translateY: -12 }], // Adjust for icon size
                           zIndex: 10,
-                        }}>
+                        }}
+                      >
                         <Ionicons
                           name={!showPass ? "eye" : "eye-off"}
                           size={24}
@@ -348,7 +392,8 @@ export default function ChangePassword() {
                           top: "50%", // Center vertically
                           transform: [{ translateY: -12 }], // Adjust for icon size
                           zIndex: 10,
-                        }}>
+                        }}
+                      >
                         <Ionicons
                           name={!showRePass ? "eye" : "eye-off"}
                           size={24}
@@ -365,10 +410,12 @@ export default function ChangePassword() {
           <View
             style={{
               paddingBottom: insets.bottom + 32,
-            }}>
+            }}
+          >
             <TouchableOpacity
               disabled={!isFormValid}
-              onPress={handleSubmit(onSubmit)}>
+              onPress={handleSubmit(onSubmit)}
+            >
               <LinearGradient
                 colors={
                   !isFormValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
@@ -386,13 +433,15 @@ export default function ChangePassword() {
                   shadowOpacity: 0.2,
                   shadowRadius: 8,
                   elevation: 3,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "center",
                     position: "relative",
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: "#FFFFFF",
@@ -400,7 +449,8 @@ export default function ChangePassword() {
                       fontSize: 20,
                       textAlign: "center",
                       opacity: isFormValid ? 1 : 0.5,
-                    }}>
+                    }}
+                  >
                     {isLoading && (
                       <ActivityIndicator
                         size="small"
@@ -414,7 +464,8 @@ export default function ChangePassword() {
                     style={{
                       position: "absolute",
                       right: 0,
-                    }}>
+                    }}
+                  >
                     <Ionicons
                       name="chevron-forward"
                       size={24}
