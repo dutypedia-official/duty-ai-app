@@ -69,7 +69,7 @@ export default function Forgot() {
         });
         router.push("/verify-email");
       } catch (err: any) {
-        console.error(err);
+        console.error(JSON.stringify(err, null, 2));
         Toast.show({
           type: "error",
           text1: err.errors[0]?.longMessage || "Failed to send OTP",
