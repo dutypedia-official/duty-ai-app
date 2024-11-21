@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/FormInput";
 import { useSignUp } from "@clerk/clerk-expo";
+import Toast from "react-native-toast-message";
 
 const schema = z
   .object({
@@ -156,7 +157,8 @@ export default function Forgot() {
       try {
         await signUp.create({
           emailAddress: data.email,
-          password: "12345678",
+          password: data.password,
+          firstName: name,
         });
 
         await signUp.prepareEmailAddressVerification({
@@ -165,6 +167,10 @@ export default function Forgot() {
         router.push("/verify-email");
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
+        Toast.show({
+          type: "error",
+          text1: err.errors[0].message,
+        });
       }
     }
   };
@@ -174,7 +180,8 @@ export default function Forgot() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{
         flex: 1,
-      }}>
+      }}
+    >
       <LinearGradient
         colors={["#4A148C", "#2A2B2A"]}
         start={{ x: 0, y: 0.5 }}
@@ -208,7 +215,8 @@ export default function Forgot() {
             backgroundColor: "transparent",
             marginLeft: 20,
             paddingVertical: 10,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               router.back();
@@ -217,7 +225,8 @@ export default function Forgot() {
               {
                 // position: "absolute",
               }
-            }>
+            }
+          >
             <LinearGradient
               colors={["#6A4E9D", "#8E44AD"]}
               start={{ x: 0, y: 0 }}
@@ -234,7 +243,8 @@ export default function Forgot() {
                 elevation: 5,
                 width: 36,
                 height: 36,
-              }}>
+              }}
+            >
               <Text>
                 <Ionicons
                   name="chevron-back"
@@ -254,7 +264,8 @@ export default function Forgot() {
             bottom: "35%",
             left: "50%",
             transform: [{ translateX: -50 }],
-          }}>
+          }}
+        >
           <LoginLogo
             width={Dimensions.get("screen").width / 6.5}
             height={Dimensions.get("screen").width / 6.5}
@@ -267,32 +278,37 @@ export default function Forgot() {
             paddingTop: 20,
             justifyContent: "space-between",
             flex: 1,
-          }}>
+          }}
+        >
           <View
             style={{
               gap: 24,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: "#FFFFFF",
                 fontSize: 32,
                 fontWeight: "bold",
                 textAlign: "left",
-              }}>
+              }}
+            >
               Please enter your email, name, and password
             </Text>
             <View
               style={{
                 backgroundColor: "transparent",
                 gap: 2,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: "#ECECEC",
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Email Privacy: Your email is used only for verification.
               </Text>
               <Text
@@ -301,7 +317,8 @@ export default function Forgot() {
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Name: Use 4-20 alphabetic characters.
               </Text>
               <Text
@@ -310,7 +327,8 @@ export default function Forgot() {
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
-                }}>
+                }}
+              >
                 Password: 8-20 characters for strong security.
               </Text>
             </View>
@@ -323,7 +341,8 @@ export default function Forgot() {
               />
               <View style={{ backgroundColor: "transparent" }}>
                 <Text
-                  style={{ color: "#FFFFFF", fontSize: 16, marginBottom: 8 }}>
+                  style={{ color: "#FFFFFF", fontSize: 16, marginBottom: 8 }}
+                >
                   Your Name
                 </Text>
 
@@ -359,7 +378,8 @@ export default function Forgot() {
                       top: "50%", // Center vertically
                       transform: [{ translateY: -12 }], // Adjust for icon size
                       zIndex: 10,
-                    }}>
+                    }}
+                  >
                     <Ionicons
                       name={!showPass ? "eye" : "eye-off"}
                       size={24}
@@ -383,7 +403,8 @@ export default function Forgot() {
                       top: "50%", // Center vertically
                       transform: [{ translateY: -12 }], // Adjust for icon size
                       zIndex: 10,
-                    }}>
+                    }}
+                  >
                     <Ionicons
                       name={!showRePass ? "eye" : "eye-off"}
                       size={24}
@@ -398,10 +419,12 @@ export default function Forgot() {
           <View
             style={{
               paddingBottom: insets.bottom + 32,
-            }}>
+            }}
+          >
             <TouchableOpacity
               disabled={!isFormValid}
-              onPress={handleSubmit(onSubmit)}>
+              onPress={handleSubmit(onSubmit)}
+            >
               <LinearGradient
                 colors={
                   !isFormValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
@@ -419,13 +442,15 @@ export default function Forgot() {
                   shadowOpacity: 0.2,
                   shadowRadius: 8,
                   elevation: 3,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "center",
                     position: "relative",
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: "#FFFFFF",
@@ -433,7 +458,8 @@ export default function Forgot() {
                       fontSize: 20,
                       textAlign: "center",
                       opacity: isFormValid ? 1 : 0.5,
-                    }}>
+                    }}
+                  >
                     {isLoading && (
                       <ActivityIndicator
                         size="small"
@@ -447,7 +473,8 @@ export default function Forgot() {
                     style={{
                       position: "absolute",
                       right: 0,
-                    }}>
+                    }}
+                  >
                     <Ionicons
                       name="chevron-forward"
                       size={24}
