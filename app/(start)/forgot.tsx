@@ -67,14 +67,14 @@ export default function Forgot() {
           type: "success",
           text1: "A password reset link has been sent to your email.",
         });
-      } catch (err) {
+        router.push("/verify-email");
+      } catch (err: any) {
         console.error(err);
         Toast.show({
           type: "error",
-          text1: "Login failed",
+          text1: err.errors[0]?.longMessage || "Failed to send OTP",
         });
       }
-      router.push("/verify-email");
     }
   };
 
