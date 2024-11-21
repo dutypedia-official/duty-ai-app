@@ -145,8 +145,7 @@ export default function VerifyEmail() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
           <StatusBar style="light" />
 
@@ -166,8 +165,7 @@ export default function VerifyEmail() {
               backgroundColor: "transparent",
               marginLeft: 20,
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <TouchableOpacity
               onPress={() => {
                 router.back();
@@ -176,8 +174,7 @@ export default function VerifyEmail() {
                 {
                   // position: "absolute",
                 }
-              }
-            >
+              }>
               <LinearGradient
                 colors={["#6A4E9D", "#8E44AD"]}
                 start={{ x: 0, y: 0 }}
@@ -194,8 +191,7 @@ export default function VerifyEmail() {
                   elevation: 5,
                   width: 36,
                   height: 36,
-                }}
-              >
+                }}>
                 <Text>
                   <Ionicons
                     name="chevron-back"
@@ -215,8 +211,7 @@ export default function VerifyEmail() {
               bottom: "35%",
               left: "50%",
               transform: [{ translateX: -50 }],
-            }}
-          >
+            }}>
             <LoginLogo
               width={Dimensions.get("screen").width / 6.5}
               height={Dimensions.get("screen").width / 6.5}
@@ -229,21 +224,18 @@ export default function VerifyEmail() {
               paddingTop: 20,
               justifyContent: "space-between",
               flex: 1,
-            }}
-          >
+            }}>
             <View
               style={{
                 gap: 24,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 32,
                   fontWeight: "bold",
                   textAlign: "left",
-                }}
-              >
+                }}>
                 Verify your email
               </Text>
               <Text
@@ -252,8 +244,7 @@ export default function VerifyEmail() {
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
-                }}
-              >
+                }}>
                 A verification code has been sent to easxxxxxx@gmail.com. Please
                 enter the code to proceed. If you don't see it in your inbox,
                 kindly check your spam or junk folder.
@@ -272,8 +263,7 @@ export default function VerifyEmail() {
                         color: "#EC2700",
                         fontWeight: "normal",
                         fontSize: 14,
-                      }}
-                    >
+                      }}>
                       The code you entered does not match.{" "}
                     </Text>
                   </View>
@@ -285,24 +275,21 @@ export default function VerifyEmail() {
                       color: "#FFFFFF",
                       fontWeight: "normal",
                       fontSize: 14,
-                    }}
-                  >
+                    }}>
                     Wait {formatTime(timeLeft)} before requesting another code
                   </Text>
                 ) : (
                   <View
                     style={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <View>
                       <Text
                         style={{
                           color: "#FFFFFF",
                           fontWeight: "normal",
                           fontSize: 14,
-                        }}
-                      >
+                        }}>
                         Did not receive it yet?{" "}
                       </Text>
                     </View>
@@ -312,8 +299,7 @@ export default function VerifyEmail() {
                           color: "#EC2700",
                           fontWeight: "normal",
                           fontSize: 14,
-                        }}
-                      >
+                        }}>
                         Send again.
                       </Text>
                     </TouchableOpacity>
@@ -325,8 +311,7 @@ export default function VerifyEmail() {
             <View style={{ paddingBottom: insets.bottom + 32 }}>
               <TouchableOpacity
                 disabled={!isFormValid}
-                onPress={handleSubmit(onSubmit)}
-              >
+                onPress={handleSubmit(onSubmit)}>
                 <LinearGradient
                   colors={
                     !isFormValid
@@ -346,15 +331,13 @@ export default function VerifyEmail() {
                     shadowOpacity: 0.2,
                     shadowRadius: 8,
                     elevation: 3,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
                       position: "relative",
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         color: "#FFFFFF",
@@ -362,8 +345,7 @@ export default function VerifyEmail() {
                         fontSize: 20,
                         textAlign: "center",
                         opacity: isFormValid ? 1 : 0.5,
-                      }}
-                    >
+                      }}>
                       {isLoading && (
                         <ActivityIndicator
                           size="small"
@@ -377,8 +359,7 @@ export default function VerifyEmail() {
                       style={{
                         position: "absolute",
                         right: 0,
-                      }}
-                    >
+                      }}>
                       <Ionicons
                         name="chevron-forward"
                         size={24}

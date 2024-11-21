@@ -54,6 +54,7 @@ export default function Forgot() {
 
   const onSubmit = async (data: any) => {
     console.log("Form submitted:", data);
+
     if (data) {
       if (!isLoaded) return;
 
@@ -67,14 +68,17 @@ export default function Forgot() {
           type: "success",
           text1: "A password reset link has been sent to your email.",
         });
-      } catch (err) {
+        router.push({
+          pathname: "/change-password",
+          params: { email: data.email },
+        });
+      } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
         Toast.show({
           type: "error",
-          text1: "Login failed",
+          text1: err.errors[0]?.longMessage || "Failed to send OTP",
         });
       }
-      router.push("/verify-email");
     }
   };
 
@@ -192,6 +196,7 @@ export default function Forgot() {
                 fontSize: 16,
                 fontWeight: "normal",
                 textAlign: "left",
+                lineHeight: 24,
               }}>
               Your privacy is important to us. Rest assured, your email address
               will only be used for verification purposes.
