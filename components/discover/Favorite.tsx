@@ -29,6 +29,7 @@ const Favorite = () => {
   const { favorites, setFavorites } = useStockData();
   const { refreash, refreashFav } = useUi();
   const bgColor = useThemeColor({}, "background");
+  const [companyName, setCompanyName] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -86,6 +87,7 @@ const Favorite = () => {
               value={item.value}
               changePer={item.changePer}
               onFavList={true}
+              setCompanyName={setCompanyName}
             />
           )}
         />

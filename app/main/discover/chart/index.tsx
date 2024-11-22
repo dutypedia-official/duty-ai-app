@@ -129,6 +129,8 @@ export const StockListItem = ({
   const borderColor = useThemeColor({}, "border");
   const l004662 = useThemeColor({}, "l004662");
   const router = useRouter();
+  const [currentAlarm, setCurrentAlarm] = useState<any>(null);
+  const [currentAiAlarm, setCurrentAiAlarm] = useState<any>(null);
   const {
     setRefreashFav,
     refreashFav,
@@ -139,15 +141,12 @@ export const StockListItem = ({
     setSelectedStock,
   } = useUi();
   const textColor = useThemeColor({}, "text");
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
   const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
     useChat();
   const { getToken } = useAuth();
   const client = apiClient();
   const isFav = favs?.find((fav: any) => fav.symbol === name);
-  const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
-  const currentAiAlerm = aiAlerms?.find((alerm: any) => alerm.symbol === name);
+
   // const [targetPrice, setTargetPrice] = useState(
   //   currentAlarm ? `${currentAlarm.price}` : ""
   // );
@@ -201,6 +200,17 @@ export const StockListItem = ({
     },
   ];
 
+  useEffect(() => {
+    if (Array.isArray(alerms)) {
+      const cAlarm = alerms?.find((a: any) => a.symbol == name);
+      setCurrentAlarm(cAlarm);
+    }
+    if (Array.isArray(aiAlerms)) {
+      const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == name);
+      setCurrentAiAlarm(cAiAlerm);
+    }
+  }, [alerms]);
+
   return (
     <View>
       <View
@@ -211,20 +221,23 @@ export const StockListItem = ({
           borderRadius: 12,
           marginVertical: 10,
           gap: 12,
-        }}>
+        }}
+      >
         <View
           style={{
             backgroundColor: "transparent",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-          }}>
+          }}
+        >
           <View
             style={{
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
               flexDirection: "row",
               gap: 8,
-            }}>
+            }}
+          >
             <View
               style={{
                 width: 24,
@@ -233,7 +246,8 @@ export const StockListItem = ({
                 overflow: "hidden",
                 backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
                 position: "relative",
-              }}>
+              }}
+            >
               <View
                 style={{
                   width: 24,
@@ -244,13 +258,15 @@ export const StockListItem = ({
                   position: "absolute",
                   left: 0,
                   top: 0,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontWeight: "700",
                     fontSize: 12,
                     color: "#1E1E1E",
-                  }}>
+                  }}
+                >
                   {name?.[0]}
                 </Text>
               </View>
@@ -264,7 +280,8 @@ export const StockListItem = ({
                   fontWeight: "bold",
                 }}
                 numberOfLines={1}
-                ellipsizeMode="tail">
+                ellipsizeMode="tail"
+              >
                 {name}
               </Text>
             </View>
@@ -274,7 +291,8 @@ export const StockListItem = ({
               flexDirection: "row",
               alignItems: "center",
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-            }}>
+            }}
+          >
             <TouchableOpacity onPress={toggleFavorite}>
               {isFavorite ? (
                 <AntDesign name="heart" size={20} color="#FF0000" />
@@ -290,20 +308,23 @@ export const StockListItem = ({
             flexDirection: "row",
             justifyContent: "space-between",
             gap: 12,
-          }}>
+          }}
+        >
           <View
             style={{
               backgroundColor: "transparent",
               flex: 1,
               gap: 12,
-            }}>
+            }}
+          >
             <View style={{ backgroundColor: "transparent" }}>
               <Text
                 style={{
                   color: isDark ? "#FFFFFF" : "#000000",
                   fontSize: 14,
                   fontWeight: "800",
-                }}>
+                }}
+              >
                 ৳ {price}
               </Text>
             </View>
@@ -313,7 +334,8 @@ export const StockListItem = ({
                 backgroundColor: "transparent",
                 flexDirection: "row",
                 alignItems: "center",
-              }}>
+              }}
+            >
               {infoData?.map((info: any, idx: number) => {
                 return (
                   <Fragment key={idx}>
@@ -325,13 +347,15 @@ export const StockListItem = ({
                         alignItems: idx === 0 ? "flex-start" : "center",
                         justifyContent: "flex-start",
                         gap: 4,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 10,
                           fontWeight: "bold",
-                        }}>
+                        }}
+                      >
                         {info?.name}
                       </Text>
 
@@ -339,7 +363,8 @@ export const StockListItem = ({
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 10,
-                        }}>
+                        }}
+                      >
                         {info?.value}
                       </Text>
                     </View>
@@ -365,14 +390,16 @@ export const StockListItem = ({
               justifyContent: "space-between",
               alignItems: "flex-end",
               width: 80,
-            }}>
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 4,
                 backgroundColor: "transparent",
-              }}>
+              }}
+            >
               <AntDesign
                 style={{ color: changeColor, paddingTop: 6 }}
                 name={isPositive ? "caretup" : "caretdown"}
@@ -384,7 +411,8 @@ export const StockListItem = ({
                   marginTop: 4,
                   textAlign: "right",
                   color: changeColor,
-                }}>
+                }}
+              >
                 {change + "%"}
               </Text>
             </View>
@@ -400,13 +428,15 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
                 width: 56,
                 justifyContent: "center",
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 12,
                   textAlign: "center",
-                }}>
+                }}
+              >
                 {changePer + "%"}
               </Text>
             </View>
@@ -421,7 +451,8 @@ export const StockListItem = ({
               justifyContent: "space-between",
               backgroundColor: "transparent",
               width: "100%",
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 // router.push({
@@ -445,7 +476,8 @@ export const StockListItem = ({
                 gap: 4,
                 backgroundColor: isDark ? "#333333" : "#EAEDED",
                 borderColor: isDark ? "#333333" : "#EAEDED",
-              }}>
+              }}
+            >
               <Text>
                 <MaterialIcons
                   name="show-chart"
@@ -454,7 +486,8 @@ export const StockListItem = ({
                 />
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
+              >
                 Chart
               </Text>
             </TouchableOpacity>
@@ -514,9 +547,10 @@ export const StockListItem = ({
                   changePer,
                 });
                 setCompanyName(name);
-              }}>
+              }}
+            >
               <Text style={{ color: "white" }}>
-                {currentAlarm || currentAiAlerm ? (
+                {currentAlarm || currentAiAlarm ? (
                   <MaterialIcons
                     color="#CE1300"
                     name="edit-notifications"
@@ -531,8 +565,9 @@ export const StockListItem = ({
                 )}
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm || currentAiAlerm ? "Edit Alerm" : "Set Alarm"}
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
+              >
+                {currentAlarm || currentAiAlarm ? "Edit Alerm" : "Set Alarm"}
               </Text>
             </TouchableOpacity>
 
@@ -555,7 +590,8 @@ export const StockListItem = ({
                 gap: 4,
                 backgroundColor: isDark ? "#333333" : "#EAEDED",
                 borderColor: isDark ? "#333333" : "#EAEDED",
-              }}>
+              }}
+            >
               <Text style={{ color: "white" }}>
                 <FontAwesome
                   name="magic"
@@ -564,7 +600,8 @@ export const StockListItem = ({
                 />
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
+              >
                 Ask AI
               </Text>
             </TouchableOpacity>
@@ -603,7 +640,7 @@ const StockListScreen = () => {
   const [activeTab, setActiveTab] = useState("priceAlarm");
   const [inputText, setInputText] = useState("");
   const [currentAiAlarm, setCurrentAiAlarm] = useState(null);
-
+  const [error, setError] = useState(null);
   const { getToken } = useAuth();
   const client = apiClient();
   const router = useRouter();
@@ -628,6 +665,7 @@ const StockListScreen = () => {
 
   const fetchAlerms = async () => {
     try {
+      setIsLoading2(true);
       const token = await getToken();
       const { data } = await client.get(
         "/noti/get-alerms",
@@ -635,6 +673,8 @@ const StockListScreen = () => {
         {},
         mainServerAvailable
       );
+
+      console.log(data, "-------dddaaa");
 
       setAlerms(data?.alerms);
       setAiAlerms(data?.aiAlerms);
@@ -728,6 +768,7 @@ const StockListScreen = () => {
       });
     }
     try {
+      setError(null);
       setLoading(true);
       const token = await getToken();
       await client.post(
@@ -751,10 +792,7 @@ const StockListScreen = () => {
       bottomSheetRef.current?.close();
     } catch (error: any) {
       console.log(error.response?.data);
-      Toast.show({
-        type: "error",
-        text1: error.response?.data?.detail,
-      });
+      setError(error.response?.data?.detail);
     } finally {
       setLoading(false);
     }
@@ -843,9 +881,10 @@ const StockListScreen = () => {
   }, []);
 
   const [companyName, setCompanyName] = useState(null);
-  const [currentAlarm, setCurrentAlarm] = useState<any>(
-    alerms?.find((alerm: any) => alerm.symbol === companyName)
+  const currentAlarm: any = alerms?.find(
+    (alerm: any) => alerm.symbol === companyName
   );
+
   const [targetPrice, setTargetPrice] = useState(
     currentAlarm ? `${currentAlarm?.price}` : ""
   );
@@ -876,7 +915,8 @@ const StockListScreen = () => {
             flexDirection: "row",
             alignItems: "center",
             gap: 8,
-          }}>
+          }}
+        >
           <Text>
             <Ionicons
               name="chevron-back"
@@ -888,7 +928,8 @@ const StockListScreen = () => {
             style={[
               styles.headerTitle,
               { color: isDark ? "#00B0FF" : "#2980B9" },
-            ]}>
+            ]}
+          >
             {isBn ? "স্টক লিস্ট" : "Stock List"}
           </Text>
         </TouchableOpacity>
@@ -898,12 +939,14 @@ const StockListScreen = () => {
             flexDirection: "row",
             gap: 12,
             alignItems: "center",
-          }}>
+          }}
+        >
           <View
             style={[
               styles.searchContainer,
               { borderColor: isDark ? "#333333" : "#D1D1D1" },
-            ]}>
+            ]}
+          >
             <TextInput
               style={{
                 flex: 1,
@@ -928,7 +971,8 @@ const StockListScreen = () => {
           <TouchableOpacity
             onPress={() => {
               setSortByName(!sortByName);
-            }}>
+            }}
+          >
             <FontAwesome
               name="sort-alpha-asc"
               size={24}
@@ -950,7 +994,8 @@ const StockListScreen = () => {
           alignItems: "flex-start",
           alignSelf: "flex-start",
           gap: 12,
-        }}>
+        }}
+      >
         {filteredItems.map((item: any, index) => (
           <TouchableOpacity
             onPress={() => {
@@ -967,7 +1012,8 @@ const StockListScreen = () => {
                     ? "#1C1C1C"
                     : "#E0E0E0"
                   : "#00796B",
-            }}>
+            }}
+          >
             <Text
               style={{
                 paddingHorizontal: 12,
@@ -979,7 +1025,8 @@ const StockListScreen = () => {
                       ? "#B0BEC5"
                       : "#fff"
                     : "white",
-              }}>
+              }}
+            >
               {item.name}
             </Text>
           </TouchableOpacity>
@@ -1024,7 +1071,8 @@ const StockListScreen = () => {
         handleComponent={(props) => <View style={{ display: "none" }}></View>}
         style={{
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -1032,7 +1080,8 @@ const StockListScreen = () => {
             borderTopRightRadius: 28,
             backgroundColor: isDark ? "#3A3A3C" : "#4197E5",
             paddingTop: 1,
-          }}>
+          }}
+        >
           <LinearGradient
             colors={isDark ? ["#1C1C1E", "#2A2A2D"] : ["#FFFFFF", "#F3F4F6"]}
             style={{
@@ -1042,21 +1091,24 @@ const StockListScreen = () => {
               paddingTop: 1,
               // borderTopWidth: 1,
               // borderTopColor: isDark ? "#3A3A3C" : "#CFCFCF",
-            }}>
+            }}
+          >
             {/* close button */}
             <View
               style={{
                 backgroundColor: "transparent",
                 paddingHorizontal: 14,
                 paddingVertical: 14,
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={() => bottomSheetRef.current?.close()}
                 style={{
                   position: "relative",
                   alignSelf: "flex-end",
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <AntDesign
                   name="close"
                   size={20}
@@ -1070,12 +1122,14 @@ const StockListScreen = () => {
               style={{
                 backgroundColor: "transparent",
                 paddingHorizontal: 14,
-              }}>
+              }}
+            >
               <View
                 style={{
                   backgroundColor: "transparent",
                   flexDirection: "row",
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   onPress={() => {
                     setActiveTab("priceAlarm");
@@ -1092,7 +1146,8 @@ const StockListScreen = () => {
                     borderTopLeftRadius: 12,
                     borderBottomLeftRadius: 12,
                     width: "50%",
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: isDark
@@ -1105,7 +1160,8 @@ const StockListScreen = () => {
                       fontWeight: "bold",
                       fontSize: 16,
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     Price alarm
                   </Text>
                 </TouchableOpacity>
@@ -1128,7 +1184,8 @@ const StockListScreen = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     alignContent: "center",
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flex: 1,
@@ -1137,7 +1194,8 @@ const StockListScreen = () => {
                       backgroundColor: "transparent",
                       justifyContent: "center",
                       alignContent: "center",
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         backgroundColor: "transparent",
@@ -1146,7 +1204,8 @@ const StockListScreen = () => {
                         justifyContent: "center",
                         alignContent: "center",
                         marginRight: 5,
-                      }}>
+                      }}
+                    >
                       {activeTab === "aiAlarm" ? (
                         <MagicIcon />
                       ) : isDark ? (
@@ -1161,7 +1220,8 @@ const StockListScreen = () => {
                         justifyContent: "center",
                         alignContent: "center",
                         marginTop: -1,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark
@@ -1176,7 +1236,8 @@ const StockListScreen = () => {
                           textAlign: "center",
                           justifyContent: "center",
                           alignContent: "center",
-                        }}>
+                        }}
+                      >
                         Ai alarm
                       </Text>
                     </View>
@@ -1193,27 +1254,32 @@ const StockListScreen = () => {
                 flex: 1,
                 backgroundColor: "transparent",
                 marginTop: 28, //40 top to tabs
-              }}>
+              }}
+            >
               <BottomSheetScrollView
                 contentContainerStyle={{
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: "transparent",
-                  }}>
+                  }}
+                >
                   {activeTab === "priceAlarm" && (
                     <View
                       style={{
                         backgroundColor: "transparent",
                         gap: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark ? "#F5F5F5" : "#424242",
                           fontSize: 16,
                           fontWeight: "600",
-                        }}>
+                        }}
+                      >
                         Enter Price
                       </Text>
                       <View
@@ -1222,7 +1288,8 @@ const StockListScreen = () => {
                           backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
                           borderRadius: 8,
                           borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
+                        }}
+                      >
                         <TextInput
                           maxLength={8}
                           style={{
@@ -1249,13 +1316,15 @@ const StockListScreen = () => {
                       style={{
                         backgroundColor: "transparent",
                         gap: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark ? "#F5F5F5" : "#424242",
                           fontSize: 16,
                           fontWeight: "600",
-                        }}>
+                        }}
+                      >
                         Type your Instruction
                       </Text>
                       <View
@@ -1264,7 +1333,8 @@ const StockListScreen = () => {
                           backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
                           borderRadius: 8,
                           borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
+                        }}
+                      >
                         <TextInput
                           multiline
                           maxLength={120}
@@ -1286,20 +1356,23 @@ const StockListScreen = () => {
                         />
                       </View>
 
-                      {/* <Text
+                      {error && (
+                        <Text
                           style={{
                             color: "#CE1300",
                             fontSize: 14,
-                          }}>
-                          Instruction unclear. Ensure it’s related to stock
-                          market events.
-                        </Text> */}
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      )}
 
                       <Text
                         style={{
                           fontSize: 14,
                           color: isDark ? "#D1D1D1" : "#595959",
-                        }}>
+                        }}
+                      >
                         Kindly provide clear, stock-related instructions{" "}
                         <Text
                           style={{
@@ -1309,7 +1382,8 @@ const StockListScreen = () => {
                                 : isDark
                                 ? "#D1D1D1"
                                 : "#595959",
-                          }}>
+                          }}
+                        >
                           within 120 characters
                         </Text>
                         . The AI will monitor your stock continuously and notify
@@ -1330,18 +1404,21 @@ const StockListScreen = () => {
                   paddingHorizontal: 14,
                   paddingBottom: 14,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: "transparent",
                     gap: 12,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       handelSetAlerm();
                     }}
                     // disabled={}
-                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
+                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -1350,7 +1427,8 @@ const StockListScreen = () => {
                         paddingHorizontal: 4,
                         paddingVertical: 16,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: "#FFFFFF",
@@ -1358,7 +1436,8 @@ const StockListScreen = () => {
                           fontSize: 16,
                           textAlign: "center",
                           height: 19,
-                        }}>
+                        }}
+                      >
                         Set alarm
                       </Text>
                     </LinearGradient>
@@ -1367,7 +1446,8 @@ const StockListScreen = () => {
                     <TouchableOpacity
                       onPress={() => {
                         handelDeleteAlerm();
-                      }}>
+                      }}
+                    >
                       <LinearGradient
                         colors={
                           isDark
@@ -1378,7 +1458,8 @@ const StockListScreen = () => {
                           paddingHorizontal: 4,
                           paddingVertical: 16,
                           borderRadius: 12,
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
                             color: "#FFFFFF",
@@ -1386,7 +1467,8 @@ const StockListScreen = () => {
                             fontSize: 16,
                             textAlign: "center",
                             height: 19,
-                          }}>
+                          }}
+                        >
                           Delete alarm
                         </Text>
                       </LinearGradient>
@@ -1401,18 +1483,21 @@ const StockListScreen = () => {
                   paddingHorizontal: 14,
                   paddingBottom: 14,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: "transparent",
                     gap: 12,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       handelSetAiAlerm();
                     }}
                     disabled={inputText?.length === 0 ? true : false}
-                    style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}>
+                    style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -1421,14 +1506,16 @@ const StockListScreen = () => {
                         paddingHorizontal: 4,
                         paddingVertical: 16,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: "#FFFFFF",
                           fontWeight: "bold",
                           fontSize: 16,
                           textAlign: "center",
-                        }}>
+                        }}
+                      >
                         Set alarm
                       </Text>
                     </LinearGradient>
@@ -1438,7 +1525,8 @@ const StockListScreen = () => {
                     <TouchableOpacity
                       onPress={() => {
                         handelDeleteAiAlerm();
-                      }}>
+                      }}
+                    >
                       <LinearGradient
                         colors={
                           isDark
@@ -1449,7 +1537,8 @@ const StockListScreen = () => {
                           paddingHorizontal: 4,
                           paddingVertical: 16,
                           borderRadius: 12,
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
                             color: "#FFFFFF",
@@ -1457,7 +1546,8 @@ const StockListScreen = () => {
                             fontSize: 16,
                             textAlign: "center",
                             height: 19,
-                          }}>
+                          }}
+                        >
                           Delete alarm
                         </Text>
                       </LinearGradient>
