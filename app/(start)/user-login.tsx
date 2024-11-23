@@ -7,7 +7,6 @@ import {
   useColorScheme,
   TextInput,
   ActivityIndicator,
-  KeyboardAvoidingView,
   ScrollView,
   View,
 } from "react-native";
@@ -57,6 +56,7 @@ const schema = z.object({
 
 export default function UserLoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
+  const [errorLogin, setErrorLogin] = useState(null);
   const { signIn, isLoaded } = useSignIn();
   const [showPass, setShowPass] = useState(false);
   const insets = useSafeAreaInsets();
@@ -103,14 +103,20 @@ export default function UserLoginScreen() {
           identifier: values.email,
           password: values.password,
         });
+        setIsLoading(true);
         console.log("Logged in successfully!");
         router.push("/main/discover/chat");
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
+        // setErrorLogin(
+        //   err.errors[0]?.longMessage || "Invalid email or password"
+        // );
         Toast.show({
           type: "error",
           text1: "Invalid email or password",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -152,21 +158,18 @@ export default function UserLoginScreen() {
         top: 0,
         width: "100%",
         height: "100%",
-      }}
-    >
+      }}>
+      <StatusBar style="light" />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          title: "User Login",
+          headerStyle: {
+            backgroundColor: bgColor,
+          },
+        }}
+      />
       <View style={{ flex: 1, backgroundColor: "transparent" }}>
-        <StatusBar style="light" />
-
-        <Stack.Screen
-          options={{
-            headerShown: false,
-            title: "User Login",
-            headerStyle: {
-              backgroundColor: bgColor,
-            },
-          }}
-        />
-
         <View />
 
         <View
@@ -175,8 +178,7 @@ export default function UserLoginScreen() {
             backgroundColor: "transparent",
             marginLeft: 20,
             paddingVertical: 10,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
               router.back();
@@ -185,8 +187,7 @@ export default function UserLoginScreen() {
               {
                 // position: "absolute",
               }
-            }
-          >
+            }>
             <LinearGradient
               colors={["#6A4E9D", "#8E44AD"]}
               start={{ x: 0, y: 0 }}
@@ -203,8 +204,7 @@ export default function UserLoginScreen() {
                 elevation: 5,
                 width: 36,
                 height: 36,
-              }}
-            >
+              }}>
               <Text>
                 <Ionicons
                   name="chevron-back"
@@ -227,30 +227,26 @@ export default function UserLoginScreen() {
             backgroundColor: "transparent",
             justifyContent: "space-between",
             paddingHorizontal: 20,
-          }}
-        >
+          }}>
           <View
             style={{
               backgroundColor: "transparent",
               flex: 1,
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <View
               style={{
                 backgroundColor: "transparent",
                 paddingTop: 40,
                 gap: 24,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontWeight: "bold",
                   fontSize: 30,
                   color: "#FFFFFF",
                   textAlign: "center",
-                }}
-              >
+                }}>
                 Login
               </Text>
               <View style={{ gap: 12, backgroundColor: "transparent" }}>
@@ -259,6 +255,7 @@ export default function UserLoginScreen() {
                   name="email"
                   placeholder="Enter email"
                 />
+
                 <Controller
                   control={control}
                   name={"password"}
@@ -268,49 +265,48 @@ export default function UserLoginScreen() {
                   }) => {
                     const [isFocused, setIsFocused] = useState(false);
                     return (
-                      <View
-                        style={{
-                          backgroundColor: "transparent",
-                          position: "relative",
-                        }}
-                      >
-                        <TextInput
-                          style={[
-                            styles.input,
-                            {
-                              paddingRight: 40,
-                            },
-                            error ? styles.errorInput : null,
-                            isFocused ? styles.focusedInput : null,
-                          ]}
-                          placeholder={"Password"}
-                          placeholderTextColor="#BDC3C7" // Added placeholder text color
-                          onBlur={() => {
-                            onBlur();
-                            setIsFocused(false);
-                          }}
-                          onFocus={() => setIsFocused(true)}
-                          onChangeText={onChange}
-                          value={value}
-                          secureTextEntry={!showPass}
-                        />
-                        <TouchableOpacity
-                          onPress={() => setShowPass(!showPass)}
+                      <View>
+                        <View
                           style={{
-                            position: "absolute",
-                            right: 15, // Padding from the right
-                            top: "50%", // Center vertically
-                            transform: [{ translateY: -12 }], // Adjust for icon size
-                            zIndex: 10,
-                          }}
-                        >
-                          <Ionicons
-                            name={!showPass ? "eye" : "eye-off"}
-                            size={24}
-                            color="#BDC3C7"
+                            backgroundColor: "transparent",
+                            position: "relative",
+                          }}>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              {
+                                paddingRight: 40,
+                              },
+                              error ? styles.errorInput : null,
+                              isFocused ? styles.focusedInput : null,
+                            ]}
+                            placeholder={"Password"}
+                            placeholderTextColor="#BDC3C7" // Added placeholder text color
+                            onBlur={() => {
+                              onBlur();
+                              setIsFocused(false);
+                            }}
+                            onFocus={() => setIsFocused(true)}
+                            onChangeText={onChange}
+                            value={value}
+                            secureTextEntry={!showPass}
                           />
-                        </TouchableOpacity>
-
+                          <TouchableOpacity
+                            onPress={() => setShowPass(!showPass)}
+                            style={{
+                              position: "absolute",
+                              right: 15, // Padding from the right
+                              top: "50%", // Center vertically
+                              transform: [{ translateY: -12 }], // Adjust for icon size
+                              zIndex: 10,
+                            }}>
+                            <Ionicons
+                              name={!showPass ? "eye" : "eye-off"}
+                              size={24}
+                              color="#BDC3C7"
+                            />
+                          </TouchableOpacity>
+                        </View>
                         {error && (
                           <View
                             style={{
@@ -318,8 +314,7 @@ export default function UserLoginScreen() {
                               justifyContent: "space-between",
                               backgroundColor: "transparent",
                               marginTop: 10,
-                            }}
-                          >
+                            }}>
                             {error?.message ? (
                               <Text style={styles.errorText}>
                                 {error?.message}
@@ -339,23 +334,21 @@ export default function UserLoginScreen() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     backgroundColor: "transparent",
-                  }}
-                >
+                  }}>
                   <View />
                   <TouchableOpacity
                     onPress={() => {
                       router.push("/forgot");
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         color: "#F0F2F5",
-                      }}
-                    >
+                      }}>
                       Forgot Password?
                     </Text>
                   </TouchableOpacity>
                 </View>
+
                 <TouchableOpacity
                   style={{
                     backgroundColor: "transparent",
@@ -363,8 +356,7 @@ export default function UserLoginScreen() {
                   disabled={!isFormValid}
                   onPress={() => {
                     handleSubmit(onSubmit)();
-                  }}
-                >
+                  }}>
                   <LinearGradient
                     colors={
                       !isFormValid
@@ -382,16 +374,14 @@ export default function UserLoginScreen() {
                       shadowOpacity: 0.2,
                       shadowRadius: 8,
                       elevation: 3,
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         flexDirection: "row",
                         justifyContent: "center",
                         position: "relative",
                         backgroundColor: "transparent",
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           color: "#FFFFFF",
@@ -399,8 +389,7 @@ export default function UserLoginScreen() {
                           fontSize: 20,
                           textAlign: "center",
                           opacity: isFormValid ? 1 : 0.5,
-                        }}
-                      >
+                        }}>
                         {isLoading && (
                           <ActivityIndicator
                             size="small"
@@ -415,8 +404,7 @@ export default function UserLoginScreen() {
                           position: "absolute",
                           right: 0,
                           backgroundColor: "transparent",
-                        }}
-                      >
+                        }}>
                         <Ionicons
                           name="chevron-forward"
                           size={24}
@@ -429,14 +417,25 @@ export default function UserLoginScreen() {
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
+                {/* {errorLogin && (
+                  <View>
+                    <Text
+                      style={{
+                        color: "#EC2700",
+                        fontWeight: "normal",
+                        fontSize: 14,
+                      }}>
+                      {errorLogin}
+                    </Text>
+                  </View>
+                )} */}
                 <Button
                   mode="text"
                   labelStyle={{
                     fontWeight: "600",
                     fontSize: 16,
                     color: "#FFFFFF",
-                  }}
-                >
+                  }}>
                   Don’t have an account?{" "}
                   <Link href="/signup" asChild>
                     <Text
@@ -444,8 +443,7 @@ export default function UserLoginScreen() {
                         color: "#2ECC71",
                         fontWeight: "bold",
                         fontSize: 16,
-                      }}
-                    >
+                      }}>
                       Sign up
                     </Text>
                   </Link>
@@ -458,15 +456,13 @@ export default function UserLoginScreen() {
                 alignItems: "center",
                 flex: 1,
                 backgroundColor: "transparent",
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: "46%",
                   padding: 1,
                   backgroundColor: "transparent",
-                }}
-              >
+                }}>
                 <Text
                   numberOfLines={1}
                   style={{
@@ -474,8 +470,7 @@ export default function UserLoginScreen() {
                     fontSize: 14,
                     textAlign: "center",
                     marginTop: -5,
-                  }}
-                >
+                  }}>
                   .................................................................................
                 </Text>
               </View>
@@ -485,8 +480,7 @@ export default function UserLoginScreen() {
                     color: "#AAAAAA",
                     fontSize: 14,
                     textAlign: "center",
-                  }}
-                >
+                  }}>
                   Or
                 </Text>
               </View>
@@ -495,8 +489,7 @@ export default function UserLoginScreen() {
                   width: "46%",
                   padding: 1,
                   backgroundColor: "transparent",
-                }}
-              >
+                }}>
                 <Text
                   numberOfLines={1}
                   style={{
@@ -504,8 +497,7 @@ export default function UserLoginScreen() {
                     fontSize: 14,
                     textAlign: "center",
                     marginTop: -5,
-                  }}
-                >
+                  }}>
                   .................................................................................
                 </Text>
               </View>
@@ -513,21 +505,19 @@ export default function UserLoginScreen() {
           </View>
           <View
             style={{
+              position: "relative",
               backgroundColor: "transparent",
               gap: 24,
               paddingBottom: insets.bottom + 32,
-            }}
-          >
+            }}>
             <TouchableOpacity
               onPress={() => onSelectAuth(Strategy.Google)}
-              style={{ width: "100%" }}
-            >
+              style={{ width: "100%" }}>
               <LinearGradient
                 colors={["#34A853", "#4285F4"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={styles.btnOutline}
-              >
+                style={styles.btnOutline}>
                 <Image
                   style={{ height: 40, width: 40 }}
                   resizeMode="contain"
@@ -540,14 +530,12 @@ export default function UserLoginScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ width: "100%" }}
-              onPress={() => onSelectAuth(Strategy.Apple)}
-            >
+              onPress={() => onSelectAuth(Strategy.Apple)}>
               <LinearGradient
                 colors={["#000000", "#2E2E2E"]}
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 0.5, y: 1 }}
-                style={styles.btnOutline}
-              >
+                style={styles.btnOutline}>
                 <FontAwesome
                   style={{ paddingLeft: 20 }}
                   name="apple"
@@ -559,8 +547,7 @@ export default function UserLoginScreen() {
                     color: "#fff",
                     fontWeight: "700",
                     paddingLeft: 8,
-                  }}
-                >
+                  }}>
                   {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Login with Apple"}
                 </Text>
               </LinearGradient>

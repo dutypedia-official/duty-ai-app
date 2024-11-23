@@ -203,6 +203,93 @@ export const StockListItem = ({
 
   return (
     <View>
+      {/* <Portal>
+        <Modal visible={visible} onDismiss={hideModal} dismissable={false}>
+          <View
+            style={{
+              padding: 20,
+              margin: 40,
+              borderRadius: 8,
+              position: "relative",
+            }}>
+            <TouchableOpacity
+              onPress={hideModal}
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+              }}>
+              <Text>
+                <Entypo name="circle-with-cross" size={24} />
+              </Text>
+            </TouchableOpacity>
+
+            <View
+              style={{
+                marginTop: 32,
+                borderWidth: 1,
+                backgroundColor: lf6f6f6,
+                borderRadius: 8,
+                borderColor: borderColor,
+              }}>
+              <TextInput
+                maxLength={8}
+                style={{
+                  paddingVertical: 8,
+                  paddingHorizontal: 8,
+                  textAlign: "center",
+                  color: textColor,
+                }}
+                placeholder="00:00"
+                placeholderTextColor="#888"
+                value={targetPrice}
+                onChangeText={(text) =>
+                  setTargetPrice(text.replace(/[^0-9.]/g, ""))
+                }
+                keyboardType="numeric"
+              />
+            </View>
+            <TouchableOpacity
+              disabled={
+                loading ||
+                parseFloat(targetPrice) < 1 ||
+                parseFloat(targetPrice) == currentAlarm?.price
+              }
+              onPress={handelSetAlerm}
+              style={{
+                marginTop: 20,
+                marginBottom: 10,
+                backgroundColor:
+                  parseFloat(targetPrice) > 0 &&
+                  parseFloat(targetPrice) != currentAlarm?.price
+                    ? "#152f4a"
+                    : "#9ca7b1",
+                borderRadius: 8,
+                padding: 16,
+              }}>
+              <Text style={{ textAlign: "center", color: "white" }}>
+                {loading ? "Please wait..." : "Set Alarm"}
+              </Text>
+            </TouchableOpacity>
+
+            {currentAlarm && (
+              <TouchableOpacity
+                onPress={handelDeleteAlerm}
+                style={{
+                  marginTop: 10,
+                  marginBottom: 10,
+                  backgroundColor: "#e74c3c",
+                  borderRadius: 8,
+                  padding: 16,
+                }}>
+                <Text style={{ textAlign: "center", color: "white" }}>
+                  {loading ? "Please wait..." : "Delete Alarm"}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </Modal>
+      </Portal> */}
       <View
         style={{
           flexDirection: "column",
@@ -602,7 +689,6 @@ const StockListScreen = () => {
   const [aiAlerms, setAiAlerms] = useState([]);
   const [activeTab, setActiveTab] = useState("priceAlarm");
   const [inputText, setInputText] = useState("");
-  const [currentAiAlarm, setCurrentAiAlarm] = useState(null);
 
   const { getToken } = useAuth();
   const client = apiClient();
@@ -1277,7 +1363,7 @@ const StockListScreen = () => {
                             maxHeight: 100,
                             fontSize: 16,
                           }}
-                          placeholder="Type your condition here"
+                          placeholder="If market go 50% above the moving avarage give em signal also if this stock perform so goodthen  give em signal"
                           placeholderTextColor="#888"
                           value={inputText}
                           onChangeText={setInputText}
@@ -1285,16 +1371,14 @@ const StockListScreen = () => {
                           returnKeyType="send"
                         />
                       </View>
-
-                      {/* <Text
-                          style={{
-                            color: "#CE1300",
-                            fontSize: 14,
-                          }}>
-                          Instruction unclear. Ensure it’s related to stock
-                          market events.
-                        </Text> */}
-
+                      <Text
+                        style={{
+                          color: "#CE1300",
+                          fontSize: 14,
+                        }}>
+                        Instruction unclear. Ensure it’s related to stock market
+                        events.
+                      </Text>
                       <Text
                         style={{
                           fontSize: 14,
@@ -1411,8 +1495,8 @@ const StockListScreen = () => {
                     onPress={() => {
                       handelSetAiAlerm();
                     }}
-                    disabled={inputText?.length === 0 ? true : false}
-                    style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}>
+                    // disabled={}
+                    style={{ opacity: 0.5 }}>
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -1434,35 +1518,31 @@ const StockListScreen = () => {
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  {currentAiAlarm && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        handelDeleteAiAlerm();
+                  <TouchableOpacity
+                    onPress={() => {
+                      handelDeleteAiAlerm();
+                    }}>
+                    <LinearGradient
+                      colors={
+                        isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
+                      }
+                      style={{
+                        paddingHorizontal: 4,
+                        paddingVertical: 16,
+                        borderRadius: 12,
                       }}>
-                      <LinearGradient
-                        colors={
-                          isDark
-                            ? ["#D64B4B", "#8F2B2B"]
-                            : ["#EF9A9A", "#D32F2F"]
-                        }
+                      <Text
                         style={{
-                          paddingHorizontal: 4,
-                          paddingVertical: 16,
-                          borderRadius: 12,
+                          color: "#FFFFFF",
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          textAlign: "center",
+                          height: 19,
                         }}>
-                        <Text
-                          style={{
-                            color: "#FFFFFF",
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            textAlign: "center",
-                            height: 19,
-                          }}>
-                          Delete alarm
-                        </Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  )}
+                        Delete alarm
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
                 </View>
               </View>
             )}

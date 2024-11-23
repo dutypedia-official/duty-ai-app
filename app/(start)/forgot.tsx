@@ -158,16 +158,23 @@ export default function Forgot() {
           style={{
             backgroundColor: "transparent",
             alignItems: "center",
+            justifyContent: "center",
             opacity: 0.25,
             position: "absolute",
-            bottom: "35%",
-            left: "50%",
-            transform: [{ translateX: -50 }],
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
           }}>
-          <LoginLogo
-            width={Dimensions.get("screen").width / 6.5}
-            height={Dimensions.get("screen").width / 6.5}
-          />
+          <View
+            style={{
+              transform: [{ translateY: 100 }],
+            }}>
+            <LoginLogo
+              width={Dimensions.get("screen").width / 6.5}
+              height={Dimensions.get("screen").width / 6.5}
+            />
+          </View>
         </View>
         <View
           style={{
@@ -177,51 +184,54 @@ export default function Forgot() {
             justifyContent: "space-between",
             flex: 1,
           }}>
-          <View
-            style={{
-              gap: 24,
-            }}>
-            <Text
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}>
+            <View
               style={{
-                color: "#FFFFFF",
-                fontSize: 32,
-                fontWeight: "bold",
-                textAlign: "left",
+                gap: 24,
               }}>
-              Enter your email address
-            </Text>
-            <Text
-              style={{
-                color: "#ECECEC",
-                fontSize: 16,
-                fontWeight: "normal",
-                textAlign: "left",
-                lineHeight: 24,
-              }}>
-              Your privacy is important to us. Rest assured, your email address
-              will only be used for verification purposes.
-            </Text>
-            <View style={{ gap: 12 }}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <FormInput
-                  control={control}
-                  name="email"
-                  placeholder="Enter email"
-                />
-                {wrongEmail && (
-                  <Text
-                    style={{
-                      color: "#CE1300",
-                      fontWeight: "normal",
-                      fontSize: 14,
-                    }}>
-                    Email does not exist.
-                  </Text>
-                )}
-              </KeyboardAvoidingView>
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 32,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}>
+                Enter your email address
+              </Text>
+              <Text
+                style={{
+                  color: "#ECECEC",
+                  fontSize: 16,
+                  fontWeight: "normal",
+                  textAlign: "left",
+                  lineHeight: 24,
+                }}>
+                Your privacy is important to us. Rest assured, your email
+                address will only be used for verification purposes.
+              </Text>
+              <View style={{ gap: 12 }}>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                  <FormInput
+                    control={control}
+                    name="email"
+                    placeholder="Enter email"
+                  />
+                  {wrongEmail && (
+                    <Text
+                      style={{
+                        color: "#CE1300",
+                        fontWeight: "normal",
+                        fontSize: 14,
+                      }}>
+                      Email does not exist.
+                    </Text>
+                  )}
+                </KeyboardAvoidingView>
 
-              {/* <TextInput
+                {/* <TextInput
                   style={{
                     width: "100%",
                     backgroundColor: "#333333",
@@ -247,8 +257,9 @@ export default function Forgot() {
                     Email does not exist.
                   </Text>
                 )} */}
+              </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
 
           <View
             style={{

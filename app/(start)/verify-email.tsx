@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
@@ -37,7 +37,7 @@ export default function VerifyEmail() {
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
-  const [invalidCode, setInvalidCode] = React.useState(false);
+  const [invalidCode, setInvalidCode] = useState(null);
   const _3M = 179;
   const [timeLeft, setTimeLeft] = React.useState(_3M);
   const [isCounting, setIsCounting] = React.useState(false);
@@ -66,6 +66,7 @@ export default function VerifyEmail() {
       }
 
       try {
+        setIsLoading(true);
         const completeSignUp = await signUp.attemptEmailAddressVerification({
           code: data.otp,
         });
@@ -78,10 +79,13 @@ export default function VerifyEmail() {
         }
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
-        Toast.show({
-          type: "error",
-          text1: err.errors[0]?.longMessage || "Invalid OTP",
-        });
+        setInvalidCode(err.errors[0]?.longMessage || "Invalid OTP");
+        // Toast.show({
+        //   type: "error",
+        //   text1: err.errors[0]?.longMessage || "Invalid OTP",
+        // });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -206,16 +210,23 @@ export default function VerifyEmail() {
             style={{
               backgroundColor: "transparent",
               alignItems: "center",
+              justifyContent: "center",
               opacity: 0.25,
               position: "absolute",
-              bottom: "35%",
-              left: "50%",
-              transform: [{ translateX: -50 }],
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
             }}>
-            <LoginLogo
-              width={Dimensions.get("screen").width / 6.5}
-              height={Dimensions.get("screen").width / 6.5}
-            />
+            <View
+              style={{
+                transform: [{ translateY: 100 }],
+              }}>
+              <LoginLogo
+                width={Dimensions.get("screen").width / 6.5}
+                height={Dimensions.get("screen").width / 6.5}
+              />
+            </View>
           </View>
           <View
             style={{
@@ -264,7 +275,7 @@ export default function VerifyEmail() {
                         fontWeight: "normal",
                         fontSize: 14,
                       }}>
-                      The code you entered does not match.{" "}
+                      {invalidCode}
                     </Text>
                   </View>
                 )}
@@ -353,7 +364,7 @@ export default function VerifyEmail() {
                           style={{ marginRight: 5 }}
                         />
                       )}{" "}
-                      Next
+                      {!isLoading && "Confirm and login"}
                     </Text>
                     <View
                       style={{
