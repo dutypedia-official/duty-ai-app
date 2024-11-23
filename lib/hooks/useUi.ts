@@ -10,6 +10,8 @@ interface Store {
   setMainServerAvailable: (mainServerAvailable: boolean) => void;
   selectedStock: any;
   setSelectedStock: (selectedStock: any) => void;
+  selectedAlarmShit: any;
+  setSelectedAlarmShit: (selectedAlarmShit: any) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -24,6 +26,8 @@ const useUi = create<Store>((set, get) => ({
     set({ mainServerAvailable }),
   selectedStock: null,
   setSelectedStock: (selectedStock: any) => set({ selectedStock }),
+  selectedAlarmShit: null,
+  setSelectedAlarmShit: (selectedAlarmShit: any) => set({ selectedAlarmShit }),
 }));
 
 export default useUi;

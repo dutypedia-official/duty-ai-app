@@ -139,6 +139,8 @@ export const StockListItem = ({
     mainServerAvailable,
     selectedStock,
     setSelectedStock,
+    selectedAlarmShit,
+    setSelectedAlarmShit,
   } = useUi();
   const textColor = useThemeColor({}, "text");
   const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
@@ -209,7 +211,7 @@ export const StockListItem = ({
       const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == name);
       setCurrentAiAlarm(cAiAlerm);
     }
-  }, [alerms]);
+  }, [alerms, aiAlerms]);
 
   return (
     <View>
@@ -491,38 +493,6 @@ export const StockListItem = ({
                 Chart
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isDark ? "#333333" : "#EAEDED",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-              }}
-              onPress={showModal}>
-              <Text style={{ color: "white" }}>
-                {currentAlarm ? (
-                  <MaterialIcons
-                    color="#CE1300"
-                    name="edit-notifications"
-                    size={14}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={"bell-plus"}
-                    size={14}
-                    color={isDark ? "#ffffff" : "#5188D4"}
-                  />
-                )}
-              </Text>a
-              <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm ? "Edit Alerm" : "Set Alarm"}
-              </Text>
-            </TouchableOpacity> */}
 
             <TouchableOpacity
               style={{
@@ -537,6 +507,7 @@ export const StockListItem = ({
               }}
               onPress={() => {
                 sheetRef?.current?.expand();
+                setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
                   name,
                   price,
@@ -625,6 +596,7 @@ const StockListScreen = () => {
     setRefreashFav,
     refreashFav,
     selectedStock,
+    selectedAlarmShit,
   } = useUi();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading2, setIsLoading2] = useState(true);
@@ -639,7 +611,6 @@ const StockListScreen = () => {
   const [aiAlerms, setAiAlerms] = useState([]);
   const [activeTab, setActiveTab] = useState("priceAlarm");
   const [inputText, setInputText] = useState("");
-  const [currentAiAlarm, setCurrentAiAlarm] = useState(null);
   const [error, setError] = useState(null);
   const { getToken } = useAuth();
   const client = apiClient();
@@ -665,7 +636,6 @@ const StockListScreen = () => {
 
   const fetchAlerms = async () => {
     try {
-      setIsLoading2(true);
       const token = await getToken();
       const { data } = await client.get(
         "/noti/get-alerms",
@@ -674,14 +644,11 @@ const StockListScreen = () => {
         mainServerAvailable
       );
 
-      console.log(data, "-------dddaaa");
-
       setAlerms(data?.alerms);
       setAiAlerms(data?.aiAlerms);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading2(false);
     }
   };
 
@@ -882,6 +849,9 @@ const StockListScreen = () => {
 
   const [companyName, setCompanyName] = useState(null);
   const currentAlarm: any = alerms?.find(
+    (alerm: any) => alerm.symbol === companyName
+  );
+  const currentAiAlerm: any = aiAlerms?.find(
     (alerm: any) => alerm.symbol === companyName
   );
 
@@ -1280,7 +1250,7 @@ const StockListScreen = () => {
                           fontWeight: "600",
                         }}
                       >
-                        Enter Price
+                        Enter Price {currentAlarm?.price}
                       </Text>
                       <View
                         style={{
@@ -1301,7 +1271,7 @@ const StockListScreen = () => {
                           }}
                           placeholder="00:00"
                           placeholderTextColor="#888"
-                          value={targetPrice}
+                          value={targetPrice || `${currentAlarm?.price || ""}`}
                           onChangeText={(text) =>
                             setTargetPrice(text.replace(/[^0-9.]/g, ""))
                           }
@@ -1349,7 +1319,7 @@ const StockListScreen = () => {
                           }}
                           placeholder="Type your condition here"
                           placeholderTextColor="#888"
-                          value={inputText}
+                          value={inputText || `${currentAiAlerm?.prompt || ""}`}
                           onChangeText={setInputText}
                           // editable={false}
                           returnKeyType="send"
@@ -1429,17 +1399,26 @@ const StockListScreen = () => {
                         borderRadius: 12,
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "#FFFFFF",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                          height: 19,
-                        }}
-                      >
-                        Set alarm
-                      </Text>
+                      {loading && (
+                        <ActivityIndicator
+                          size="small"
+                          color="#FFFFFF"
+                          style={{ marginRight: 5 }}
+                        />
+                      )}
+                      {!loading && (
+                        <Text
+                          style={{
+                            color: "#FFFFFF",
+                            fontWeight: "bold",
+                            fontSize: 16,
+                            textAlign: "center",
+                            height: 19,
+                          }}
+                        >
+                          Set alarm
+                        </Text>
+                      )}
                     </LinearGradient>
                   </TouchableOpacity>
                   {currentAlarm && (
@@ -1460,17 +1439,26 @@ const StockListScreen = () => {
                           borderRadius: 12,
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "#FFFFFF",
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            textAlign: "center",
-                            height: 19,
-                          }}
-                        >
-                          Delete alarm
-                        </Text>
+                        {loading && (
+                          <ActivityIndicator
+                            size="small"
+                            color="#FFFFFF"
+                            style={{ marginRight: 5 }}
+                          />
+                        )}
+                        {!loading && (
+                          <Text
+                            style={{
+                              color: "#FFFFFF",
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              textAlign: "center",
+                              height: 19,
+                            }}
+                          >
+                            Delete alarm
+                          </Text>
+                        )}
                       </LinearGradient>
                     </TouchableOpacity>
                   )}
@@ -1508,20 +1496,30 @@ const StockListScreen = () => {
                         borderRadius: 12,
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "#FFFFFF",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                        }}
-                      >
-                        Set alarm
-                      </Text>
+                      {loading && (
+                        <ActivityIndicator
+                          size="small"
+                          color="#FFFFFF"
+                          style={{ marginRight: 5 }}
+                        />
+                      )}
+                      {!loading && (
+                        <Text
+                          style={{
+                            color: "#FFFFFF",
+                            fontWeight: "bold",
+                            fontSize: 16,
+                            textAlign: "center",
+                            height: 19,
+                          }}
+                        >
+                          Set alarm
+                        </Text>
+                      )}
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  {currentAiAlarm && (
+                  {currentAiAlerm && (
                     <TouchableOpacity
                       onPress={() => {
                         handelDeleteAiAlerm();
@@ -1539,17 +1537,26 @@ const StockListScreen = () => {
                           borderRadius: 12,
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "#FFFFFF",
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            textAlign: "center",
-                            height: 19,
-                          }}
-                        >
-                          Delete alarm
-                        </Text>
+                        {loading && (
+                          <ActivityIndicator
+                            size="small"
+                            color="#FFFFFF"
+                            style={{ marginRight: 5 }}
+                          />
+                        )}
+                        {!loading && (
+                          <Text
+                            style={{
+                              color: "#FFFFFF",
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              textAlign: "center",
+                              height: 19,
+                            }}
+                          >
+                            Delete alarm
+                          </Text>
+                        )}
                       </LinearGradient>
                     </TouchableOpacity>
                   )}
