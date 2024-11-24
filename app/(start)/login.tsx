@@ -78,6 +78,7 @@ export default function Login() {
       console.error(err);
     }
   };
+
   return (
     <>
       <LinearGradient
@@ -330,11 +331,11 @@ export default function Login() {
                       gap: 8,
                       marginTop: 10,
                     }}>
-                    <Text style={{ fontWeight: "bold" }}>
+                    <Text style={{ fontWeight: "bold", color: "#FFFFFF" }}>
                       লগইন করতে সমস্যা হলে ভিডিও টি দেখুন
                     </Text>
                     <Text>
-                      <Ionicons name="play-circle" size={24} />
+                      <Ionicons name="play-circle" size={24} color={"#fff"} />
                     </Text>
                   </TouchableOpacity>
                 )}

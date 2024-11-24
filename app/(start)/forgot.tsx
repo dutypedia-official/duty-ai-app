@@ -2,13 +2,16 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
   Dimensions,
+  Keyboard,
+  Animated,
+  Easing,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
@@ -36,6 +39,42 @@ export default function Forgot() {
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
   const [wrongEmail, setWrongEmail] = React.useState(false);
+  const buttonOpacity = useRef(new Animated.Value(1)).current; // Animated value for button opacity
+
+  useEffect(() => {
+    // Keyboard listener to hide/show the button smoothly
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      fadeOutButton // Hide button when keyboard opens
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      fadeInButton // Show button when keyboard closes
+    );
+
+    // Cleanup the listeners on unmount
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const fadeOutButton = () => {
+    Animated.timing(buttonOpacity, {
+      toValue: 0,
+      duration: 0, // Instant disappearance
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeInButton = () => {
+    Animated.timing(buttonOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.inOut(Easing.ease), // Easing for smoothness
+    }).start();
+  };
 
   const {
     control,
@@ -59,6 +98,7 @@ export default function Forgot() {
       if (!isLoaded) return;
 
       try {
+        setIsLoading(true);
         await signIn.create({
           strategy: "reset_password_email_code",
           identifier: data.email,
@@ -78,27 +118,53 @@ export default function Forgot() {
           type: "error",
           text1: err.errors[0]?.longMessage || "Failed to send OTP",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   return (
-    <>
-      <LinearGradient
-        colors={["#4A148C", "#2A2B2A"]}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 0.5, y: 1 }}
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
+        {/* Full Screen Background Gradient */}
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}>
+          <LinearGradient
+            colors={["#4A148C", "#2A2B2A"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              bottom: 280,
+              opacity: 0.25,
+              left: 0,
+              right: 0,
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 0,
+            }}>
+            <LoginLogo
+              width={Dimensions.get("screen").width / 6.5}
+              height={Dimensions.get("screen").width / 6.5}
+            />
+          </View>
+        </View>
+
         <StatusBar style="light" />
 
         <Stack.Screen
@@ -113,20 +179,21 @@ export default function Forgot() {
 
         <View
           style={{
-            // paddingTop: insets.top,
             backgroundColor: "transparent",
             marginLeft: 20,
             paddingVertical: 10,
+            zIndex: 1000, // Ensure back button is on top
           }}>
           <TouchableOpacity
             onPress={() => {
               router.back();
             }}
-            style={
-              {
-                // position: "absolute",
-              }
-            }>
+            style={{
+              width: 50,
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
             <LinearGradient
               colors={["#6A4E9D", "#8E44AD"]}
               start={{ x: 0, y: 0 }}
@@ -144,70 +211,56 @@ export default function Forgot() {
                 width: 36,
                 height: 36,
               }}>
-              <Text>
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={{ color: "#FFFFFF" }}
-                />
-              </Text>
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                style={{ color: "#FFFFFF" }}
+              />
             </LinearGradient>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            backgroundColor: "transparent",
-            alignItems: "center",
-            opacity: 0.25,
-            position: "absolute",
-            bottom: "35%",
-            left: "50%",
-            transform: [{ translateX: -50 }],
-          }}>
-          <LoginLogo
-            width={Dimensions.get("screen").width / 6.5}
-            height={Dimensions.get("screen").width / 6.5}
-          />
-        </View>
-        <View
-          style={{
-            backgroundColor: "transparent",
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            justifyContent: "space-between",
-            flex: 1,
-          }}>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}>
           <View
             style={{
-              gap: 24,
+              backgroundColor: "transparent",
+              paddingHorizontal: 20,
+              paddingTop: 20,
+              justifyContent: "space-between",
+              flex: 1,
             }}>
-            <Text
+            <View
               style={{
-                color: "#FFFFFF",
-                fontSize: 32,
-                fontWeight: "bold",
-                textAlign: "left",
+                gap: 24,
               }}>
-              Enter your email address
-            </Text>
-            <Text
-              style={{
-                color: "#ECECEC",
-                fontSize: 16,
-                fontWeight: "normal",
-                textAlign: "left",
-                lineHeight: 24,
-              }}>
-              Your privacy is important to us. Rest assured, your email address
-              will only be used for verification purposes.
-            </Text>
-            <View style={{ gap: 12 }}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}>
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 32,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}>
+                Enter your email address
+              </Text>
+              <Text
+                style={{
+                  color: "#ECECEC",
+                  fontSize: 16,
+                  fontWeight: "normal",
+                  textAlign: "left",
+                  lineHeight: 24,
+                }}>
+                Your privacy is important to us. Rest assured, your email
+                address will only be used for verification purposes.
+              </Text>
+              <View style={{ gap: 12 }}>
                 <FormInput
                   control={control}
                   name="email"
                   placeholder="Enter email"
+                  onFocus={fadeOutButton} // Immediately hide button when input is focused
                 />
                 {wrongEmail && (
                   <Text
@@ -219,105 +272,83 @@ export default function Forgot() {
                     Email does not exist.
                   </Text>
                 )}
-              </KeyboardAvoidingView>
-
-              {/* <TextInput
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#333333",
-                    borderRadius: 12, // Rounded corners
-                    color: "#ffffff", // White text color
-                    paddingHorizontal: 12,
-                    paddingVertical: 16,
-                    fontSize: 16,
-                    borderWidth: 1,
-                    borderColor: isInvalid ? "#CE1300" : "#4F5A5F",
-                  }}
-                  placeholder="Email address"
-                  placeholderTextColor="#ffffff"
-                  inputMode="email"
-                />
-                {isInvalid && (
-                  <Text
-                    style={{
-                      color: "#CE1300",
-                      fontWeight: "normal",
-                      fontSize: 14,
-                    }}>
-                    Email does not exist.
-                  </Text>
-                )} */}
+              </View>
             </View>
           </View>
+        </KeyboardAvoidingView>
 
-          <View
-            style={{
-              paddingBottom: insets.bottom + 32,
-            }}>
-            <TouchableOpacity
-              disabled={!isFormValid}
-              onPress={handleSubmit(onSubmit)}>
-              <LinearGradient
-                colors={
-                  !isFormValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
-                }
-                {...(isFormValid && {
-                  start: { x: 0, y: 0 },
-                  end: { x: 1, y: 1 },
-                })}
+        {/* Animated Next Button */}
+        <Animated.View
+          style={{
+            opacity: buttonOpacity,
+            position: "absolute", // Make sure the button stays in the same position
+            bottom: insets.bottom + 32, // Ensure there is always padding from the bottom
+            left: 20,
+            right: 20,
+          }}>
+          <TouchableOpacity
+            disabled={!isFormValid}
+            onPress={handleSubmit(onSubmit)}>
+            <LinearGradient
+              colors={
+                !isFormValid ? ["#4F5A5F", "#3A3D3F"] : ["#8E44AD", "#4E73DF"]
+              }
+              {...(isFormValid && {
+                start: { x: 0, y: 0 },
+                end: { x: 1, y: 1 },
+              })}
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 16,
+                borderRadius: 12,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 8,
+                elevation: 3,
+              }}>
+              <View
                 style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 16,
-                  borderRadius: 12,
-                  shadowColor: "#000000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 8,
-                  elevation: 3,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  position: "relative",
                 }}>
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    textAlign: "center",
+                    opacity: isFormValid ? 1 : 0.5,
+                  }}>
+                  {isLoading && (
+                    <ActivityIndicator
+                      size="small"
+                      color="#FFFFFF"
+                      style={{ marginRight: 5 }}
+                    />
+                  )}
+                  {!isLoading && "Next"}
+                </Text>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    position: "relative",
+                    position: "absolute",
+                    right: 0,
                   }}>
-                  <Text
+                  <Ionicons
+                    name="chevron-forward"
+                    size={24}
                     style={{
                       color: "#FFFFFF",
-                      fontWeight: "bold",
-                      fontSize: 20,
-                      textAlign: "center",
                       opacity: isFormValid ? 1 : 0.5,
-                    }}>
-                    {isLoading && (
-                      <ActivityIndicator
-                        size="small"
-                        color="#FFFFFF"
-                        style={{ marginRight: 5 }}
-                      />
-                    )}{" "}
-                    Next
-                  </Text>
-                  <View
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                    }}>
-                    <Ionicons
-                      name="chevron-forward"
-                      size={24}
-                      style={{
-                        color: "#FFFFFF",
-                        opacity: isFormValid ? 1 : 0.5,
-                      }}
-                    />
-                  </View>
+                    }}
+                  />
                 </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </Animated.View>
       </SafeAreaView>
-    </>
+    </TouchableWithoutFeedback>
   );
 }

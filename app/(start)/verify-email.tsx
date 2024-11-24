@@ -7,9 +7,13 @@ import {
   Platform,
   ActivityIndicator,
   Dimensions,
+  Keyboard,
+  Animated,
+  Easing,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React from "react";
-import { Stack, useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
@@ -33,15 +37,52 @@ const schema = z.object({
 });
 
 export default function VerifyEmail() {
+  const params = useLocalSearchParams();
   const [isLoading, setIsLoading] = React.useState(false);
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
-  const [invalidCode, setInvalidCode] = React.useState(false);
+  const [invalidCode, setInvalidCode] = useState(null);
   const _3M = 179;
   const [timeLeft, setTimeLeft] = React.useState(_3M);
   const [isCounting, setIsCounting] = React.useState(false);
   const { isLoaded, signUp, setActive } = useSignUp();
+  const buttonOpacity = useRef(new Animated.Value(1)).current; // Animated value for button opacity
+
+  useEffect(() => {
+    // Keyboard listener to hide/show the button smoothly
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      fadeOutButton // Hide button when keyboard opens
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      fadeInButton // Show button when keyboard closes
+    );
+
+    // Cleanup the listeners on unmount
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const fadeOutButton = () => {
+    Animated.timing(buttonOpacity, {
+      toValue: 0,
+      duration: 0, // Instant disappearance
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeInButton = () => {
+    Animated.timing(buttonOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.inOut(Easing.ease), // Easing for smoothness
+    }).start();
+  };
 
   const {
     control,
@@ -66,6 +107,7 @@ export default function VerifyEmail() {
       }
 
       try {
+        setIsLoading(true);
         const completeSignUp = await signUp.attemptEmailAddressVerification({
           code: data.otp,
         });
@@ -78,10 +120,13 @@ export default function VerifyEmail() {
         }
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
-        Toast.show({
-          type: "error",
-          text1: err.errors[0]?.longMessage || "Invalid OTP",
-        });
+        setInvalidCode(err.errors[0]?.longMessage || "Invalid OTP");
+        // Toast.show({
+        //   type: "error",
+        //   text1: err.errors[0]?.longMessage || "Invalid OTP",
+        // });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -127,20 +172,43 @@ export default function VerifyEmail() {
   };
 
   return (
-    <>
-      <LinearGradient
-        colors={["#4A148C", "#2A2B2A"]}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 0.5, y: 1 }}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
         style={{
           position: "absolute",
           left: 0,
           right: 0,
           top: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
+          flex: 1,
+          width: Dimensions.get("screen").width,
+          height: Dimensions.get("screen").height,
+        }}>
+        <LinearGradient
+          colors={["#4A148C", "#2A2B2A"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            bottom: 280,
+            opacity: 0.25,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 0,
+          }}>
+          <LoginLogo
+            width={Dimensions.get("screen").width / 6.5}
+            height={Dimensions.get("screen").width / 6.5}
+          />
+        </View>
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
@@ -202,21 +270,7 @@ export default function VerifyEmail() {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              backgroundColor: "transparent",
-              alignItems: "center",
-              opacity: 0.25,
-              position: "absolute",
-              bottom: "35%",
-              left: "50%",
-              transform: [{ translateX: -50 }],
-            }}>
-            <LoginLogo
-              width={Dimensions.get("screen").width / 6.5}
-              height={Dimensions.get("screen").width / 6.5}
-            />
-          </View>
+
           <View
             style={{
               backgroundColor: "transparent",
@@ -244,10 +298,11 @@ export default function VerifyEmail() {
                   fontSize: 16,
                   fontWeight: "normal",
                   textAlign: "left",
+                  lineHeight: 24,
                 }}>
-                A verification code has been sent to easxxxxxx@gmail.com. Please
-                enter the code to proceed. If you don't see it in your inbox,
-                kindly check your spam or junk folder.
+                A verification code has been sent to {"\n"}
+                {params?.email}. Please enter the code to proceed. If you don't
+                see it in your inbox, kindly check your spam or junk folder.
               </Text>
               <View style={{ gap: 12 }}>
                 <FormInput
@@ -264,7 +319,7 @@ export default function VerifyEmail() {
                         fontWeight: "normal",
                         fontSize: 14,
                       }}>
-                      The code you entered does not match.{" "}
+                      {invalidCode}
                     </Text>
                   </View>
                 )}
@@ -308,7 +363,15 @@ export default function VerifyEmail() {
               </View>
             </View>
 
-            <View style={{ paddingBottom: insets.bottom + 32 }}>
+            {/* Animated Next Button */}
+            <Animated.View
+              style={{
+                opacity: buttonOpacity,
+                position: "absolute", // Make sure the button stays in the same position
+                bottom: insets.bottom + 32, // Ensure there is always padding from the bottom
+                left: 20,
+                right: 20,
+              }}>
               <TouchableOpacity
                 disabled={!isFormValid}
                 onPress={handleSubmit(onSubmit)}>
@@ -353,7 +416,7 @@ export default function VerifyEmail() {
                           style={{ marginRight: 5 }}
                         />
                       )}{" "}
-                      Next
+                      {!isLoading && "Confirm and login"}
                     </Text>
                     <View
                       style={{
@@ -372,10 +435,10 @@ export default function VerifyEmail() {
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
-            </View>
+            </Animated.View>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
-    </>
+    </TouchableWithoutFeedback>
   );
 }
