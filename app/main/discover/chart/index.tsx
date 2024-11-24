@@ -129,6 +129,8 @@ export const StockListItem = ({
   const borderColor = useThemeColor({}, "border");
   const l004662 = useThemeColor({}, "l004662");
   const router = useRouter();
+  const [currentAlarm, setCurrentAlarm] = useState<any>(null);
+  const [currentAiAlarm, setCurrentAiAlarm] = useState<any>(null);
   const {
     setRefreashFav,
     refreashFav,
@@ -137,17 +139,16 @@ export const StockListItem = ({
     mainServerAvailable,
     selectedStock,
     setSelectedStock,
+    selectedAlarmShit,
+    setSelectedAlarmShit,
   } = useUi();
   const textColor = useThemeColor({}, "text");
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
   const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
     useChat();
   const { getToken } = useAuth();
   const client = apiClient();
   const isFav = favs?.find((fav: any) => fav.symbol === name);
-  const currentAlarm = alerms?.find((alerm: any) => alerm.symbol === name);
-  const currentAiAlerm = aiAlerms?.find((alerm: any) => alerm.symbol === name);
+
   // const [targetPrice, setTargetPrice] = useState(
   //   currentAlarm ? `${currentAlarm.price}` : ""
   // );
@@ -200,6 +201,17 @@ export const StockListItem = ({
       value: trading,
     },
   ];
+
+  useEffect(() => {
+    if (Array.isArray(alerms)) {
+      const cAlarm = alerms?.find((a: any) => a.symbol == name);
+      setCurrentAlarm(cAlarm);
+    }
+    if (Array.isArray(aiAlerms)) {
+      const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == name);
+      setCurrentAiAlarm(cAiAlerm);
+    }
+  }, [alerms, aiAlerms]);
 
   return (
     <View>
@@ -545,38 +557,6 @@ export const StockListItem = ({
                 Chart
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isDark ? "#333333" : "#EAEDED",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-              }}
-              onPress={showModal}>
-              <Text style={{ color: "white" }}>
-                {currentAlarm ? (
-                  <MaterialIcons
-                    color="#CE1300"
-                    name="edit-notifications"
-                    size={14}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={"bell-plus"}
-                    size={14}
-                    color={isDark ? "#ffffff" : "#5188D4"}
-                  />
-                )}
-              </Text>a
-              <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm ? "Edit Alerm" : "Set Alarm"}
-              </Text>
-            </TouchableOpacity> */}
 
             <TouchableOpacity
               style={{
@@ -591,6 +571,7 @@ export const StockListItem = ({
               }}
               onPress={() => {
                 sheetRef?.current?.expand();
+                setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
                   name,
                   price,
@@ -603,7 +584,7 @@ export const StockListItem = ({
                 setCompanyName(name);
               }}>
               <Text style={{ color: "white" }}>
-                {currentAlarm || currentAiAlerm ? (
+                {currentAlarm || currentAiAlarm ? (
                   <MaterialIcons
                     color="#CE1300"
                     name="edit-notifications"
@@ -619,7 +600,7 @@ export const StockListItem = ({
               </Text>
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm || currentAiAlerm ? "Edit Alerm" : "Set Alarm"}
+                {currentAlarm || currentAiAlarm ? "Edit Alerm" : "Set Alarm"}
               </Text>
             </TouchableOpacity>
 
@@ -662,6 +643,505 @@ export const StockListItem = ({
   );
 };
 
+export const AlarmBottomSheet = ({
+  bottomSheetRef,
+  isDark,
+  currentAlarm,
+  setActiveTab,
+  activeTab,
+  textColor,
+  targetPrice,
+  setTargetPrice,
+  inputText,
+  currentAiAlerm,
+  setInputText,
+  error,
+  handelSetAlerm,
+  loading,
+  handelDeleteAlerm,
+  handelSetAiAlerm,
+  handelDeleteAiAlerm,
+}: any) => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+        backgroundColor: isDark ? "#3A3A3C" : "#4197E5",
+        paddingTop: 1,
+      }}>
+      <LinearGradient
+        colors={isDark ? ["#1C1C1E", "#2A2A2D"] : ["#FFFFFF", "#F3F4F6"]}
+        style={{
+          flex: 1,
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+          paddingTop: 1,
+          // borderTopWidth: 1,
+          // borderTopColor: isDark ? "#3A3A3C" : "#CFCFCF",
+        }}>
+        {/* close button */}
+        <View
+          style={{
+            backgroundColor: "transparent",
+            paddingHorizontal: 14,
+            paddingVertical: 14,
+          }}>
+          <TouchableOpacity
+            onPress={() => bottomSheetRef.current?.close()}
+            style={{
+              position: "relative",
+              alignSelf: "flex-end",
+              backgroundColor: "transparent",
+            }}>
+            <AntDesign
+              name="close"
+              size={20}
+              color={isDark ? "white" : "black"}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* tabs */}
+        <View
+          style={{
+            backgroundColor: "transparent",
+            paddingHorizontal: 14,
+          }}>
+          <View
+            style={{
+              backgroundColor: "transparent",
+              flexDirection: "row",
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setActiveTab("priceAlarm");
+              }}
+              style={{
+                backgroundColor: isDark
+                  ? activeTab === "priceAlarm"
+                    ? "#245254"
+                    : "#2A2A2D"
+                  : activeTab === "priceAlarm"
+                  ? "#D6F7F9"
+                  : "#E0E0E0",
+                padding: 12,
+                borderTopLeftRadius: 12,
+                borderBottomLeftRadius: 12,
+                width: "50%",
+              }}>
+              <Text
+                style={{
+                  color: isDark
+                    ? activeTab === "priceAlarm"
+                      ? "#FFFFFF"
+                      : "#D1D1D1"
+                    : activeTab === "priceAlarm"
+                    ? "#00796B"
+                    : "#757575",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  textAlign: "center",
+                }}>
+                Price alarm
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setActiveTab("aiAlarm");
+              }}
+              style={{
+                backgroundColor: isDark
+                  ? activeTab === "aiAlarm"
+                    ? "#245254"
+                    : "#2A2A2D"
+                  : activeTab === "aiAlarm"
+                  ? "#D6F7F9"
+                  : "#E0E0E0",
+                padding: 12,
+                borderTopRightRadius: 12,
+                borderBottomRightRadius: 12,
+                width: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                alignContent: "center",
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    width: 20,
+                    height: 20,
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginRight: 5,
+                  }}>
+                  {activeTab === "aiAlarm" ? (
+                    <MagicIcon />
+                  ) : isDark ? (
+                    <MagicInactiveDark />
+                  ) : (
+                    <MagicInactiveLight />
+                  )}
+                </View>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: -1,
+                  }}>
+                  <Text
+                    style={{
+                      color: isDark
+                        ? activeTab === "aiAlarm"
+                          ? "#FFFFFF"
+                          : "#D1D1D1"
+                        : activeTab === "aiAlarm"
+                        ? "#00796B"
+                        : "#757575",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                      textAlign: "center",
+                      justifyContent: "center",
+                      alignContent: "center",
+                    }}>
+                    Ai alarm
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* content */}
+        <View
+          style={{
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+            flex: 1,
+            backgroundColor: "transparent",
+            marginTop: 28, //40 top to tabs
+          }}>
+          <BottomSheetScrollView
+            contentContainerStyle={{
+              backgroundColor: "transparent",
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+              }}>
+              {activeTab === "priceAlarm" && (
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    gap: 12,
+                  }}>
+                  <Text
+                    style={{
+                      color: isDark ? "#F5F5F5" : "#424242",
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}>
+                    Enter Price {currentAlarm?.price}
+                  </Text>
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
+                      borderRadius: 8,
+                      borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
+                    }}>
+                    <TextInput
+                      maxLength={8}
+                      style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 12,
+                        textAlign: "center",
+                        color: textColor,
+                        fontSize: 16,
+                      }}
+                      placeholder="00:00"
+                      placeholderTextColor="#888"
+                      value={targetPrice || `${currentAlarm?.price || ""}`}
+                      onChangeText={(text) =>
+                        setTargetPrice(text.replace(/[^0-9.]/g, ""))
+                      }
+                      keyboardType="numeric"
+                    />
+                  </View>
+                </View>
+              )}
+
+              {activeTab === "aiAlarm" && (
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    gap: 12,
+                  }}>
+                  <Text
+                    style={{
+                      color: isDark ? "#F5F5F5" : "#424242",
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}>
+                    Type your Instruction
+                  </Text>
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
+                      borderRadius: 8,
+                      borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
+                    }}>
+                    <TextInput
+                      multiline
+                      maxLength={120}
+                      style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 12,
+                        textAlign: "left",
+                        color: textColor,
+                        minHeight: 80,
+                        maxHeight: 100,
+                        fontSize: 16,
+                      }}
+                      placeholder="If market go 50% above the moving avarage give em signal also if this stock perform so goodthen  give em signal"
+                      placeholderTextColor="#888"
+                      value={inputText || `${currentAiAlerm?.prompt || ""}`}
+                      onChangeText={setInputText}
+                      // editable={false}
+                      returnKeyType="send"
+                    />
+                  </View>
+
+                  {error && (
+                    <Text
+                      style={{
+                        color: "#CE1300",
+                        fontSize: 14,
+                      }}>
+                      {error}
+                    </Text>
+                  )}
+
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: isDark ? "#D1D1D1" : "#595959",
+                    }}>
+                    Kindly provide clear, stock-related instructions{" "}
+                    <Text
+                      style={{
+                        color:
+                          inputText.length === 120
+                            ? "#CE1300"
+                            : isDark
+                            ? "#D1D1D1"
+                            : "#595959",
+                      }}>
+                      within 120 characters
+                    </Text>
+                    . The AI will monitor your stock continuously and notify you
+                    once your specified condition is met. Ensure your
+                    instructions focus exclusively on stock-related events to
+                    receive accurate and timely alerts.
+                  </Text>
+                </View>
+              )}
+            </View>
+          </BottomSheetScrollView>
+        </View>
+
+        {/* bottom actions */}
+        {activeTab === "priceAlarm" && (
+          <View
+            style={{
+              paddingHorizontal: 14,
+              paddingBottom: 14,
+              backgroundColor: "transparent",
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                gap: 12,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  handelSetAlerm();
+                }}
+                // disabled={}
+                style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
+                  }
+                  style={{
+                    paddingHorizontal: 4,
+                    paddingVertical: 16,
+                    borderRadius: 12,
+                  }}>
+                  {loading && (
+                    <ActivityIndicator
+                      size="small"
+                      color="#FFFFFF"
+                      style={{ marginRight: 5 }}
+                    />
+                  )}
+                  {!loading && (
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        textAlign: "center",
+                        height: 19,
+                      }}>
+                      Set alarm
+                    </Text>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+              {currentAlarm && (
+                <TouchableOpacity
+                  onPress={() => {
+                    handelDeleteAlerm();
+                  }}>
+                  <LinearGradient
+                    colors={
+                      isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
+                    }
+                    style={{
+                      paddingHorizontal: 4,
+                      paddingVertical: 16,
+                      borderRadius: 12,
+                    }}>
+                    {loading && (
+                      <ActivityIndicator
+                        size="small"
+                        color="#FFFFFF"
+                        style={{ marginRight: 5 }}
+                      />
+                    )}
+                    {!loading && (
+                      <Text
+                        style={{
+                          color: "#FFFFFF",
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          textAlign: "center",
+                          height: 19,
+                        }}>
+                        Delete alarm
+                      </Text>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+        {activeTab === "aiAlarm" && (
+          <View
+            style={{
+              paddingHorizontal: 14,
+              paddingBottom: 14,
+              backgroundColor: "transparent",
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                gap: 12,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  handelSetAiAlerm();
+                }}
+                disabled={inputText?.length === 0 ? true : false}
+                style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
+                  }
+                  style={{
+                    paddingHorizontal: 4,
+                    paddingVertical: 16,
+                    borderRadius: 12,
+                  }}>
+                  {loading && (
+                    <ActivityIndicator
+                      size="small"
+                      color="#FFFFFF"
+                      style={{ marginRight: 5 }}
+                    />
+                  )}
+                  {!loading && (
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        textAlign: "center",
+                        height: 19,
+                      }}>
+                      Set alarm
+                    </Text>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+
+              {currentAiAlerm && (
+                <TouchableOpacity
+                  onPress={() => {
+                    handelDeleteAiAlerm();
+                  }}>
+                  <LinearGradient
+                    colors={
+                      isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
+                    }
+                    style={{
+                      paddingHorizontal: 4,
+                      paddingVertical: 16,
+                      borderRadius: 12,
+                    }}>
+                    {loading && (
+                      <ActivityIndicator
+                        size="small"
+                        color="#FFFFFF"
+                        style={{ marginRight: 5 }}
+                      />
+                    )}
+                    {!loading && (
+                      <Text
+                        style={{
+                          color: "#FFFFFF",
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          textAlign: "center",
+                          height: 19,
+                        }}>
+                        Delete alarm
+                      </Text>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+      </LinearGradient>
+    </View>
+  );
+};
 const StockListScreen = () => {
   const { language } = useLang();
   const isBn = language === "Bn";
@@ -675,6 +1155,7 @@ const StockListScreen = () => {
     setRefreashFav,
     refreashFav,
     selectedStock,
+    selectedAlarmShit,
   } = useUi();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading2, setIsLoading2] = useState(true);
@@ -689,7 +1170,7 @@ const StockListScreen = () => {
   const [aiAlerms, setAiAlerms] = useState([]);
   const [activeTab, setActiveTab] = useState("priceAlarm");
   const [inputText, setInputText] = useState("");
-
+  const [error, setError] = useState(null);
   const { getToken } = useAuth();
   const client = apiClient();
   const router = useRouter();
@@ -727,7 +1208,6 @@ const StockListScreen = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading2(false);
     }
   };
 
@@ -814,6 +1294,7 @@ const StockListScreen = () => {
       });
     }
     try {
+      setError(null);
       setLoading(true);
       const token = await getToken();
       await client.post(
@@ -837,10 +1318,7 @@ const StockListScreen = () => {
       bottomSheetRef.current?.close();
     } catch (error: any) {
       console.log(error.response?.data);
-      Toast.show({
-        type: "error",
-        text1: error.response?.data?.detail,
-      });
+      setError(error.response?.data?.detail);
     } finally {
       setLoading(false);
     }
@@ -929,9 +1407,13 @@ const StockListScreen = () => {
   }, []);
 
   const [companyName, setCompanyName] = useState(null);
-  const [currentAlarm, setCurrentAlarm] = useState<any>(
-    alerms?.find((alerm: any) => alerm.symbol === companyName)
+  const currentAlarm: any = alerms?.find(
+    (alerm: any) => alerm.symbol === companyName
   );
+  const currentAiAlerm: any = aiAlerms?.find(
+    (alerm: any) => alerm.symbol === companyName
+  );
+
   const [targetPrice, setTargetPrice] = useState(
     currentAlarm ? `${currentAlarm?.price}` : ""
   );
@@ -1111,443 +1593,25 @@ const StockListScreen = () => {
         style={{
           backgroundColor: "transparent",
         }}>
-        <View
-          style={{
-            flex: 1,
-            borderTopLeftRadius: 28,
-            borderTopRightRadius: 28,
-            backgroundColor: isDark ? "#3A3A3C" : "#4197E5",
-            paddingTop: 1,
-          }}>
-          <LinearGradient
-            colors={isDark ? ["#1C1C1E", "#2A2A2D"] : ["#FFFFFF", "#F3F4F6"]}
-            style={{
-              flex: 1,
-              borderTopLeftRadius: 28,
-              borderTopRightRadius: 28,
-              paddingTop: 1,
-              // borderTopWidth: 1,
-              // borderTopColor: isDark ? "#3A3A3C" : "#CFCFCF",
-            }}>
-            {/* close button */}
-            <View
-              style={{
-                backgroundColor: "transparent",
-                paddingHorizontal: 14,
-                paddingVertical: 14,
-              }}>
-              <TouchableOpacity
-                onPress={() => bottomSheetRef.current?.close()}
-                style={{
-                  position: "relative",
-                  alignSelf: "flex-end",
-                  backgroundColor: "transparent",
-                }}>
-                <AntDesign
-                  name="close"
-                  size={20}
-                  color={isDark ? "white" : "black"}
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* tabs */}
-            <View
-              style={{
-                backgroundColor: "transparent",
-                paddingHorizontal: 14,
-              }}>
-              <View
-                style={{
-                  backgroundColor: "transparent",
-                  flexDirection: "row",
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveTab("priceAlarm");
-                  }}
-                  style={{
-                    backgroundColor: isDark
-                      ? activeTab === "priceAlarm"
-                        ? "#245254"
-                        : "#2A2A2D"
-                      : activeTab === "priceAlarm"
-                      ? "#D6F7F9"
-                      : "#E0E0E0",
-                    padding: 12,
-                    borderTopLeftRadius: 12,
-                    borderBottomLeftRadius: 12,
-                    width: "50%",
-                  }}>
-                  <Text
-                    style={{
-                      color: isDark
-                        ? activeTab === "priceAlarm"
-                          ? "#FFFFFF"
-                          : "#D1D1D1"
-                        : activeTab === "priceAlarm"
-                        ? "#00796B"
-                        : "#757575",
-                      fontWeight: "bold",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}>
-                    Price alarm
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveTab("aiAlarm");
-                  }}
-                  style={{
-                    backgroundColor: isDark
-                      ? activeTab === "aiAlarm"
-                        ? "#245254"
-                        : "#2A2A2D"
-                      : activeTab === "aiAlarm"
-                      ? "#D6F7F9"
-                      : "#E0E0E0",
-                    padding: 12,
-                    borderTopRightRadius: 12,
-                    borderBottomRightRadius: 12,
-                    width: "50%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignContent: "center",
-                  }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      backgroundColor: "transparent",
-                      justifyContent: "center",
-                      alignContent: "center",
-                    }}>
-                    <View
-                      style={{
-                        backgroundColor: "transparent",
-                        width: 20,
-                        height: 20,
-                        justifyContent: "center",
-                        alignContent: "center",
-                        marginRight: 5,
-                      }}>
-                      {activeTab === "aiAlarm" ? (
-                        <MagicIcon />
-                      ) : isDark ? (
-                        <MagicInactiveDark />
-                      ) : (
-                        <MagicInactiveLight />
-                      )}
-                    </View>
-                    <View
-                      style={{
-                        backgroundColor: "transparent",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        marginTop: -1,
-                      }}>
-                      <Text
-                        style={{
-                          color: isDark
-                            ? activeTab === "aiAlarm"
-                              ? "#FFFFFF"
-                              : "#D1D1D1"
-                            : activeTab === "aiAlarm"
-                            ? "#00796B"
-                            : "#757575",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                          justifyContent: "center",
-                          alignContent: "center",
-                        }}>
-                        Ai alarm
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* content */}
-            <View
-              style={{
-                paddingHorizontal: 14,
-                paddingVertical: 12,
-                flex: 1,
-                backgroundColor: "transparent",
-                marginTop: 28, //40 top to tabs
-              }}>
-              <BottomSheetScrollView
-                contentContainerStyle={{
-                  backgroundColor: "transparent",
-                }}>
-                <View
-                  style={{
-                    backgroundColor: "transparent",
-                  }}>
-                  {activeTab === "priceAlarm" && (
-                    <View
-                      style={{
-                        backgroundColor: "transparent",
-                        gap: 12,
-                      }}>
-                      <Text
-                        style={{
-                          color: isDark ? "#F5F5F5" : "#424242",
-                          fontSize: 16,
-                          fontWeight: "600",
-                        }}>
-                        Enter Price
-                      </Text>
-                      <View
-                        style={{
-                          borderWidth: 1,
-                          backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
-                          borderRadius: 8,
-                          borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
-                        <TextInput
-                          maxLength={8}
-                          style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 12,
-                            textAlign: "center",
-                            color: textColor,
-                            fontSize: 16,
-                          }}
-                          placeholder="00:00"
-                          placeholderTextColor="#888"
-                          value={targetPrice}
-                          onChangeText={(text) =>
-                            setTargetPrice(text.replace(/[^0-9.]/g, ""))
-                          }
-                          keyboardType="numeric"
-                        />
-                      </View>
-                    </View>
-                  )}
-
-                  {activeTab === "aiAlarm" && (
-                    <View
-                      style={{
-                        backgroundColor: "transparent",
-                        gap: 12,
-                      }}>
-                      <Text
-                        style={{
-                          color: isDark ? "#F5F5F5" : "#424242",
-                          fontSize: 16,
-                          fontWeight: "600",
-                        }}>
-                        Type your Instruction
-                      </Text>
-                      <View
-                        style={{
-                          borderWidth: 1,
-                          backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
-                          borderRadius: 8,
-                          borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
-                        <TextInput
-                          multiline
-                          maxLength={120}
-                          style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 12,
-                            textAlign: "left",
-                            color: textColor,
-                            minHeight: 80,
-                            maxHeight: 100,
-                            fontSize: 16,
-                          }}
-                          placeholder="If market go 50% above the moving avarage give em signal also if this stock perform so goodthen  give em signal"
-                          placeholderTextColor="#888"
-                          value={inputText}
-                          onChangeText={setInputText}
-                          // editable={false}
-                          returnKeyType="send"
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          color: "#CE1300",
-                          fontSize: 14,
-                        }}>
-                        Instruction unclear. Ensure it’s related to stock market
-                        events.
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: isDark ? "#D1D1D1" : "#595959",
-                        }}>
-                        Kindly provide clear, stock-related instructions{" "}
-                        <Text
-                          style={{
-                            color:
-                              inputText.length === 120
-                                ? "#CE1300"
-                                : isDark
-                                ? "#D1D1D1"
-                                : "#595959",
-                          }}>
-                          within 120 characters
-                        </Text>
-                        . The AI will monitor your stock continuously and notify
-                        you once your specified condition is met. Ensure your
-                        instructions focus exclusively on stock-related events
-                        to receive accurate and timely alerts.
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              </BottomSheetScrollView>
-            </View>
-
-            {/* bottom actions */}
-            {activeTab === "priceAlarm" && (
-              <View
-                style={{
-                  paddingHorizontal: 14,
-                  paddingBottom: 14,
-                  backgroundColor: "transparent",
-                }}>
-                <View
-                  style={{
-                    backgroundColor: "transparent",
-                    gap: 12,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handelSetAlerm();
-                    }}
-                    // disabled={}
-                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
-                    <LinearGradient
-                      colors={
-                        isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
-                      }
-                      style={{
-                        paddingHorizontal: 4,
-                        paddingVertical: 16,
-                        borderRadius: 12,
-                      }}>
-                      <Text
-                        style={{
-                          color: "#FFFFFF",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                          height: 19,
-                        }}>
-                        Set alarm
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                  {currentAlarm && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        handelDeleteAlerm();
-                      }}>
-                      <LinearGradient
-                        colors={
-                          isDark
-                            ? ["#D64B4B", "#8F2B2B"]
-                            : ["#EF9A9A", "#D32F2F"]
-                        }
-                        style={{
-                          paddingHorizontal: 4,
-                          paddingVertical: 16,
-                          borderRadius: 12,
-                        }}>
-                        <Text
-                          style={{
-                            color: "#FFFFFF",
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            textAlign: "center",
-                            height: 19,
-                          }}>
-                          Delete alarm
-                        </Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            )}
-            {activeTab === "aiAlarm" && (
-              <View
-                style={{
-                  paddingHorizontal: 14,
-                  paddingBottom: 14,
-                  backgroundColor: "transparent",
-                }}>
-                <View
-                  style={{
-                    backgroundColor: "transparent",
-                    gap: 12,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handelSetAiAlerm();
-                    }}
-                    // disabled={}
-                    style={{ opacity: 0.5 }}>
-                    <LinearGradient
-                      colors={
-                        isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
-                      }
-                      style={{
-                        paddingHorizontal: 4,
-                        paddingVertical: 16,
-                        borderRadius: 12,
-                      }}>
-                      <Text
-                        style={{
-                          color: "#FFFFFF",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                        }}>
-                        Set alarm
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      handelDeleteAiAlerm();
-                    }}>
-                    <LinearGradient
-                      colors={
-                        isDark ? ["#D64B4B", "#8F2B2B"] : ["#EF9A9A", "#D32F2F"]
-                      }
-                      style={{
-                        paddingHorizontal: 4,
-                        paddingVertical: 16,
-                        borderRadius: 12,
-                      }}>
-                      <Text
-                        style={{
-                          color: "#FFFFFF",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                          height: 19,
-                        }}>
-                        Delete alarm
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-          </LinearGradient>
-        </View>
+        <AlarmBottomSheet
+          bottomSheetRef={bottomSheetRef}
+          isDark={isDark}
+          currentAlarm={currentAlarm}
+          setActiveTab={activeTab}
+          activeTab={activeTab}
+          textColor={textColor}
+          targetPrice={targetPrice}
+          setTargetPrice={setTargetPrice}
+          inputText={inputText}
+          currentAiAlerm={currentAiAlerm}
+          setInputText={setInputText}
+          error={error}
+          handelSetAlerm={handelSetAlerm}
+          loading={loading}
+          handelDeleteAlerm={handelDeleteAlerm}
+          handelSetAiAlerm={handelSetAiAlerm}
+          handelDeleteAiAlerm={handelDeleteAiAlerm}
+        />
       </BottomSheet>
     </SafeAreaView>
   );

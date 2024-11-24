@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,8 @@ const FormInput = ({
   inputMode = "text",
   icon,
   type,
+  focus,
+  onFocus,
 }: {
   control: any;
   name: string;
@@ -30,8 +32,18 @@ const FormInput = ({
   inputMode?: "email" | "none" | "numeric" | "search" | "tel" | "text" | "url";
   icon?: ReactNode;
   type?: string;
+  focus?: boolean;
+  onFocus?: () => void;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+
+  // Automatically focus the input field if the `focus` prop is passed as true
+  useEffect(() => {
+    if (focus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [focus]);
 
   return (
     <Controller
@@ -59,6 +71,7 @@ const FormInput = ({
               backgroundColor: "transparent",
             }}>
             <TextInput
+              ref={inputRef} // Attach the ref to the TextInput
               style={[
                 styles.input,
                 { paddingRight: icon ? 44 : 12 },
@@ -73,7 +86,12 @@ const FormInput = ({
                 onBlur();
                 setIsFocused(false);
               }}
-              onFocus={() => setIsFocused(true)}
+              onFocus={() => {
+                setIsFocused(true);
+                if (onFocus) {
+                  onFocus(); // Trigger the onFocus callback if provided
+                }
+              }}
               onChangeText={onChange}
               value={value}
               inputMode={inputMode}

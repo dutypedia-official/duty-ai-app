@@ -8,11 +8,14 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Animated,
+  Easing,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Stack, useRouter } from "expo-router";
-import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import { useThemeColor, SafeAreaView } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/FormInput";
 import { useSignUp } from "@clerk/clerk-expo";
 import Toast from "react-native-toast-message";
+import { ScrollView } from "react-native-gesture-handler";
 
 const schema = z
   .object({
@@ -51,7 +55,7 @@ const schema = z
     path: ["retypePassword"], // Focus the error on retypePassword
   });
 
-export default function Forgot() {
+export default function SignupForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [isLoading, setIsLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -59,9 +63,40 @@ export default function Forgot() {
   const [name, setName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [nameError, setNameError] = useState<any>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // State to track keyboard visibility
+  const buttonOpacity = useRef(new Animated.Value(1)).current; // Ref for button opacity
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
+
+  useEffect(() => {
+    // Add event listeners for keyboard show and hide
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        fadeInButton();
+        setIsKeyboardVisible(false);
+      }
+    );
+
+    // Clean up listeners when component unmounts
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const fadeOutButton = () => {
+    buttonOpacity.setValue(0); // Set to zero immediately to hide
+  };
+
+  const fadeInButton = () => {
+    Animated.timing(buttonOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.inOut(Easing.ease), // Use easing to smooth the animation
+    }).start();
+  };
 
   useEffect(() => {
     if (name === "") {
@@ -128,6 +163,7 @@ export default function Forgot() {
   const handleFocus = () => {
     setIsFocused(true);
     setNameError(null);
+    fadeOutButton(); // Immediately hide button when input is focused
   };
 
   const {
@@ -156,16 +192,20 @@ export default function Forgot() {
       }
 
       try {
+        setIsLoading(true);
         await signUp.create({
           emailAddress: data.email,
           password: data.password,
           firstName: name,
         });
-        setIsLoading(true);
+
         await signUp.prepareEmailAddressVerification({
           strategy: "email_code",
         });
-        router.push("/verify-email");
+        router.push({
+          pathname: "/verify-email",
+          params: { email: data.email },
+        });
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
         Toast.show({
@@ -179,252 +219,253 @@ export default function Forgot() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-          title: "Signup Form",
-          headerStyle: {
-            backgroundColor: bgColor,
-          },
-        }}
-      />
-      <LinearGradient
-        colors={["#4A148C", "#2A2B2A"]}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 0.5, y: 1 }}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
         style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-      <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 60} // Adjust as needed
+          flex: 1,
+          backgroundColor: "transparent",
+        }}>
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            title: "Signup Form",
+            headerStyle: {
+              backgroundColor: bgColor,
+            },
+          }}
+        />
+        <View
           style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
             flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
           }}>
+          <LinearGradient
+            colors={["#4A148C", "#2A2B2A"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+            }}
+          />
           <View
             style={{
-              // paddingTop: insets.top,
-              backgroundColor: "transparent",
-              marginLeft: 20,
-              paddingVertical: 10,
               position: "absolute",
-              zIndex: 10,
+              bottom: 280,
+              opacity: 0.25,
+              left: 0,
+              right: 0,
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 0,
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                router.back();
-              }}
-              style={
-                {
-                  // position: "absolute",
-                }
-              }>
-              <LinearGradient
-                colors={["#6A4E9D", "#8E44AD"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
+            <LoginLogo
+              width={Dimensions.get("screen").width / 6.5}
+              height={Dimensions.get("screen").width / 6.5}
+            />
+          </View>
+        </View>
+
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <SafeAreaView
+            style={{
+              flex: 1,
+              backgroundColor: "transparent",
+            }}>
+            <View
+              style={{
+                position: "absolute",
+                top: insets.top,
+                backgroundColor: "transparent",
+                marginLeft: 20,
+                zIndex: 10,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  router.back();
+                }}
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: 50,
-                  shadowColor: "#000000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 5,
-                  width: 36,
-                  height: 36,
+                  position: "absolute",
+                  top: 10,
                 }}>
-                <Text>
+                <LinearGradient
+                  colors={["#6A4E9D", "#8E44AD"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 50,
+                    shadowColor: "#000000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 5,
+                    width: 36,
+                    height: 36,
+                  }}>
                   <Ionicons
                     name="chevron-back"
                     size={24}
                     style={{ color: "#FFFFFF" }}
                   />
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              backgroundColor: "transparent",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: 0.25,
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-            }}>
-            <View
-              style={{
-                transform: [{ translateY: 100 }],
-              }}>
-              <LoginLogo
-                width={Dimensions.get("screen").width / 6.5}
-                height={Dimensions.get("screen").width / 6.5}
-              />
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
-          </View>
-          <ScrollView style={{ flex: 1 }}>
-            <View
-              style={{
-                backgroundColor: "transparent",
-                paddingHorizontal: 20,
-                paddingTop: insets.top + 40,
-                justifyContent: "space-between",
-                flex: 1,
-              }}>
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                paddingBottom: Platform.OS === "ios" ? 0 : 60,
+              }}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}>
               <View
                 style={{
                   gap: 24,
+                  paddingHorizontal: 20,
+                  flex: 1,
+                  paddingTop:
+                    Platform.OS === "ios" ? insets.top + 20 : insets.top + 40,
+                  justifyContent: "space-between",
                 }}>
-                <Text
-                  style={{
-                    color: "#FFFFFF",
-                    fontSize: 32,
-                    fontWeight: "bold",
-                    textAlign: "left",
-                  }}>
-                  Please enter your email, name, and password
-                </Text>
-                <View
-                  style={{
-                    backgroundColor: "transparent",
-                    gap: 2,
-                  }}>
+                <View style={{ gap: 24 }}>
                   <Text
                     style={{
-                      color: "#ECECEC",
-                      fontSize: 16,
-                      fontWeight: "normal",
+                      color: "#FFFFFF",
+                      fontSize: 32,
+                      fontWeight: "bold",
                       textAlign: "left",
                     }}>
-                    Email Privacy: Your email is used only for verification.
+                    Please enter your email, name, and password
                   </Text>
-                  <Text
+                  <View
                     style={{
-                      color: "#ECECEC",
-                      fontSize: 16,
-                      fontWeight: "normal",
-                      textAlign: "left",
+                      backgroundColor: "transparent",
+                      gap: 2,
                     }}>
-                    Name: Use 4-20 alphabetic characters.
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#ECECEC",
-                      fontSize: 16,
-                      fontWeight: "normal",
-                      textAlign: "left",
-                    }}>
-                    Password: 8-20 characters for strong security.
-                  </Text>
-                </View>
-                <View style={{ gap: 12 }}>
-                  <FormInput
-                    control={control}
-                    name="email"
-                    label="Email"
-                    placeholder="Type email"
-                  />
-                  <View style={{ backgroundColor: "transparent" }}>
                     <Text
                       style={{
-                        color: "#FFFFFF",
+                        color: "#ECECEC",
                         fontSize: 16,
-                        marginBottom: 8,
+                        fontWeight: "normal",
+                        textAlign: "left",
+                        lineHeight: 24,
                       }}>
-                      Your Name
+                      Email Privacy: Your email is used only for verification.
+                      {"\n"}Name: Use 4-20 alphabetic characters. {"\n"}
+                      Password: 8-20 characters for strong security.
                     </Text>
-
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { paddingRight: 12 },
-                        isFocused && styles.focusedInput,
-                      ]}
-                      placeholder={"Your name"}
-                      placeholderTextColor="#BDC3C7"
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      onChangeText={setName}
-                      value={name}
-                    />
-
-                    {nameError && (
-                      <Text style={styles.errorText}>{nameError}</Text>
-                    )}
                   </View>
-                  <FormInput
-                    control={control}
-                    name="password"
-                    label="Password"
-                    placeholder="Type Password"
-                    secureTextEntry={!showPass}
-                    type={"password"}
-                    icon={
-                      <TouchableOpacity
-                        onPress={() => setShowPass(!showPass)}
+                  <View style={{ gap: 12, zIndex: 20, position: "relative" }}>
+                    <FormInput
+                      control={control}
+                      name="email"
+                      label="Email"
+                      placeholder="Type email"
+                      onFocus={handleFocus} // Hide button immediately
+                    />
+                    <View style={{ backgroundColor: "transparent" }}>
+                      <Text
                         style={{
-                          position: "absolute",
-                          right: 15, // Padding from the right
-                          top: "50%", // Center vertically
-                          transform: [{ translateY: -12 }], // Adjust for icon size
-                          zIndex: 10,
+                          color: "#FFFFFF",
+                          fontSize: 16,
+                          marginBottom: 8,
                         }}>
-                        <Ionicons
-                          name={!showPass ? "eye" : "eye-off"}
-                          size={24}
-                          color="#BDC3C7"
-                        />
-                      </TouchableOpacity>
-                    }
-                  />
-                  <FormInput
-                    control={control}
-                    name="retypePassword"
-                    label="Retype"
-                    placeholder="Retype Password"
-                    secureTextEntry={!showRePass}
-                    icon={
-                      <TouchableOpacity
-                        onPress={() => setShowRePass(!showRePass)}
-                        style={{
-                          position: "absolute",
-                          right: 15, // Padding from the right
-                          top: "50%", // Center vertically
-                          transform: [{ translateY: -12 }], // Adjust for icon size
-                          zIndex: 10,
-                        }}>
-                        <Ionicons
-                          name={!showRePass ? "eye" : "eye-off"}
-                          size={24}
-                          color="#BDC3C7"
-                        />
-                      </TouchableOpacity>
-                    }
-                  />
+                        Your Name
+                      </Text>
+
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { paddingRight: 12 },
+                          isFocused && styles.focusedInput,
+                        ]}
+                        placeholder={"Your name"}
+                        placeholderTextColor="#BDC3C7"
+                        onBlur={handleBlur}
+                        onFocus={handleFocus}
+                        onChangeText={setName}
+                        value={name}
+                      />
+
+                      {nameError && (
+                        <Text style={styles.errorText}>{nameError}</Text>
+                      )}
+                    </View>
+                    <FormInput
+                      control={control}
+                      name="password"
+                      label="Password"
+                      placeholder="Type Password"
+                      secureTextEntry={!showPass}
+                      type={"password"}
+                      icon={
+                        <TouchableOpacity
+                          onPress={() => setShowPass(!showPass)}
+                          style={{
+                            position: "absolute",
+                            right: 15,
+                            top: "50%",
+                            transform: [{ translateY: -12 }],
+                            zIndex: 10,
+                          }}>
+                          <Ionicons
+                            name={!showPass ? "eye" : "eye-off"}
+                            size={24}
+                            color="#BDC3C7"
+                          />
+                        </TouchableOpacity>
+                      }
+                      onFocus={handleFocus} // Hide button immediately
+                    />
+                    <FormInput
+                      control={control}
+                      name="retypePassword"
+                      label="Retype"
+                      placeholder="Retype Password"
+                      secureTextEntry={!showRePass}
+                      icon={
+                        <TouchableOpacity
+                          onPress={() => setShowRePass(!showRePass)}
+                          style={{
+                            position: "absolute",
+                            right: 15,
+                            top: "50%",
+                            transform: [{ translateY: -12 }],
+                            zIndex: 10,
+                          }}>
+                          <Ionicons
+                            name={!showRePass ? "eye" : "eye-off"}
+                            size={24}
+                            color="#BDC3C7"
+                          />
+                        </TouchableOpacity>
+                      }
+                      onFocus={handleFocus} // Hide button immediately
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </SafeAreaView>
         </KeyboardAvoidingView>
-        <View
+
+        {/* Next Button with Smooth Fade Animation */}
+        <Animated.View
           style={{
+            opacity: buttonOpacity, // Use the animated opacity
+            display: isKeyboardVisible ? "none" : "flex", // Ensure button is not interactive when hidden
             position: "relative",
             paddingTop: 20,
-            paddingBottom: insets.bottom + 32,
+            paddingBottom: 32,
             paddingHorizontal: 20,
           }}>
           <TouchableOpacity
@@ -469,7 +510,7 @@ export default function Forgot() {
                       style={{ marginRight: 5 }}
                     />
                   )}
-                  Next
+                  {!isLoading && "Next"}
                 </Text>
                 <View
                   style={{
@@ -488,9 +529,9 @@ export default function Forgot() {
               </View>
             </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </View>
+        </Animated.View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
