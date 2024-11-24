@@ -174,6 +174,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           name: query,
         },
         token,
+        {},
         mainServerAvailable
       );
 
@@ -186,6 +187,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           conversationId: data?.id,
         },
         token,
+        {},
         mainServerAvailable
       );
       tConId = data.id;
@@ -201,6 +203,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           conversationId: activeConversationId,
         },
         token,
+        {},
         mainServerAvailable
       );
     }
@@ -228,6 +231,8 @@ const ChatTurbo = ({ fromPath }: any) => {
       };
 
       const baseUrl = mainServerAvailable ? MAIN_SERVER_URL : BACKUP_SERVER_URL;
+
+      console.log("baseUrl------>", baseUrl);
 
       const url =
         template == "finance"

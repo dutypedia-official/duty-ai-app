@@ -16,6 +16,8 @@ import useLang from "@/lib/hooks/useLang";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
+import { apiClient } from "@/lib/api";
+import axios from "axios";
 
 export default function SettingScreen() {
   const { signOut, isSignedIn, getToken } = useAuth();
@@ -30,6 +32,7 @@ export default function SettingScreen() {
   const isBn = language === "Bn";
   const isDark = useColorScheme() === "dark";
   const bgColor = useThemeColor({}, "background");
+  const client = apiClient();
 
   const test = async () => {
     const token = await getToken();
@@ -127,7 +130,8 @@ export default function SettingScreen() {
             backgroundColor: "transparent",
             paddingVertical: 40,
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -135,7 +139,8 @@ export default function SettingScreen() {
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "transparent",
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -143,7 +148,8 @@ export default function SettingScreen() {
               alignItems: "center",
               flex: 1,
               backgroundColor: "transparent",
-            }}>
+            }}
+          >
             <Avatar.Image
               size={48}
               source={{ uri: user?.imageUrl }}
@@ -173,7 +179,8 @@ export default function SettingScreen() {
                   alignItems: "center",
                   paddingVertical: 12,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
@@ -181,7 +188,8 @@ export default function SettingScreen() {
                     alignItems: "center",
                     flex: 1,
                     backgroundColor: "transparent",
-                  }}>
+                  }}
+                >
                   {setting.leftIcon}
 
                   <Text numberOfLines={1}>{setting.title}</Text>
@@ -203,8 +211,41 @@ export default function SettingScreen() {
           style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
-          mode="outlined">
+          mode="outlined"
+        >
           {isBn ? "লগউট" : "Logout"}
+        </Button>
+        <Button
+          onPress={async () => {
+            try {
+              const { data } = await client.post(
+                "/chat/pro",
+                {
+                  query: "hi",
+                },
+                "",
+                {},
+                false
+              );
+              // const data = await axios.post(
+              //   "https://api-backup.dutyai.app/chat/pro",
+              //   {
+              //     query: "hi",
+              //   }
+              // );
+              console.log(data, "-----daasas");
+            } catch (error) {
+              console.log(JSON.stringify(error, null, 2));
+            }
+          }}
+          icon="logout"
+          textColor="red"
+          style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
+          labelStyle={{ fontWeight: "bold" }}
+          contentStyle={{ paddingVertical: 4 }}
+          mode="outlined"
+        >
+          {isBn ? "লগউট" : "Test"}
         </Button>
       </View>
     </ScrollView>
