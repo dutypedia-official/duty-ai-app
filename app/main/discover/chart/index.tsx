@@ -37,6 +37,7 @@ import {
   Modal as RNModal,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from "react-native";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -53,6 +54,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import MagicInactiveDark from "@/components/svgs/magicInactiveDark";
 import MagicInactiveLight from "@/components/svgs/magicInactiveLight";
 import { date } from "zod";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -1144,6 +1146,7 @@ export const AlarmBottomSheet = ({
     </View>
   );
 };
+
 const StockListScreen = () => {
   const { language } = useLang();
   const isBn = language === "Bn";
@@ -1426,6 +1429,12 @@ const StockListScreen = () => {
   // Snap points define the collapsed and expanded heights of the bottom sheet
   const snapPoints = useMemo(() => ["70%"], []);
 
+  const handleSheetChanges = useCallback((index: number) => {
+    // if (index === -1) {
+    //   Keyboard.dismiss();
+    // }
+  }, []);
+
   const renderBackdrop = (props: BottomSheetBackdropProps) => (
     <BottomSheetBackdrop
       {...props}
@@ -1438,163 +1447,165 @@ const StockListScreen = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-          }}>
-          <Text>
-            <Ionicons
-              name="chevron-back"
-              size={24}
-              style={{ color: isDark ? "#00B0FF" : "#34495E" }}
-            />
-          </Text>
-          <Text
-            style={[
-              styles.headerTitle,
-              { color: isDark ? "#00B0FF" : "#2980B9" },
-            ]}>
-            {isBn ? "স্টক লিস্ট" : "Stock List"}
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            gap: 12,
-            alignItems: "center",
-          }}>
-          <View
-            style={[
-              styles.searchContainer,
-              { borderColor: isDark ? "#333333" : "#D1D1D1" },
-            ]}>
-            <TextInput
-              style={{
-                flex: 1,
-                fontSize: 14,
-                color: textColor,
-                height: "100%",
-                paddingLeft: 12, // 12-pixel gap from the left border
-                paddingVertical: 0,
-              }}
-              placeholder="Search stock"
-              placeholderTextColor={isDark ? "#fff" : "#34495E"}
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-            />
-            <Feather
-              name="search"
-              size={20}
-              color={isDark ? "#333333" : "#34495E"}
-              style={styles.searchIcon}
-            />
-          </View>
+      style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
           <TouchableOpacity
             onPress={() => {
-              setSortByName(!sortByName);
-            }}>
-            <FontAwesome
-              name="sort-alpha-asc"
-              size={24}
-              color={sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <ScrollView
-        style={{
-          flexGrow: 0,
-          flexShrink: 0,
-          paddingVertical: 12,
-        }}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          alignItems: "flex-start",
-          alignSelf: "flex-start",
-          gap: 12,
-        }}>
-        {filteredItems.map((item: any, index) => (
-          <TouchableOpacity
-            onPress={() => {
-              setActiveFilter(item.value);
+              router.back();
             }}
-            key={index}
             style={{
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: isDark ? "#333333" : "#B0BEC5",
-              backgroundColor:
-                activeFilter != item.value
-                  ? isDark
-                    ? "#1C1C1C"
-                    : "#E0E0E0"
-                  : "#00796B",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
             }}>
+            <Text>
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                style={{ color: isDark ? "#00B0FF" : "#34495E" }}
+              />
+            </Text>
             <Text
-              style={{
-                paddingHorizontal: 12,
-                paddingVertical: 10,
-                fontSize: 14,
-                color:
-                  activeFilter != item.value
-                    ? isDark
-                      ? "#B0BEC5"
-                      : "#fff"
-                    : "white",
-              }}>
-              {item.name}
+              style={[
+                styles.headerTitle,
+                { color: isDark ? "#00B0FF" : "#2980B9" },
+              ]}>
+              {isBn ? "স্টক লিস্ট" : "Stock List"}
             </Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              gap: 12,
+              alignItems: "center",
+            }}>
+            <View
+              style={[
+                styles.searchContainer,
+                { borderColor: isDark ? "#333333" : "#D1D1D1" },
+              ]}>
+              <TextInput
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  color: textColor,
+                  height: "100%",
+                  paddingLeft: 12, // 12-pixel gap from the left border
+                  paddingVertical: 0,
+                }}
+                placeholder="Search stock"
+                placeholderTextColor={isDark ? "#fff" : "#34495E"}
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+              />
+              <Feather
+                name="search"
+                size={20}
+                color={isDark ? "#333333" : "#34495E"}
+                style={styles.searchIcon}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setSortByName(!sortByName);
+              }}>
+              <FontAwesome
+                name="sort-alpha-asc"
+                size={24}
+                color={sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-      <FlatList
-        data={filteredStocks}
-        renderItem={({ item }) => (
-          <StockListItem
-            changePer={item.changePer}
-            name={item.symbol}
-            price={getPrice(item)}
-            change={item.change}
-            logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
-            volume={item.volume}
-            value={item.value}
-            alerms={alerms}
-            aiAlerms={aiAlerms}
-            favs={favorites}
-            trading={item.trade}
-            sheetRef={bottomSheetRef}
-            targetPrice={targetPrice}
-            setCompanyName={setCompanyName}
-          />
-        )}
-        keyExtractor={(item) => item.symbol}
-        style={styles.list}
-        refreshControl={
-          <RefreshControl refreshing={screenRefresh} onRefresh={onRefresh} />
-        }
-      />
+        <ScrollView
+          style={{
+            flexGrow: 0,
+            flexShrink: 0,
+            paddingVertical: 12,
+          }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            alignItems: "flex-start",
+            alignSelf: "flex-start",
+            gap: 12,
+          }}>
+          {filteredItems.map((item: any, index) => (
+            <TouchableOpacity
+              onPress={() => {
+                setActiveFilter(item.value);
+              }}
+              key={index}
+              style={{
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: isDark ? "#333333" : "#B0BEC5",
+                backgroundColor:
+                  activeFilter != item.value
+                    ? isDark
+                      ? "#1C1C1C"
+                      : "#E0E0E0"
+                    : "#00796B",
+              }}>
+              <Text
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                  fontSize: 14,
+                  color:
+                    activeFilter != item.value
+                      ? isDark
+                        ? "#B0BEC5"
+                        : "#fff"
+                      : "white",
+                }}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <FlatList
+          data={filteredStocks}
+          renderItem={({ item }) => (
+            <StockListItem
+              changePer={item.changePer}
+              name={item.symbol}
+              price={getPrice(item)}
+              change={item.change}
+              logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
+              volume={item.volume}
+              value={item.value}
+              alerms={alerms}
+              aiAlerms={aiAlerms}
+              favs={favorites}
+              trading={item.trade}
+              sheetRef={bottomSheetRef}
+              targetPrice={targetPrice}
+              setCompanyName={setCompanyName}
+            />
+          )}
+          keyExtractor={(item) => item.symbol}
+          style={styles.list}
+          refreshControl={
+            <RefreshControl refreshing={screenRefresh} onRefresh={onRefresh} />
+          }
+        />
+      </SafeAreaView>
 
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
         snapPoints={snapPoints}
         enablePanDownToClose={true}
-        // onChange={handleSheetChanges}
+        onChange={handleSheetChanges}
         backgroundStyle={{ backgroundColor: "transparent" }}
         backdropComponent={renderBackdrop}
         handleComponent={(props) => <View style={{ display: "none" }}></View>}
+        onClose={Keyboard.dismiss}
         style={{
           backgroundColor: "transparent",
         }}>
