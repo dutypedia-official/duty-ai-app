@@ -35,6 +35,8 @@ import {
   useColorScheme,
   RefreshControl,
   Modal as RNModal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -875,7 +877,10 @@ const StockListScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => {
@@ -1566,7 +1571,7 @@ const StockListScreen = () => {
           </LinearGradient>
         </View>
       </BottomSheet>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
