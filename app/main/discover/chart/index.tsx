@@ -711,6 +711,7 @@ const StockListScreen = () => {
               : "Down",
         },
         token,
+        {},
         mainServerAvailable
       );
 
