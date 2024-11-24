@@ -180,6 +180,7 @@ export const StockListItem = ({
           volume,
         },
         token,
+        {},
         mainServerAvailable
       );
       setRefreashFav(!refreashFav);
