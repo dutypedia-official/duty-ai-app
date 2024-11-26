@@ -95,176 +95,176 @@ const Favorite = () => {
     }
   };
 
-  const handelSetAlerm = async () => {
-    if (!selectedStock) {
-      return Toast.show({
-        type: "error",
-        text1: "Select a stock first!",
-      });
-    }
-    try {
-      setLoading(true);
-      const token = await getToken();
-      if (+selectedStock?.price?.replace(",", "") === parseFloat(targetPrice)) {
-        return Toast.show({
-          type: "error",
-          text1: "Price is same as current price!",
-        });
-      }
-      await client.post(
-        "/noti/create-alerm",
-        {
-          price: parseFloat(targetPrice),
-          symbol: selectedStock?.name,
-          condition:
-            parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
-              ? "Up"
-              : "Down",
-        },
-        token,
-        mainServerAvailable
-      );
+  // const handelSetAlerm = async () => {
+  //   if (!selectedStock) {
+  //     return Toast.show({
+  //       type: "error",
+  //       text1: "Select a stock first!",
+  //     });
+  //   }
+  //   try {
+  //     setLoading(true);
+  //     const token = await getToken();
+  //     if (+selectedStock?.price?.replace(",", "") === parseFloat(targetPrice)) {
+  //       return Toast.show({
+  //         type: "error",
+  //         text1: "Price is same as current price!",
+  //       });
+  //     }
+  //     await client.post(
+  //       "/noti/create-alerm",
+  //       {
+  //         price: parseFloat(targetPrice),
+  //         symbol: selectedStock?.name,
+  //         condition:
+  //           parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
+  //             ? "Up"
+  //             : "Down",
+  //       },
+  //       token,
+  //       mainServerAvailable
+  //     );
 
-      Toast.show({
-        type: "success",
-        text1: "Alarm set successfully",
-      });
+  //     Toast.show({
+  //       type: "success",
+  //       text1: "Alarm set successfully",
+  //     });
 
-      setRefreash(!refreash);
+  //     setRefreash(!refreash);
 
-      // hideModal();
-      bottomSheetRef.current?.close();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // hideModal();
+  //     bottomSheetRef.current?.close();
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const handelSetAiAlerm = async () => {
-    if (!selectedStock) {
-      return Toast.show({
-        type: "error",
-        text1: "Select a stock first!",
-      });
-    }
-    try {
-      setError(null);
-      setLoading(true);
-      const token = await getToken();
-      await client.post(
-        "/noti/create-ai-alerm",
-        {
-          symbol: selectedStock?.name,
-          prompt: inputText,
-        },
-        token,
-        mainServerAvailable
-      );
+  // const handelSetAiAlerm = async () => {
+  //   if (!selectedStock) {
+  //     return Toast.show({
+  //       type: "error",
+  //       text1: "Select a stock first!",
+  //     });
+  //   }
+  //   try {
+  //     setError(null);
+  //     setLoading(true);
+  //     const token = await getToken();
+  //     await client.post(
+  //       "/noti/create-ai-alerm",
+  //       {
+  //         symbol: selectedStock?.name,
+  //         prompt: inputText,
+  //       },
+  //       token,
+  //       mainServerAvailable
+  //     );
 
-      Toast.show({
-        type: "success",
-        text1: "Alarm set successfully",
-      });
+  //     Toast.show({
+  //       type: "success",
+  //       text1: "Alarm set successfully",
+  //     });
 
-      setRefreash(!refreash);
+  //     setRefreash(!refreash);
 
-      // hideModal();
-      bottomSheetRef.current?.close();
-    } catch (error: any) {
-      console.log(error.response?.data);
-      setError(error.response?.data?.detail);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // hideModal();
+  //     bottomSheetRef.current?.close();
+  //   } catch (error: any) {
+  //     console.log(error.response?.data);
+  //     setError(error.response?.data?.detail);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const handelDeleteAlerm = async () => {
-    try {
-      setLoading(true);
-      const token = await getToken();
-      await client.delete(
-        `/noti/delete-alerm/${currentAlarm.id}`,
-        token,
-        {},
-        mainServerAvailable
-      );
-      Toast.show({
-        type: "success",
-        text1: "Alarm deleted successfully",
-      });
-      setRefreash(!refreash);
-      setRefreashFav(!refreashFav);
-      // hideModal();
-      bottomSheetRef.current?.close();
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "Error deleting alarm",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handelDeleteAiAlerm = async () => {
-    try {
-      setLoading(true);
-      const token = await getToken();
-      await client.delete(
-        `/noti/delete-ai-alerm/${selectedStock.name}`,
-        token,
-        {},
-        mainServerAvailable
-      );
-      Toast.show({
-        type: "success",
-        text1: "Alarm deleted successfully",
-      });
-      setRefreash(!refreash);
-      setRefreashFav(!refreashFav);
-      // hideModal();
-      bottomSheetRef.current?.close();
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "Error deleting alarm",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handelDeleteAlerm = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const token = await getToken();
+  //     await client.delete(
+  //       `/noti/delete-alerm/${currentAlarm.id}`,
+  //       token,
+  //       {},
+  //       mainServerAvailable
+  //     );
+  //     Toast.show({
+  //       type: "success",
+  //       text1: "Alarm deleted successfully",
+  //     });
+  //     setRefreash(!refreash);
+  //     setRefreashFav(!refreashFav);
+  //     // hideModal();
+  //     bottomSheetRef.current?.close();
+  //   } catch (error) {
+  //     console.log(error);
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Error deleting alarm",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // const handelDeleteAiAlerm = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const token = await getToken();
+  //     await client.delete(
+  //       `/noti/delete-ai-alerm/${selectedStock.name}`,
+  //       token,
+  //       {},
+  //       mainServerAvailable
+  //     );
+  //     Toast.show({
+  //       type: "success",
+  //       text1: "Alarm deleted successfully",
+  //     });
+  //     setRefreash(!refreash);
+  //     setRefreashFav(!refreashFav);
+  //     // hideModal();
+  //     bottomSheetRef.current?.close();
+  //   } catch (error) {
+  //     console.log(error);
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Error deleting alarm",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAlerms();
-  }, [refreash]);
+  // useEffect(() => {
+  //   fetchAlerms();
+  // }, [refreash]);
 
-  const currentAlarm: any = alerms?.find(
-    (alerm: any) => alerm.symbol === companyName
-  );
-  const currentAiAlerm: any = aiAlerms?.find(
-    (alerm: any) => alerm.symbol === companyName
-  );
+  // const currentAlarm: any = alerms?.find(
+  //   (alerm: any) => alerm.symbol === companyName
+  // );
+  // const currentAiAlerm: any = aiAlerms?.find(
+  //   (alerm: any) => alerm.symbol === companyName
+  // );
 
-  const [targetPrice, setTargetPrice] = useState(
-    currentAlarm ? `${currentAlarm?.price}` : ""
-  );
+  // const [targetPrice, setTargetPrice] = useState(
+  //   currentAlarm ? `${currentAlarm?.price}` : ""
+  // );
 
-  // Reference for the bottom sheet
+  // // Reference for the bottom sheet
   const bottomSheetRef = useRef<any>(null);
 
-  // Snap points define the collapsed and expanded heights of the bottom sheet
-  const snapPoints = useMemo(() => ["70%"], []);
+  // // Snap points define the collapsed and expanded heights of the bottom sheet
+  // const snapPoints = useMemo(() => ["70%"], []);
 
-  const renderBackdrop = (props: BottomSheetBackdropProps) => (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1} // Disappears when fully collapsed
-      appearsOnIndex={0} // Appears when opened
-      opacity={isDark ? 0.6 : 0.3} // Set the backdrop opacity
-    />
-  );
+  // const renderBackdrop = (props: BottomSheetBackdropProps) => (
+  //   <BottomSheetBackdrop
+  //     {...props}
+  //     disappearsOnIndex={-1} // Disappears when fully collapsed
+  //     appearsOnIndex={0} // Appears when opened
+  //     opacity={isDark ? 0.6 : 0.3} // Set the backdrop opacity
+  //   />
+  // );
   return (
     <View style={{ paddingHorizontal: 12, backgroundColor: bgColor }}>
       <View
@@ -367,7 +367,7 @@ const Favorite = () => {
         </View>
       )}
 
-      <BottomSheet
+      {/* <BottomSheet
         ref={bottomSheetRef}
         index={-1}
         snapPoints={snapPoints}
@@ -398,7 +398,7 @@ const Favorite = () => {
           handelSetAiAlerm={handelSetAiAlerm}
           handelDeleteAiAlerm={handelDeleteAiAlerm}
         />
-      </BottomSheet>
+      </BottomSheet> */}
     </View>
   );
 };
