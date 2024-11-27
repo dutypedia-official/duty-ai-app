@@ -33,9 +33,12 @@ const DeleteAccount = () => {
       try {
         setIsLoading(true);
         const token = await getToken();
-        await client.delete("/auth/account/delete", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await client.delete(
+          "/auth/account/delete",
+          token,
+          {},
+          mainServerAvailable
+        );
         await signOut();
         router.replace("/login");
       } catch (error) {

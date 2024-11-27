@@ -231,7 +231,7 @@ export default function TabLayout() {
         options={{
           title: isBn ? "অনুসন্ধান" : "Discover",
           headerShown: false,
-          unmountOnBlur: true,
+          unmountOnBlur: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="compass-outline" color={color} />
           ),

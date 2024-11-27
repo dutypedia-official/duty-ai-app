@@ -215,38 +215,6 @@ export default function SettingScreen() {
         >
           {isBn ? "লগউট" : "Logout"}
         </Button>
-        <Button
-          onPress={async () => {
-            try {
-              const { data } = await client.post(
-                "/chat/pro",
-                {
-                  query: "hi",
-                },
-                "",
-                {},
-                false
-              );
-              // const data = await axios.post(
-              //   "https://api-backup.dutyai.app/chat/pro",
-              //   {
-              //     query: "hi",
-              //   }
-              // );
-              console.log(data, "-----daasas");
-            } catch (error) {
-              console.log(JSON.stringify(error, null, 2));
-            }
-          }}
-          icon="logout"
-          textColor="red"
-          style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
-          labelStyle={{ fontWeight: "bold" }}
-          contentStyle={{ paddingVertical: 4 }}
-          mode="outlined"
-        >
-          {isBn ? "লগউট" : "Test"}
-        </Button>
       </View>
     </ScrollView>
   );
