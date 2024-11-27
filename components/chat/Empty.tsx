@@ -117,13 +117,15 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {
               // paddingHorizontal: 12,
             }
-          }>
+          }
+        >
           <View
             style={{
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height * 0.85,
               backgroundColor: isDark ? "black" : "white",
-            }}>
+            }}
+          >
             {loading && (
               <View
                 style={
@@ -131,7 +133,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     // width: Dimensions.get("window").width - 24,
                     // height: Dimensions.get("window").width / videoAspectRatio,
                   }
-                }>
+                }
+              >
                 <ActivityIndicator
                   style={{
                     flex: 1,
@@ -182,7 +185,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           alignContent: "center",
           height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text
@@ -191,7 +195,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontSize: 40,
                 fontWeight: "700",
                 lineHeight: 40,
-              }}>
+              }}
+            >
               Hello, {name}
             </Text>
           ) : (
@@ -202,7 +207,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontWeight: "700",
                 lineHeight: 40,
                 color: "#6EA8D5",
-              }}>
+              }}
+            >
               Hello, {name}
             </Text>
           )}
@@ -211,7 +217,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               fontSize: 30,
               fontWeight: "400",
               opacity: 0.5,
-            }}>
+            }}
+          >
             {subTitleFn()}
           </Text>
         </View>
@@ -224,7 +231,10 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               router.push("/main/discover/vipsignal/list/");
             } else if (val.includes("🔍 Stock Scanner")) {
               setTemplate("scanner");
-              router.push("/main/discover/scanner/");
+              //push with data
+              router.push({
+                pathname: "/main/discover/scanner/",
+              });
             } else {
               onPressRelated(prompt);
             }
@@ -233,7 +243,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             <TouchableOpacity
               key={i}
               style={{ marginBottom: 16 }}
-              onPress={() => promptPress(prompt)}>
+              onPress={() => promptPress(prompt)}
+            >
               <View
                 style={{
                   borderWidth: template === "scanner" ? 1.5 : 0,
@@ -259,14 +270,16 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.5,
                     fontSize: 20,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
-                  numberOfLines={2}>
+                  numberOfLines={2}
+                >
                   {prompt}
                 </Text>
 

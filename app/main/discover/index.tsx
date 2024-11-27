@@ -20,11 +20,12 @@ import { useIsFocused } from "@react-navigation/native";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
+  params: any;
 }
 
 export default function DiscoverScreen() {
   const router = useRouter();
-  const { redirectToList } = useLocalSearchParams();
+  const { redirectToList, next } = useLocalSearchParams();
   const { setRefreash, refreash, setScreenRefresh, screenRefresh } = useUi();
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
@@ -53,10 +54,14 @@ export default function DiscoverScreen() {
   }, []);
 
   useEffect(() => {
+    console.log(redirectToList, "-----------", next);
+
     if (redirectToList == "yes") {
       console.log(redirectToList);
 
       router.push("/main/discover/chart/");
+    } else if (next == "scanner") {
+      router.push("/main/discover/scanner/");
     }
   }, []);
 
