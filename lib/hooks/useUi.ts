@@ -12,6 +12,16 @@ interface Store {
   setSelectedStock: (selectedStock: any) => void;
   selectedAlarmShit: any;
   setSelectedAlarmShit: (selectedAlarmShit: any) => void;
+  bottomSheetRef: null | any;
+  setBottomSheetRef: (bottomSheetRef: null | any) => void;
+  currentStockData: any;
+  setCurrentStockData: (currentStockData: any) => void;
+  currentAlarmData: any;
+  setCurrentAlarmData: (currentAlarm: any) => void;
+  sheetType: any;
+  setSheetType: (sheetType: any) => void;
+  hideTabNav: boolean;
+  setHideTabNav: (hideTabNav: boolean) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -28,6 +38,16 @@ const useUi = create<Store>((set, get) => ({
   setSelectedStock: (selectedStock: any) => set({ selectedStock }),
   selectedAlarmShit: null,
   setSelectedAlarmShit: (selectedAlarmShit: any) => set({ selectedAlarmShit }),
+  bottomSheetRef: null,
+  setBottomSheetRef: (bottomSheetRef: null | any) => set({ bottomSheetRef }),
+  currentStockData: null,
+  setCurrentStockData: (currentStockData: any) => set({ currentStockData }),
+  currentAlarmData: null,
+  setCurrentAlarmData: (currentAlarmData: any) => set({ currentAlarmData }),
+  sheetType: null,
+  setSheetType: (sheetType: any) => set({ sheetType }),
+  hideTabNav: false,
+  setHideTabNav: (hideTabNav: boolean) => set({ hideTabNav }),
 }));
 
 export default useUi;

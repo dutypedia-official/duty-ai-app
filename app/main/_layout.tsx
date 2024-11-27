@@ -1,21 +1,21 @@
+import { useThemeColor } from "@/components/Themed";
 import { apiClient } from "@/lib/api";
+import useChat from "@/lib/hooks/useChat";
+import useFeedData from "@/lib/hooks/useFeedData";
 import useLang from "@/lib/hooks/useLang";
+import useStockData from "@/lib/hooks/useStockData";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
 import IonIcon from "@expo/vector-icons/Ionicons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { useIsFocused } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
-import { Tabs, useSegments } from "expo-router";
-import { useEffect, useState } from "react";
+import { Tabs, usePathname, useRouter, useSegments } from "expo-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, useColorScheme } from "react-native";
 import { SvgXml } from "react-native-svg";
 import Colors from "../../constants/Colors";
-import useStockData from "@/lib/hooks/useStockData";
-import useFeedData from "@/lib/hooks/useFeedData";
-import useChat from "@/lib/hooks/useChat";
-import { useThemeColor } from "@/components/Themed";
-import { usePathname } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -40,7 +40,13 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const { refreash, screenRefresh, mainServerAvailable } = useUi();
+  const {
+    refreash,
+    screenRefresh,
+    mainServerAvailable,
+    hideTabNav,
+    setHideTabNav,
+  } = useUi();
   const isBn = language === "Bn";
   const segments: any = useSegments();
   const isFocused = useIsFocused();
@@ -54,8 +60,10 @@ export default function TabLayout() {
   const bgColor = useThemeColor({}, "background");
   const [hideTabBar, setHideTabBar] = useState(false);
   const { setTemplate } = useChat();
+  const router = useRouter();
 
   useEffect(() => {
+    setHideTabNav(false);
     const shouldHide = segments.some((segment: string) =>
       ["details", "vipsignal", "scanner"].includes(segment)
     );
@@ -64,7 +72,7 @@ export default function TabLayout() {
     if (shouldHide) {
       setTemplate("scanner");
     }
-  }, [segments, isFocused]);
+  }, [segments, isFocused, router]);
 
   const getUnreadNotiCount = async () => {
     try {
@@ -174,7 +182,7 @@ export default function TabLayout() {
           backgroundColor: bgColor,
         },
         tabBarStyle: {
-          display: hideTabBar ? "none" : "flex",
+          display: hideTabBar || hideTabNav ? "none" : "flex",
           backgroundColor: colorScheme === "dark" ? "#121212" : "white",
         },
         height: hideTabBar ? 0 : undefined,
@@ -195,8 +203,7 @@ export default function TabLayout() {
         //     style={StyleSheet.absoluteFill}
         //   />
         // ),
-      })}
-    >
+      })}>
       {/* <Tabs.Screen
         name="chat"
         options={{
