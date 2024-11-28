@@ -931,7 +931,9 @@ const StockListScreen = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}>
+      style={{
+        flex: 1,
+      }}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity

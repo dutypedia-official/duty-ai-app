@@ -320,7 +320,7 @@ export default function Login() {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                {Platform.OS === "android" && (
+                {/* {Platform.OS === "android" && (
                   <TouchableOpacity
                     onPress={() => {
                       setVisible(true);
@@ -338,7 +338,7 @@ export default function Login() {
                       <Ionicons name="play-circle" size={24} color={"#fff"} />
                     </Text>
                   </TouchableOpacity>
-                )}
+                )} */}
               </View>
 
               <Button
@@ -415,7 +415,7 @@ export default function Login() {
                         "https://www.dutyai.app/legal/privacy-policy"
                       );
                     }}>
-                    privacy policies
+                    Privacy policies
                   </Button>
                 </View>
                 <Link href="/contact" asChild>

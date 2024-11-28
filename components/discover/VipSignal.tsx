@@ -9,6 +9,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { router } from "expo-router";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import useChat from "@/lib/hooks/useChat";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const VipSignal = () => {
   const colorScheme = useColorScheme();
@@ -20,9 +21,9 @@ const VipSignal = () => {
   const vipSignals = [
     {
       icon: (
-        <MaterialCommunityIcons
-          name="search-web"
-          size={24}
+        <FontAwesome6
+          name="magnifying-glass-chart"
+          size={18}
           color="#FFD700"
           style={{
             alignSelf: "center",
@@ -33,8 +34,8 @@ const VipSignal = () => {
         />
       ),
       bgColor: isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#FFD700"],
-      title: "Scanner",
-      subTitle: "Advanced stock analysis with AI",
+      title: "Stock Screener",
+      subTitle: "Find Top Stocks with Duty AI",
       action: () => {
         setTemplate("scanner");
         router.push("/main/discover/scanner/");
@@ -87,9 +88,9 @@ const VipSignal = () => {
           style={{
             fontSize: 24,
             fontWeight: "bold",
-            color: isDark ? "#D2D2D2" : "black",
+            color: isDark ? "#FFD700" : "#8B7500",
           }}>
-          New Feature
+          Exclusive 👑
           {/* Vip <Foundation name="crown" size={24} color="black" /> */}
         </Text>
       </View>
@@ -152,19 +153,19 @@ const VipSignal = () => {
                         alignContent: "center",
                         justifyContent: "center",
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 14,
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
                         }}>
                         Demo 🚀
-                      </Text>
-                      {/* <Entypo
-                      name="chevron-right"
-                      size={24}
-                      color={isDark ? "#FFFFFF" : "#000000"}
-                    /> */}
+                      </Text> */}
+                      <Entypo
+                        name="chevron-right"
+                        size={24}
+                        color={isDark ? "#FFFFFF" : "#000000"}
+                      />
                     </View>
                   </View>
                 </View>

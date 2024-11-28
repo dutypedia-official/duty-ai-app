@@ -69,20 +69,43 @@ export default function UserLoginScreen() {
   const { language } = langStore;
   const isBn = language === "Bn";
   const bgColor = useThemeColor({}, "background");
-  const buttonOpacity = useRef(new Animated.Value(1)).current; // Animated value for button opacity
+  const [isFocused, setIsFocused] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // State to track keyboard visibility
+  const buttonOpacity = useRef(new Animated.Value(1)).current; // Ref for button opacity
 
   useEffect(() => {
-    // Keyboard listener to hide/show the button smoothly
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      fadeOutButton // Hide button when keyboard opens
-    );
+    // Add event listeners for keyboard show and hide
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
-      fadeInButton // Show button when keyboard closes
+      () => {
+        fadeInButton();
+        setIsKeyboardVisible(false);
+      }
     );
 
-    // Cleanup the listeners on unmount
+    // Clean up listeners when component unmounts
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Add event listeners for keyboard show and hide
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardVisible(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardVisible(false);
+      }
+    );
+
+    // Clean up listeners when component unmounts
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
@@ -90,11 +113,7 @@ export default function UserLoginScreen() {
   }, []);
 
   const fadeOutButton = () => {
-    Animated.timing(buttonOpacity, {
-      toValue: 0,
-      duration: 0, // Instant disappearance
-      useNativeDriver: true,
-    }).start();
+    buttonOpacity.setValue(0); // Set to zero immediately to hide
   };
 
   const fadeInButton = () => {
@@ -102,7 +121,7 @@ export default function UserLoginScreen() {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
-      easing: Easing.inOut(Easing.ease), // Easing for smoothness
+      easing: Easing.inOut(Easing.ease), // Use easing to smooth the animation
     }).start();
   };
 
@@ -119,6 +138,14 @@ export default function UserLoginScreen() {
     },
   });
 
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    fadeOutButton(); // Immediately hide button when input is focused
+  };
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
@@ -128,6 +155,7 @@ export default function UserLoginScreen() {
       if (!isLoaded) return;
 
       try {
+        setIsLoading(true);
         await signIn.create({
           identifier: values.email,
           password: values.password,
@@ -140,6 +168,8 @@ export default function UserLoginScreen() {
           type: "error",
           text1: "Invalid email or password",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -290,7 +320,6 @@ export default function UserLoginScreen() {
                       field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => {
-                      const [isFocused, setIsFocused] = useState(false);
                       return (
                         <View
                           style={{
@@ -308,11 +337,8 @@ export default function UserLoginScreen() {
                             ]}
                             placeholder={"Password"}
                             placeholderTextColor="#BDC3C7"
-                            onBlur={() => {
-                              onBlur();
-                              setIsFocused(false);
-                            }}
-                            onFocus={() => setIsFocused(true)}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                             onChangeText={onChange}
                             value={value}
                             secureTextEntry={!showPass}
@@ -422,7 +448,7 @@ export default function UserLoginScreen() {
                               style={{ marginRight: 5 }}
                             />
                           )}
-                          Continue
+                          {!isLoading && "Continue"}
                         </Text>
                         <View
                           style={{
@@ -463,109 +489,116 @@ export default function UserLoginScreen() {
                   </Button>
                 </View>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  flex: 1,
-                  backgroundColor: "transparent",
-                }}>
+              {!isKeyboardVisible && (
                 <View
                   style={{
-                    width: "46%",
-                    padding: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flex: 1,
                     backgroundColor: "transparent",
                   }}>
-                  <Text
-                    numberOfLines={1}
+                  <View
                     style={{
-                      color: "#AAAAAA",
-                      fontSize: 14,
-                      textAlign: "center",
-                      marginTop: -5,
+                      width: "46%",
+                      padding: 1,
+                      backgroundColor: "transparent",
                     }}>
-                    .................................................................................
-                  </Text>
-                </View>
-                <View style={{ backgroundColor: "transparent", flex: 1 }}>
-                  <Text
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        color: "#AAAAAA",
+                        fontSize: 14,
+                        textAlign: "center",
+                        marginTop: -5,
+                      }}>
+                      .................................................................................
+                    </Text>
+                  </View>
+                  <View style={{ backgroundColor: "transparent", flex: 1 }}>
+                    <Text
+                      style={{
+                        color: "#AAAAAA",
+                        fontSize: 14,
+                        textAlign: "center",
+                      }}>
+                      Or
+                    </Text>
+                  </View>
+                  <View
                     style={{
-                      color: "#AAAAAA",
-                      fontSize: 14,
-                      textAlign: "center",
+                      width: "46%",
+                      padding: 1,
+                      backgroundColor: "transparent",
                     }}>
-                    Or
-                  </Text>
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        color: "#AAAAAA",
+                        fontSize: 14,
+                        textAlign: "center",
+                        marginTop: -5,
+                      }}>
+                      .................................................................................
+                    </Text>
+                  </View>
                 </View>
-                <View
-                  style={{
-                    width: "46%",
-                    padding: 1,
-                    backgroundColor: "transparent",
-                  }}>
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      color: "#AAAAAA",
-                      fontSize: 14,
-                      textAlign: "center",
-                      marginTop: -5,
-                    }}>
-                    .................................................................................
-                  </Text>
-                </View>
-              </View>
+              )}
             </View>
-            <Animated.View
-              style={{
-                backgroundColor: "transparent",
-                gap: 24,
-                paddingBottom: insets.bottom + 32,
-                opacity: buttonOpacity,
-              }}>
-              <TouchableOpacity
-                onPress={() => onSelectAuth(Strategy.Google)}
-                style={{ width: "100%" }}>
-                <LinearGradient
-                  colors={["#34A853", "#4285F4"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.btnOutline}>
-                  <Image
-                    style={{ height: 40, width: 40 }}
-                    resizeMode="contain"
-                    source={require("../../assets/icons/google.png")}
-                  />
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>
-                    {isBn ? "গুগল দিয়ে লগইন করুন" : "Login with Google"}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ width: "100%" }}
-                onPress={() => onSelectAuth(Strategy.Apple)}>
-                <LinearGradient
-                  colors={["#000000", "#2E2E2E"]}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={styles.btnOutline}>
-                  <FontAwesome
-                    style={{ paddingLeft: 20 }}
-                    name="apple"
-                    size={30}
-                    color="#fff"
-                  />
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontWeight: "700",
-                      paddingLeft: 8,
-                    }}>
-                    {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Login with Apple"}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </Animated.View>
+            {!isKeyboardVisible && (
+              <Animated.View
+                style={{
+                  opacity: buttonOpacity, // Use the animated opacity
+                  display: isKeyboardVisible ? "none" : "flex", // Ensure button is not interactive when hidden
+                  backgroundColor: "transparent",
+                  gap: 24,
+                  paddingBottom: insets.bottom + 32,
+                }}
+                pointerEvents={isKeyboardVisible ? "none" : "auto"} // Disable interactions when the button is hidden
+              >
+                <TouchableOpacity
+                  onPress={() => onSelectAuth(Strategy.Google)}
+                  style={{ width: "100%" }}>
+                  <LinearGradient
+                    colors={["#34A853", "#4285F4"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.btnOutline}>
+                    <Image
+                      style={{ height: 40, width: 40 }}
+                      resizeMode="contain"
+                      source={require("../../assets/icons/google.png")}
+                    />
+                    <Text style={{ color: "#fff", fontWeight: "700" }}>
+                      {isBn ? "গুগল দিয়ে লগইন করুন" : "Login with Google"}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ width: "100%" }}
+                  onPress={() => onSelectAuth(Strategy.Apple)}>
+                  <LinearGradient
+                    colors={["#000000", "#2E2E2E"]}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 0.5, y: 1 }}
+                    style={styles.btnOutline}>
+                    <FontAwesome
+                      style={{ paddingLeft: 20 }}
+                      name="apple"
+                      size={30}
+                      color="#fff"
+                    />
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontWeight: "700",
+                        paddingLeft: 8,
+                      }}>
+                      {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Login with Apple"}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
+            )}
           </View>
         </View>
       </View>
