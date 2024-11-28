@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
 import { formatDate } from "date-fns/format";
 
@@ -54,7 +54,19 @@ const Noti = () => {
   useEffect(() => {
     fetchData();
   }, [isFocused]);
-
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "transparent",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <ActivityIndicator size="small" color={isDark ? "#fff" : "#000"} />
+      </View>
+    );
+  }
   if (notifications.length == 0) {
     return (
       <View
@@ -63,8 +75,7 @@ const Noti = () => {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
-        }}
-      >
+        }}>
         <View
           style={{
             flexDirection: "row",
@@ -72,8 +83,7 @@ const Noti = () => {
             justifyContent: "center",
             gap: 10,
             backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
-          }}
-        >
+          }}>
           <Text>
             <MaterialCommunityIcons color="#2a52b9" name="bell" size={24} />
           </Text>
@@ -82,8 +92,7 @@ const Noti = () => {
               color: "#2a52b9",
               fontSize: 20,
               fontWeight: "600",
-            }}
-          >
+            }}>
             {isBn ? "নোটিফিকেশান নেই" : "No notifications"}
           </Text>
         </View>
@@ -119,8 +128,7 @@ const NotiItem = ({ item }: any) => {
         if (item.type == "analysis") {
           router.push(`/main/notification/details/${item.entityId}`);
         }
-      }}
-    >
+      }}>
       <View
         style={{
           paddingVertical: 12,
@@ -130,16 +138,14 @@ const NotiItem = ({ item }: any) => {
             : isDark
             ? "#24303C"
             : "#CEE6FF",
-        }}
-      >
+        }}>
         <View
           style={{
             backgroundColor: "transparent",
             flexDirection: "row",
             alignItems: "flex-start",
             gap: 8,
-          }}
-        >
+          }}>
           <View
             style={{
               width: 24,
@@ -149,8 +155,7 @@ const NotiItem = ({ item }: any) => {
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
               position: "relative",
               marginTop: 6,
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 24,
@@ -161,15 +166,13 @@ const NotiItem = ({ item }: any) => {
                 position: "absolute",
                 left: 0,
                 top: 0,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontWeight: "700",
                   fontSize: 12,
                   color: "#1E1E1E",
-                }}
-              >
+                }}>
                 {`${Array.from(item?.companyName)[0]}`}
               </Text>
             </View>
@@ -181,8 +184,7 @@ const NotiItem = ({ item }: any) => {
               flexShrink: 1,
               justifyContent: "space-between",
               flex: 1,
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 14,
@@ -190,8 +192,7 @@ const NotiItem = ({ item }: any) => {
                 color: isDark ? "#87CEEB" : "#000000",
               }}
               numberOfLines={1}
-              variant="titleMedium"
-            >
+              variant="titleMedium">
               {item.companyName}
             </Text>
 
@@ -202,8 +203,7 @@ const NotiItem = ({ item }: any) => {
                 color: isDark ? "#D3D3D3" : "#004662",
                 fontSize: 12,
                 fontWeight: "normal",
-              }}
-            >
+              }}>
               {item.title || item.message}
             </Text>
             <View
@@ -217,15 +217,13 @@ const NotiItem = ({ item }: any) => {
                     : "flex-end",
                 alignItems: "center",
                 flexShrink: 1,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "#5C5C5C",
                   fontSize: 10,
                   fontWeight: "normal",
-                }}
-              >
+                }}>
                 {formatDate(item.createdAt, "dd/MM/yyy p")}
               </Text>
               {(item?.type === "analysis" || item?.type === "AI") && (
@@ -236,15 +234,13 @@ const NotiItem = ({ item }: any) => {
                         `/main/notification/details/${item.entityId}`
                       );
                     }
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       color: isDark ? "#fff" : "#000000",
                       fontSize: 12,
                       fontWeight: "normal",
-                    }}
-                  >
+                    }}>
                     View
                   </Text>
                 </TouchableOpacity>
