@@ -40,11 +40,6 @@ import {
   Keyboard,
   Animated,
 } from "react-native";
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
 
 import { ActivityIndicator, Button, Modal, Portal } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
@@ -57,6 +52,7 @@ import MagicInactiveLight from "@/components/svgs/magicInactiveLight";
 import { date } from "zod";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import SheetCard from "@/components/SheetCard";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -119,6 +115,7 @@ export const StockListItem = ({
   targetPrice,
   setCompanyName,
   item,
+  bottomSheetRef,
 }: any) => {
   const isPositive = !change?.startsWith("-");
   const isPositivePer = !changePer?.startsWith("-");
@@ -147,10 +144,6 @@ export const StockListItem = ({
     setSelectedStock,
     selectedAlarmShit,
     setSelectedAlarmShit,
-    bottomSheetRef,
-    setCurrentStockData,
-    setCurrentAlarmData,
-    setSheetType,
   } = useUi();
   const textColor = useThemeColor({}, "text");
   const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
@@ -671,7 +664,6 @@ const StockListScreen = () => {
     refreashFav,
     selectedStock,
     selectedAlarmShit,
-    bottomSheetRef,
   } = useUi();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading2, setIsLoading2] = useState(true);
@@ -923,6 +915,7 @@ const StockListScreen = () => {
     }, 2000);
   }, []);
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const [companyName, setCompanyName] = useState(null);
   const currentAlarm: any = alerms?.find(
     (alerm: any) => alerm.symbol === companyName
@@ -1077,6 +1070,7 @@ const StockListScreen = () => {
               targetPrice={targetPrice}
               setCompanyName={setCompanyName}
               item={item}
+              bottomSheetRef={bottomSheetRef}
             />
           )}
           keyExtractor={(item) => item.symbol}
@@ -1088,6 +1082,7 @@ const StockListScreen = () => {
       </SafeAreaView>
 
       <SheetCard
+        bottomSheetRef={bottomSheetRef}
         currentAlarm={currentAlarm}
         setActiveTab={setActiveTab}
         activeTab={activeTab}

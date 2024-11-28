@@ -32,6 +32,7 @@ import MagicInactiveLight from "./svgs/magicInactiveLight";
 import { router, usePathname } from "expo-router";
 
 export default function SheetCard({
+  bottomSheetRef,
   currentAlarm,
   setActiveTab,
   activeTab,
@@ -48,6 +49,7 @@ export default function SheetCard({
   handelSetAiAlerm,
   handelDeleteAiAlerm,
 }: {
+  bottomSheetRef: any;
   currentAlarm: any;
   setActiveTab: any;
   activeTab: any;
@@ -66,7 +68,7 @@ export default function SheetCard({
 }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { setBottomSheetRef, setHideTabNav } = useUi();
+  const { setHideTabNav } = useUi();
   const insets = useSafeAreaInsets();
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // Track keyboard visibility
   const buttonOpacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
@@ -104,13 +106,9 @@ export default function SheetCard({
       keyboardDidHideListener.remove();
     };
   }, []);
-  const bottomSheetRef = useRef<BottomSheet>(null);
+
   // Snap points for the bottom sheet
   const snapPoints = useMemo(() => ["70%"], []);
-
-  useEffect(() => {
-    setBottomSheetRef(bottomSheetRef);
-  }, [bottomSheetRef]);
 
   const renderBackdrop = (props: BottomSheetBackdropProps) => (
     <BottomSheetBackdrop
@@ -402,6 +400,7 @@ export default function SheetCard({
                           style={{
                             paddingVertical: 12,
                             paddingHorizontal: 12,
+                            textAlignVertical: "top",
                             textAlign: "left",
                             color: textColor,
                             minHeight: 80,
