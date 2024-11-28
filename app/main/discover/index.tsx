@@ -157,6 +157,7 @@ export default function DiscoverScreen() {
       });
 
       setRefreash(!refreash);
+      setRefreashFav(!refreashFav);
 
       // hideModal();
       bottomSheetRef.current?.close();
@@ -194,6 +195,7 @@ export default function DiscoverScreen() {
       });
 
       setRefreash(!refreash);
+      setRefreashFav(!refreashFav);
 
       // hideModal();
       bottomSheetRef.current?.close();

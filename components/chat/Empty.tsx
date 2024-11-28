@@ -57,19 +57,19 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const financePrompts = [
     "📰 Bangladesh stock market news",
     "📱 Should I Invest in GP BD",
-    "⚖️ Golden choice",
+    "📊 আজকের ইনডেক্স সম্পর্কে বল",
     "▶️ Duty AI ব্যাবহার ভিডিও 06 oct 2024",
-    "🔍 Stock Scanner",
   ];
 
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
 
   const stockScreener = [
-    "আজকের সেরা ৫ স্টক খুঁজে দাও",
-    "৫০ MA উপরে আছে স্টক দাও",
-    "Index agamikal kemon hote pare",
-    "⚖️ Golden choice",
-    "📰 Bangladesh stock market news",
+    "📊 আগামীকাল ইনডেক্স কেমন হতে পারে?",
+    "📅 আগামীকাল কোন সেক্টর ভালো পারফর্ম করবে?",
+    "💸 কম দামে ভালো পটেনশিয়াল স্টক খুঁজে দাও।",
+    "🏦 ব্যাংকিং সেক্টরে ভালো পারফর্ম করা স্টক খুঁজে দাও।",
+    "📈 আগামী সপ্তাহে কোন স্টকগুলো ভালো পারফর্ম করবে?",
+    "⏳ কিছু শর্ট টার্ম স্টক খুঁজে দাও।",
   ];
 
   const promptsFn = () => {
@@ -94,7 +94,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     } else if (template == "finance") {
       return "Let's chat about stocks!";
     } else if (template == "scanner") {
-      return "Scan some stock";
+      return "🎯 Let’s find the best stocks!";
     } else {
       return "How can I help you today?";
     }
@@ -233,7 +233,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               setTemplate("scanner");
               //push with data
               router.push({
-                pathname: "/main/discover/scanner/",
+                pathname: "/main/discover/",
+                params: { next: "scanner" },
               });
             } else {
               onPressRelated(prompt);

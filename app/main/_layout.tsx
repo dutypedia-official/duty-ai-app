@@ -203,7 +203,8 @@ export default function TabLayout() {
         //     style={StyleSheet.absoluteFill}
         //   />
         // ),
-      })}>
+      })}
+    >
       {/* <Tabs.Screen
         name="chat"
         options={{
