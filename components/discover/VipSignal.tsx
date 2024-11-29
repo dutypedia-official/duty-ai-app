@@ -1,4 +1,10 @@
-import { View, Text, useColorScheme, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  useColorScheme,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { useThemeColor } from "../Themed";
 import Foundation from "@expo/vector-icons/Foundation";
@@ -97,7 +103,7 @@ const VipSignal = () => {
       <View style={{ gap: 20 }}>
         {vipSignals?.map((item, i) => {
           return (
-            <Pressable key={i} onPress={item?.action}>
+            <TouchableOpacity key={i} onPress={item?.action}>
               <LinearGradient
                 style={{
                   borderRadius: 12,
@@ -170,7 +176,7 @@ const VipSignal = () => {
                   </View>
                 </View>
               </LinearGradient>
-            </Pressable>
+            </TouchableOpacity>
           );
         })}
       </View>

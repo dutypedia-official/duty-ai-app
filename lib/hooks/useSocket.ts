@@ -10,7 +10,7 @@ interface Store {
 
 const isRunningInExpoGo = Constants.appOwnership === "expo";
 const BASE_URL = isRunningInExpoGo
-  ? "http://192.168.0.104:8000"
+  ? "http://192.168.105.44:8000"
   : `https://api.dutyai.app`;
 
 const useSocket = create<Store>((set, get) => ({

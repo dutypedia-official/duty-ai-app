@@ -162,7 +162,7 @@ export default function UserLoginScreen() {
         });
         await setActive({ session: completeSignIn.createdSessionId });
         console.log("Logged in successfully!");
-        router.push("/main/discover/chat");
+        router.replace("/main");
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
         Toast.show({

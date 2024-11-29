@@ -45,6 +45,9 @@ export default function SheetCard({
   error,
   handelSetAlerm,
   loading,
+  loadingDeleteAlarm,
+  loadingAiAlarm,
+  loadingDeleteAiAlarm,
   handelDeleteAlerm,
   handelSetAiAlerm,
   handelDeleteAiAlerm,
@@ -62,6 +65,9 @@ export default function SheetCard({
   error: any;
   handelSetAlerm: () => void;
   loading: any;
+  loadingDeleteAlarm: any;
+  loadingAiAlarm: any;
+  loadingDeleteAiAlarm: any;
   handelDeleteAlerm: () => void;
   handelSetAiAlerm: () => void;
   handelDeleteAiAlerm: () => void;
@@ -122,10 +128,13 @@ export default function SheetCard({
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log(index);
+
     if (index === -1) {
+      // Dismiss the keyboard
+      Keyboard.dismiss();
+      // Update the tab navigation visibility
       setHideTabNav(false);
-    }
-    if (index == 0) {
+    } else if (index === 0) {
       setHideTabNav(true);
     }
   }, []);
@@ -140,13 +149,13 @@ export default function SheetCard({
       ref={bottomSheetRef}
       index={-1}
       onChange={handleSheetChanges}
-      keyboardBehavior="fillParent"
+      keyboardBehavior="interactive"
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       backgroundStyle={{ backgroundColor: "transparent" }}
       backdropComponent={renderBackdrop}
       handleComponent={(props) => <View style={{ display: "none" }}></View>}
-      onClose={Keyboard.dismiss}
+      // onClose={Keyboard.dismiss}
       style={{
         backgroundColor: "transparent",
       }}
@@ -521,14 +530,14 @@ export default function SheetCard({
                           paddingVertical: 16,
                           borderRadius: 12,
                         }}>
-                        {loading && (
+                        {loadingDeleteAlarm && (
                           <ActivityIndicator
                             size="small"
                             color="#FFFFFF"
                             style={{ marginRight: 5 }}
                           />
                         )}
-                        {!loading && (
+                        {!loadingDeleteAlarm && (
                           <Text
                             style={{
                               color: "#FFFFFF",
@@ -576,14 +585,14 @@ export default function SheetCard({
                         paddingVertical: 16,
                         borderRadius: 12,
                       }}>
-                      {loading && (
+                      {loadingAiAlarm && (
                         <ActivityIndicator
                           size="small"
                           color="#FFFFFF"
                           style={{ marginRight: 5 }}
                         />
                       )}
-                      {!loading && (
+                      {!loadingAiAlarm && (
                         <Text
                           style={{
                             color: "#FFFFFF",
@@ -614,14 +623,14 @@ export default function SheetCard({
                           paddingVertical: 16,
                           borderRadius: 12,
                         }}>
-                        {loading && (
+                        {loadingDeleteAiAlarm && (
                           <ActivityIndicator
                             size="small"
                             color="#FFFFFF"
                             style={{ marginRight: 5 }}
                           />
                         )}
-                        {!loading && (
+                        {!loadingDeleteAiAlarm && (
                           <Text
                             style={{
                               color: "#FFFFFF",
