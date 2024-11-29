@@ -125,7 +125,7 @@ const NotiItem = ({ item }: any) => {
     <TouchableOpacity
       activeOpacity={item.type == "analysis" || item.type == "AI" ? 0.7 : 1}
       onPress={() => {
-        if (item.type == "analysis") {
+        if (item.type == "analysis" || item.type == "AI") {
           router.push(`/main/notification/details/${item.entityId}`);
         }
       }}>

@@ -17,6 +17,7 @@ import { Modal, Portal } from "react-native-paper";
 import WebView from "react-native-webview";
 import MagicIcon from "../svgs/magic";
 import { Text, View, useThemeColor } from "../Themed";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const RenderChatEmpty = ({ onPressRelated }: any) => {
   const borderColor = useThemeColor({}, "border");
@@ -31,7 +32,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const insets = useSafeAreaInsets();
   const videoUrl = "https://www.youtube.com/embed/eJdW7-zZCnU?autoplay=1";
   const injectedJavaScript = `
     document.getElementsByTagName('video')[0].play();
@@ -117,15 +118,13 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {
               // paddingHorizontal: 12,
             }
-          }
-        >
+          }>
           <View
             style={{
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height * 0.85,
               backgroundColor: isDark ? "black" : "white",
-            }}
-          >
+            }}>
             {loading && (
               <View
                 style={
@@ -133,8 +132,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     // width: Dimensions.get("window").width - 24,
                     // height: Dimensions.get("window").width / videoAspectRatio,
                   }
-                }
-              >
+                }>
                 <ActivityIndicator
                   style={{
                     flex: 1,
@@ -185,8 +183,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           alignContent: "center",
           height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
-        }}
-      >
+          marginTop: template === "scanner" ? insets.top + 28 : 0,
+        }}>
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text
@@ -195,8 +193,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontSize: 40,
                 fontWeight: "700",
                 lineHeight: 40,
-              }}
-            >
+              }}>
               Hello, {name}
             </Text>
           ) : (
@@ -207,8 +204,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontWeight: "700",
                 lineHeight: 40,
                 color: "#6EA8D5",
-              }}
-            >
+              }}>
               Hello, {name}
             </Text>
           )}
@@ -217,8 +213,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               fontSize: 30,
               fontWeight: "400",
               opacity: 0.5,
-            }}
-          >
+            }}>
             {subTitleFn()}
           </Text>
         </View>
@@ -244,8 +239,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             <TouchableOpacity
               key={i}
               style={{ marginBottom: 16 }}
-              onPress={() => promptPress(prompt)}
-            >
+              onPress={() => promptPress(prompt)}>
               <View
                 style={{
                   borderWidth: template === "scanner" ? 1.5 : 0,
@@ -271,16 +265,14 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Text
                   style={{
-                    opacity: template === "scanner" ? 1 : 0.5,
-                    fontSize: 20,
+                    opacity: template === "scanner" ? 1 : 0.8,
+                    fontSize: 16,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
-                  numberOfLines={2}
-                >
+                  numberOfLines={2}>
                   {prompt}
                 </Text>
 
