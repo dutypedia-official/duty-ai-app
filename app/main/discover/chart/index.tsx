@@ -683,6 +683,9 @@ const StockListScreen = () => {
   const client = apiClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loadingDeleteAlarm, setLoadingDeleteAlarm] = useState(false);
+  const [loadingAiAlarm, setLoadingAiAlarm] = useState(false);
+  const [loadingDeleteAiAlarm, setLoadingDeleteAiAlarm] = useState(false);
   let initialStocks = !activeFilter
     ? marketData
     : marketData.filter((stock: any) => stock[activeFilter] == true) || [];
@@ -804,7 +807,7 @@ const StockListScreen = () => {
     }
     try {
       setError(null);
-      setLoading(true);
+      setLoadingAiAlarm(true);
       const token = await getToken();
       await client.post(
         "/noti/create-ai-alerm",
@@ -829,13 +832,13 @@ const StockListScreen = () => {
       console.log(error.response?.data);
       setError(error.response?.data?.detail);
     } finally {
-      setLoading(false);
+      setLoadingAiAlarm(false);
     }
   };
 
   const handelDeleteAlerm = async () => {
     try {
-      setLoading(true);
+      setLoadingDeleteAlarm(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-alerm/${currentAlarm.id}`,
@@ -858,12 +861,12 @@ const StockListScreen = () => {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoading(false);
+      setLoadingDeleteAlarm(false);
     }
   };
   const handelDeleteAiAlerm = async () => {
     try {
-      setLoading(true);
+      setLoadingDeleteAiAlarm(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-ai-alerm/${selectedStock.name}`,
@@ -886,7 +889,7 @@ const StockListScreen = () => {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoading(false);
+      setLoadingDeleteAiAlarm(false);
     }
   };
 
@@ -1097,6 +1100,9 @@ const StockListScreen = () => {
         error={error}
         handelSetAlerm={handelSetAlerm}
         loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
         handelDeleteAlerm={handelDeleteAlerm}
         handelSetAiAlerm={handelSetAiAlerm}
         handelDeleteAiAlerm={handelDeleteAiAlerm}
