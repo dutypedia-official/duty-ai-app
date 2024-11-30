@@ -296,29 +296,29 @@ export default function DiscoverScreen() {
         />
         {/* <PopularPrompts /> */}
       </ScrollView>
-      <Portal>
-        <SheetCard
-          bottomSheetRef={bottomSheetRef}
-          currentAlarm={currentAlarm}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          textColor={textColor}
-          targetPrice={targetPrice}
-          setTargetPrice={setTargetPrice}
-          inputText={inputText}
-          currentAiAlerm={currentAiAlerm}
-          setInputText={setInputText}
-          error={error}
-          handelSetAlerm={handelSetAlerm}
-          loading={loading}
-          loadingDeleteAlarm={loadingDeleteAlarm}
-          loadingAiAlarm={loadingAiAlarm}
-          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-          handelDeleteAlerm={handelDeleteAlerm}
-          handelSetAiAlerm={handelSetAiAlerm}
-          handelDeleteAiAlerm={handelDeleteAiAlerm}
-        />
-      </Portal>
+      {/* <Portal> */}
+      <SheetCard
+        bottomSheetRef={bottomSheetRef}
+        currentAlarm={currentAlarm}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        textColor={textColor}
+        targetPrice={targetPrice}
+        setTargetPrice={setTargetPrice}
+        inputText={inputText}
+        currentAiAlerm={currentAiAlerm}
+        setInputText={setInputText}
+        error={error}
+        handelSetAlerm={handelSetAlerm}
+        loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+        handelDeleteAlerm={handelDeleteAlerm}
+        handelSetAiAlerm={handelSetAiAlerm}
+        handelDeleteAiAlerm={handelDeleteAiAlerm}
+      />
+      {/* </Portal> */}
     </SafeAreaView>
   );
 }

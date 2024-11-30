@@ -1,63 +1,218 @@
+import LoginLogo from "@/components/svgs/login-logo";
+import { useThemeColor } from "@/components/Themed";
 import useLang from "@/lib/hooks/useLang";
+import { EvilIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { View, Text, Dimensions, Linking, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  Linking,
+  Platform,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { Button } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 
 export default function UpdatePage() {
   const { updateInfo, language } = useLang();
   const isBn = language === "Bn";
+  const insets = useSafeAreaInsets();
+  const bgColor = useThemeColor({}, "background");
 
   return (
+    // <View
+    //   style={{
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     flex: 1,
+    //     backgroundColor: "black",
+    //   }}
+    // >
+    //   <SvgXml xml={icon} />
+    //   <Text
+    //     style={{
+    //       marginTop: 12,
+    //       fontWeight: "500",
+    //       fontSize: 20,
+    //       color: "black",
+    //     }}
+    //   >
+    //     {isBn ? "নতুন আপডেট এসেছে" : "Update Available"}
+    //   </Text>
+    //   <Text
+    //     style={{
+    //       marginTop: 12,
+    //       fontWeight: "400",
+    //       fontSize: 13,
+    //       color: "white",
+    //     }}
+    //   >
+    //     {isBn ? "ভার্সন" : "Version"} {updateInfo?.current_version}
+    //   </Text>
+    //   <View
+    //     style={{
+    //       position: "absolute",
+    //       bottom: 20,
+    //     }}
+    //   >
+    //     <Button
+    //       onPress={() => {
+    //         Linking.openURL(
+    //           Platform.OS == "android"
+    //             ? "https://play.google.com/store/apps/details?id=com.easinarafat.dutyai"
+    //             : "https://apps.apple.com/us/app/duty-ai/id6476618432"
+    //         );
+    //       }}
+    //       style={{
+    //         width: Dimensions.get("window").width - 40,
+    //       }}
+    //     >
+    //       {isBn ? "আপডেট করুন" : "UPDATE NOW"}
+    //     </Button>
+    //   </View>
+    // </View>
     <View
       style={{
-        justifyContent: "center",
-        alignItems: "center",
         flex: 1,
-        backgroundColor: "black",
-      }}
-    >
-      <SvgXml xml={icon} />
-      <Text
-        style={{
-          marginTop: 12,
-          fontWeight: "500",
-          fontSize: 20,
-          color: "black",
+        backgroundColor: "transparent",
+      }}>
+      <StatusBar style="light" />
+
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          title: "User Login",
+          headerStyle: {
+            backgroundColor: bgColor,
+          },
         }}
-      >
-        {isBn ? "নতুন আপডেট এসেছে" : "Update Available"}
-      </Text>
-      <Text
-        style={{
-          marginTop: 12,
-          fontWeight: "400",
-          fontSize: 13,
-          color: "white",
-        }}
-      >
-        {isBn ? "ভার্সন" : "Version"} {updateInfo?.current_version}
-      </Text>
+      />
       <View
         style={{
           position: "absolute",
-          bottom: 20,
-        }}
-      >
-        <Button
-          onPress={() => {
-            Linking.openURL(
-              Platform.OS == "android"
-                ? "https://play.google.com/store/apps/details?id=com.easinarafat.dutyai"
-                : "https://apps.apple.com/us/app/duty-ai/id6476618432"
-            );
-          }}
+          left: 0,
+          right: 0,
+          top: 0,
+          flex: 1,
+          width: Dimensions.get("screen").width,
+          height: Dimensions.get("screen").height,
+        }}>
+        <LinearGradient
+          colors={["#4A148C", "#2A2B2A"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 0.5, y: 1 }}
           style={{
-            width: Dimensions.get("window").width - 40,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
           }}
-        >
-          {isBn ? "আপডেট করুন" : "UPDATE NOW"}
-        </Button>
+        />
+      </View>
+      <View style={{ flex: 1, backgroundColor: "transparent" }}>
+        <View />
+
+        <View
+          style={{
+            position: "absolute",
+            bottom: 340,
+            opacity: 0.25,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 0,
+          }}>
+          <LoginLogo
+            width={Dimensions.get("screen").width / 6.5}
+            height={Dimensions.get("screen").width / 6.5}
+          />
+        </View>
+
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "transparent",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+          }}>
+          <View
+            style={{
+              backgroundColor: "transparent",
+              flex: 1,
+              justifyContent: "flex-end",
+              marginBottom: insets.bottom + 52,
+              gap: 28,
+            }}>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                paddingTop: 40,
+                gap: 24,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#FFFFFF",
+                  textAlign: "center",
+                  lineHeight: 28,
+                }}>
+                A new version is released, please{"\n"}update to get new
+                features
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => {
+                Linking.openURL(
+                  Platform.OS == "android"
+                    ? "https://play.google.com/store/apps/details?id=com.easinarafat.dutyai"
+                    : "https://apps.apple.com/us/app/duty-ai/id6476618432"
+                );
+              }}>
+              <LinearGradient
+                colors={["#FF6FD8", "#00FFC6"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{
+                  padding: 2,
+                  borderRadius: 100,
+                  opacity: 1,
+                }}>
+                <LinearGradient
+                  colors={["#FF6FD8", "#973FCD", "#3813C2"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={{ borderRadius: 100, opacity: 0.8 }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "bold",
+                      paddingVertical: 16,
+                      textAlign: "center",
+                      color: "#FFD700",
+                    }}>
+                    {isBn ? "আপডেট করুন" : "UPDATE NOW"}
+                  </Text>
+                  <View
+                    style={{
+                      position: "absolute",
+                      right: 13,
+                      top: 0,
+                      bottom: 0,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                    <EvilIcons name="chevron-right" size={28} color="#fff" />
+                  </View>
+                </LinearGradient>
+              </LinearGradient>
+            </Pressable>
+          </View>
+        </View>
       </View>
     </View>
   );

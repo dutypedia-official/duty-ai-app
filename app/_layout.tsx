@@ -346,7 +346,7 @@ function RootLayoutNav() {
               <Stack.Screen name="main" options={{ headerShown: false }} />
               <Stack.Screen
                 name="update/index"
-                options={{ headerShown: true, title: "Update Available" }}
+                options={{ headerShown: false, title: "Update Available" }}
               />
               <Stack.Screen name="modal" options={{ presentation: "modal" }} />
             </Stack>
