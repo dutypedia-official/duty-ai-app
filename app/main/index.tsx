@@ -17,14 +17,5 @@ export default function ChatScreen() {
     }
   }, [isFocused]);
 
-  // return <ChatTurbo key={template} />;
-  return (
-    <SafeAreaView>
-      <TouchableOpacity onPress={() => router.push("/update/")}>
-        <View>
-          <Text style={{ color: "red" }}>Update</Text>
-        </View>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
+  return <ChatTurbo key={template} />;
 }

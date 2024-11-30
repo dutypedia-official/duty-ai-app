@@ -116,7 +116,6 @@ export const StockListItem = ({
   setCompanyName,
   item,
   bottomSheetRef,
-  setSheetModal,
 }: any) => {
   const isPositive = !change?.startsWith("-");
   const isPositivePer = !changePer?.startsWith("-");
