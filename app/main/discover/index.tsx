@@ -303,7 +303,8 @@ export default function DiscoverScreen() {
         <Modal
           visible={visible}
           onDismiss={() => setVisible(false)}
-          dismissable={false}>
+          dismissable={false}
+        >
           <SheetCard
             bottomSheetRef={bottomSheetRef}
             currentAlarm={currentAlarm}
