@@ -18,13 +18,13 @@ const Favorite = ({
   setCompanyName,
   favorites,
   alerms,
-}: // aiAlerms,
-{
+  aiAlerms,
+}: {
   bottomSheetRef: any;
   setCompanyName: any;
   favorites: any;
   alerms: any;
-  // aiAlerms: any;
+  aiAlerms: any;
 }) => {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -58,7 +58,7 @@ const Favorite = ({
           data={favorites}
           renderItem={({ item }: any) => (
             <StockListItem
-              // aiAlerms={aiAlerms}
+              aiAlerms={aiAlerms}
               name={item.symbol}
               price={getPrice(item)}
               change={item.change}
