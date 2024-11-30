@@ -291,6 +291,7 @@ export default function DiscoverScreen() {
           bottomSheetRef={bottomSheetRef}
           setCompanyName={setCompanyName}
           alerms={alerms}
+          aiAlerms={aiAlerms}
           favorites={favorites}
         />
         {/* <PopularPrompts /> */}
