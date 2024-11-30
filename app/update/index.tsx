@@ -83,7 +83,7 @@ export default function UpdatePage() {
           />
         </View>
 
-        <View>
+        <View style={{}}>
           <UpdateBG
             width="100%"
             height={Dimensions.get("screen").height}
@@ -94,10 +94,31 @@ export default function UpdatePage() {
         <View
           style={{
             flex: 1,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             backgroundColor: "transparent",
             justifyContent: "space-between",
             paddingHorizontal: 20,
+            paddingTop: insets.top + 24,
           }}>
+          <View>
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 32,
+                textAlign: "center",
+                textShadowColor: "rgba(0, 0, 0, 0.2)", // Black with 20% opacity
+                textShadowOffset: { width: 4, height: 15 }, // x=4, y=15
+                textShadowRadius: 20, // Blur radius
+                lineHeight: 46,
+              }}>
+              New Update is{"\n"}Available
+            </Text>
+          </View>
           <View
             style={{
               backgroundColor: "transparent",
@@ -117,7 +138,7 @@ export default function UpdatePage() {
                   fontSize: 16,
                   color: "#FFFFFF",
                   textAlign: "center",
-                  lineHeight: 28,
+                  lineHeight: 20,
                 }}>
                 A new version is released, please{"\n"}update to get new
                 features

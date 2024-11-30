@@ -30,7 +30,6 @@ import MagicIcon from "./svgs/magic";
 import MagicInactiveDark from "./svgs/magicInactiveDark";
 import MagicInactiveLight from "./svgs/magicInactiveLight";
 import { router, usePathname } from "expo-router";
-import { Portal } from "react-native-paper";
 
 export default function SheetCard({
   bottomSheetRef,
@@ -134,9 +133,9 @@ export default function SheetCard({
       // Dismiss the keyboard
       Keyboard.dismiss();
       // Update the tab navigation visibility
-      setHideTabNav(false);
+      // setHideTabNav(false);
     } else if (index === 0) {
-      setHideTabNav(true);
+      // setHideTabNav(true);
     }
   }, []);
 
@@ -353,7 +352,6 @@ export default function SheetCard({
                           fontWeight: "600",
                         }}>
                         Enter Price
-                        {currentAlarm?.price}
                       </Text>
                       <View
                         style={{
@@ -371,7 +369,7 @@ export default function SheetCard({
                             color: textColor,
                             fontSize: 16,
                           }}
-                          placeholder="00:00"
+                          placeholder="00.00"
                           placeholderTextColor="#888"
                           value={targetPrice || `${currentAlarm?.price || ""}`}
                           onChangeText={(text) =>

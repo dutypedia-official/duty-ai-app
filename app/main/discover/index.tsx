@@ -24,7 +24,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { apiClient } from "@/lib/api";
 import useStockData from "@/lib/hooks/useStockData";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Modal, Portal } from "react-native-paper";
+import { Portal } from "react-native-paper";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
