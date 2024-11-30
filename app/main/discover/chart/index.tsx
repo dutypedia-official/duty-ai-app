@@ -612,7 +612,6 @@ export const StockListItem = ({
 
                 // global
                 bottomSheetRef.current?.expand();
-                setSheetModal(true);
               }}
             >
               <Text style={{ color: "white" }}>
