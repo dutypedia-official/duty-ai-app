@@ -134,9 +134,9 @@ export default function SheetCard({
       // Dismiss the keyboard
       Keyboard.dismiss();
       // Update the tab navigation visibility
-      // setHideTabNav(false);
+      setHideTabNav(false);
     } else if (index === 0) {
-      // setHideTabNav(true);
+      setHideTabNav(true);
     }
   }, []);
 

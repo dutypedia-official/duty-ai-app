@@ -105,7 +105,6 @@ export default function DiscoverScreen() {
   const [inputText, setInputText] = useState("");
   const [error, setError] = useState(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [visible, setVisible] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -289,7 +288,6 @@ export default function DiscoverScreen() {
         <VipSignal />
         <View style={{ marginTop: 24, backgroundColor: "transparent" }} />
         <Favorite
-          setVisible={setVisible}
           bottomSheetRef={bottomSheetRef}
           setCompanyName={setCompanyName}
           alerms={alerms}
@@ -298,36 +296,28 @@ export default function DiscoverScreen() {
         />
         {/* <PopularPrompts /> */}
       </ScrollView>
-      {/* {bottomSheetRef.current?.expand && ( */}
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={() => setVisible(false)}
-          dismissable={false}>
-          <SheetCard
-            bottomSheetRef={bottomSheetRef}
-            currentAlarm={currentAlarm}
-            setActiveTab={setActiveTab}
-            activeTab={activeTab}
-            textColor={textColor}
-            targetPrice={targetPrice}
-            setTargetPrice={setTargetPrice}
-            inputText={inputText}
-            currentAiAlerm={currentAiAlerm}
-            setInputText={setInputText}
-            error={error}
-            handelSetAlerm={handelSetAlerm}
-            loading={loading}
-            loadingDeleteAlarm={loadingDeleteAlarm}
-            loadingAiAlarm={loadingAiAlarm}
-            loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-            handelDeleteAlerm={handelDeleteAlerm}
-            handelSetAiAlerm={handelSetAiAlerm}
-            handelDeleteAiAlerm={handelDeleteAiAlerm}
-          />
-        </Modal>
-      </Portal>
-      {/* )} */}
+
+      <SheetCard
+        bottomSheetRef={bottomSheetRef}
+        currentAlarm={currentAlarm}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        textColor={textColor}
+        targetPrice={targetPrice}
+        setTargetPrice={setTargetPrice}
+        inputText={inputText}
+        currentAiAlerm={currentAiAlerm}
+        setInputText={setInputText}
+        error={error}
+        handelSetAlerm={handelSetAlerm}
+        loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+        handelDeleteAlerm={handelDeleteAlerm}
+        handelSetAiAlerm={handelSetAiAlerm}
+        handelDeleteAiAlerm={handelDeleteAiAlerm}
+      />
     </SafeAreaView>
   );
 }

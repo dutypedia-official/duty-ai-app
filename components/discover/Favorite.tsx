@@ -19,14 +19,12 @@ const Favorite = ({
   favorites,
   alerms,
   aiAlerms,
-  setVisible,
 }: {
   bottomSheetRef: any;
   setCompanyName: any;
   favorites: any;
   alerms: any;
   aiAlerms: any;
-  setVisible: any;
 }) => {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -58,7 +56,6 @@ const Favorite = ({
           data={favorites}
           renderItem={({ item }: any) => (
             <StockListItem
-              setSheetModal={setVisible}
               aiAlerms={aiAlerms}
               name={item.symbol}
               price={getPrice(item)}
