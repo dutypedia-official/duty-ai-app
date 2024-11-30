@@ -18,11 +18,13 @@ const Favorite = ({
   setCompanyName,
   favorites,
   alerms,
+  aiAlerms,
 }: {
   bottomSheetRef: any;
   setCompanyName: any;
   favorites: any;
   alerms: any;
+  aiAlerms: any;
 }) => {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -38,13 +40,15 @@ const Favorite = ({
           paddingVertical: 20,
           alignItems: "center",
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <Text
           style={{
             fontSize: 24,
             fontWeight: "bold",
             color: isDark ? "#D2D2D2" : "black",
-          }}>
+          }}
+        >
           Favorites <AntDesign name="heart" size={20} color="#ff3e30" />
         </Text>
       </View>
@@ -54,6 +58,7 @@ const Favorite = ({
           data={favorites}
           renderItem={({ item }: any) => (
             <StockListItem
+              aiAlerms={aiAlerms}
               name={item.symbol}
               price={getPrice(item)}
               change={item.change}
@@ -77,14 +82,16 @@ const Favorite = ({
             alignItems: "center",
             paddingTop: 50,
             backgroundColor: "transparent",
-          }}>
+          }}
+        >
           <Text
             style={{
               fontSize: 14,
               textAlign: "center",
               paddingVertical: 12,
               color: isDark ? "#D2D2D2" : "black",
-            }}>
+            }}
+          >
             No favorites stock. Click to add
           </Text>
           <TouchableOpacity
@@ -95,7 +102,8 @@ const Favorite = ({
               alignItems: "center",
               position: "relative",
               backgroundColor: "transparent",
-            }}>
+            }}
+          >
             <LinearGradient
               colors={
                 isDark
@@ -111,12 +119,14 @@ const Favorite = ({
                 borderRadius: 4,
                 opacity: 0.9,
                 padding: 8,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   opacity: 0.7,
                   color: isDark ? "white" : "black",
-                }}>
+                }}
+              >
                 <MaterialIcons
                   name="addchart"
                   size={38}
