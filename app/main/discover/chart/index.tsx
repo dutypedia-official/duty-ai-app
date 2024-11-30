@@ -116,10 +116,11 @@ export const StockListItem = ({
   setCompanyName,
   item,
   bottomSheetRef,
+  setSheetModal,
 }: any) => {
   const isPositive = !change?.startsWith("-");
   const isPositivePer = !changePer?.startsWith("-");
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const colorScheme = useColorScheme();
   const changeColor = isPositive
@@ -575,6 +576,7 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
               onPress={() => {
+                setSheetModal(true);
                 setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
                   name,
