@@ -337,9 +337,9 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider theme={PaperTheme}>
-        <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
-        <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <PaperProvider theme={PaperTheme}>
           <BottomSheetModalProvider>
             <Stack>
               <Stack.Screen name="(start)" options={{ headerShown: false }} />
@@ -351,8 +351,8 @@ function RootLayoutNav() {
               <Stack.Screen name="modal" options={{ presentation: "modal" }} />
             </Stack>
           </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </PaperProvider>
+        </PaperProvider>
+      </GestureHandlerRootView>
       <Toast />
     </ThemeProvider>
   );

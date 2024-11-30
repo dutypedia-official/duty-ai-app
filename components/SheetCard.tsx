@@ -133,16 +133,16 @@ export default function SheetCard({
       // Dismiss the keyboard
       Keyboard.dismiss();
       // Update the tab navigation visibility
-      setHideTabNav(false);
+      // setHideTabNav(false);
     } else if (index === 0) {
-      setHideTabNav(true);
+      // setHideTabNav(true);
     }
   }, []);
 
-  useEffect(() => {
-    setHideTabNav(false);
-    console.log(router);
-  }, [router]);
+  // useEffect(() => {
+  //   setHideTabNav(false);
+  //   console.log(router);
+  // }, [router]);
 
   return (
     <BottomSheet
@@ -377,6 +377,7 @@ export default function SheetCard({
                             setTargetPrice(text.replace(/[^0-9.]/g, ""))
                           }
                           keyboardType="numeric"
+                          editable={currentAlarm ? false : true}
                         />
                       </View>
                     </View>
@@ -420,7 +421,7 @@ export default function SheetCard({
                           placeholderTextColor="#888"
                           value={inputText || `${currentAiAlerm?.prompt || ""}`}
                           onChangeText={setInputText}
-                          // editable={false}
+                          editable={currentAiAlerm ? false : true}
                           returnKeyType="send"
                         />
                       </View>
@@ -482,8 +483,11 @@ export default function SheetCard({
                     onPress={() => {
                       handelSetAlerm();
                     }}
-                    // disabled={}
-                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
+                    disabled={targetPrice.trim() === "" || currentAlarm}
+                    style={{
+                      opacity:
+                        targetPrice.trim() !== "" && !currentAlarm ? 1 : 0.5,
+                    }}>
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -574,8 +578,13 @@ export default function SheetCard({
                     onPress={() => {
                       handelSetAiAlerm();
                     }}
-                    disabled={inputText?.length === 0 ? true : false}
-                    style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}>
+                    disabled={
+                      inputText?.length === 0 || currentAiAlerm ? true : false
+                    }
+                    style={{
+                      opacity:
+                        inputText?.length > 0 && !currentAiAlerm ? 1 : 0.5,
+                    }}>
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
