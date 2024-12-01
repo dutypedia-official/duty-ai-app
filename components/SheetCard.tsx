@@ -371,7 +371,6 @@ export default function SheetCard({
                         }}
                       >
                         Enter Price
-                        {currentAlarm?.price}
                       </Text>
                       <View
                         style={{
