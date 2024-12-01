@@ -24,7 +24,7 @@ const Favorite = ({
   setCompanyName: any;
   favorites: any;
   alerms: any;
-  aiAlerms: any;
+  aiAlerms?: any;
 }) => {
   const router = useRouter();
   const colorScheme = useColorScheme();

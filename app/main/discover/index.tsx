@@ -24,7 +24,6 @@ import { useAuth } from "@clerk/clerk-expo";
 import { apiClient } from "@/lib/api";
 import useStockData from "@/lib/hooks/useStockData";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Portal } from "react-native-paper";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
@@ -95,6 +94,9 @@ export default function DiscoverScreen() {
   const { favorites, setFavorites } = useStockData();
   const textColor = useThemeColor({}, "text");
   const [loading, setLoading] = useState(false);
+  const [loadingDeleteAlarm, setLoadingDeleteAlarm] = useState(false);
+  const [loadingAiAlarm, setLoadingAiAlarm] = useState(false);
+  const [loadingDeleteAiAlarm, setLoadingDeleteAiAlarm] = useState(false);
   const [companyName, setCompanyName] = useState(null);
   const [alerms, setAlerms] = useState([]);
   const [aiAlerms, setAiAlerms] = useState([]);
@@ -178,7 +180,7 @@ export default function DiscoverScreen() {
     }
     try {
       setError(null);
-      setLoading(true);
+      setLoadingAiAlarm(true);
       const token = await getToken();
       await client.post(
         "/noti/create-ai-alerm",
@@ -204,13 +206,13 @@ export default function DiscoverScreen() {
       console.log(error.response?.data);
       setError(error.response?.data?.detail);
     } finally {
-      setLoading(false);
+      setLoadingAiAlarm(false);
     }
   };
 
   const handelDeleteAlerm = async () => {
     try {
-      setLoading(true);
+      setLoadingDeleteAlarm(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-alerm/${currentAlarm.id}`,
@@ -233,12 +235,12 @@ export default function DiscoverScreen() {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoading(false);
+      setLoadingDeleteAlarm(false);
     }
   };
   const handelDeleteAiAlerm = async () => {
     try {
-      setLoading(true);
+      setLoadingDeleteAiAlarm(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-ai-alerm/${selectedStock.name}`,
@@ -261,7 +263,7 @@ export default function DiscoverScreen() {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoading(false);
+      setLoadingDeleteAiAlarm(false);
     }
   };
 
@@ -293,7 +295,6 @@ export default function DiscoverScreen() {
         />
         {/* <PopularPrompts /> */}
       </ScrollView>
-
       <SheetCard
         bottomSheetRef={bottomSheetRef}
         currentAlarm={currentAlarm}
@@ -308,6 +309,9 @@ export default function DiscoverScreen() {
         error={error}
         handelSetAlerm={handelSetAlerm}
         loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
         handelDeleteAlerm={handelDeleteAlerm}
         handelSetAiAlerm={handelSetAiAlerm}
         handelDeleteAiAlerm={handelDeleteAiAlerm}
