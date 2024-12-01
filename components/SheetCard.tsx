@@ -439,7 +439,7 @@ export default function SheetCard({
                             maxHeight: 100,
                             fontSize: 16,
                           }}
-                          placeholder="If market go 50% above the moving avarage give em signal also if this stock perform so goodthen  give em signal"
+                          placeholder="Notify me when this stock P/E ratio crosses 20"
                           placeholderTextColor="#888"
                           value={inputText || `${currentAiAlerm?.prompt || ""}`}
                           onChangeText={setInputText}
