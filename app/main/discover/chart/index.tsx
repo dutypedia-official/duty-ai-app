@@ -315,23 +315,20 @@ export const StockListItem = ({
           borderRadius: 12,
           marginVertical: 10,
           gap: 12,
-        }}
-      >
+        }}>
         <View
           style={{
             backgroundColor: "transparent",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-          }}
-        >
+          }}>
           <View
             style={{
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
               flexDirection: "row",
               gap: 8,
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 24,
@@ -340,8 +337,7 @@ export const StockListItem = ({
                 overflow: "hidden",
                 backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
                 position: "relative",
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 24,
@@ -352,15 +348,13 @@ export const StockListItem = ({
                   position: "absolute",
                   left: 0,
                   top: 0,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontWeight: "700",
                     fontSize: 12,
                     color: "#1E1E1E",
-                  }}
-                >
+                  }}>
                   {name?.[0]}
                 </Text>
               </View>
@@ -374,8 +368,7 @@ export const StockListItem = ({
                   fontWeight: "bold",
                 }}
                 numberOfLines={1}
-                ellipsizeMode="tail"
-              >
+                ellipsizeMode="tail">
                 {name}
               </Text>
             </View>
@@ -385,8 +378,7 @@ export const StockListItem = ({
               flexDirection: "row",
               alignItems: "center",
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-            }}
-          >
+            }}>
             <TouchableOpacity onPress={toggleFavorite}>
               {isFavorite ? (
                 <AntDesign name="heart" size={20} color="#FF0000" />
@@ -402,23 +394,20 @@ export const StockListItem = ({
             flexDirection: "row",
             justifyContent: "space-between",
             gap: 12,
-          }}
-        >
+          }}>
           <View
             style={{
               backgroundColor: "transparent",
               flex: 1,
               gap: 12,
-            }}
-          >
+            }}>
             <View style={{ backgroundColor: "transparent" }}>
               <Text
                 style={{
                   color: isDark ? "#FFFFFF" : "#000000",
                   fontSize: 14,
                   fontWeight: "800",
-                }}
-              >
+                }}>
                 ৳ {price}
               </Text>
             </View>
@@ -428,8 +417,7 @@ export const StockListItem = ({
                 backgroundColor: "transparent",
                 flexDirection: "row",
                 alignItems: "center",
-              }}
-            >
+              }}>
               {infoData?.map((info: any, idx: number) => {
                 return (
                   <Fragment key={idx}>
@@ -441,15 +429,13 @@ export const StockListItem = ({
                         alignItems: idx === 0 ? "flex-start" : "center",
                         justifyContent: "flex-start",
                         gap: 4,
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 10,
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         {info?.name}
                       </Text>
 
@@ -457,8 +443,7 @@ export const StockListItem = ({
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 10,
-                        }}
-                      >
+                        }}>
                         {info?.value}
                       </Text>
                     </View>
@@ -484,16 +469,14 @@ export const StockListItem = ({
               justifyContent: "space-between",
               alignItems: "flex-end",
               width: 80,
-            }}
-          >
+            }}>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 4,
                 backgroundColor: "transparent",
-              }}
-            >
+              }}>
               <AntDesign
                 style={{ color: changeColor, paddingTop: 6 }}
                 name={isPositive ? "caretup" : "caretdown"}
@@ -505,8 +488,7 @@ export const StockListItem = ({
                   marginTop: 4,
                   textAlign: "right",
                   color: changeColor,
-                }}
-              >
+                }}>
                 {change + "%"}
               </Text>
             </View>
@@ -522,15 +504,13 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
                 width: 56,
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 12,
                   textAlign: "center",
-                }}
-              >
+                }}>
                 {changePer + "%"}
               </Text>
             </View>
@@ -545,8 +525,7 @@ export const StockListItem = ({
               justifyContent: "space-between",
               backgroundColor: "transparent",
               width: "100%",
-            }}
-          >
+            }}>
             <TouchableOpacity
               onPress={() => {
                 // router.push({
@@ -570,8 +549,7 @@ export const StockListItem = ({
                 gap: 4,
                 backgroundColor: isDark ? "#333333" : "#EAEDED",
                 borderColor: isDark ? "#333333" : "#EAEDED",
-              }}
-            >
+              }}>
               <Text>
                 <MaterialIcons
                   name="show-chart"
@@ -580,8 +558,7 @@ export const StockListItem = ({
                 />
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
-              >
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
                 Chart
               </Text>
             </TouchableOpacity>
@@ -612,8 +589,7 @@ export const StockListItem = ({
 
                 // global
                 bottomSheetRef.current?.expand();
-              }}
-            >
+              }}>
               <Text style={{ color: "white" }}>
                 {currentAlarm || currentAiAlarm ? (
                   <MaterialIcons
@@ -630,8 +606,7 @@ export const StockListItem = ({
                 )}
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
-              >
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
                 {currentAlarm || currentAiAlarm ? "Edit Alerm" : "Set Alarm"}
               </Text>
             </TouchableOpacity>
@@ -655,8 +630,7 @@ export const StockListItem = ({
                 gap: 4,
                 backgroundColor: isDark ? "#333333" : "#EAEDED",
                 borderColor: isDark ? "#333333" : "#EAEDED",
-              }}
-            >
+              }}>
               <Text style={{ color: "white" }}>
                 <FontAwesome
                   name="magic"
@@ -665,8 +639,7 @@ export const StockListItem = ({
                 />
               </Text>
               <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}
-              >
+                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
                 Ask AI
               </Text>
             </TouchableOpacity>
@@ -710,9 +683,6 @@ const StockListScreen = () => {
   const client = apiClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [loadingDeleteAlarm, setLoadingDeleteAlarm] = useState(false);
-  const [loadingAiAlarm, setLoadingAiAlarm] = useState(false);
-  const [loadingDeleteAiAlarm, setLoadingDeleteAiAlarm] = useState(false);
   let initialStocks = !activeFilter
     ? marketData
     : marketData.filter((stock: any) => stock[activeFilter] == true) || [];
@@ -835,7 +805,7 @@ const StockListScreen = () => {
     }
     try {
       setError(null);
-      setLoadingAiAlarm(true);
+      setLoading(true);
       const token = await getToken();
       await client.post(
         "/noti/create-ai-alerm",
@@ -861,13 +831,13 @@ const StockListScreen = () => {
       console.log(error.response?.data);
       setError(error.response?.data?.detail);
     } finally {
-      setLoadingAiAlarm(false);
+      setLoading(false);
     }
   };
 
   const handelDeleteAlerm = async () => {
     try {
-      setLoadingDeleteAlarm(true);
+      setLoading(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-alerm/${currentAlarm.id}`,
@@ -890,12 +860,12 @@ const StockListScreen = () => {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoadingDeleteAlarm(false);
+      setLoading(false);
     }
   };
   const handelDeleteAiAlerm = async () => {
     try {
-      setLoadingDeleteAiAlarm(true);
+      setLoading(true);
       const token = await getToken();
       await client.delete(
         `/noti/delete-ai-alerm/${selectedStock.name}`,
@@ -918,7 +888,7 @@ const StockListScreen = () => {
         text1: "Error deleting alarm",
       });
     } finally {
-      setLoadingDeleteAiAlarm(false);
+      setLoading(false);
     }
   };
 
@@ -965,8 +935,7 @@ const StockListScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{
         flex: 1,
-      }}
-    >
+      }}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -977,8 +946,7 @@ const StockListScreen = () => {
               flexDirection: "row",
               alignItems: "center",
               gap: 8,
-            }}
-          >
+            }}>
             <Text>
               <Ionicons
                 name="chevron-back"
@@ -990,8 +958,7 @@ const StockListScreen = () => {
               style={[
                 styles.headerTitle,
                 { color: isDark ? "#00B0FF" : "#2980B9" },
-              ]}
-            >
+              ]}>
               {isBn ? "স্টক লিস্ট" : "Stock List"}
             </Text>
           </TouchableOpacity>
@@ -1001,14 +968,12 @@ const StockListScreen = () => {
               flexDirection: "row",
               gap: 12,
               alignItems: "center",
-            }}
-          >
+            }}>
             <View
               style={[
                 styles.searchContainer,
                 { borderColor: isDark ? "#333333" : "#D1D1D1" },
-              ]}
-            >
+              ]}>
               <TextInput
                 style={{
                   flex: 1,
@@ -1033,8 +998,7 @@ const StockListScreen = () => {
             <TouchableOpacity
               onPress={() => {
                 setSortByName(!sortByName);
-              }}
-            >
+              }}>
               <FontAwesome
                 name="sort-alpha-asc"
                 size={24}
@@ -1056,8 +1020,7 @@ const StockListScreen = () => {
             alignItems: "flex-start",
             alignSelf: "flex-start",
             gap: 12,
-          }}
-        >
+          }}>
           {filteredItems.map((item: any, index) => (
             <TouchableOpacity
               onPress={() => {
@@ -1074,8 +1037,7 @@ const StockListScreen = () => {
                       ? "#1C1C1C"
                       : "#E0E0E0"
                     : "#00796B",
-              }}
-            >
+              }}>
               <Text
                 style={{
                   paddingHorizontal: 12,
@@ -1087,8 +1049,7 @@ const StockListScreen = () => {
                         ? "#B0BEC5"
                         : "#fff"
                       : "white",
-                }}
-              >
+                }}>
                 {item.name}
               </Text>
             </TouchableOpacity>
@@ -1138,9 +1099,6 @@ const StockListScreen = () => {
         error={error}
         handelSetAlerm={handelSetAlerm}
         loading={loading}
-        loadingDeleteAlarm={loadingDeleteAlarm}
-        loadingAiAlarm={loadingAiAlarm}
-        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
         handelDeleteAlerm={handelDeleteAlerm}
         handelSetAiAlerm={handelSetAiAlerm}
         handelDeleteAiAlerm={handelDeleteAiAlerm}
