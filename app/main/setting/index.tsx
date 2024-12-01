@@ -110,7 +110,9 @@ export default function SettingScreen() {
       },
     },
     {
-      title: isBn ? "আমার অ্যাকাউন্ট ডিলিট করে দিন" : "Delete my account",
+      title: isBn
+        ? "আমার অ্যাকাউন্ট ডিলিট করে দিন"
+        : "Delete my account and data",
       leftIcon: <Ionicons name="trash-outline" size={24} color={textColor} />,
       rightIcon: (
         <Ionicons name="chevron-forward" size={24} color={textColor} />

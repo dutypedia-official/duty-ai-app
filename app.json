@@ -2,7 +2,7 @@
   "expo": {
     "name": "Duty AI",
     "slug": "duty-ai",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "dutyai",
@@ -16,7 +16,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "23",
+      "buildNumber": "28",
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
         "com.apple.developer.applesignin": ["Default"]
@@ -28,7 +28,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.easinarafat.dutyai",
-      "versionCode": 28,
+      "versionCode": 29,
       "permissions": ["com.google.android.gms.permission.AD_ID"],
       "googleServicesFile": "./google-services.json"
     },

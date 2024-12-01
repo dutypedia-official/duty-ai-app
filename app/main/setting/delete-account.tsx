@@ -107,7 +107,7 @@ const DeleteAccount = () => {
         contentStyle={{ paddingVertical: 4 }}
         mode="contained"
       >
-        Delete My Account
+        Delete My Account and Data
       </Button>
 
       <Modal

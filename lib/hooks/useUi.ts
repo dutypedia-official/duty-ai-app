@@ -14,6 +14,8 @@ interface Store {
   setSelectedAlarmShit: (selectedAlarmShit: any) => void;
   hideTabNav: boolean;
   setHideTabNav: (hideTabNav: boolean) => void;
+  aiAlermPrompt: string;
+  setAiAlermPrompt: (aiAlermPrompt: string) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -32,6 +34,8 @@ const useUi = create<Store>((set, get) => ({
   setSelectedAlarmShit: (selectedAlarmShit: any) => set({ selectedAlarmShit }),
   hideTabNav: false,
   setHideTabNav: (hideTabNav: boolean) => set({ hideTabNav }),
+  aiAlermPrompt: "",
+  setAiAlermPrompt: (aiAlermPrompt: string) => set({ aiAlermPrompt }),
 }));
 
 export default useUi;
