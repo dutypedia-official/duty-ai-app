@@ -53,6 +53,7 @@ import { date } from "zod";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import SheetCard from "@/components/SheetCard";
 import BottomSheet from "@gorhom/bottom-sheet";
+import SheetCardIos from "@/components/SheetCardios";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -1088,27 +1089,51 @@ const StockListScreen = () => {
         />
       </SafeAreaView>
 
-      <SheetCard
-        bottomSheetRef={bottomSheetRef}
-        currentAlarm={currentAlarm}
-        setActiveTab={setActiveTab}
-        activeTab={activeTab}
-        textColor={textColor}
-        targetPrice={targetPrice}
-        setTargetPrice={setTargetPrice}
-        inputText={inputText}
-        currentAiAlerm={currentAiAlerm}
-        setInputText={setInputText}
-        error={error}
-        handelSetAlerm={handelSetAlerm}
-        loading={loading}
-        loadingDeleteAlarm={loadingDeleteAlarm}
-        loadingAiAlarm={loadingAiAlarm}
-        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-        handelDeleteAlerm={handelDeleteAlerm}
-        handelSetAiAlerm={handelSetAiAlerm}
-        handelDeleteAiAlerm={handelDeleteAiAlerm}
-      />
+      {Platform.OS === "ios" ? (
+        <SheetCardIos
+          bottomSheetRef={bottomSheetRef}
+          currentAlarm={currentAlarm}
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+          textColor={textColor}
+          targetPrice={targetPrice}
+          setTargetPrice={setTargetPrice}
+          inputText={inputText}
+          currentAiAlerm={currentAiAlerm}
+          setInputText={setInputText}
+          error={error}
+          handelSetAlerm={handelSetAlerm}
+          loading={loading}
+          loadingDeleteAlarm={loadingDeleteAlarm}
+          loadingAiAlarm={loadingAiAlarm}
+          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+          handelDeleteAlerm={handelDeleteAlerm}
+          handelSetAiAlerm={handelSetAiAlerm}
+          handelDeleteAiAlerm={handelDeleteAiAlerm}
+        />
+      ) : (
+        <SheetCard
+          bottomSheetRef={bottomSheetRef}
+          currentAlarm={currentAlarm}
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+          textColor={textColor}
+          targetPrice={targetPrice}
+          setTargetPrice={setTargetPrice}
+          inputText={inputText}
+          currentAiAlerm={currentAiAlerm}
+          setInputText={setInputText}
+          error={error}
+          handelSetAlerm={handelSetAlerm}
+          loading={loading}
+          loadingDeleteAlarm={loadingDeleteAlarm}
+          loadingAiAlarm={loadingAiAlarm}
+          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+          handelDeleteAlerm={handelDeleteAlerm}
+          handelSetAiAlerm={handelSetAiAlerm}
+          handelDeleteAiAlerm={handelDeleteAiAlerm}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
