@@ -46,6 +46,14 @@ export default function Layout() {
           headerBackTitleVisible: false,
         }}
       />
+      <Stack.Screen
+        name="limit"
+        options={{
+          title: "Limit",
+          headerShown: false,
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack>
   );
 }

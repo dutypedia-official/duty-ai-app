@@ -44,7 +44,7 @@ const VipSignal = () => {
       subTitle: "Find Top Stocks with Duty AI",
       action: () => {
         setTemplate("scanner");
-        router.push("/main/discover/scanner/");
+        router.push("/main/discover/scanner");
       },
     },
     {

@@ -417,7 +417,11 @@ export default function SheetCard({
                               inputText || `${currentAiAlerm?.prompt || ""}`
                             }
                             onChangeText={setInputText}
-                            // editable={false}
+                            editable={
+                              currentAiAlerm?.prompt === undefined
+                                ? true
+                                : false
+                            }
                             returnKeyType="send"
                           />
                         </View>
@@ -574,8 +578,19 @@ export default function SheetCard({
                       onPress={() => {
                         handelSetAiAlerm();
                       }}
-                      disabled={inputText?.length === 0 ? true : false}
-                      style={{ opacity: inputText?.length > 0 ? 1 : 0.5 }}>
+                      disabled={
+                        inputText?.length === 0 ||
+                        currentAiAlerm?.prompt !== undefined
+                          ? true
+                          : false
+                      }
+                      style={{
+                        opacity:
+                          inputText?.length > 0 &&
+                          currentAiAlerm?.prompt === undefined
+                            ? 1
+                            : 0.5,
+                      }}>
                       <LinearGradient
                         colors={
                           isDark

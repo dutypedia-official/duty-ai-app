@@ -34,7 +34,6 @@ import useUi from "@/lib/hooks/useUi";
 import Colors from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const CURRENT_IOS_VERSION = 10;
 const CURRENT_ANDROID_VERSION = 10;
@@ -339,17 +338,15 @@ function RootLayoutNav() {
       <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <PaperProvider theme={PaperTheme}>
-          <BottomSheetModalProvider>
-            <Stack>
-              <Stack.Screen name="(start)" options={{ headerShown: false }} />
-              <Stack.Screen name="main" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="update/index"
-                options={{ headerShown: false, title: "Update Available" }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
-          </BottomSheetModalProvider>
+          <Stack>
+            <Stack.Screen name="(start)" options={{ headerShown: false }} />
+            <Stack.Screen name="main" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="update/index"
+              options={{ headerShown: false, title: "Update Available" }}
+            />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
         </PaperProvider>
       </GestureHandlerRootView>
       <Toast />
