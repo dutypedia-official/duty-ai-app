@@ -16,7 +16,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "28",
+      "buildNumber": "30",
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
         "com.apple.developer.applesignin": ["Default"]
@@ -28,7 +28,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.easinarafat.dutyai",
-      "versionCode": 29,
+      "versionCode": 31,
       "permissions": ["com.google.android.gms.permission.AD_ID"],
       "googleServicesFile": "./google-services.json"
     },

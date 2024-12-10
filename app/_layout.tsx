@@ -194,7 +194,8 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
+      tokenCache={tokenCache}
+    >
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -293,7 +294,14 @@ function RootLayoutNav() {
       const saveToken = async () => {
         console.log("expoPushToken", expoPushToken);
         const userToken = await getToken();
-        await client.post(`/noti/save-token/${expoPushToken}`, {}, userToken);
+        const isAvailable = await isServerAvailable(MAIN_SERVER_URL);
+        await client.post(
+          `/noti/save-token/${expoPushToken}`,
+          {},
+          userToken,
+          {},
+          isAvailable
+        );
       };
       saveToken();
     }
