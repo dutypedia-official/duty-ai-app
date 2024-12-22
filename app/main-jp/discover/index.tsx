@@ -76,9 +76,9 @@ export default function DiscoverScreen() {
     if (redirectToList == "yes") {
       console.log(redirectToList);
 
-      router.push("/main/discover/chart/");
+      router.push("/main-jp/discover/chart/");
     } else if (next == "scanner") {
-      router.push("/main/discover/scanner/");
+      router.push("/main-jp/discover/scanner/");
     }
   }, []);
 

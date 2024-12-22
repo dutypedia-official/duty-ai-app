@@ -140,7 +140,7 @@ export default function TabTwoScreen() {
           <TouchableOpacity
             onPress={() => {
               setActiveConversationId(item.id);
-              router.push("/main");
+              router.push("/main-jp");
             }}
             key={index}
           >

@@ -121,13 +121,15 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {
               // paddingHorizontal: 12,
             }
-          }>
+          }
+        >
           <View
             style={{
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height * 0.85,
               backgroundColor: isDark ? "black" : "white",
-            }}>
+            }}
+          >
             {loading && (
               <View
                 style={
@@ -135,7 +137,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     // width: Dimensions.get("window").width - 24,
                     // height: Dimensions.get("window").width / videoAspectRatio,
                   }
-                }>
+                }
+              >
                 <ActivityIndicator
                   style={{
                     flex: 1,
@@ -187,7 +190,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
-        }}>
+        }}
+      >
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text
@@ -196,7 +200,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontSize: 40,
                 fontWeight: "700",
                 lineHeight: 40,
-              }}>
+              }}
+            >
               こんにちは, {name}
             </Text>
           ) : (
@@ -207,7 +212,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontWeight: "700",
                 lineHeight: 40,
                 color: "#6EA8D5",
-              }}>
+              }}
+            >
               こんにちは, {name}
             </Text>
           )}
@@ -216,7 +222,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               fontSize: 30,
               fontWeight: "400",
               opacity: 0.5,
-            }}>
+            }}
+          >
             {subTitleFn()}
           </Text>
         </View>
@@ -226,22 +233,22 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও")) {
               setVisible(true);
             } else if (val.includes("⚖️ Golden choice")) {
-              if (pathname === "/main/home") {
-                router.push("/main/home/vipsignal/list/");
+              if (pathname === "/main-jp/home") {
+                router.push("/main-jp/home/vipsignal/list/");
               } else {
-                router.push("/main/discover/vipsignal/list/");
+                router.push("/main-jp/discover/vipsignal/list/");
               }
             } else if (val.includes("🔍 Stock Scanner")) {
               setTemplate("scanner");
               //push with data
-              if (pathname === "/main/home") {
+              if (pathname === "/main-jp/home") {
                 router.push({
-                  pathname: "/main/home/scanner/",
+                  pathname: "/main-jp/home/scanner/",
                   params: { next: "scanner" },
                 });
               } else {
                 router.push({
-                  pathname: "/main/discover/",
+                  pathname: "/main-jp/discover/",
                   params: { next: "scanner" },
                 });
               }
@@ -253,7 +260,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             <TouchableOpacity
               key={i}
               style={{ marginBottom: 16 }}
-              onPress={() => promptPress(prompt)}>
+              onPress={() => promptPress(prompt)}
+            >
               <View
                 style={{
                   borderWidth: template === "scanner" ? 1.5 : 0,
@@ -279,14 +287,16 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
                     fontSize: 16,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
-                  numberOfLines={2}>
+                  numberOfLines={2}
+                >
                   {prompt}
                 </Text>
 

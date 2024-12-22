@@ -1,4 +1,4 @@
-import ChatTurbo from "@/components/chat/turbo/ChatTurbo";
+import ChatTurbo from "@/components-jp/chat/turbo/ChatTurbo";
 import { SafeAreaView, Text, View } from "@/components/Themed";
 import useChat from "@/lib/hooks/useChat";
 import useVipSignal from "@/lib/hooks/useVipSignal";
