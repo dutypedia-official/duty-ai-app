@@ -76,7 +76,12 @@ export default function Ins2Screen() {
             backgroundColor: "transparent",
           }}>
           <View style={{ padding: 20 }}>
-            <Pressable onPress={() => router.push("/login")}>
+            <Pressable
+              onPress={() =>
+                language === "Jp"
+                  ? router.push("/(start-jp)/login")
+                  : router.push("/(start)/login")
+              }>
               <LinearGradient
                 colors={["#FF6FD8", "#00FFC6"]}
                 start={{ x: 0, y: 0 }}

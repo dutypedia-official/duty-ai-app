@@ -34,6 +34,7 @@ import useUi from "@/lib/hooks/useUi";
 import Colors from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const CURRENT_IOS_VERSION = 10;
 const CURRENT_ANDROID_VERSION = 10;
@@ -194,8 +195,7 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}
-    >
+      tokenCache={tokenCache}>
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -206,7 +206,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const router = useRouter();
-  const { setUpdateInfo } = useLang();
+  const { setUpdateInfo, language } = useLang();
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
@@ -330,9 +330,17 @@ function RootLayoutNav() {
       if (update?.update) {
         router.replace("/update");
       } else if (isSignedIn) {
-        router.replace("/main/");
+        if (language === "Jp") {
+          router.replace("/main-jp/home/");
+        } else {
+          router.replace("/main/home/");
+        }
       } else {
-        router.replace("/(start)");
+        if (language === "Jp") {
+          router.replace("/(start-jp)");
+        } else {
+          router.replace("/(start)");
+        }
       }
     }
   }, [isLoaded, isLoading, update]);
@@ -345,17 +353,24 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <PaperProvider theme={PaperTheme}>
-          <Stack>
-            <Stack.Screen name="(start)" options={{ headerShown: false }} />
-            <Stack.Screen name="main" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="update/index"
-              options={{ headerShown: false, title: "Update Available" }}
-            />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
-        </PaperProvider>
+        <BottomSheetModalProvider>
+          <PaperProvider theme={PaperTheme}>
+            <Stack>
+              <Stack.Screen name="(start)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="(start-jp)"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="main" options={{ headerShown: false }} />
+              <Stack.Screen name="main-jp" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="update/index"
+                options={{ headerShown: false, title: "Update Available" }}
+              />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
+          </PaperProvider>
+        </BottomSheetModalProvider>
       </GestureHandlerRootView>
       <Toast />
     </ThemeProvider>

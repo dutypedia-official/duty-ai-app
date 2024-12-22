@@ -6,6 +6,7 @@ import { Stack, Link } from "expo-router";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DummyChat from "@/components/onboarding/DummyChat";
+import { Fragment } from "react";
 
 export default function Ins1Screen() {
   const langStore = useLang();
@@ -60,15 +61,14 @@ export default function Ins1Screen() {
             {isBn ? (
               "আপনার AI-কে যেকোনো বিষয়ে জিজ্ঞাসা করুন"
             ) : (
-              <>
+              <Fragment>
                 Ask your{" "}
                 <Text
-                  style={{ fontWeight: "bold", color: "rgb(105, 220, 163)" }}
-                >
+                  style={{ fontWeight: "bold", color: "rgb(105, 220, 163)" }}>
                   AI
                 </Text>{" "}
                 about anything
-              </>
+              </Fragment>
             )}
           </Text>
 
@@ -81,8 +81,7 @@ export default function Ins1Screen() {
                 flexDirection: "row-reverse",
                 paddingVertical: 6,
               }}
-              mode="contained"
-            >
+              mode="contained">
               {isBn ? "পরবর্তী" : "Next"}
             </Button>
           </Link>

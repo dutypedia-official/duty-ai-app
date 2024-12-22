@@ -617,13 +617,23 @@ export default function ChangePassword() {
                   </View>
                   <View style={{ gap: 12, zIndex: 20, position: "relative" }}>
                     <View style={{ gap: 12 }}>
-                      <FormInput
-                        control={control}
-                        name="otp"
-                        placeholder="Enter the code"
-                        inputMode={"numeric"}
-                        onFocus={handleFocus} // Hide button immediately
-                      />
+                      <View>
+                        <Text
+                          style={{
+                            color: "#FFFFFF",
+                            fontSize: 16,
+                            marginBottom: 8,
+                          }}>
+                          Verification code
+                        </Text>
+                        <FormInput
+                          control={control}
+                          name="otp"
+                          placeholder="Enter the code"
+                          inputMode={"numeric"}
+                          onFocus={handleFocus} // Hide button immediately
+                        />
+                      </View>
                       {invalidCode && (
                         <View>
                           <Text

@@ -3,8 +3,8 @@ import useLang from "@/lib/hooks/useLang";
 import { useUser } from "@clerk/clerk-expo";
 import { AntDesign } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "expo-router";
+import { Fragment, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -39,6 +39,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     var iframe = document.querySelector('iframe');
     iframe.requestFullscreen();
   `;
+  const pathname = usePathname();
 
   const generalPrompts = [
     "📰 Top news bangladesh",
@@ -60,6 +61,8 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     "📱 Should I Invest in GP BD",
     "📊 আজকের ইনডেক্স সম্পর্কে বল",
     "▶️ Duty AI ব্যাবহার ভিডিও",
+    "🔍 Stock Scanner",
+    "⚖️ Golden choice",
   ];
 
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
@@ -109,7 +112,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     setName(`${user.firstName}`);
   }, [user]);
   return (
-    <>
+    <Fragment>
       <Portal>
         <Modal
           visible={visible}
@@ -118,15 +121,13 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {
               // paddingHorizontal: 12,
             }
-          }
-        >
+          }>
           <View
             style={{
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height * 0.85,
               backgroundColor: isDark ? "black" : "white",
-            }}
-          >
+            }}>
             {loading && (
               <View
                 style={
@@ -134,8 +135,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     // width: Dimensions.get("window").width - 24,
                     // height: Dimensions.get("window").width / videoAspectRatio,
                   }
-                }
-              >
+                }>
                 <ActivityIndicator
                   style={{
                     flex: 1,
@@ -187,8 +187,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
-        }}
-      >
+        }}>
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text
@@ -197,8 +196,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontSize: 40,
                 fontWeight: "700",
                 lineHeight: 40,
-              }}
-            >
+              }}>
               Hello, {name}
             </Text>
           ) : (
@@ -209,8 +207,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontWeight: "700",
                 lineHeight: 40,
                 color: "#6EA8D5",
-              }}
-            >
+              }}>
               Hello, {name}
             </Text>
           )}
@@ -219,8 +216,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               fontSize: 30,
               fontWeight: "400",
               opacity: 0.5,
-            }}
-          >
+            }}>
             {subTitleFn()}
           </Text>
         </View>
@@ -230,14 +226,25 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও")) {
               setVisible(true);
             } else if (val.includes("⚖️ Golden choice")) {
-              router.push("/main/discover/vipsignal/list/");
+              if (pathname === "/main/home") {
+                router.push("/main/home/vipsignal/list/");
+              } else {
+                router.push("/main/discover/vipsignal/list/");
+              }
             } else if (val.includes("🔍 Stock Scanner")) {
               setTemplate("scanner");
               //push with data
-              router.push({
-                pathname: "/main/discover/",
-                params: { next: "scanner" },
-              });
+              if (pathname === "/main/home") {
+                router.push({
+                  pathname: "/main/home/scanner/",
+                  params: { next: "scanner" },
+                });
+              } else {
+                router.push({
+                  pathname: "/main/discover/",
+                  params: { next: "scanner" },
+                });
+              }
             } else {
               onPressRelated(prompt);
             }
@@ -246,8 +253,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             <TouchableOpacity
               key={i}
               style={{ marginBottom: 16 }}
-              onPress={() => promptPress(prompt)}
-            >
+              onPress={() => promptPress(prompt)}>
               <View
                 style={{
                   borderWidth: template === "scanner" ? 1.5 : 0,
@@ -273,16 +279,14 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
                     fontSize: 16,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
-                  numberOfLines={2}
-                >
+                  numberOfLines={2}>
                   {prompt}
                 </Text>
 
@@ -293,13 +297,21 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     color={isDark ? "#565656" : "#A4A1A1"}
                   />
                 )}
-                {prompt.includes("🔍 Stock Scanner") && <MagicIcon />}
+                {prompt.includes("🔍 Stock Scanner") && (
+                  <MagicIcon
+                    style={{
+                      width: 20,
+                      height: 20,
+                      alignSelf: "center",
+                    }}
+                  />
+                )}
               </View>
             </TouchableOpacity>
           );
         })}
       </View>
-    </>
+    </Fragment>
   );
 };
 

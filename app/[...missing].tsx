@@ -3,12 +3,13 @@ import { StyleSheet, Image } from "react-native";
 
 import { Text, View } from "../components/Themed";
 import { Button } from "react-native-paper";
+import { Fragment } from "react";
 
 export default function NotFoundScreen() {
   const router = useRouter();
 
   return (
-    <>
+    <Fragment>
       <Stack.Screen options={{ title: "Oops!" }} />
       <View style={styles.container}>
         <Image
@@ -28,12 +29,11 @@ export default function NotFoundScreen() {
           style={{ borderRadius: 4, marginTop: 12, width: "100%" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
-          mode="outlined"
-        >
+          mode="outlined">
           Go Back
         </Button>
       </View>
-    </>
+    </Fragment>
   );
 }
 

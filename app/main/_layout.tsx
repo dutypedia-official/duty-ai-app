@@ -203,8 +203,7 @@ export default function TabLayout() {
         //     style={StyleSheet.absoluteFill}
         //   />
         // ),
-      })}
-    >
+      })}>
       {/* <Tabs.Screen
         name="chat"
         options={{
@@ -239,7 +238,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: isBn ? "চ্যাট" : "Stock Analysis",
           headerShown: false,
