@@ -201,7 +201,7 @@ export default function SettingScreen() {
         <Button
           onPress={() => {
             signOut();
-            router.replace("/(start)/login");
+            router.replace("/(start-jp)/login");
           }}
           icon="logout"
           textColor="red"

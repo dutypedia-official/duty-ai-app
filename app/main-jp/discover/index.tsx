@@ -13,7 +13,7 @@ import useChat from "@/lib/hooks/useChat";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SafeAreaView, useThemeColor } from "../../../components/Themed";
+import { SafeAreaView, useThemeColor } from "../../../components-jp/Themed";
 import useUi from "@/lib/hooks/useUi";
 import VipSignal from "@/components-jp/discover/VipSignal";
 import useVipSignal from "@/lib/hooks/useVipSignal";

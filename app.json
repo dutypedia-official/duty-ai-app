@@ -10,7 +10,7 @@
     "sdkVersion": "50.0.0",
     "splash": {
       "image": "./assets/images/splash-dark.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#06112d"
     },
     "assetBundlePatterns": ["**/*"],

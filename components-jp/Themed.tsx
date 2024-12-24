@@ -7,9 +7,11 @@ import {
   Text as DefaultText,
   useColorScheme,
   View as DefaultView,
+  SafeAreaView as DefaultSafeAreaView,
 } from "react-native";
 import {
-  SafeAreaView as DefaultSafeAreaView,
+  useSafeAreaInsets,
+  // SafeAreaView as DefaultSafeAreaView,
   SafeAreaViewProps,
 } from "react-native-safe-area-context";
 
@@ -55,13 +57,14 @@ export function View(props: ViewProps) {
 }
 
 export function SafeAreaView(props: any) {
+  const inset = useSafeAreaInsets();
   const { style, lightColor, darkColor, ...otherProps } = props;
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme ?? "dark"].background;
 
   return (
     <DefaultSafeAreaView
-      style={[{ backgroundColor, color: "red" }, style]}
+      style={[{ backgroundColor, color: "red", paddingTop: inset.top }, style]}
       {...otherProps}
     />
   );

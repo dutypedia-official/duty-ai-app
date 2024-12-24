@@ -1,4 +1,5 @@
-import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
+import useLang from "@/lib/hooks/useLang";
 import useStockData from "@/lib/hooks/useStockData";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { Feather } from "@expo/vector-icons";
@@ -210,9 +211,10 @@ const List = () => {
   const [loading, setLoading] = useState(true);
   const videoUrl = "https://www.youtube.com/embed/A4L792q0q9Q?autoplay=1";
   const pathname = usePathname();
-  console.log("pathname", pathname);
+  console.log("pathname-jp", pathname);
   const router = useRouter();
   const { marketData, setMarketData } = useStockData();
+  const { language } = useLang();
 
   const filterData = marketData?.filter((stock: any) =>
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
@@ -508,10 +510,11 @@ const List = () => {
                 });
                 return;
               }
-              if (pathname.includes("/main/home")) {
-                router.push("/main/home/vipsignal/list/processing");
+
+              if (pathname.includes("/main-jp/home")) {
+                router.push("/main-jp/home/vipsignal/list/processing");
               } else {
-                router.push("/main/discover/vipsignal/list/processing");
+                router.push("/main-jp/discover/vipsignal/list/processing");
               }
             }}
             style={{

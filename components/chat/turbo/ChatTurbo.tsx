@@ -1,42 +1,39 @@
 // screens/ChatScreen.tsx
-import { SafeAreaView, Text, useThemeColor, View } from "@/components/Themed";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  useColorScheme,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  Dimensions,
-} from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import EventSource from "react-native-sse";
-import { useAuth, useUser } from "@clerk/clerk-expo";
+import Screener from "@/assets/icons/screener";
+import ScreenerDark from "@/assets/icons/screener-dark";
+import { Text, useThemeColor, View } from "@/components/Themed";
 import { apiClient, BACKUP_SERVER_URL, MAIN_SERVER_URL } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
-import { v4 as uuid } from "uuid";
-import Constants from "expo-constants";
-import { financeRelated } from "../ChatPro";
-import Markdown from "react-native-markdown-display";
-import RenderChatEmpty from "../Empty";
-import axios from "axios";
-import { debounce, set, throttle } from "lodash";
-import TypingAnimation from "../TypingAnimation";
-import Toast from "react-native-toast-message";
-import * as Clipboard from "expo-clipboard";
-import { useIsFocused } from "@react-navigation/native";
 import useUi from "@/lib/hooks/useUi";
-import * as WebBrowser from "expo-web-browser";
-import { StatusBar } from "expo-status-bar";
-import ScreenerDark from "@/components/svgs/screener-dark";
-import Screener from "@/components/svgs/screener";
-import { usePathname, useRouter } from "expo-router";
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router";
+import { FlashList } from "@shopify/flash-list";
+import axios from "axios";
+import * as Clipboard from "expo-clipboard";
+import Constants from "expo-constants";
+import { usePathname, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
+import { throttle } from "lodash";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
+import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import EventSource from "react-native-sse";
+import Toast from "react-native-toast-message";
+import { v4 as uuid } from "uuid";
+import RenderChatEmpty from "../Empty";
+import TypingAnimation from "../TypingAnimation";
 
 type Message = {
   text: string;

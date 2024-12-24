@@ -12,7 +12,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { router, usePathname } from "expo-router";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import LottieView from "lottie-react-native";
-import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
 import { StatusBar } from "expo-status-bar";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@clerk/clerk-expo";
@@ -149,7 +149,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
 
 const Processing = () => {
   const pathname = usePathname();
-  console.log("pathname", pathname);
+  console.log("pathname-jp", pathname);
   const { selectStock, clearSelectStock, answer, setAnswer } = useVipSignal();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -210,10 +210,10 @@ const Processing = () => {
 
   useEffect(() => {
     if (answer) {
-      if (pathname.includes("/main/home")) {
-        router.push("/main/home/vipsignal/list/win");
+      if (pathname.includes("/main-jp/home")) {
+        router.push("/main-jp/home/vipsignal/list/win");
       } else {
-        router.push("/main/discover/vipsignal/list/win");
+        router.push("/main-jp/discover/vipsignal/list/win");
       }
     }
   }, [answer]);

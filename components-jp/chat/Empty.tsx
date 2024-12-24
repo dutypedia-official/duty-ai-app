@@ -57,10 +57,10 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   ];
 
   const financePrompts = [
-    "📰 Bangladesh stock market news",
-    "📱 Should I Invest in GP BD",
+    "📰 日本株式マーケットニュース",
+    "📱 トヨタに投資すべきか",
     "📊 আজকের ইনডেক্স সম্পর্কে বল",
-    "▶️ Duty AI ব্যাবহার ভিডিও",
+    "▶️ Duty AI ビデオチュートリアル",
     "🔍 Stock Scanner",
     "⚖️ Golden choice",
   ];
@@ -96,9 +96,9 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     } else if (template == "forex") {
       return "Let's chat about forex!";
     } else if (template == "finance") {
-      return "Let's chat about stocks!";
+      return "株式について話しましょう";
     } else if (template == "scanner") {
-      return "🎯 Let’s find the best stocks!";
+      return "銘柄スクリーニング";
     } else {
       return "How can I help you today?";
     }
@@ -121,15 +121,13 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             {
               // paddingHorizontal: 12,
             }
-          }
-        >
+          }>
           <View
             style={{
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height * 0.85,
               backgroundColor: isDark ? "black" : "white",
-            }}
-          >
+            }}>
             {loading && (
               <View
                 style={
@@ -137,8 +135,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                     // width: Dimensions.get("window").width - 24,
                     // height: Dimensions.get("window").width / videoAspectRatio,
                   }
-                }
-              >
+                }>
                 <ActivityIndicator
                   style={{
                     flex: 1,
@@ -190,8 +187,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
-        }}
-      >
+        }}>
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text
@@ -200,8 +196,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontSize: 40,
                 fontWeight: "700",
                 lineHeight: 40,
-              }}
-            >
+              }}>
               こんにちは, {name}
             </Text>
           ) : (
@@ -212,8 +207,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 fontWeight: "700",
                 lineHeight: 40,
                 color: "#6EA8D5",
-              }}
-            >
+              }}>
               こんにちは, {name}
             </Text>
           )}
@@ -222,8 +216,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               fontSize: 30,
               fontWeight: "400",
               opacity: 0.5,
-            }}
-          >
+            }}>
             {subTitleFn()}
           </Text>
         </View>
@@ -260,8 +253,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             <TouchableOpacity
               key={i}
               style={{ marginBottom: 16 }}
-              onPress={() => promptPress(prompt)}
-            >
+              onPress={() => promptPress(prompt)}>
               <View
                 style={{
                   borderWidth: template === "scanner" ? 1.5 : 0,
@@ -287,16 +279,14 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
                     fontSize: 16,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
-                  numberOfLines={2}
-                >
+                  numberOfLines={2}>
                   {prompt}
                 </Text>
 

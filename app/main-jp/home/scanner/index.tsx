@@ -1,4 +1,4 @@
-import ChatTurbo from "@/components/chat/turbo/ChatTurbo";
+import ChatTurbo from "@/components-jp/chat/turbo/ChatTurbo";
 import useChat from "@/lib/hooks/useChat";
 import { useIsFocused } from "@react-navigation/native";
 import { usePathname } from "expo-router";

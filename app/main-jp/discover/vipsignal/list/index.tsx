@@ -1,4 +1,4 @@
-import List from "@/components/golden-choice/list";
+import List from "@/components-jp/golden-choice/list";
 import React from "react";
 
 export default function ListScreen() {

@@ -190,7 +190,7 @@ export default function StartScreen() {
           </View>
         </View>
 
-        <Pressable onPress={() => router.push("/instruct2")}>
+        <Pressable onPress={() => router.push("/(start-jp)/instruct2")}>
           <LinearGradient
             colors={["#FF6FD8", "#00FFC6"]}
             start={{ x: 0, y: 0 }}

@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, useThemeColor } from "@/components/Themed";
+import { SafeAreaView, Text, useThemeColor } from "@/components-jp/Themed";
 import { apiClient } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";

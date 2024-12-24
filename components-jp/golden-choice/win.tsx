@@ -1,4 +1,4 @@
-import { SafeAreaView } from "@/components/Themed";
+import { SafeAreaView } from "@/components-jp/Themed";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { slugify } from "@/lib/utils";
 import { useNavigation } from "@react-navigation/native";
@@ -20,7 +20,7 @@ import { SvgUri } from "react-native-svg";
 
 export default function Win() {
   const pathname = usePathname();
-  console.log("pathname", pathname);
+  console.log("pathname-jp", pathname);
   const { answer, setAnswer } = useVipSignal();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -36,11 +36,11 @@ export default function Win() {
       // Prevent default back behavior
       e.preventDefault();
 
-      if (pathname.includes("/main/home")) {
-        router.push("/main/home/");
+      if (pathname.includes("/main-jp/home")) {
+        router.push("/main-jp/home/");
       } else {
         // Navigate to the discover screen
-        router.push("/main/discover/");
+        router.push("/main-jp/discover/");
       }
     });
 
@@ -1024,10 +1024,10 @@ export default function Win() {
           }}>
           <TouchableOpacity
             onPress={() => {
-              if (pathname.includes("/main/home")) {
-                router.push("/main/home/");
+              if (pathname.includes("/main-jp/home")) {
+                router.push("/main-jp/home/");
               } else {
-                router.push("/main/discover/");
+                router.push("/main-jp/discover/");
               }
               console.log("cancel");
             }}
