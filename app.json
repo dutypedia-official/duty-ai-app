@@ -13,13 +13,17 @@
       "resizeMode": "cover",
       "backgroundColor": "#06112d"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "buildNumber": "30",
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
-        "com.apple.developer.applesignin": ["Default"]
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
       }
     },
     "android": {
@@ -29,7 +33,9 @@
       },
       "package": "com.easinarafat.dutyai",
       "versionCode": 31,
-      "permissions": ["com.google.android.gms.permission.AD_ID"],
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ],
       "googleServicesFile": "./google-services.json"
     },
     "web": {
@@ -52,7 +58,8 @@
         }
       ],
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,
