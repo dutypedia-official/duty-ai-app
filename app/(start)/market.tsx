@@ -329,6 +329,7 @@ export default function Market() {
         </View>
 
         <Pressable
+          disabled={selectMarket === "" ? true : false}
           onPress={() =>
             language === "Jp"
               ? router.push("/(start-jp)/login")
@@ -338,7 +339,11 @@ export default function Market() {
             paddingBottom: 16,
           }}>
           <LinearGradient
-            colors={["#FF6FD8", "#00FFC6"]}
+            colors={
+              selectMarket === ""
+                ? ["#4F5A5F", "#3A3D3F"]
+                : ["#FF6FD8", "#00FFC6"]
+            }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -347,17 +352,24 @@ export default function Market() {
               opacity: 1,
             }}>
             <LinearGradient
-              colors={["#FF6FD8", "#973FCD", "#3813C2"]}
+              colors={
+                selectMarket === ""
+                  ? ["#4F5A5F", "#3A3D3F"]
+                  : ["#FF6FD8", "#973FCD", "#3813C2"]
+              }
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
-              style={{ borderRadius: 100, opacity: 0.8 }}>
+              style={{
+                borderRadius: 100,
+                opacity: 1,
+              }}>
               <Text
                 style={{
                   fontSize: 20,
                   fontWeight: "bold",
                   paddingVertical: 16,
                   textAlign: "center",
-                  color: "#FFD700",
+                  color: selectMarket === "" ? "#717171" : "#FFD700",
                 }}>
                 {language === "Jp"
                   ? "次"

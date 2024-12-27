@@ -20,9 +20,19 @@
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
         "com.apple.developer.applesignin": ["Default"]
+      },
+      "splash": {
+        "image": "./assets/images/splash-dark.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#06112d"
       }
     },
     "android": {
+      "splash": {
+        "image": "./assets/images/splash-dark.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#06112d"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

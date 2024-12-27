@@ -796,6 +796,7 @@ const ChatTurbo = ({ fromPath }: any) => {
       style={{
         flex: 1,
         marginTop: fromPath ? -54 : 0,
+        paddingTop: insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
       }}>
       {template === "scanner" && (

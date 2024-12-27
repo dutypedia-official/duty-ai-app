@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -37,7 +37,8 @@ export default function NotiDetails() {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const params = useLocalSearchParams();
-
+  const pathname = usePathname();
+  console.log("path----------------------", pathname);
   const borderColor = useThemeColor({}, "border");
 
   const fetchData = async () => {
@@ -49,7 +50,7 @@ export default function NotiDetails() {
         {},
         mainServerAvailable
       );
-      console.log(data);
+      // console.log(data);
       setData(data);
     } catch (error) {
       console.log(error);
@@ -72,8 +73,7 @@ export default function NotiDetails() {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: isDark ? "#171B26" : "#FFFFFF",
-        }}
-      >
+        }}>
         <ActivityIndicator
           size="large"
           color={isDark ? "#FFFFFF" : "#171B26"}
@@ -86,8 +86,7 @@ export default function NotiDetails() {
     <SafeAreaView
       style={{
         backgroundColor: isDark ? "#171B26" : "#FFFFFF",
-      }}
-    >
+      }}>
       <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
       <View
         style={{
@@ -98,8 +97,7 @@ export default function NotiDetails() {
           paddingVertical: 10,
           paddingHorizontal: 12,
           gap: 25,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             router.back();
@@ -117,8 +115,7 @@ export default function NotiDetails() {
             elevation: 5,
             width: 36,
             height: 36,
-          }}
-        >
+          }}>
           <Text>
             <Ionicons
               name="chevron-back"
@@ -135,8 +132,7 @@ export default function NotiDetails() {
             fontSize: 24,
             fontWeight: "bold",
             textAlign: "center",
-          }}
-        >
+          }}>
           {data?.companyName}
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
@@ -145,8 +141,7 @@ export default function NotiDetails() {
         style={{
           backgroundColor: "transparent",
           height: "100%",
-        }}
-      >
+        }}>
         <Portal>
           <Modal visible={visible} onDismiss={hideModal}>
             <Pressable
@@ -162,16 +157,14 @@ export default function NotiDetails() {
                 shadowOpacity: 1,
                 shadowRadius: 200,
                 elevation: 5,
-              }}
-            >
+              }}>
               <View style={{}}>
                 <View
                   style={{
                     backgroundColor: "transparent",
                     width: "100%",
                     aspectRatio: 296 / 260,
-                  }}
-                >
+                  }}>
                   <Image
                     style={{
                       height: "100%",
@@ -216,8 +209,7 @@ export default function NotiDetails() {
                   paddingHorizontal: 12,
                   paddingTop: 32,
                   backgroundColor: "transparent",
-                }}
-              >
+                }}>
                 <Text style={{ fontSize: 20 }}>{data?.companyName}</Text>
                 {data?.price && (
                   <>
@@ -243,8 +235,7 @@ export default function NotiDetails() {
                   style={{
                     position: "relative",
                     backgroundColor: "transparent",
-                  }}
-                >
+                  }}>
                   <View style={{ paddingVertical: 10 }}>
                     {loading2 && (
                       <ActivityIndicator
@@ -284,8 +275,7 @@ export default function NotiDetails() {
                           position: "relative",
                           aspectRatio: 360 / 260,
                           width: "100%",
-                        }}
-                      >
+                        }}>
                         <Image
                           style={{
                             height: "100%",
@@ -313,8 +303,7 @@ export default function NotiDetails() {
                               position: "absolute",
                               bottom: 20,
                               right: 20,
-                            }}
-                          >
+                            }}>
                             <Pressable onPress={showModal}>
                               <FontAwesome6
                                 name="expand"
@@ -345,8 +334,7 @@ export default function NotiDetails() {
                     gap: 16,
                     paddingHorizontal: 12,
                     paddingVertical: 10,
-                  }}
-                >
+                  }}>
                   <Markdown
                     style={{
                       body: {
@@ -442,8 +430,7 @@ export default function NotiDetails() {
                         height: 1,
                         marginVertical: 10,
                       },
-                    }}
-                  >
+                    }}>
                     {data?.content}
                   </Markdown>
                 </Pressable>

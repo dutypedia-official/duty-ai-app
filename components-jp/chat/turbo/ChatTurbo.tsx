@@ -796,6 +796,7 @@ const ChatTurbo = ({ fromPath }: any) => {
       style={{
         flex: 1,
         marginTop: fromPath ? -54 : 0,
+        paddingTop: insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
       }}>
       {template === "scanner" && (
@@ -995,7 +996,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      {template === "scanner" && (
+      {/* {template === "scanner" && (
         <View
           style={{
             backgroundColor: isDark ? "#2C2F33" : "#E8E9EC",
@@ -1006,7 +1007,7 @@ const ChatTurbo = ({ fromPath }: any) => {
             right: 0,
           }}
         />
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

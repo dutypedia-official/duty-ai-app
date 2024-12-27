@@ -36,6 +36,9 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
+// Prevent the splash screen from hiding automatically
+SplashScreen.preventAutoHideAsync();
+
 const CURRENT_IOS_VERSION = 10;
 const CURRENT_ANDROID_VERSION = 10;
 
@@ -77,9 +80,6 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(start)",
 };
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

@@ -30,6 +30,10 @@ export default function Layout() {
         name="translate-to"
         options={{ title: "Select Language" }}
       />
+      <Stack.Screen
+        name="select-language"
+        options={{ title: "Select Language" }}
+      />
     </Stack>
   );
 }

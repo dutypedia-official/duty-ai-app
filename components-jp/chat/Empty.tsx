@@ -184,11 +184,16 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           flex: 1,
           justifyContent: "center",
           alignContent: "center",
-          height: Dimensions.get("window").height - 200,
+          // height: Dimensions.get("window").height,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
         }}>
-        <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
+        <View
+          style={{
+            marginBottom: 40,
+            backgroundColor: "transparent",
+            paddingTop: template !== "scanner" ? insets.top : 0,
+          }}>
           {template !== "scanner" ? (
             <Text
               numberOfLines={1}
@@ -242,7 +247,6 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               } else {
                 router.push({
                   pathname: "/main-jp/discover/",
-                  params: { next: "scanner" },
                 });
               }
             } else {

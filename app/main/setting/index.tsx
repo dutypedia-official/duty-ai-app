@@ -8,7 +8,7 @@ import {
 import { SafeAreaView, View, useThemeColor } from "@/components/Themed";
 import { Button, Divider, Text } from "react-native-paper";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Avatar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,7 +33,9 @@ export default function SettingScreen() {
   const isDark = useColorScheme() === "dark";
   const bgColor = useThemeColor({}, "background");
   const client = apiClient();
+  const path = usePathname();
 
+  console.log("path---------", path);
   const test = async () => {
     const token = await getToken();
     console.log(token);
@@ -51,11 +53,13 @@ export default function SettingScreen() {
 
   const generalSettings = [
     {
-      title: isBn ? "ভাষা" : "Language",
+      title: language === "Jp" ? "言語" : isBn ? "ভাষা" : "Language",
       leftIcon: <Ionicons name="language" size={24} color={textColor} />,
-      rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
+      rightIcon: (
+        <Ionicons name="chevron-forward" size={24} color={textColor} />
+      ),
       action: () => {
-        setLanguage(language == "Bn" ? "En" : "Bn");
+        router.push("/main/setting/select-language");
       },
     },
     // {
@@ -132,8 +136,7 @@ export default function SettingScreen() {
             backgroundColor: "transparent",
             paddingVertical: 40,
           },
-        ]}
-      >
+        ]}>
         <View
           style={{
             flexDirection: "row",
@@ -141,8 +144,7 @@ export default function SettingScreen() {
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "transparent",
-          }}
-        >
+          }}>
           <View
             style={{
               flexDirection: "row",
@@ -150,8 +152,7 @@ export default function SettingScreen() {
               alignItems: "center",
               flex: 1,
               backgroundColor: "transparent",
-            }}
-          >
+            }}>
             <Avatar.Image
               size={48}
               source={{ uri: user?.imageUrl }}
@@ -181,8 +182,7 @@ export default function SettingScreen() {
                   alignItems: "center",
                   paddingVertical: 12,
                   backgroundColor: "transparent",
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -190,8 +190,7 @@ export default function SettingScreen() {
                     alignItems: "center",
                     flex: 1,
                     backgroundColor: "transparent",
-                  }}
-                >
+                  }}>
                   {setting.leftIcon}
 
                   <Text numberOfLines={1}>{setting.title}</Text>
@@ -213,8 +212,7 @@ export default function SettingScreen() {
           style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
-          mode="outlined"
-        >
+          mode="outlined">
           {isBn ? "লগউট" : "Logout"}
         </Button>
       </View>

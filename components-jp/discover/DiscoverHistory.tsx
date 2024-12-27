@@ -55,7 +55,7 @@ const DiscoverHistory = () => {
           {"チャット履歴"}
         </Text>
         <TouchableOpacity
-          onPress={() => router.push("/main/discover/history")}
+          onPress={() => router.push("/main-jp/discover/history")}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -104,7 +104,7 @@ const DiscoverHistory = () => {
               <TouchableOpacity
                 onPress={() => {
                   setActiveConversationId(item.id);
-                  router.push("/main");
+                  router.push("/main-jp/home/");
                 }}
                 key={index}
                 style={{

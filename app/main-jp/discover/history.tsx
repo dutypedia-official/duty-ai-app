@@ -89,8 +89,7 @@ export default function TabTwoScreen() {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: bgColor,
-        }}
-      ></View>
+        }}></View>
     );
   }
 
@@ -110,8 +109,7 @@ export default function TabTwoScreen() {
               textAlign: "center",
               fontWeight: "bold",
               textTransform: "capitalize",
-            }}
-          >
+            }}>
             No history yet
           </Text>
           <Text style={{ textAlign: "center", opacity: 0.5, marginTop: 8 }}>
@@ -129,8 +127,7 @@ export default function TabTwoScreen() {
         paddingHorizontal: 12,
         paddingVertical: 8,
         backgroundColor: "transparent",
-      }}
-    >
+      }}>
       <FlatList
         ItemSeparatorComponent={() => (
           <View style={{ height: 16, backgroundColor: "transparent" }} />
@@ -140,10 +137,9 @@ export default function TabTwoScreen() {
           <TouchableOpacity
             onPress={() => {
               setActiveConversationId(item.id);
-              router.push("/main-jp");
+              router.push("/main-jp/home/");
             }}
-            key={index}
-          >
+            key={index}>
             <Card mode="contained" style={{ backgroundColor: bgColor }}>
               <Card.Content>
                 <View
@@ -152,16 +148,14 @@ export default function TabTwoScreen() {
                     justifyContent: "space-between",
                     gap: 8,
                     backgroundColor: "transparent",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flexDirection: "row",
                       gap: 8,
                       flex: 1,
                       backgroundColor: "transparent",
-                    }}
-                  >
+                    }}>
                     <View style={{ backgroundColor: "transparent" }}>
                       <Text numberOfLines={1} variant="titleMedium">
                         {item.name}
@@ -169,8 +163,7 @@ export default function TabTwoScreen() {
                       <Text
                         style={{ opacity: 0.5 }}
                         numberOfLines={1}
-                        variant="bodyMedium"
-                      >
+                        variant="bodyMedium">
                         {item.createdAt}
                       </Text>
                     </View>
@@ -180,8 +173,7 @@ export default function TabTwoScreen() {
                       flexShrink: 0,
                       width: 40,
                       backgroundColor: "transparent",
-                    }}
-                  >
+                    }}>
                     <IconButton
                       icon="trash-can-outline"
                       size={20}
@@ -192,8 +184,7 @@ export default function TabTwoScreen() {
               </Card.Content>
             </Card>
           </TouchableOpacity>
-        )}
-      ></FlatList>
+        )}></FlatList>
     </View>
   );
 }
