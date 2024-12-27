@@ -20,11 +20,6 @@
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
         "com.apple.developer.applesignin": ["Default"]
-      },
-      "splash": {
-        "image": "./assets/images/splash-dark.png",
-        "resizeMode": "cover",
-        "backgroundColor": "#06112d"
       }
     },
     "android": {
@@ -62,7 +57,8 @@
         }
       ],
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

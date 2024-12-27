@@ -35,6 +35,7 @@ import Colors from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { PostHogProvider } from "posthog-react-native";
 
 // Prevent the splash screen from hiding automatically
 SplashScreen.preventAutoHideAsync();
@@ -195,7 +196,8 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
+      tokenCache={tokenCache}
+    >
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -350,29 +352,39 @@ function RootLayoutNav() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <PaperProvider theme={PaperTheme}>
-            <Stack>
-              <Stack.Screen name="(start)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="(start-jp)"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="main" options={{ headerShown: false }} />
-              <Stack.Screen name="main-jp" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="update/index"
-                options={{ headerShown: false, title: "Update Available" }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
-          </PaperProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-      <Toast />
-    </ThemeProvider>
+    <PostHogProvider
+      apiKey="phc_s5HpI2azRTOp1wUjmfQR2ghMvWiFKtvtyRhVL8rVCpa"
+      options={{
+        host: "https://us.i.posthog.com",
+      }}
+    >
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <BottomSheetModalProvider>
+            <PaperProvider theme={PaperTheme}>
+              <Stack>
+                <Stack.Screen name="(start)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(start-jp)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="main" options={{ headerShown: false }} />
+                <Stack.Screen name="main-jp" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="update/index"
+                  options={{ headerShown: false, title: "Update Available" }}
+                />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: "modal" }}
+                />
+              </Stack>
+            </PaperProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+        <Toast />
+      </ThemeProvider>
+    </PostHogProvider>
   );
 }
