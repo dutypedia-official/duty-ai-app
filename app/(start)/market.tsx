@@ -62,14 +62,12 @@ export default function Market() {
     },
   ];
 
-  const sortedMarkets = markets.sort((a, b) => {
-    if (language === "Jp") {
-      return a.language === "Jp" ? -1 : 1;
-    } else if (language === "Bn" || language === "En") {
-      return a.language === "Bn" ? -1 : 1;
-    }
-    return 0;
-  });
+  const filteredMarkets =
+    language === "Bn" || language === "En"
+      ? markets.filter(
+          (market) => market.language === "Bn" || market.language !== "Bn" // Include Bangladesh market
+        )
+      : markets.filter((market) => market.language !== "Bn"); // Exclude Bangladesh market
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -219,7 +217,7 @@ export default function Market() {
               gap: 24,
               marginBottom: 24,
             }}>
-            {sortedMarkets?.map((item, i) => {
+            {filteredMarkets?.map((item, i) => {
               return (
                 <TouchableOpacity
                   key={i}

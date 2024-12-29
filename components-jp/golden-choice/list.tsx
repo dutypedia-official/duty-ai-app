@@ -213,7 +213,7 @@ const List = () => {
   const pathname = usePathname();
   console.log("pathname-jp", pathname);
   const router = useRouter();
-  const { marketData, setMarketData } = useStockData();
+  const { marketData } = useStockData();
   const { language } = useLang();
 
   const filterData = marketData?.filter((stock: any) =>

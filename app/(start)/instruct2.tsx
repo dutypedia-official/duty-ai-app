@@ -17,8 +17,10 @@ import { SegmentedButtons, Text } from "react-native-paper";
 import { SafeAreaView, View } from "../../components/Themed";
 import useLang from "../../lib/hooks/useLang";
 import { Ionicons } from "@expo/vector-icons";
+import useMarket from "@/lib/hooks/useMarket";
 
 export default function StartScreen() {
+  const { setSelectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
   const isBn = language === "Bn";
@@ -183,9 +185,7 @@ export default function StartScreen() {
   };
 
   const subTitle = () => {
-    if (language === "Jp") {
-      return "市場データの簡素化";
-    } else if (language === "Bn") {
+    if (language === "Bn") {
       return "বাজার গবেষণা এখন অনেক সহজ";
     } else {
       return "Simplifying Market Data";
@@ -282,11 +282,12 @@ export default function StartScreen() {
         </View>
 
         <TouchableOpacity
-          onPress={() =>
+          onPress={() => {
+            setSelectMarket("");
             language === "Jp"
               ? router.push("/(start-jp)/market")
-              : router.push("/(start)/market")
-          }>
+              : router.push("/(start)/market");
+          }}>
           <LinearGradient
             colors={["#00A3FF", "#00FFC6"]}
             style={{
@@ -313,7 +314,7 @@ export default function StartScreen() {
                   fontSize: 20,
                   textAlign: "center",
                 }}>
-                次へ
+                {language === "Bn" ? "পরবর্তী" : "Next"}
               </Text>
               <View
                 style={{

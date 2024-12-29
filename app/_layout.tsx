@@ -36,6 +36,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PostHogProvider } from "posthog-react-native";
+import useMarket from "@/lib/hooks/useMarket";
 
 // Prevent the splash screen from hiding automatically
 SplashScreen.preventAutoHideAsync();
@@ -196,8 +197,7 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}
-    >
+      tokenCache={tokenCache}>
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -205,6 +205,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { selectMarket } = useMarket();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const router = useRouter();
@@ -332,16 +333,16 @@ function RootLayoutNav() {
       if (update?.update) {
         router.replace("/update");
       } else if (isSignedIn) {
-        if (language === "Jp") {
-          router.replace("/main-jp/home/");
-        } else {
+        if (selectMarket === "Bangladesh") {
           router.replace("/main/home/");
+        } else {
+          router.replace("/main-jp/home/");
         }
       } else {
-        if (language === "Jp") {
-          router.replace("/(start-jp)");
-        } else {
+        if (selectMarket === "Bangladesh") {
           router.replace("/(start)");
+        } else {
+          router.replace("/(start-jp)");
         }
       }
     }
@@ -356,8 +357,7 @@ function RootLayoutNav() {
       apiKey="phc_s5HpI2azRTOp1wUjmfQR2ghMvWiFKtvtyRhVL8rVCpa"
       options={{
         host: "https://us.i.posthog.com",
-      }}
-    >
+      }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
         <GestureHandlerRootView style={{ flex: 1 }}>

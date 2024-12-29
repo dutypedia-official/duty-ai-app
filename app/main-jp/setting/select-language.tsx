@@ -12,49 +12,67 @@ import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as WebBrowser from "expo-web-browser";
+import useMarket from "@/lib/hooks/useMarket";
 
 export default function LanguageScreen() {
   const router = useRouter();
   const textColor = useThemeColor({}, "text");
+  const { selectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
   const isBn = language === "Bn";
+
   const path = usePathname();
 
   console.log("path---------", path);
 
-  const languages = [
-    {
-      name: "বাংলা",
-      value: "Bn",
-      action: () => {
-        setLanguage("Bn");
-        router.replace("/main/setting");
-      },
-    },
-    {
-      name: "English",
-      value: "En",
-      action: () => {
-        setLanguage("En");
-        router.replace("/main/setting");
-      },
-    },
-    {
-      name: "Japanese",
-      value: "Jp",
-      action: () => {
-        setLanguage("Jp");
-        router.replace("/main-jp/setting");
-      },
-    },
-  ];
+  const filterLanguages = () => {
+    if (selectMarket === "Bangladesh") {
+      return [
+        {
+          name: "বাংলা",
+          value: "Bn",
+          action: () => {
+            setLanguage("Bn");
+            router.back();
+          },
+        },
+        {
+          name: "English",
+          value: "En",
+          action: () => {
+            setLanguage("En");
+            router.back();
+          },
+        },
+      ];
+    } else {
+      return [
+        {
+          name: "English",
+          value: "En",
+          action: () => {
+            setLanguage("En");
+            router.back();
+          },
+        },
+        {
+          name: "Japanese",
+          value: "Jp",
+          action: () => {
+            setLanguage("Jp");
+            router.back();
+          },
+        },
+      ];
+    }
+  };
 
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View>
-          {languages.map((item, i) => (
+          {filterLanguages().map((item, i) => (
             <TouchableOpacity onPress={item.action} key={i}>
               <View
                 style={{

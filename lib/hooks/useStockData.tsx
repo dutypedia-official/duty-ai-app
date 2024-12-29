@@ -3,6 +3,8 @@ import { create } from "zustand";
 interface ChatStore {
   marketData: any;
   setMarketData: (marketData: any) => void;
+  stockData: any;
+  setStockData: (stockData: any) => void;
   favorites: any;
   setFavorites: (favorites: any) => void;
   isLoading: boolean;
@@ -22,6 +24,11 @@ interface ChatStore {
 const useStockData = create<ChatStore>((set, get) => ({
   marketData: [],
   setMarketData: (marketData) => set({ marketData }),
+  stockData: [],
+  setStockData: (newData) =>
+    set((state) => ({
+      stockData: [...state.stockData, ...newData],
+    })),
   favorites: [],
   setFavorites: (favorites) => set({ favorites }),
   isLoading: true,

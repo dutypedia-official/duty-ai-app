@@ -83,11 +83,6 @@ export default function StartScreen() {
           }}>
           <View
             style={{ alignItems: "center", backgroundColor: "transparent" }}>
-            {/* <Image
-              style={{ height: 150, width: 150 }}
-              resizeMode="contain"
-              source={require("../../assets/icons/logo.png")}
-            /> */}
             <Text
               style={{
                 fontWeight: "bold",
@@ -102,33 +97,6 @@ export default function StartScreen() {
                 ? "ভাষা নির্বাচন করুন"
                 : "Select Language"}
             </Text>
-            {/* <SegmentedButtons
-              value={language}
-              onValueChange={(value: any) => setLanguage(value)}
-              buttons={[
-                {
-                  value: "En",
-                  label: "English",
-                  labelStyle: { color: "#fff" },
-                  style:
-                    language === "En" ? { backgroundColor: "#06112d" } : {},
-                },
-                {
-                  value: "Bn",
-                  label: "বাংলা",
-                  labelStyle: { color: "#fff" },
-                  style:
-                    language === "Bn" ? { backgroundColor: "#06112d" } : {},
-                },
-                {
-                  value: "Jp",
-                  label: "Japanize",
-                  labelStyle: { color: "#fff" },
-                  style:
-                    language === "Jp" ? { backgroundColor: "#06112d" } : {},
-                },
-              ]}
-            /> */}
 
             <View
               style={{
@@ -190,7 +158,14 @@ export default function StartScreen() {
           </View>
         </View>
 
-        <Pressable onPress={() => router.push("/(start-jp)/instruct2")}>
+        <Pressable
+          onPress={() => {
+            if (language === "Jp") {
+              router.push("/(start-jp)/instruct2");
+            } else {
+              router.push("/(start)/instruct2");
+            }
+          }}>
           <LinearGradient
             colors={["#FF6FD8", "#00FFC6"]}
             start={{ x: 0, y: 0 }}

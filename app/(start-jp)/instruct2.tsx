@@ -17,8 +17,10 @@ import { SegmentedButtons, Text } from "react-native-paper";
 import { SafeAreaView, View } from "../../components/Themed";
 import useLang from "../../lib/hooks/useLang";
 import { Ionicons } from "@expo/vector-icons";
+import useMarket from "@/lib/hooks/useMarket";
 
 export default function StartScreen() {
+  const { setSelectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
   const isBn = language === "Bn";
@@ -41,156 +43,6 @@ export default function StartScreen() {
     },
   ];
 
-  const title = () => {
-    if (language === "Jp") {
-      return (
-        <Fragment>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#fff",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            プロのよに
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#A58AFF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            AI
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#fff",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            株式分析
-          </Text>
-        </Fragment>
-      );
-    } else if (language === "Bn") {
-      return (
-        <Fragment>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#A58AFF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            AI
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#fff",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            দিয়ে
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#68A9FF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            প্রফেশনাল
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#68A9FF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-              textAlign: "center",
-            }}>
-            শেয়ার{"\n"}বিশ্লেষণ
-          </Text>
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#A58AFF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            AI
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#fff",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            stock
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#fff",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            Analysis
-          </Text>
-          <Text
-            style={{
-              fontWeight: "900",
-              fontSize: 56,
-              color: "#68A9FF",
-              textShadowColor: "rgba(255, 255, 255, 0.34)",
-              textShadowOffset: { width: 4, height: 2 },
-              textShadowRadius: 8,
-            }}>
-            Like a pro
-          </Text>
-        </Fragment>
-      );
-    }
-  };
-
-  const subTitle = () => {
-    if (language === "Jp") {
-      return "市場データの簡素化";
-    } else if (language === "Bn") {
-      return "বাজার গবেষণা এখন অনেক সহজ";
-    } else {
-      return "Simplifying Market Data";
-    }
-  };
   return (
     <SafeAreaView
       style={{
@@ -244,7 +96,41 @@ export default function StartScreen() {
                 alignItems: "center",
                 backgroundColor: "transparent",
               }}>
-              {title()}
+              <Fragment>
+                <Text
+                  style={{
+                    fontWeight: "900",
+                    fontSize: 56,
+                    color: "#fff",
+                    textShadowColor: "rgba(255, 255, 255, 0.34)",
+                    textShadowOffset: { width: 4, height: 2 },
+                    textShadowRadius: 8,
+                  }}>
+                  プロのよに
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: "900",
+                    fontSize: 56,
+                    color: "#A58AFF",
+                    textShadowColor: "rgba(255, 255, 255, 0.34)",
+                    textShadowOffset: { width: 4, height: 2 },
+                    textShadowRadius: 8,
+                  }}>
+                  AI
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: "900",
+                    fontSize: 56,
+                    color: "#fff",
+                    textShadowColor: "rgba(255, 255, 255, 0.34)",
+                    textShadowOffset: { width: 4, height: 2 },
+                    textShadowRadius: 8,
+                  }}>
+                  株式分析
+                </Text>
+              </Fragment>
             </View>
             <View
               style={{
@@ -261,7 +147,7 @@ export default function StartScreen() {
                   color: "#fff",
                   textAlign: "center",
                 }}>
-                {subTitle()}
+                市場データの簡素化
               </Text>
             </View>
             <View
@@ -282,11 +168,10 @@ export default function StartScreen() {
         </View>
 
         <TouchableOpacity
-          onPress={() =>
-            language === "Jp"
-              ? router.push("/(start-jp)/market")
-              : router.push("/(start)/market")
-          }>
+          onPress={() => {
+            setSelectMarket("");
+            router.push("/(start-jp)/market");
+          }}>
           <LinearGradient
             colors={["#00A3FF", "#00FFC6"]}
             style={{

@@ -28,6 +28,7 @@ import React, {
   useState,
 } from "react";
 import {
+  ActivityIndicator,
   Animated,
   FlatList,
   KeyboardAvoidingView,
@@ -76,19 +77,19 @@ const filteredItems = [
   },
   {
     name: "Top gainers",
-    value: "topGainer",
+    value: "gainers",
   },
   {
     name: "Biggest losers",
-    value: "biggestLosers",
+    value: "losers",
   },
   {
     name: "Most active",
-    value: "mostActive",
+    value: "most_volatile",
   },
   {
     name: "Best performing",
-    value: "bestPerforming",
+    value: "best_performing",
   },
 ];
 
@@ -572,10 +573,10 @@ const StockListScreen = () => {
 
   const isDark = useColorScheme() === "dark";
   const textColor = useThemeColor({}, "text");
-  const { marketData, setMarketData, favorites, setFavorites, stockName } =
-    useStockData();
+  const { favorites, setFavorites, stockName } = useStockData();
+  const [filterByCategory, setFilterByCategory] = useState([]);
 
-  const [activeFilter, setActiveFilter] = useState("topGainer");
+  const [activeFilter, setActiveFilter] = useState("");
   const [alerms, setAlerms] = useState([]);
   const [aiAlerms, setAiAlerms] = useState([]);
   const [activeTab, setActiveTab] = useState("priceAlarm");
@@ -588,9 +589,20 @@ const StockListScreen = () => {
   const [loadingDeleteAlarm, setLoadingDeleteAlarm] = useState(false);
   const [loadingAiAlarm, setLoadingAiAlarm] = useState(false);
   const [loadingDeleteAiAlarm, setLoadingDeleteAiAlarm] = useState(false);
-  let initialStocks = !activeFilter
-    ? marketData
-    : marketData.filter((stock: any) => stock[activeFilter] == true) || [];
+
+  const [marketListData, setMarketListData] = useState([]);
+  const [marketData, setMarketData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [loadingData, setLoadingData] = useState(true);
+
+  let initialStocks =
+    activeFilter !== ""
+      ? filterByCategory
+      : searchTerm === ""
+      ? marketListData
+      : marketData;
   const le5e5e5 = useThemeColor({}, "le5e5e5");
   const bgColor = useThemeColor({}, "background");
   const borderColor = useThemeColor({}, "border");
@@ -607,7 +619,7 @@ const StockListScreen = () => {
       listener: (event: any) => {
         const currentOffset = event.nativeEvent.contentOffset.y;
 
-        if (currentOffset <= 48) {
+        if (currentOffset <= 60) {
           // When scroll is at the very top, force the filter to be fully visible
           Animated.timing(fadeAnim, {
             toValue: 1, // Fully visible
@@ -618,14 +630,14 @@ const StockListScreen = () => {
           // Scroll up (fade out)
           Animated.timing(fadeAnim, {
             toValue: 0, // Fully transparent
-            duration: 500,
+            duration: 400,
             useNativeDriver: true,
           }).start();
         } else if (lastScrollY.current - currentOffset > 1) {
           // Scroll down (fade in)
           Animated.timing(fadeAnim, {
             toValue: 1, // Fully visible
-            duration: 500,
+            duration: 400,
             useNativeDriver: true,
           }).start();
         }
@@ -636,16 +648,16 @@ const StockListScreen = () => {
   );
 
   // Filter stocks based on the search term
-  let filteredStocks = initialStocks?.filter((stock: any) =>
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // let filteredStocks = initialStocks?.filter((stock: any) =>
+  //   stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  if (sortByName) {
-    filteredStocks = filteredStocks.sort(
-      (a: { symbol: string }, b: { symbol: any }) =>
-        a.symbol.localeCompare(b.symbol)
-    );
-  }
+  // if (sortByName) {
+  //   filteredStocks = filteredStocks.sort(
+  //     (a: { symbol: string }, b: { symbol: any }) =>
+  //       a.symbol.localeCompare(b.symbol)
+  //   );
+  // }
 
   const fetchAlerms = async () => {
     try {
@@ -682,17 +694,79 @@ const StockListScreen = () => {
 
   const fetchData = async () => {
     try {
+      setLoadingData(true);
       const { data: mData } = await client.get(
-        "/tools/get-stock-market",
+        `/tools/get-stock-market-jp/${page}?query=${searchTerm}`,
         null,
         {},
         mainServerAvailable
       );
+
+      if (searchTerm !== "") {
+        setPage(1);
+        setMarketListData([]);
+      } else {
+        setMarketListData(mData);
+      }
+      console.log("mData------", mData.lenght);
       setMarketData(mData);
+
+      if (mData.length < 50) {
+        setHasMore(false);
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingData(false);
     }
   };
+
+  // Debounce the searchTerm
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 200); // Adjust the debounce delay as needed (200ms here)
+
+    return () => {
+      clearTimeout(handler); // Clear timeout on cleanup to prevent stale updates
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [page, debouncedSearchTerm]);
+
+  console.log(
+    "marketListData-------",
+    marketListData.length,
+    "marketData---------",
+    marketData.length
+  );
+
+  const fetchFilter = async () => {
+    try {
+      setLoadingData(true);
+      const { data } = await client.get(
+        `/tools/get-market-category/JP/${activeFilter}`,
+        null,
+        {},
+        mainServerAvailable
+      );
+
+      setFilterByCategory(data[activeFilter]);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  // console.log("activeFilter------------", activeFilter);
+
+  useEffect(() => {
+    fetchFilter();
+  }, [activeFilter]);
 
   const handelSetAlerm = async () => {
     if (!selectedStock) {
@@ -845,13 +919,6 @@ const StockListScreen = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       fetchFavs();
-    }, 600000); // 600000 ms = 10 minutes
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchData();
     }, 600000); // 600000 ms = 10 minutes
     return () => clearInterval(intervalId);
   }, []);
@@ -1016,37 +1083,60 @@ const StockListScreen = () => {
           </ScrollView>
         </Animated.View>
 
-        <AnimatedFlatList
-          data={filteredStocks}
-          renderItem={({ item }: any) => (
-            <StockListItem
-              changePer={item.changePer}
-              name={item.symbol}
-              price={getPrice(item)}
-              change={item.change}
-              logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
-              volume={item.volume}
-              value={item.value}
-              alerms={alerms}
-              aiAlerms={aiAlerms}
-              favs={favorites}
-              trading={item.trade}
-              targetPrice={targetPrice}
-              setCompanyName={setCompanyName}
-              item={item}
-              bottomSheetRef={bottomSheetRef}
+        {loadingData ? (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              alignContent: "center",
+              justifyContent: "center",
+            }}>
+            <ActivityIndicator
+              size="small"
+              color={isDark ? "#00B0FF" : "#34495E"}
             />
-          )}
-          onScroll={handleScroll} // Track scroll
-          keyExtractor={(item: any) => item.symbol}
-          style={styles.list}
-          contentContainerStyle={{
-            marginTop: inset.top + 52,
-          }}
-          refreshControl={
-            <RefreshControl refreshing={screenRefresh} onRefresh={onRefresh} />
-          }
-        />
+          </View>
+        ) : (
+          <AnimatedFlatList
+            data={initialStocks}
+            renderItem={({ item }: any) => (
+              <StockListItem
+                changePer={item.changePer}
+                name={item.description}
+                price={getPrice(item)}
+                change={item.change}
+                logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
+                volume={item.volume}
+                value={item.value}
+                alerms={alerms}
+                aiAlerms={aiAlerms}
+                favs={favorites}
+                trading={item.trade}
+                targetPrice={targetPrice}
+                setCompanyName={setCompanyName}
+                item={item}
+                bottomSheetRef={bottomSheetRef}
+              />
+            )}
+            onScroll={handleScroll} // Track scroll
+            keyExtractor={(item: any) => item.description}
+            style={styles.list}
+            contentContainerStyle={{
+              marginTop: inset.top + 52,
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={screenRefresh}
+                onRefresh={onRefresh}
+              />
+            }
+            onEndReached={() => {
+              if (hasMore) {
+                setPage((prevPage) => prevPage + 1);
+              }
+            }}
+          />
+        )}
       </SafeAreaView>
 
       {Platform.OS === "ios" ? (
