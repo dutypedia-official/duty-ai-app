@@ -334,9 +334,9 @@ function RootLayoutNav() {
         router.replace("/update");
       } else if (isSignedIn) {
         if (selectMarket === "Bangladesh") {
-          router.replace("/main/home/");
+          router.replace("/main/home");
         } else {
-          router.replace("/main-jp/home/");
+          router.replace("/main-jp/home");
         }
       } else {
         if (selectMarket === "Bangladesh") {

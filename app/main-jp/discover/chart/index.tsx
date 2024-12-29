@@ -369,7 +369,7 @@ export const StockListItem = ({
               alignItems: "flex-end",
               width: 80,
             }}>
-            <View
+            {/* <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -388,9 +388,12 @@ export const StockListItem = ({
                   textAlign: "right",
                   color: changeColor,
                 }}>
-                {change + "%"}
+                {new Intl.NumberFormat("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(parseFloat(change)) + "%"}
               </Text>
-            </View>
+            </View> */}
             <View
               style={{
                 display: "flex",
@@ -399,7 +402,7 @@ export const StockListItem = ({
                 padding: 6,
                 borderRadius: 4,
                 gap: 4,
-                backgroundColor: isPositivePer ? "#2ECC71" : "#CE1300",
+                backgroundColor: isPositive ? "#2ECC2E" : "#CE1300",
                 borderColor: isDark ? "#333333" : "#EAEDED",
                 width: 56,
                 justifyContent: "center",
@@ -410,7 +413,10 @@ export const StockListItem = ({
                   fontSize: 12,
                   textAlign: "center",
                 }}>
-                {changePer + "%"}
+                {new Intl.NumberFormat("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(parseFloat(change)) + "%"}
               </Text>
             </View>
           </View>
@@ -432,7 +438,7 @@ export const StockListItem = ({
                 //   params: { symbol: name },
                 // });
                 WebBrowser.openBrowserAsync(
-                  `https://www.tradingview.com/chart/?symbol=DSEBD:${name}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=DSEBD:${name}&theme=${colorScheme}`,
+                  `https://www.tradingview.com/chart/?symbol=TSE:${item?.name}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=TSE:${item?.name}&theme=${colorScheme}`,
                   {
                     showTitle: false,
                     enableBarCollapsing: false,
@@ -708,7 +714,7 @@ const StockListScreen = () => {
       } else {
         setMarketListData(mData);
       }
-      console.log("mData------", mData.lenght);
+      console.log("mData------", mData);
       setMarketData(mData);
 
       if (mData.length < 50) {
@@ -949,195 +955,210 @@ const StockListScreen = () => {
       style={{
         flex: 1,
       }}>
-      <SafeAreaView style={styles.container}>
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              marginTop: inset.top,
-              zIndex: 9,
-              backgroundColor: bgColor,
-            },
-            { opacity: fadeAnim }, // Animate opacity
-          ]}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => {
-                router.back();
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 8,
-              }}>
-              <Text>
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={{ color: isDark ? "#00B0FF" : "#34495E" }}
-                />
-              </Text>
-              <Text
+      <View style={styles.container}>
+        <FlatList
+          data={[]}
+          ListHeaderComponent={() => {
+            return (
+              <Animated.View
                 style={[
-                  styles.headerTitle,
-                  { color: isDark ? "#00B0FF" : "#2980B9" },
+                  {
+                    // position: "absolute",
+                    marginTop: inset.top,
+                    zIndex: 9,
+                    backgroundColor: bgColor,
+                  },
+                  { opacity: fadeAnim }, // Animate opacity
                 ]}>
-                {isBn ? "স্টক লিস্ট" : "Stock List"}
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                gap: 12,
-                alignItems: "center",
-              }}>
-              <View
-                style={[
-                  styles.searchContainer,
-                  { borderColor: isDark ? "#333333" : "#D1D1D1" },
-                ]}>
-                <TextInput
+                <View style={styles.header}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.back();
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
+                    }}>
+                    <Text>
+                      <Ionicons
+                        name="chevron-back"
+                        size={24}
+                        style={{ color: isDark ? "#00B0FF" : "#34495E" }}
+                      />
+                    </Text>
+                    <Text
+                      style={[
+                        styles.headerTitle,
+                        { color: isDark ? "#00B0FF" : "#2980B9" },
+                      ]}>
+                      {isBn ? "স্টক লিস্ট" : "Stock List"}
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      gap: 12,
+                      alignItems: "center",
+                    }}>
+                    <View
+                      style={[
+                        styles.searchContainer,
+                        { borderColor: isDark ? "#333333" : "#D1D1D1" },
+                      ]}>
+                      <TextInput
+                        style={{
+                          flex: 1,
+                          fontSize: 14,
+                          color: textColor,
+                          height: "100%",
+                          paddingLeft: 12, // 12-pixel gap from the left border
+                          paddingVertical: 0,
+                        }}
+                        placeholder="Search stock"
+                        placeholderTextColor={isDark ? "#fff" : "#34495E"}
+                        value={searchTerm}
+                        onChangeText={setSearchTerm}
+                      />
+                      <Feather
+                        name="search"
+                        size={20}
+                        color={isDark ? "#333333" : "#34495E"}
+                        style={styles.searchIcon}
+                      />
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSortByName(!sortByName);
+                      }}>
+                      <FontAwesome
+                        name="sort-alpha-asc"
+                        size={24}
+                        color={
+                          sortByName
+                            ? "#00B0FF"
+                            : isDark
+                            ? "#a1a1a1"
+                            : "#909090"
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <ScrollView
                   style={{
-                    flex: 1,
-                    fontSize: 14,
-                    color: textColor,
-                    height: "100%",
-                    paddingLeft: 12, // 12-pixel gap from the left border
-                    paddingVertical: 0,
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    paddingVertical: 12,
                   }}
-                  placeholder="Search stock"
-                  placeholderTextColor={isDark ? "#fff" : "#34495E"}
-                  value={searchTerm}
-                  onChangeText={setSearchTerm}
-                />
-                <Feather
-                  name="search"
-                  size={20}
-                  color={isDark ? "#333333" : "#34495E"}
-                  style={styles.searchIcon}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    alignItems: "flex-start",
+                    alignSelf: "flex-start",
+                    gap: 12,
+                    paddingLeft: 12,
+                  }}>
+                  {filteredItems.map((item: any, index) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setActiveFilter(item.value);
+                      }}
+                      key={index}
+                      style={{
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: isDark ? "#333333" : "#B0BEC5",
+                        backgroundColor:
+                          activeFilter != item.value
+                            ? isDark
+                              ? "#1C1C1C"
+                              : "#E0E0E0"
+                            : "#00796B",
+                      }}>
+                      <Text
+                        style={{
+                          paddingHorizontal: 12,
+                          paddingVertical: 10,
+                          fontSize: 14,
+                          color:
+                            activeFilter != item.value
+                              ? isDark
+                                ? "#B0BEC5"
+                                : "#fff"
+                              : "white",
+                        }}>
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </Animated.View>
+            );
+          }}
+          renderItem={() => {
+            return <></>;
+          }}
+          ListFooterComponent={() => {
+            return loadingData ? (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+                }}>
+                <ActivityIndicator
+                  size="small"
+                  color={isDark ? "#00B0FF" : "#34495E"}
                 />
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setSortByName(!sortByName);
-                }}>
-                <FontAwesome
-                  name="sort-alpha-asc"
-                  size={24}
-                  color={
-                    sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"
-                  }
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <ScrollView
-            style={{
-              flexGrow: 0,
-              flexShrink: 0,
-              paddingVertical: 12,
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              alignItems: "flex-start",
-              alignSelf: "flex-start",
-              gap: 12,
-              paddingLeft: 12,
-            }}>
-            {filteredItems.map((item: any, index) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveFilter(item.value);
+            ) : (
+              <AnimatedFlatList
+                data={initialStocks}
+                renderItem={({ item }: any) => (
+                  <StockListItem
+                    changePer={item.changePer}
+                    name={item.description}
+                    price={getPrice(item)}
+                    change={item.change}
+                    logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
+                    volume={item.volume}
+                    value={item.value}
+                    alerms={alerms}
+                    aiAlerms={aiAlerms}
+                    favs={favorites}
+                    trading={item.trade}
+                    targetPrice={targetPrice}
+                    setCompanyName={setCompanyName}
+                    item={item}
+                    bottomSheetRef={bottomSheetRef}
+                  />
+                )}
+                onScroll={handleScroll} // Track scroll
+                keyExtractor={(item: any) => item.description}
+                style={styles.list}
+                contentContainerStyle={{
+                  marginTop: inset.top + 52,
                 }}
-                key={index}
-                style={{
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  borderColor: isDark ? "#333333" : "#B0BEC5",
-                  backgroundColor:
-                    activeFilter != item.value
-                      ? isDark
-                        ? "#1C1C1C"
-                        : "#E0E0E0"
-                      : "#00796B",
-                }}>
-                <Text
-                  style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 10,
-                    fontSize: 14,
-                    color:
-                      activeFilter != item.value
-                        ? isDark
-                          ? "#B0BEC5"
-                          : "#fff"
-                        : "white",
-                  }}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Animated.View>
-
-        {loadingData ? (
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "center",
-            }}>
-            <ActivityIndicator
-              size="small"
-              color={isDark ? "#00B0FF" : "#34495E"}
-            />
-          </View>
-        ) : (
-          <AnimatedFlatList
-            data={initialStocks}
-            renderItem={({ item }: any) => (
-              <StockListItem
-                changePer={item.changePer}
-                name={item.description}
-                price={getPrice(item)}
-                change={item.change}
-                logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
-                volume={item.volume}
-                value={item.value}
-                alerms={alerms}
-                aiAlerms={aiAlerms}
-                favs={favorites}
-                trading={item.trade}
-                targetPrice={targetPrice}
-                setCompanyName={setCompanyName}
-                item={item}
-                bottomSheetRef={bottomSheetRef}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={screenRefresh}
+                    onRefresh={onRefresh}
+                  />
+                }
+                onEndReached={() => {
+                  if (hasMore) {
+                    setPage((prevPage) => prevPage + 1);
+                  }
+                }}
               />
-            )}
-            onScroll={handleScroll} // Track scroll
-            keyExtractor={(item: any) => item.description}
-            style={styles.list}
-            contentContainerStyle={{
-              marginTop: inset.top + 52,
-            }}
-            refreshControl={
-              <RefreshControl
-                refreshing={screenRefresh}
-                onRefresh={onRefresh}
-              />
-            }
-            onEndReached={() => {
-              if (hasMore) {
-                setPage((prevPage) => prevPage + 1);
-              }
-            }}
-          />
-        )}
-      </SafeAreaView>
+            );
+          }}
+        />
+      </View>
 
       {Platform.OS === "ios" ? (
         <SheetCardIos
@@ -1191,7 +1212,6 @@ const StockListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
     paddingBottom: 10,
   },
   header: {

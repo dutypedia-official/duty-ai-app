@@ -491,7 +491,7 @@ export const StockListItem = ({
                   textAlign: "right",
                   color: changeColor,
                 }}>
-                {change + "%"}
+                {change + "৳"}
               </Text>
             </View>
             <View

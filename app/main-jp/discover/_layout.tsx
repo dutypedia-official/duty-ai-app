@@ -38,7 +38,10 @@ export default function Layout() {
       <Stack.Screen name="finance" options={{ title: "Finance" }} />
       <Stack.Screen
         name="chart/index"
-        options={{ title: "Stock List", headerShown: false }}
+        options={{
+          title: "Stock List",
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="chat"

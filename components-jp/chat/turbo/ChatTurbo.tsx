@@ -233,7 +233,7 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const url =
         template == "finance"
-          ? `${baseUrl}/chat/finance`
+          ? `${baseUrl}/chat/finance/jp`
           : template == "forex"
           ? `${baseUrl}/chat/forex`
           : template == "scanner"
@@ -242,7 +242,7 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.101:8000/chat/finance`
+          ? `http://192.168.0.101:8000/chat/finance/jp`
           : template == "forex"
           ? `http://192.168.0.101:8000/chat/forex`
           : template == "scanner"
