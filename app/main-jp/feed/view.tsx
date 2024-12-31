@@ -1,22 +1,21 @@
 import { Text, View, useThemeColor } from "@/components/Themed";
+import CommentCard from "@/components/feed/CommentCard";
 import FeedCard from "@/components/feed/FeedCard";
+import { apiClient } from "@/lib/api";
+import useUi from "@/lib/hooks/useUi";
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  StyleSheet,
-  FlatList,
   ActivityIndicator,
-  ScrollView,
   KeyboardAvoidingView,
-  TouchableOpacity,
   SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import { TextInput } from "react-native-paper";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import CommentCard from "@/components/feed/CommentCard";
-import { apiClient } from "@/lib/api";
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import useUi from "@/lib/hooks/useUi";
 
 const FeedView = () => {
   const [isLoading, setLoading] = useState(false);
@@ -95,10 +94,9 @@ const FeedView = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        style={{ flex: 1, justifyContent: "space-between" }}
-      >
+        style={{ flex: 1, justifyContent: "space-between" }}>
         <View style={styles.container}>
-          <FlatList
+          <FlashList
             ListHeaderComponent={() => (
               <View>
                 <FeedCard isFeed={false} item={post} />
@@ -161,8 +159,7 @@ const FeedView = () => {
                 bottom: "50%",
                 zIndex: 1,
                 transform: [{ translateY: 12 }],
-              }}
-            >
+              }}>
               <Text>
                 <Ionicons name="send" size={24} />
               </Text>

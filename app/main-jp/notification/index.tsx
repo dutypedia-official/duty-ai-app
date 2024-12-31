@@ -16,6 +16,7 @@ import {
 import { ActivityIndicator, Text } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
 import { formatDate } from "date-fns/format";
+import { FlashList } from "@shopify/flash-list";
 
 const Noti = () => {
   const colorScheme = useColorScheme();
@@ -102,10 +103,11 @@ const Noti = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <FlatList
-        keyExtractor={(item) => item.id}
+      <FlashList
+        keyExtractor={(item: any) => item.id}
         data={notifications}
         renderItem={({ item }: any) => <NotiItem item={item} />}
+        estimatedItemSize={91}
       />
     </View>
   );

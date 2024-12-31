@@ -1,21 +1,16 @@
-import {
-  Alert,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
-import { useEffect, useState } from "react";
-import { Card, IconButton, Text } from "react-native-paper";
-import { useAuth } from "@clerk/clerk-expo";
 import { apiClient } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
-import { useRouter } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
 import useUi from "@/lib/hooks/useUi";
+import { useAuth } from "@clerk/clerk-expo";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+import { FlashList } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Card, IconButton, Text } from "react-native-paper";
 
 export default function TabTwoScreen() {
   const { getToken } = useAuth();
@@ -128,7 +123,7 @@ export default function TabTwoScreen() {
         paddingVertical: 8,
         backgroundColor: "transparent",
       }}>
-      <FlatList
+      <FlashList
         ItemSeparatorComponent={() => (
           <View style={{ height: 16, backgroundColor: "transparent" }} />
         )}
@@ -184,7 +179,7 @@ export default function TabTwoScreen() {
               </Card.Content>
             </Card>
           </TouchableOpacity>
-        )}></FlatList>
+        )}></FlashList>
     </View>
   );
 }

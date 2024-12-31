@@ -797,7 +797,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     <SafeAreaView
       style={{
         flex: 1,
-        marginTop: fromPath ? -54 : 0,
+        // marginTop: fromPath ? -54 : 0,
         paddingTop: insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
       }}>

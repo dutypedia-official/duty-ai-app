@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@clerk/clerk-expo";
 import useUi from "@/lib/hooks/useUi";
+import { FlashList } from "@shopify/flash-list";
 
 export const ProcessingDataList = ({ index, item }: any) => {
   const { selectStock, setSelectStock } = useVipSignal();
@@ -315,7 +316,7 @@ const Processing = () => {
             paddingHorizontal: 10,
             flex: 1,
           }}>
-          <FlatList
+          <FlashList
             data={processStep}
             renderItem={({ item, index }: any) => (
               <ProcessingDataList index={index} item={item} />
