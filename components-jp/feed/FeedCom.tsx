@@ -24,7 +24,7 @@ export default function FeedCom() {
   const { indexData, setIndexData } = useFeedData();
   const client = apiClient();
   const bgColor = isDark ? "#1A1A1A" : "#F5F5F5";
-  const [activeSlide, setActiveSlide] = useState("DSEX");
+  const [activeSlide, setActiveSlide] = useState("NI225");
   const borderColor = useThemeColor({}, "border");
 
   const fetchData = async (init: boolean = true) => {
@@ -37,9 +37,11 @@ export default function FeedCom() {
     }
   };
 
+  // console.log("indexData--------", indexData);
+
   const slides = [
     {
-      name: "DSEX",
+      name: "NI225",
       index: [
         {
           title: "1 Day",
@@ -79,7 +81,7 @@ export default function FeedCom() {
       ],
     },
     {
-      name: "DSES",
+      name: "TOPIX",
       index: [
         {
           title: "1 Day",
@@ -119,7 +121,7 @@ export default function FeedCom() {
       ],
     },
     {
-      name: "DS30",
+      name: "I0500",
       index: [
         {
           title: "1 Day",
@@ -217,7 +219,7 @@ export default function FeedCom() {
                   backgroundColor: "transparent",
                   paddingHorizontal: 8,
                 }}>
-                <Text style={{ fontSize: 20 }}>Index</Text>
+                <Text style={{ fontSize: 20 }}>インデックス</Text>
               </View>
 
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -354,7 +356,7 @@ export default function FeedCom() {
                 }}>
                 <View style={{ backgroundColor: "transparent" }}>
                   <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-                    Index Performance
+                    インデックスパフォーマンス
                   </Text>
                 </View>
                 <View style={{ backgroundColor: "transparent", gap: 19 }}>
@@ -448,7 +450,7 @@ export default function FeedCom() {
                       style={{ fontSize: 16 }}
                       lightColor="#3DC000"
                       darkColor="#FFD700">
-                      Ai summery
+                      AI サマリー
                     </Text>
                     <Text
                       style={{ fontSize: 14, paddingBottom: 20 }}

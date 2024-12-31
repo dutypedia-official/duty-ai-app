@@ -1,4 +1,4 @@
-import ChatTurbo from "@/components/chat/turbo/ChatTurbo";
+import ChatTurbo from "@/components-jp/chat/turbo/ChatTurbo";
 import useChat from "@/lib/hooks/useChat";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";

@@ -23,6 +23,7 @@ export const apiClient = () => {
   const addBaseUrl = (url: string, mainServer: boolean) =>
     mainServer ? `${BASE_URL}${url}` : `${BACKUP_SERVER_URL}${url}`;
 
+  console.log("BASE_URL-------", BASE_URL);
   return {
     get: (
       url: string,

@@ -18,7 +18,7 @@ const DiscoverCategory = () => {
           paddingVertical: 20,
           paddingHorizontal: 12,
         }}>
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Category</Text>
+        <Text style={{ fontSize: 24, fontWeight: "bold" }}>カテゴリー</Text>
       </View>
       <View
         style={{

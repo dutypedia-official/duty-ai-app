@@ -101,17 +101,6 @@ export default function StartScreen() {
                   style={{
                     fontWeight: "900",
                     fontSize: 56,
-                    color: "#fff",
-                    textShadowColor: "rgba(255, 255, 255, 0.34)",
-                    textShadowOffset: { width: 4, height: 2 },
-                    textShadowRadius: 8,
-                  }}>
-                  プロのよに
-                </Text>
-                <Text
-                  style={{
-                    fontWeight: "900",
-                    fontSize: 56,
                     color: "#A58AFF",
                     textShadowColor: "rgba(255, 255, 255, 0.34)",
                     textShadowOffset: { width: 4, height: 2 },
@@ -147,7 +136,7 @@ export default function StartScreen() {
                   color: "#fff",
                   textAlign: "center",
                 }}>
-                市場データの簡素化
+                Duty AI
               </Text>
             </View>
             <View

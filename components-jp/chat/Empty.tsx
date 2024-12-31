@@ -67,12 +67,12 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
 
   const stockScreener = [
-    "📅 আগামীকাল কোন সেক্টর ভালো পারফর্ম করবে?",
-    "💰 কোন শেয়ারগুলো সর্বোচ্চ ডিভিডেন্ড দেয়?",
-    "💸 কম দামে ভালো পটেনশিয়াল স্টক খুঁজে দাও।",
-    "📊 এখন কোন শেয়ার কেনা উচিত?",
-    "🔥 আজকের শীর্ষ পারফর্মিং শেয়ারগুলো কী?",
-    "⏳ কিছু শর্ট টার্ম স্টক খুঁজে দাও।",
+    "📅 明日はどのセクターが好パフォーマンスを発揮しますか？",
+    "💰 最高の配当を出す銘柄はどれですか？",
+    "💸 安い価格で良いポテンシャルを持つ株を教えてください。",
+    "📊 今買うべき株はどれですか？",
+    "🔥 今日のトップパフォーマンス銘柄は何ですか？",
+    "⏳ 短期向けの銘柄をいくつか教えてください。",
   ];
 
   const promptsFn = () => {
@@ -95,7 +95,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     } else if (template == "forex") {
       return "Let's chat about forex!";
     } else if (template == "finance") {
-      return "株式について話しましょう";
+      return "FXについて話しましょう";
     } else if (template == "scanner") {
       return "銘柄スクリーニング";
     } else {
@@ -183,7 +183,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           flex: 1,
           justifyContent: "center",
           alignContent: "center",
-          // height: Dimensions.get("window").height,
+          height: Dimensions.get("window").height - 200,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
         }}>
@@ -195,7 +195,6 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           }}>
           {template !== "scanner" ? (
             <Text
-              numberOfLines={1}
               style={{
                 fontSize: 40,
                 fontWeight: "700",
@@ -205,7 +204,6 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             </Text>
           ) : (
             <Text
-              numberOfLines={1}
               style={{
                 fontSize: 40,
                 fontWeight: "700",

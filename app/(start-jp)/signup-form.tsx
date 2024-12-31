@@ -344,7 +344,7 @@ export default function SignupForm() {
                       fontWeight: "bold",
                       textAlign: "left",
                     }}>
-                    あなたのメールアドレス・名前・パスワードを入力してください
+                    あなたのメールアドレス・アカウント名・パスワードを入力してください
                   </Text>
                   <View
                     style={{
@@ -360,8 +360,7 @@ export default function SignupForm() {
                         lineHeight: 24,
                       }}>
                       メールアドレスは確認のためにのみ使用されます。
-                      アカウント名: 4 ～ 20
-                      文字のアルファベットを入力してください。 {"\n"}
+                      アカウント名: 4～20文字以内で。 {"\n"}
                       パスワード: 8 ～ 20
                       文字のアルファベットを入力してください。
                     </Text>

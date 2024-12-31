@@ -300,8 +300,8 @@ export default function VerifyEmail() {
                   textAlign: "left",
                   lineHeight: 24,
                 }}>
-                確認コードが {params?.email}.
-                に送信されました。コードを入力して続行してください。 メールが見つからない場合は、スパムまたは迷惑メールフォルダーをご確認ください。
+                確認コードが {params?.email} に送信されました。{"\n"}
+                コードを入力して続行してください。メールが見つからない場合は、スパムまたは迷惑メールフォルダーをご確認ください。
               </Text>
               <View style={{ gap: 12 }}>
                 <FormInput

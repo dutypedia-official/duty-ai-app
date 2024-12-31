@@ -94,7 +94,7 @@ const Noti = () => {
               fontSize: 20,
               fontWeight: "600",
             }}>
-            {isBn ? "নোটিফিকেশান নেই" : "No notifications"}
+            最新のお知らせはありません
           </Text>
         </View>
       </View>

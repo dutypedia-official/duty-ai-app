@@ -51,7 +51,7 @@ export default function Layout() {
               ? "Real Time Chat"
               : template == "finance"
               ? "Finance"
-              : "Forex",
+              : "FX",
           headerShown: true,
         }}
       />

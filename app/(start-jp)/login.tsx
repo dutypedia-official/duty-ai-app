@@ -5,6 +5,7 @@ import {
   Platform,
   Dimensions,
   useColorScheme,
+  Pressable,
 } from "react-native";
 
 import { SafeAreaView, Text, useThemeColor, View } from "@/components/Themed";
@@ -414,18 +415,29 @@ export default function Login() {
                     Privacy policies
                   </Button>
                 </View>
-                <Link href="/contact" asChild>
-                  <Button
-                    mode="text"
-                    icon="phone"
-                    labelStyle={{
-                      fontWeight: "600",
-                      fontSize: 14,
-                      color: "#BDC3C7",
+                <Pressable
+                  onPress={() => {
+                    router.push("/contact");
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: "transparent",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "row",
+                      gap: 12,
                     }}>
-                    {isBn ? "যোগাযোগ করুন" : "Contact us"}
-                  </Button>
-                </Link>
+                    <FontAwesome name="phone" size={16} color="#BDC3C7" />
+                    <Text
+                      style={{
+                        fontWeight: "600",
+                        fontSize: 14,
+                        color: "#BDC3C7",
+                      }}>
+                      全ての文字が表示されていない
+                    </Text>
+                  </View>
+                </Pressable>
               </View>
             </View>
             {/* <Text>1</Text> */}
