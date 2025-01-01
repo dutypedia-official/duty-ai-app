@@ -2,9 +2,6 @@ import { apiClient } from "@/lib/api";
 import useFeedData from "@/lib/hooks/useFeedData";
 import useUi from "@/lib/hooks/useUi";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dimensions,
@@ -29,147 +26,28 @@ export default function FeedCom() {
 
   const fetchData = async (init: boolean = true) => {
     try {
-      const { data } = await client.get(`/tools/get-dsebd-index`);
+      const { data } = await client.get(`/tools/get-jp-index`);
       setIndexData(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // console.log("indexData--------", indexData);
+  const filteredIndex = indexData?.overview?.find(
+    (item: any) => item?.name === activeSlide
+  );
 
-  const slides = [
-    {
-      name: "NI225",
-      index: [
-        {
-          title: "1 Day",
-          value: "0.32%",
-        },
-        {
-          title: "5 Day",
-          value: "-0.36%",
-        },
-        {
-          title: "1 month",
-          value: "-1.7%",
-        },
-        {
-          title: "6 year",
-          value: "1.2%",
-        },
-        {
-          title: "1 year",
-          value: "2.8%",
-        },
-        {
-          title: "5 year year",
-          value: "3.1%",
-        },
-      ],
-      data: [
-        {
-          value: indexData?.dseXIndex[0],
-        },
-        {
-          value: indexData?.dseXIndex[1],
-        },
-        {
-          value: indexData?.dseXIndex[2],
-        },
-      ],
-    },
-    {
-      name: "TOPIX",
-      index: [
-        {
-          title: "1 Day",
-          value: "2.8%",
-        },
-        {
-          title: "5 Day",
-          value: "0.36%",
-        },
-        {
-          title: "1 month",
-          value: "-1.7%",
-        },
-        {
-          title: "6 year",
-          value: "-1.2%",
-        },
-        {
-          title: "1 year",
-          value: "2.8%",
-        },
-        {
-          title: "5 year year",
-          value: "3.1%",
-        },
-      ],
-      data: [
-        {
-          value: indexData?.dseSIndex[0],
-        },
-        {
-          value: indexData?.dseSIndex[1],
-        },
-        {
-          value: indexData?.dseSIndex[2],
-        },
-      ],
-    },
-    {
-      name: "I0500",
-      index: [
-        {
-          title: "1 Day",
-          value: "0.8%",
-        },
-        {
-          title: "5 Day",
-          value: "-0.86%",
-        },
-        {
-          title: "1 month",
-          value: "-2.7%",
-        },
-        {
-          title: "6 year",
-          value: "-1.2%",
-        },
-        {
-          title: "1 year",
-          value: "2.8%",
-        },
-        {
-          title: "5 year year",
-          value: "-8%",
-        },
-      ],
-      data: [
-        {
-          value: indexData?.ds30Index[0],
-        },
-        {
-          value: indexData?.ds30Index[1],
-        },
-        {
-          value: indexData?.ds30Index[2],
-        },
-      ],
-    },
-  ];
-
-  const filteredIndex =
-    slides?.find((item) => item?.name === activeSlide)?.index || [];
+  const rt = indexData?.technical?.find((fitem: any) => fitem?.name === "NI225")
+    ?.technical?.close;
+  console.log("rt-----------------", rt);
 
   const onSlideChange = (slideName: string) => {
     setActiveSlide(slideName);
   };
 
   useEffect(() => {
+    fetchData();
     const intervalId = setInterval(() => {
       fetchData();
     }, 600000); // 600000 ms = 10 minutes
@@ -189,6 +67,46 @@ export default function FeedCom() {
       setScreenRefresh(false);
     }, 2000);
   }, []);
+
+  const titleMap: any = {
+    change: "1 day",
+    "Perf.1M": "1 month",
+    "Perf.5D": "5 days",
+    "Perf.5Y": "5 years",
+    "Perf.6M": "6 months",
+    "Perf.All": "All time",
+    "Perf.W": "1 week",
+    "Perf.Y": "1 year",
+    "Perf.YTD": "Year to date",
+  };
+
+  // Custom sort order
+  const sortOrder = [
+    "change",
+    "1 week",
+    "1 month",
+    "6 months",
+    "1 year",
+    "5 years",
+    "All time",
+    "Year to date",
+  ];
+
+  const newData = Object.entries(filteredIndex?.overview || {})
+    .map(([key, value]) => ({
+      title: titleMap[key] || key, // Use titleMap or default to the key
+      value: value !== undefined ? [value] : [0], // Default to 0 if value is undefined
+    }))
+    .filter((item) => item.title !== "Year to date" && item.title !== "1 week"); // Exclude "Year to date"
+
+  // Sort the array based on the custom order
+  newData.sort(
+    (a, b) => sortOrder.indexOf(a.title) - sortOrder.indexOf(b.title)
+  );
+
+  const formatChange = (value: number) => {
+    return Math.abs(value).toFixed(2); // Absolute value and round to 2 decimal places
+  };
 
   return (
     <SafeAreaView>
@@ -234,114 +152,118 @@ export default function FeedCom() {
                     alignItems: "flex-start",
                     alignSelf: "flex-start",
                   }}>
-                  {slides?.map((item: any, i: number) => {
-                    const isNeg = item?.data?.[2]?.value?.startsWith("-");
+                  {indexData?.overview
+                    ?.slice(0, 3)
+                    ?.map((item: any, i: number) => {
+                      const isNeg = item?.overview?.change < 0;
 
-                    const getIntegerPart = (value: any) => {
-                      return value && typeof value === "string"
-                        ? value.split(".")[0]
-                        : "";
-                    };
+                      const getIntegerPart = (value: number | string) => {
+                        const strValue = value?.toString() || "";
+                        return strValue.split(".")[0];
+                      };
 
-                    const getDecimalPart = (value: any) => {
-                      if (value && typeof value === "string") {
-                        const decimalPart = value.split(".")[1];
+                      const getDecimalPart = (value: number | string) => {
+                        const strValue = value?.toString() || "";
+                        const decimalPart = strValue.split(".")[1];
                         return decimalPart ? decimalPart.substring(0, 2) : "";
-                      }
-                      return "";
-                    };
+                      };
 
-                    return (
-                      <TouchableOpacity
-                        onPress={() => onSlideChange(item?.name)}
-                        key={i}
-                        style={{
-                          width: Dimensions.get("window").width * 0.38,
-                          aspectRatio: 1036 / 1184,
-                          borderRadius: 12,
-                          position: "relative",
-                          borderWidth: 1,
-                          borderColor:
-                            activeSlide === item?.name
-                              ? borderColor
-                              : "transparent",
-                        }}>
-                        <Image
+                      return (
+                        <TouchableOpacity
+                          onPress={() => onSlideChange(item?.name)}
+                          key={i}
                           style={{
-                            height: "100%",
-                            width: "100%",
-                            position: "absolute",
+                            width: Dimensions.get("window").width * 0.38,
+                            aspectRatio: 1036 / 1184,
                             borderRadius: 12,
-                          }}
-                          resizeMode="cover"
-                          source={
-                            isNeg
-                              ? isDark
-                                ? require("../../assets/images/negative-dark.png")
-                                : require("../../assets/images/negative-light.png")
-                              : isDark
-                              ? require("../../assets/images/positive-dark.png")
-                              : require("../../assets/images/positive-light.png")
-                          }
-                        />
-                        <View
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            backgroundColor: "transparent",
-                            width: "100%",
-                            height: "100%",
-                            gap: 8,
-                            paddingLeft: 8,
-                            paddingRight: 8,
-                            paddingTop: 12,
+                            position: "relative",
+                            borderWidth: 1,
+                            borderColor:
+                              activeSlide === item?.name
+                                ? borderColor
+                                : "transparent",
                           }}>
+                          <Image
+                            style={{
+                              height: "100%",
+                              width: "100%",
+                              position: "absolute",
+                              borderRadius: 12,
+                            }}
+                            resizeMode="cover"
+                            source={
+                              isNeg
+                                ? isDark
+                                  ? require("../../assets/images/negative-dark.png")
+                                  : require("../../assets/images/negative-light.png")
+                                : isDark
+                                ? require("../../assets/images/positive-dark.png")
+                                : require("../../assets/images/positive-light.png")
+                            }
+                          />
                           <View
                             style={{
-                              width: "100%",
+                              position: "absolute",
+                              left: 0,
+                              top: 0,
                               backgroundColor: "transparent",
-                              flexDirection: "row",
-                              justifyContent: "space-between",
+                              width: "100%",
+                              height: "100%",
+                              gap: 8,
+                              paddingLeft: 8,
+                              paddingRight: 8,
+                              paddingTop: 12,
                             }}>
-                            <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
-                              {item?.name}
-                            </Text>
-                            <Text
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: isNeg ? "#FF0000" : "#20E5FF",
+                                width: "100%",
+                                backgroundColor: "transparent",
+                                flexDirection: "row",
+                                justifyContent: "space-between",
                               }}>
-                              <AntDesign
-                                name={isNeg ? "arrowdown" : "arrowup"}
-                                size={12}
-                                color={isNeg ? "#FF0000" : "#20E5FF"}
-                              />
-                              {getIntegerPart(item?.data?.[2]?.value) +
+                              <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
+                                {item?.name}
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: isNeg ? "#FF0000" : "#20E5FF",
+                                }}>
+                                <AntDesign
+                                  name={isNeg ? "arrowdown" : "arrowup"}
+                                  size={12}
+                                  color={isNeg ? "#FF0000" : "#20E5FF"}
+                                />
+                                {isNeg &&
+                                  "-" +
+                                    formatChange(item?.overview?.change) +
+                                    "%"}
+                              </Text>
+                            </View>
+                            <Text style={{ fontSize: 16 }}>
+                              {getIntegerPart(
+                                indexData?.technical?.find(
+                                  (fitem: any) => fitem?.name === item?.name
+                                )?.technical?.close
+                              )}
+                              {"."}
+                              <Text style={{ color: "#6E6E6E" }}>
+                                {getDecimalPart(
+                                  indexData?.technical?.find(
+                                    (fitem: any) => fitem?.name === item?.name
+                                  )?.technical?.close
+                                )}
+                              </Text>
+                            </Text>
+                            {/* <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
+                              {getIntegerPart(item?.data?.[1]?.value) +
                                 "." +
-                                getDecimalPart(item?.data?.[2]?.value) +
-                                "%"}
-                            </Text>
+                                getDecimalPart(item?.data?.[1]?.value)}
+                            </Text> */}
                           </View>
-                          <Text style={{ fontSize: 16 }}>
-                            {getIntegerPart(item?.data?.[0]?.value)}
-                            {item?.data?.[0]?.value &&
-                              typeof item?.data?.[0]?.value === "string" &&
-                              item?.data?.[0]?.value.split(".")[1] &&
-                              "."}
-                            <Text style={{ color: "#6E6E6E" }}>
-                              {getDecimalPart(item?.data?.[0]?.value)}
-                            </Text>
-                          </Text>
-                          <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
-                            {getIntegerPart(item?.data?.[1]?.value) +
-                              "." +
-                              getDecimalPart(item?.data?.[1]?.value)}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
+                        </TouchableOpacity>
+                      );
+                    })}
                 </View>
               </ScrollView>
             </View>
@@ -360,9 +282,17 @@ export default function FeedCom() {
                   </Text>
                 </View>
                 <View style={{ backgroundColor: "transparent", gap: 19 }}>
-                  {filteredIndex?.map((item, i) => {
-                    const isNeg = item?.value?.startsWith("-");
-
+                  {newData?.map((item: any, i: number) => {
+                    const isNeg = item?.value < 0;
+                    // Replace English words in the title with Japanese equivalents
+                    const translateTitle = (title: string) => {
+                      return title
+                        .replace(/days?/, "日") // Matches "day" or "days"
+                        .replace(/months?/, "カ月") // Matches "month" or "months"
+                        .replace(/years?/, "年") // Matches "year" or "years"
+                        .replace(/weeks?/, "週") // Matches "week" or "weeks"
+                        .replace(/All time/, "全期間");
+                    };
                     return (
                       <View
                         key={i}
@@ -381,7 +311,9 @@ export default function FeedCom() {
                               width: "40%",
                               justifyContent: "center",
                             }}>
-                            <Text style={{ fontSize: 14 }}>{item?.title}</Text>
+                            <Text style={{ fontSize: 14 }}>
+                              {translateTitle(item?.title)}
+                            </Text>
                           </View>
 
                           <View
@@ -424,7 +356,7 @@ export default function FeedCom() {
                                   ? "#FFFFFF"
                                   : "#34495E",
                               }}>
-                              {item?.value}
+                              {formatChange(item?.value) + "%"}
                             </Text>
                           </View>
                         </View>

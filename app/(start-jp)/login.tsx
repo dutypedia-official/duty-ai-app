@@ -434,7 +434,7 @@ export default function Login() {
                         fontSize: 14,
                         color: "#BDC3C7",
                       }}>
-                      全ての文字が表示されていない
+                      Contact us
                     </Text>
                   </View>
                 </Pressable>

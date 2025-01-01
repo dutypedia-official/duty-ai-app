@@ -128,7 +128,7 @@ export default function TabLayout() {
   const fetchDataFeed = async (init: boolean = true) => {
     try {
       const { data } = await client.get(
-        `/tools/get-dsebd-index`,
+        `/tools/get-jp-index`,
         null,
         {},
         mainServerAvailable

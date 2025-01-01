@@ -93,9 +93,9 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     if (template == "general") {
       return "How can I help you today?";
     } else if (template == "forex") {
-      return "Let's chat about forex!";
-    } else if (template == "finance") {
       return "FXについて話しましょう";
+    } else if (template == "finance") {
+      return "株式について話しましょう";
     } else if (template == "scanner") {
       return "銘柄スクリーニング";
     } else {
