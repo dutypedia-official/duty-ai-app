@@ -37,6 +37,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PostHogProvider } from "posthog-react-native";
 import useMarket from "@/lib/hooks/useMarket";
+import { NavigationContainer } from "@react-navigation/native";
 
 // Prevent the splash screen from hiding automatically
 SplashScreen.preventAutoHideAsync();
@@ -197,8 +198,11 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
-      <RootLayoutNav />
+      tokenCache={tokenCache}
+    >
+      <NavigationContainer>
+        <RootLayoutNav />
+      </NavigationContainer>
     </ClerkProvider>
   );
 }
@@ -357,7 +361,8 @@ function RootLayoutNav() {
       apiKey="phc_s5HpI2azRTOp1wUjmfQR2ghMvWiFKtvtyRhVL8rVCpa"
       options={{
         host: "https://us.i.posthog.com",
-      }}>
+      }}
+    >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
         <GestureHandlerRootView style={{ flex: 1 }}>
