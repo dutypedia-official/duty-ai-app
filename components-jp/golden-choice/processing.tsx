@@ -164,7 +164,7 @@ const Processing = () => {
       const token = await getToken();
       const client = apiClient();
       const { data } = await client.post(
-        "/chat/compare",
+        "/chat/compare/jp",
         {
           symbols: selectStock,
         },

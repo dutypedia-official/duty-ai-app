@@ -1,6 +1,8 @@
 import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
+import { apiClient } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useStockData from "@/lib/hooks/useStockData";
+import useUi from "@/lib/hooks/useUi";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { Feather } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -49,16 +51,16 @@ const SignalList = ({
   const cardBgColor = isDark ? "#1E1E1E" : "#EAEDED";
 
   const selecteStockFn = (item: any) => () => {
-    const { symbol } = item;
+    const { description } = item;
 
     // Check if the stock is already selected
-    if (selectStock.includes(symbol)) {
+    if (selectStock.includes(description)) {
       // Remove the stock if already selected
-      removeSelectStock(symbol);
+      removeSelectStock(description);
 
       Toast.show({
         type: "info",
-        text1: `${symbol} has been removed from selection`,
+        text1: `${description} has been removed from selection`,
       });
     } else {
       // Limit selection to 3 stocks
@@ -71,16 +73,16 @@ const SignalList = ({
       }
 
       // Add the stock if not already selected
-      setSelectStock(symbol);
+      setSelectStock(description);
 
       Toast.show({
         type: "success",
-        text1: `You have selected ${symbol}`,
+        text1: `You have selected ${description}`,
       });
     }
   };
 
-  const isSelected = selectStock.includes(item?.symbol);
+  const isSelected = selectStock.includes(item?.description);
 
   return (
     <View
@@ -200,25 +202,75 @@ const SignalList = ({
 };
 
 const List = () => {
+  const { mainServerAvailable } = useUi();
   const { selectStock } = useVipSignal();
   const [searchTerm, setSearchTerm] = React.useState("");
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const cardBgColor = isDark ? "#1E1E1E" : "#EAEDED";
-  const graDient = isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"];
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const videoUrl = "https://www.youtube.com/embed/A4L792q0q9Q?autoplay=1";
   const pathname = usePathname();
   console.log("pathname-jp", pathname);
   const router = useRouter();
-  const { marketData } = useStockData();
   const { language } = useLang();
 
-  const filterData = marketData?.filter((stock: any) =>
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [marketListData, setMarketListData] = useState([]);
+  const [marketData, setMarketData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [loadingData, setLoadingData] = useState(true);
+  const client = apiClient();
+
+  const fetchData = async () => {
+    try {
+      setLoadingData(true);
+      const { data: mData } = await client.get(
+        `/tools/get-stock-market-jp/${page}?query=${searchTerm}`,
+        null,
+        {},
+        mainServerAvailable
+      );
+
+      if (searchTerm !== "") {
+        setPage(1);
+        setMarketListData([]);
+      } else {
+        setMarketListData(mData);
+      }
+      console.log("mData------", mData);
+      setMarketData(mData);
+
+      if (mData.length < 50) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  // Debounce the searchTerm
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 200); // Adjust the debounce delay as needed (200ms here)
+
+    return () => {
+      clearTimeout(handler); // Clear timeout on cleanup to prevent stale updates
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [page, debouncedSearchTerm]);
+
+  let filterData = searchTerm === "" ? marketListData : marketData;
+
   const isDisable = selectStock.length < 3 ? true : false;
 
   const injectedJavaScript = `
@@ -360,7 +412,7 @@ const List = () => {
       <View style={{ flex: 1, gap: 24, paddingTop: 10 }}>
         <View style={{ backgroundColor: "transparent", paddingHorizontal: 10 }}>
           <LinearGradient
-            colors={graDient}
+            colors={isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -421,13 +473,14 @@ const List = () => {
                   backgroundColor: isDark ? "#0D0D0D" : "#F5F5F5",
                 }}
                 data={filterData}
-                renderItem={({ item }) => (
+                renderItem={({ item }: { item: any }) => (
                   <SignalList
                     item={item}
                     maxLength={filterData?.length}
+                    //@ts-ignore
                     index={filterData?.indexOf(item)}
-                    name={item?.symbol}
-                    logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item?.symbol}.svg`}
+                    name={item?.description}
+                    logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item?.description}.svg`}
                   />
                 )}
                 keyExtractor={(item: any) => item?.symbol}

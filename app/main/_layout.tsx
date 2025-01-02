@@ -178,6 +178,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={({ route }) => ({
+        animation: "shift",
         headerStyle: {
           backgroundColor: bgColor,
         },
@@ -219,7 +220,7 @@ export default function TabLayout() {
         options={{
           title: isBn ? "ফিড" : "Feed",
           headerShown: false,
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           tabBarIcon: ({ color }) => (
             <TabBarIconLine name="feed" color={color} />
           ),
@@ -231,7 +232,7 @@ export default function TabLayout() {
         options={{
           title: isBn ? "অনুসন্ধান" : "Discover",
           headerShown: false,
-          unmountOnBlur: false,
+          // unmountOnBlur: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="compass-outline" color={color} />
           ),
@@ -242,7 +243,7 @@ export default function TabLayout() {
         options={{
           title: isBn ? "চ্যাট" : "Stock Analysis",
           headerShown: false,
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           tabBarIcon: ({ color, focused }) =>
             focused ? (
               colorScheme === "dark" ? (
