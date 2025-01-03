@@ -16,13 +16,15 @@ const BASE_URL = isRunningInExpoGo
 const useSocket = create<Store>((set, get) => ({
   socket: undefined,
   connect: () => {
-    const socket = io(BASE_URL, {
-      reconnection: true,
-      reconnectionDelay: 3000,
-      reconnectionAttempts: 1000,
-      autoConnect: true,
-    });
-    console.log(socket?.id);
+    const socket = io(
+      "http://ncsowwksks0g8gg4gscw0w0o.195.26.252.202.sslip.io",
+      {
+        reconnection: true,
+        reconnectionDelay: 3000,
+        reconnectionAttempts: 1000,
+        autoConnect: true,
+      }
+    );
 
     set({ socket });
   },
