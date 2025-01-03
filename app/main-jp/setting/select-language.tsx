@@ -15,6 +15,7 @@ import * as WebBrowser from "expo-web-browser";
 import useMarket from "@/lib/hooks/useMarket";
 
 export default function LanguageScreen() {
+  const bgColor = useThemeColor({}, "background");
   const router = useRouter();
   const textColor = useThemeColor({}, "text");
   const { selectMarket } = useMarket();
@@ -69,7 +70,10 @@ export default function LanguageScreen() {
   };
 
   return (
-    <ScrollView>
+    <ScrollView
+      style={{
+        backgroundColor: bgColor,
+      }}>
       <SafeAreaView style={styles.container}>
         <View>
           {filterLanguages().map((item, i) => (

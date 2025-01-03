@@ -97,7 +97,7 @@ const DiscoverCategory = () => {
 
         <TouchableOpacity
           onPress={() => {
-            router.push("/main-jp/discover/chart/");
+            router.push("/main-jp/discover/chart");
           }}
           style={{
             width: "48%",

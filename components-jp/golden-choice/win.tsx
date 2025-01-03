@@ -3,14 +3,12 @@ import useVipSignal from "@/lib/hooks/useVipSignal";
 import { slugify } from "@/lib/utils";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, usePathname, useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  FlatList,
   Image,
-  Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
@@ -37,10 +35,10 @@ export default function Win() {
       e.preventDefault();
 
       if (pathname.includes("/main-jp/home")) {
-        router.push("/main-jp/home/");
+        router.push("/main-jp/home");
       } else {
         // Navigate to the discover screen
-        router.push("/main-jp/discover/");
+        router.push("/main-jp/discover");
       }
     });
 
@@ -57,7 +55,7 @@ export default function Win() {
   }, []);
 
   const specific = (details: any) =>
-    answer.stocks.find((stock: any) => stock.name === details);
+    answer.stocks.find((銘柄: any) => 銘柄.名前 === details);
 
   return (
     <LinearGradient
@@ -192,12 +190,12 @@ export default function Win() {
                         justifyContent: "center",
                         alignItems: "center",
                       }}>
-                      {answer?.leaderboard["2nd"]?.stock[0]}
+                      {answer?.leaderboard["2位"]?.銘柄[0]}
                     </Text>
                   </View>
-                  {answer?.leaderboard["2nd"]?.stock && (
+                  {answer?.leaderboard["2位"]?.銘柄 && (
                     <SvgUri
-                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["2nd"].stock}.svg`}
+                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["2位"].銘柄}.svg`}
                       width={38}
                       height={38}
                       style={{
@@ -220,7 +218,7 @@ export default function Win() {
                       color: isDark ? "#8B7500" : "#FFD700",
                       fontWeight: "bold",
                     }}>
-                    {answer?.leaderboard["2nd"]?.stock}
+                    {answer?.leaderboard["2位"]?.銘柄}
                   </Text>
 
                   <Text
@@ -229,7 +227,7 @@ export default function Win() {
                       color: "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["2nd"].score} point
+                    {answer?.leaderboard["2位"].スコア} point
                   </Text>
                 </View>
               </View>
@@ -246,11 +244,12 @@ export default function Win() {
                       fontSize: 15,
                       color: isDark ? "#FFFFFF" : "#8B7500",
                     }}>
-                    2nd
+                    2位
                   </Text>
                 </View>
               </View>
             </LinearGradient>
+
             <LinearGradient
               colors={isDark ? ["#8B0000", "#4A0202"] : ["#F0F2F5", "#FFF3B0"]}
               start={{ x: 1, y: 0 }}
@@ -261,7 +260,6 @@ export default function Win() {
                 backgroundColor: "transparent",
                 width: "40%",
                 gap: 20,
-                overflow: "visible",
               }}>
               <View
                 style={{
@@ -313,12 +311,12 @@ export default function Win() {
                       position: "absolute",
                       top: 17,
                     }}>
-                    {answer?.leaderboard["1st"]?.stock[0]}
+                    {answer?.leaderboard["1位"]?.銘柄[0]}
                   </Text>
 
-                  {answer?.leaderboard["1st"]?.stock && (
+                  {answer?.leaderboard["1位"]?.銘柄 && (
                     <SvgUri
-                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["1st"].stock}.svg`}
+                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["1位"].銘柄}.svg`}
                       width={53}
                       height={53}
                     />
@@ -340,7 +338,7 @@ export default function Win() {
                       color: isDark ? "#FFD700" : "#8B7500",
                       fontWeight: "bold",
                     }}>
-                    {answer?.leaderboard["1st"]?.stock}
+                    {answer?.leaderboard["1位"]?.銘柄}
                   </Text>
 
                   <Text
@@ -349,7 +347,7 @@ export default function Win() {
                       color: isDark ? "#FFFFFF" : "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["1st"].score} point
+                    {answer?.leaderboard["1位"].スコア} point
                   </Text>
                 </View>
               </View>
@@ -366,7 +364,7 @@ export default function Win() {
                       fontSize: 15,
                       color: isDark ? "#fff" : "#8B7500",
                     }}>
-                    1st
+                    1位
                   </Text>
                 </View>
               </View>
@@ -423,12 +421,12 @@ export default function Win() {
                         justifyContent: "center",
                         alignItems: "center",
                       }}>
-                      {answer?.leaderboard["3rd"]?.stock[0]}
+                      {answer?.leaderboard["3位"]?.銘柄[0]}
                     </Text>
                   </View>
-                  {answer?.leaderboard["3rd"]?.stock && (
+                  {answer?.leaderboard["3位"]?.銘柄 && (
                     <SvgUri
-                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["3rd"].stock}.svg`}
+                      uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["3位"].銘柄}.svg`}
                       width={38}
                       height={38}
                       style={{
@@ -451,7 +449,7 @@ export default function Win() {
                       color: isDark ? "#8B7500" : "#FFD700",
                       fontWeight: "bold",
                     }}>
-                    {answer?.leaderboard["3rd"]?.stock}
+                    {answer?.leaderboard["3位"]?.銘柄}
                   </Text>
 
                   <Text
@@ -460,7 +458,7 @@ export default function Win() {
                       color: "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["3rd"]?.score} point
+                    {answer?.leaderboard["3位"]?.スコア} point
                   </Text>
                 </View>
               </View>
@@ -477,7 +475,7 @@ export default function Win() {
                       fontSize: 15,
                       color: isDark ? "#FFFFFF" : "#8B7500",
                     }}>
-                    3rd
+                    3位
                   </Text>
                 </View>
               </View>
@@ -583,12 +581,12 @@ export default function Win() {
                             fontSize: 12,
                             color: "#1E1E1E",
                           }}>
-                          {answer?.leaderboard["1st"]?.stock[0]}
+                          {answer?.leaderboard["1位"]?.銘柄[0]}
                         </Text>
                       </View>
-                      {answer?.leaderboard["1st"]?.stock && (
+                      {answer?.leaderboard["1位"]?.銘柄 && (
                         <SvgUri
-                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["1st"]?.stock}.svg`}
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["1位"]?.銘柄}.svg`}
                           width={24}
                           height={24}
                           style={{
@@ -606,7 +604,7 @@ export default function Win() {
                           color: "#8B7500",
                           fontSize: 14,
                         }}>
-                        {answer?.leaderboard["1st"]?.stock}
+                        {answer?.leaderboard["1位"]?.銘柄}
                       </Text>
                     </View>
                   </View>
@@ -637,31 +635,27 @@ export default function Win() {
                     </View>
                     <TouchableOpacity
                       onPress={() => {
-                        if (pathname.includes("/main/home")) {
+                        if (pathname.includes("/main-jp/home")) {
                           router.push({
-                            pathname: `/main/home/vipsignal/list/${slugify(
-                              answer?.leaderboard["1st"]?.stock
-                            )}`,
+                            pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["1st"]?.stock
+                                  answer?.leaderboard["1位"]?.銘柄
                                 ),
-                                name: answer?.leaderboard["1st"]?.stock,
+                                name: answer?.leaderboard["1位"]?.銘柄,
                               }),
                             },
                           });
                         } else {
                           router.push({
-                            pathname: `/main/discover/vipsignal/list/${slugify(
-                              answer?.leaderboard["1st"]?.stock
-                            )}`,
+                            pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["1st"]?.stock
+                                  answer?.leaderboard["1位"]?.銘柄
                                 ),
-                                name: answer?.leaderboard["1st"]?.stock,
+                                name: answer?.leaderboard["1位"]?.銘柄,
                               }),
                             },
                           });
@@ -748,13 +742,13 @@ export default function Win() {
                             fontSize: 12,
                             color: "#1E1E1E",
                           }}>
-                          {answer?.leaderboard["2nd"]?.stock[0]}
+                          {answer?.leaderboard["2位"]?.銘柄[0]}
                         </Text>
                       </View>
 
-                      {answer?.leaderboard["2nd"]?.stock && (
+                      {answer?.leaderboard["2位"]?.銘柄 && (
                         <SvgUri
-                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["2nd"]?.stock}.svg`}
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["2位"]?.銘柄}.svg`}
                           width={24}
                           height={24}
                           style={{
@@ -772,7 +766,7 @@ export default function Win() {
                           color: isDark ? "#F0F0F0" : "#6B6B6B",
                           fontSize: 14,
                         }}>
-                        {answer?.leaderboard["2nd"]?.stock}
+                        {answer?.leaderboard["2位"]?.銘柄}
                       </Text>
                     </View>
                   </View>
@@ -793,31 +787,27 @@ export default function Win() {
                       }}></View>
                     <TouchableOpacity
                       onPress={() => {
-                        if (pathname.includes("/main/home")) {
+                        if (pathname.includes("/main-jp/home")) {
                           router.push({
-                            pathname: `/main/home/vipsignal/list/${slugify(
-                              answer?.leaderboard["2nd"]?.stock
-                            )}`,
+                            pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["2nd"]?.stock
+                                  answer?.leaderboard["2位"]?.銘柄
                                 ),
-                                name: answer?.leaderboard["2nd"]?.stock,
+                                name: answer?.leaderboard["2位"]?.銘柄,
                               }),
                             },
                           });
                         } else {
                           router.push({
-                            pathname: `/main/discover/vipsignal/list/${slugify(
-                              answer?.leaderboard["2nd"]?.stock
-                            )}`,
+                            pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["2nd"]?.stock
+                                  answer?.leaderboard["2位"]?.銘柄
                                 ),
-                                name: answer?.leaderboard["2nd"]?.stock,
+                                name: answer?.leaderboard["2位"]?.銘柄,
                               }),
                             },
                           });
@@ -911,13 +901,13 @@ export default function Win() {
                             fontSize: 12,
                             color: "#1E1E1E",
                           }}>
-                          {answer?.leaderboard["3rd"]?.stock?.[0]}
+                          {answer?.leaderboard["3位"]?.銘柄?.[0]}
                         </Text>
                       </View>
 
-                      {answer?.leaderboard["3rd"]?.stock && (
+                      {answer?.leaderboard["3位"]?.銘柄 && (
                         <SvgUri
-                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["3rd"]?.stock}.svg`}
+                          uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["3位"]?.銘柄}.svg`}
                           width={24}
                           height={24}
                           style={{
@@ -935,7 +925,7 @@ export default function Win() {
                           color: isDark ? "#F0F0F0" : "#6B6B6B",
                           fontSize: 14,
                         }}>
-                        {answer?.leaderboard["3rd"]?.stock}
+                        {answer?.leaderboard["3位"]?.銘柄}
                       </Text>
                     </View>
                   </View>
@@ -956,31 +946,27 @@ export default function Win() {
                       }}></View>
                     <TouchableOpacity
                       onPress={() => {
-                        if (pathname.includes("/main/home")) {
+                        if (pathname.includes("/main-jp/home")) {
                           router.push({
-                            pathname: `/main/home/vipsignal/list/${slugify(
-                              answer?.leaderboard["3rd"]?.stock
-                            )}`,
+                            pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["3rd"]?.stock
+                                  answer?.leaderboard["3位"]?.銘柄
                                 ),
-                                name: answer?.leaderboard["3rd"]?.stock,
+                                name: answer?.leaderboard["3位"]?.銘柄,
                               }),
                             },
                           });
                         } else {
                           router.push({
-                            pathname: `/main/discover/vipsignal/list/${slugify(
-                              answer?.leaderboard["3rd"]?.stock
-                            )}`,
+                            pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
                               data: JSON.stringify({
                                 details: specific(
-                                  answer?.leaderboard["3rd"].stock
+                                  answer?.leaderboard["3位"].銘柄
                                 ),
-                                name: answer?.leaderboard["3rd"].stock,
+                                name: answer?.leaderboard["3位"].銘柄,
                               }),
                             },
                           });
@@ -1025,9 +1011,13 @@ export default function Win() {
           <TouchableOpacity
             onPress={() => {
               if (pathname.includes("/main-jp/home")) {
-                router.push("/main-jp/home/");
+                router.dismissTo("/main-jp/home");
+                clearSelectStock();
+                setAnswer(null);
               } else {
-                router.push("/main-jp/discover/");
+                router.dismissTo("/main-jp/discover");
+                clearSelectStock();
+                setAnswer(null);
               }
               console.log("cancel");
             }}

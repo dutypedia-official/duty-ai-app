@@ -1,9 +1,9 @@
 import { useThemeColor } from "@/components/Themed";
 import useChat from "@/lib/hooks/useChat";
-import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack } from "expo-router";
+import { useState } from "react";
 // import * as ScreenOrientation from "expo-screen-orientation";
-import { Pressable, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 
 export default function Layout() {
   const [isLandscape, setIsLandscape] = useState(false);
@@ -11,24 +11,17 @@ export default function Layout() {
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const { template } = useChat();
-  // useEffect(() => {
-  //   const subs = ScreenOrientation.addOrientationChangeListener((e) => {
-  //     if (e.orientationInfo.orientation > 2) {
-  //       setIsLandscape(true);
-  //     } else {
-  //       setIsLandscape(false);
-  //     }
-  //   });
-  //   return () => {
-  //     ScreenOrientation.removeOrientationChangeListener(subs);
-  //   };
-  // }, []);
+
   return (
     <Stack
       screenOptions={{
         headerStyle: {
           backgroundColor: bgColor,
         },
+        headerTitleStyle: {
+          color: isDark ? "#FFFFFF" : "#1E1E1E",
+        },
+        headerTintColor: isDark ? "#00B0FF" : "#2980B9",
       }}>
       <Stack.Screen
         name="index"

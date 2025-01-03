@@ -13,8 +13,19 @@ export default function Layout() {
         headerStyle: {
           backgroundColor: bgColor,
         },
+        headerTitleStyle: {
+          color: isDark ? "#FFFFFF" : "#1E1E1E",
+        },
       }}>
-      <Stack.Screen name="index" options={{ title: "Setting" }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Setting",
+          headerTitleStyle: {
+            color: isDark ? "#FFFFFF" : "#1E1E1E",
+          },
+        }}
+      />
 
       <Stack.Screen
         name="delete-account"
@@ -32,7 +43,9 @@ export default function Layout() {
       />
       <Stack.Screen
         name="select-language"
-        options={{ title: "Select Language" }}
+        options={{
+          title: "Select Language",
+        }}
       />
     </Stack>
   );

@@ -1,19 +1,14 @@
 import { SafeAreaView, Text, useThemeColor } from "@/components-jp/Themed";
-import { apiClient } from "@/lib/api";
-import useUi from "@/lib/hooks/useUi";
-import { useAuth } from "@clerk/clerk-expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useIsFocused } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ScrollView,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
-import Markdown from "react-native-markdown-display";
 import { ActivityIndicator } from "react-native-paper";
 
 export default function Details() {
@@ -24,7 +19,7 @@ export default function Details() {
   const data = JSON.parse(`${params?.data}`);
   const borderColor = useThemeColor({}, "border");
 
-  console.log(data?.details?.technical_analysis);
+  console.log("data----------", data?.details);
 
   if (!data) {
     return (
@@ -96,7 +91,7 @@ export default function Details() {
             textAlign: "center",
             color: isDark ? "#FFFFFF" : "#8B7500",
           }}>
-          {data?.name}
+          {data?.details?.名前}
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
@@ -119,7 +114,7 @@ export default function Details() {
                   Score
                 </Text>
                 <Text style={{ fontWeight: "900", fontSize: 48 }}>
-                  {data?.details?.score}
+                  {data?.details?.スコア}
                 </Text>
               </View>
               <View
@@ -132,24 +127,22 @@ export default function Details() {
                   }}>
                   Financial Performance
                 </Text>
-                {Object.keys(data?.details?.financial_performance).map(
-                  (key) => (
-                    <View
-                      key={key}
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        borderBottomWidth: 1,
-                        borderColor: borderColor,
-                        paddingVertical: 16,
-                      }}>
-                      <Text style={{ textTransform: "capitalize" }}>
-                        {key.replace("_", " ")}
-                      </Text>
-                      <Text>{data?.details?.financial_performance[key]}</Text>
-                    </View>
-                  )
-                )}
+                {Object.keys(data?.details?.財務パフォーマンス).map((key) => (
+                  <View
+                    key={key}
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderColor: borderColor,
+                      paddingVertical: 16,
+                    }}>
+                    <Text style={{ textTransform: "capitalize" }}>
+                      {key.replace("_", " ")}
+                    </Text>
+                    <Text>{data?.details?.財務パフォーマンス[key]}</Text>
+                  </View>
+                ))}
               </View>
               <View
                 style={{ backgroundColor: "transparent", marginBottom: 20 }}>
@@ -161,24 +154,22 @@ export default function Details() {
                   }}>
                   Key Performance Metrics
                 </Text>
-                {Object.keys(data?.details?.key_performance_metrics).map(
-                  (key) => (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        borderBottomWidth: 1,
-                        borderColor: borderColor,
-                        paddingVertical: 16,
-                      }}
-                      key={key}>
-                      <Text style={{ textTransform: "capitalize" }}>
-                        {key.replace("_", " ")}
-                      </Text>
-                      <Text>{data?.details?.key_performance_metrics[key]}</Text>
-                    </View>
-                  )
-                )}
+                {Object.keys(data?.details?.主要業績指標).map((key) => (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      borderBottomWidth: 1,
+                      borderColor: borderColor,
+                      paddingVertical: 16,
+                    }}
+                    key={key}>
+                    <Text style={{ textTransform: "capitalize" }}>
+                      {key.replace("_", " ")}
+                    </Text>
+                    <Text>{data?.details?.主要業績指標[key]}</Text>
+                  </View>
+                ))}
               </View>
               <Text
                 style={{
@@ -189,19 +180,18 @@ export default function Details() {
                 Technical Analysis
               </Text>
 
-              {typeof data?.details?.technical_analysis === "string" ? (
-                <Text>{data?.details?.technical_analysis}</Text>
+              {typeof data?.details?.テクニカル分析 === "string" ? (
+                <Text>{data?.details?.テクニカル分析}</Text>
               ) : (
-                Object.keys(data?.details?.technical_analysis).map((key) => (
+                Object.keys(data?.details?.テクニカル分析).map((key) => (
                   <View key={key} style={{}}>
                     <Text style={{ textTransform: "capitalize" }}>
                       {key.replace("_", " ")}
                     </Text>
                     <Text>
-                      {typeof data?.details?.technical_analysis[key] ===
-                      "object"
-                        ? JSON.stringify(data?.details?.technical_analysis[key])
-                        : data?.details?.technical_analysis[key]}
+                      {typeof data?.details?.テクニカル分析[key] === "object"
+                        ? JSON.stringify(data?.details?.テクニカル分析[key])
+                        : data?.details?.テクニカル分析[key]}
                     </Text>
                   </View>
                 ))
@@ -216,7 +206,7 @@ export default function Details() {
                 Investment Analysis
               </Text>
 
-              <Text>{data?.details?.investment_analysis}</Text>
+              <Text>{data?.details?.投資分析}</Text>
 
               <Text
                 style={{
@@ -226,7 +216,7 @@ export default function Details() {
                 }}>
                 Overview
               </Text>
-              <Text>{data?.details?.overview}</Text>
+              <Text>{data?.details?.概要}</Text>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -235,7 +225,7 @@ export default function Details() {
                 }}>
                 Fair Value
               </Text>
-              <Text>{data?.details?.fair_value}</Text>
+              <Text>{data?.details?.公正価値}</Text>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -244,7 +234,7 @@ export default function Details() {
                 }}>
                 Total Liabilities
               </Text>
-              <Text>{data?.details?.total_liabilities}</Text>
+              <Text>{data?.details?.総負債}</Text>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -253,7 +243,7 @@ export default function Details() {
                 }}>
                 Overall Assessment
               </Text>
-              <Text>{data?.details?.overall_assessment}</Text>
+              <Text>{data?.details?.総合評価}</Text>
               <Text
                 style={{
                   fontWeight: "bold",
@@ -262,7 +252,7 @@ export default function Details() {
                 }}>
                 Valuation
               </Text>
-              <Text>{data?.details?.valuation}</Text>
+              <Text>{data?.details?.評価}</Text>
             </View>
           </View>
         </View>

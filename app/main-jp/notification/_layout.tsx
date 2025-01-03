@@ -14,11 +14,18 @@ export default function Layout() {
           backgroundColor: bgColor,
         },
       }}>
-      <Stack.Screen name="index" options={{ title: "Notification" }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Notification",
+          headerTitleStyle: {
+            color: isDark ? "#FFFFFF" : "#1E1E1E",
+          },
+        }}
+      />
       <Stack.Screen
         name="details/[id]"
         options={{
-          headerBackTitleVisible: false,
           headerTitleStyle: {
             color: isDark ? "#FFFFFF" : "#1E1E1E",
           },

@@ -1,7 +1,6 @@
 import useChat from "@/lib/hooks/useChat";
 import useLang from "@/lib/hooks/useLang";
 import { useUser } from "@clerk/clerk-expo";
-import { AntDesign } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { usePathname, useRouter } from "expo-router";
 import { Fragment, useEffect, useState } from "react";
@@ -9,15 +8,14 @@ import {
   ActivityIndicator,
   Dimensions,
   Platform,
-  Modal as RNModal,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
 import { Modal, Portal } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import MagicIcon from "../svgs/magic";
 import { Text, View, useThemeColor } from "../Themed";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const RenderChatEmpty = ({ onPressRelated }: any) => {
   const borderColor = useThemeColor({}, "border");
@@ -225,31 +223,19 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
 
         {promptsFn().map((prompt, i) => {
           const promptPress = (val: any) => {
-            if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও")) {
+            if (val.includes("▶️ Duty AI ビデオチュートリアル")) {
               setVisible(true);
             } else if (val.includes("⚖️ Golden choice")) {
-              if (pathname === "/main-jp/home") {
-                router.push("/main-jp/home/vipsignal/list/");
-              } else {
-                router.push("/main-jp/discover/vipsignal/list/");
-              }
+              router.push("/main-jp/home/vipsignal/list");
             } else if (val.includes("🔍 Stock Scanner")) {
-              setTemplate("scanner");
-              //push with data
-              if (pathname === "/main-jp/home") {
-                router.push({
-                  pathname: "/main-jp/home/scanner/",
-                  params: { next: "scanner" },
-                });
-              } else {
-                router.push({
-                  pathname: "/main-jp/discover/",
-                });
-              }
+              router.push({
+                pathname: "/main-jp/home/scanner",
+              });
             } else {
               onPressRelated(prompt);
             }
           };
+
           return (
             <TouchableOpacity
               key={i}

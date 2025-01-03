@@ -1,7 +1,7 @@
 import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
 import { apiClient } from "@/lib/api";
+import useChat from "@/lib/hooks/useChat";
 import useLang from "@/lib/hooks/useLang";
-import useStockData from "@/lib/hooks/useStockData";
 import useUi from "@/lib/hooks/useUi";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { Feather } from "@expo/vector-icons";
@@ -9,13 +9,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, usePathname, useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  FlatList,
   Image,
   Platform,
   Pressable,
@@ -24,7 +23,6 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
-  ScrollView,
 } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
@@ -57,11 +55,6 @@ const SignalList = ({
     if (selectStock.includes(description)) {
       // Remove the stock if already selected
       removeSelectStock(description);
-
-      Toast.show({
-        type: "info",
-        text1: `${description} has been removed from selection`,
-      });
     } else {
       // Limit selection to 3 stocks
       if (selectStock.length >= 3) {
@@ -74,11 +67,6 @@ const SignalList = ({
 
       // Add the stock if not already selected
       setSelectStock(description);
-
-      Toast.show({
-        type: "success",
-        text1: `You have selected ${description}`,
-      });
     }
   };
 
@@ -202,6 +190,7 @@ const SignalList = ({
 };
 
 const List = () => {
+  const { template } = useChat();
   const { mainServerAvailable } = useUi();
   const { selectStock } = useVipSignal();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -241,7 +230,6 @@ const List = () => {
       } else {
         setMarketListData(mData);
       }
-      console.log("mData------", mData);
       setMarketData(mData);
 
       if (mData.length < 50) {
@@ -279,11 +267,21 @@ const List = () => {
     iframe.requestFullscreen();
   `;
 
+  console.log("pathname----------", pathname, template);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
       <StatusBar translucent={true} backgroundColor="transparent" />
 
-      {!isDark && (
+      {isDark ? (
+        <LinearGradient
+          colors={["#121212", "#000000"]}
+          style={{
+            position: "absolute",
+            height: Dimensions.get("screen").height,
+            width: Dimensions.get("screen").width,
+          }}
+        />
+      ) : (
         <Image
           style={{
             flex: 1,
@@ -480,10 +478,10 @@ const List = () => {
                     //@ts-ignore
                     index={filterData?.indexOf(item)}
                     name={item?.description}
-                    logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item?.description}.svg`}
+                    logoUrl={`https://s3-api.bayah.app/cdn/description/logo/${item?.description}.svg`}
                   />
                 )}
-                keyExtractor={(item: any) => item?.symbol}
+                keyExtractor={(item: any) => item?.description}
                 ItemSeparatorComponent={() => (
                   <LinearGradient
                     colors={
@@ -500,15 +498,29 @@ const List = () => {
                       padding: 12,
                       height: Dimensions.get("window").height,
                     }}>
-                    <View>
-                      <Text
-                        style={{
-                          color: isDark ? "#F0F0F0" : "#6B6B6B",
-                          fontSize: 16,
-                          textAlign: "center",
-                        }}>
-                        No stock found
-                      </Text>
+                    <View
+                      style={{
+                        height:
+                          Dimensions.get("window").height -
+                          Dimensions.get("window").height / 2,
+                        justifyContent: "center",
+                        alignContent: "center",
+                      }}>
+                      {loadingData ? (
+                        <ActivityIndicator
+                          size="small"
+                          color={isDark ? "#00B0FF" : "#34495E"}
+                        />
+                      ) : (
+                        <Text
+                          style={{
+                            color: isDark ? "#F0F0F0" : "#6B6B6B",
+                            fontSize: 16,
+                            textAlign: "center",
+                          }}>
+                          No stock found
+                        </Text>
+                      )}
                     </View>
                   </View>
                 }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  Image,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -181,7 +182,7 @@ const Processing = () => {
       setIsLoading(false);
     }
   };
-
+  console.log("selectStock--------", selectStock);
   const [processStep, setProcessStep] = useState([
     ...selectStock.map((stock) => ({
       label: stock,
@@ -287,6 +288,27 @@ const Processing = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
+      {isDark ? (
+        <LinearGradient
+          colors={["#121212", "#000000"]}
+          style={{
+            position: "absolute",
+            height: Dimensions.get("screen").height,
+            width: Dimensions.get("screen").width,
+          }}
+        />
+      ) : (
+        <Image
+          style={{
+            flex: 1,
+            height: Dimensions.get("window").height,
+            width: Dimensions.get("window").width,
+            position: "absolute",
+          }}
+          resizeMode="cover"
+          source={require("@/assets/images/golden-stock-bg-light.png")}
+        />
+      )}
       <View
         style={{
           backgroundColor: "transparent",

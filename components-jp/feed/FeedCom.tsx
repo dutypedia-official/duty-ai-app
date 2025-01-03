@@ -4,6 +4,7 @@ import useUi from "@/lib/hooks/useUi";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   RefreshControl,
@@ -23,12 +24,14 @@ export default function FeedCom() {
   const bgColor = isDark ? "#1A1A1A" : "#F5F5F5";
   const [activeSlide, setActiveSlide] = useState("NI225");
   const borderColor = useThemeColor({}, "border");
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async (init: boolean = true) => {
     try {
       const { data } = await client.get(`/tools/get-jp-index`);
       setIndexData(data);
       // console.log(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -109,7 +112,11 @@ export default function FeedCom() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        backgroundColor: isDark ? "#0f0f0f" : "#F0F2F5",
+        flex: 1,
+      }}>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
@@ -282,87 +289,103 @@ export default function FeedCom() {
                   </Text>
                 </View>
                 <View style={{ backgroundColor: "transparent", gap: 19 }}>
-                  {newData?.map((item: any, i: number) => {
-                    const isNeg = item?.value < 0;
-                    // Replace English words in the title with Japanese equivalents
-                    const translateTitle = (title: string) => {
-                      return title
-                        .replace(/days?/, "日") // Matches "day" or "days"
-                        .replace(/months?/, "カ月") // Matches "month" or "months"
-                        .replace(/years?/, "年") // Matches "year" or "years"
-                        .replace(/weeks?/, "週") // Matches "week" or "weeks"
-                        .replace(/All time/, "全期間");
-                    };
-                    return (
-                      <View
-                        key={i}
-                        style={{ backgroundColor: "transparent", gap: 4 }}>
+                  {loading ? (
+                    <View
+                      style={{
+                        backgroundColor: bgColor,
+                        height: 100,
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                      }}>
+                      <ActivityIndicator
+                        size="small"
+                        color={isDark ? "#00B0FF" : "#34495E"}
+                      />
+                    </View>
+                  ) : (
+                    newData?.map((item: any, i: number) => {
+                      const isNeg = item?.value < 0;
+                      // Replace English words in the title with Japanese equivalents
+                      const translateTitle = (title: string) => {
+                        return title
+                          .replace(/days?/, "日") // Matches "day" or "days"
+                          .replace(/months?/, "カ月") // Matches "month" or "months"
+                          .replace(/years?/, "年") // Matches "year" or "years"
+                          .replace(/weeks?/, "週") // Matches "week" or "weeks"
+                          .replace(/All time/, "全期間");
+                      };
+                      return (
                         <View
-                          style={{
-                            flexDirection: "row",
-                            gap: 4,
-                            backgroundColor: "transparent",
-                            flex: 1,
-                            justifyContent: "space-between",
-                          }}>
+                          key={i}
+                          style={{ backgroundColor: "transparent", gap: 4 }}>
                           <View
                             style={{
-                              backgroundColor: "transparent",
-                              width: "40%",
-                              justifyContent: "center",
-                            }}>
-                            <Text style={{ fontSize: 14 }}>
-                              {translateTitle(item?.title)}
-                            </Text>
-                          </View>
-
-                          <View
-                            style={{
-                              backgroundColor: "transparent",
-                              justifyContent: "center",
-                              alignItems: "center",
+                              flexDirection: "row",
                               gap: 4,
-                              width: "20%",
-                              height: 40,
-                            }}>
-                            <Image
-                              source={
-                                isNeg
-                                  ? require("@/assets/images/indexPerNeg.png")
-                                  : require("@/assets/images/indexPerPos.png")
-                              }
-                              resizeMethod="resize"
-                              resizeMode="contain"
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                alignSelf: "center",
-                              }}
-                            />
-                          </View>
-                          <View
-                            style={{
-                              width: "40%",
                               backgroundColor: "transparent",
-                              alignItems: "flex-end",
-                              justifyContent: "center",
+                              flex: 1,
+                              justifyContent: "space-between",
                             }}>
-                            <Text
+                            <View
                               style={{
-                                fontSize: 14,
-                                color: isNeg
-                                  ? "#FF0000"
-                                  : isDark
-                                  ? "#FFFFFF"
-                                  : "#34495E",
+                                backgroundColor: "transparent",
+                                width: "40%",
+                                justifyContent: "center",
                               }}>
-                              {formatChange(item?.value) + "%"}
-                            </Text>
+                              <Text style={{ fontSize: 14 }}>
+                                {translateTitle(item?.title)}
+                              </Text>
+                            </View>
+
+                            <View
+                              style={{
+                                backgroundColor: "transparent",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                gap: 4,
+                                width: "20%",
+                                height: 40,
+                              }}>
+                              <Image
+                                source={
+                                  isNeg
+                                    ? require("@/assets/images/indexPerNeg.png")
+                                    : require("@/assets/images/indexPerPos.png")
+                                }
+                                resizeMethod="resize"
+                                resizeMode="contain"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  alignSelf: "center",
+                                }}
+                              />
+                            </View>
+                            <View
+                              style={{
+                                width: "40%",
+                                backgroundColor: "transparent",
+                                alignItems: "flex-end",
+                                justifyContent: "center",
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  color: isNeg
+                                    ? "#FF0000"
+                                    : isDark
+                                    ? "#FFFFFF"
+                                    : "#34495E",
+                                }}>
+                                {formatChange(item?.value) + "%"}
+                              </Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </View>
               </View>
               <View

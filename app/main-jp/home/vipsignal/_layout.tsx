@@ -17,7 +17,6 @@ export default function Layout() {
       <Stack.Screen
         name="list/index"
         options={{
-          headerBackTitleVisible: false,
           headerTitleStyle: {
             color: isDark ? "#FFFFFF" : "#1E1E1E",
           },
@@ -31,7 +30,6 @@ export default function Layout() {
       <Stack.Screen
         name="list/processing"
         options={{
-          headerBackTitleVisible: false,
           headerBackVisible: false,
           headerTitle: "Processing",
           headerTitleStyle: {
@@ -50,7 +48,6 @@ export default function Layout() {
       <Stack.Screen
         name="list/win"
         options={{
-          headerBackTitleVisible: false,
           headerBackVisible: false,
           headerTitle: "Win",
           headerTitleStyle: {

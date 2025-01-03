@@ -1,7 +1,7 @@
 // screens/ChatScreen.tsx
 import Screener from "@/assets/icons/screener";
 import ScreenerDark from "@/assets/icons/screener-dark";
-import { Text, useThemeColor, View } from "@/components/Themed";
+import { Text, useThemeColor, View } from "@/components-jp/Themed";
 import { apiClient, BACKUP_SERVER_URL, MAIN_SERVER_URL } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
 import useUi from "@/lib/hooks/useUi";
@@ -32,8 +32,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import EventSource from "react-native-sse";
 import Toast from "react-native-toast-message";
 import { v4 as uuid } from "uuid";
-import RenderChatEmpty from "../Empty";
-import TypingAnimation from "../TypingAnimation";
+import TypingAnimation from "@/components-jp/chat/TypingAnimation";
+import RenderChatEmpty from "@/components-jp/chat/Empty";
 
 type Message = {
   text: string;
@@ -761,7 +761,7 @@ const ChatTurbo = ({ fromPath }: any) => {
 
     return () => {
       setActiveConversationId(null);
-      setTemplate("finance");
+      // setTemplate("finance");
       setRelatedPrompts([]);
     };
   }, []);

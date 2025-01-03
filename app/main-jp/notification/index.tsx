@@ -8,6 +8,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   Pressable,
   TouchableOpacity,
@@ -21,6 +22,7 @@ import { FlashList } from "@shopify/flash-list";
 const Noti = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const bgColor = useThemeColor({}, "background");
   const [notifications, setNotifications] = useState<any>([]);
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
@@ -55,51 +57,6 @@ const Noti = () => {
   useEffect(() => {
     fetchData();
   }, [isFocused]);
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "transparent",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-        <ActivityIndicator size="small" color={isDark ? "#fff" : "#000"} />
-      </View>
-    );
-  }
-  if (notifications.length == 0) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
-        }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
-          }}>
-          <Text>
-            <MaterialCommunityIcons color="#2a52b9" name="bell" size={24} />
-          </Text>
-          <Text
-            style={{
-              color: "#2a52b9",
-              fontSize: 20,
-              fontWeight: "600",
-            }}>
-            最新のお知らせはありません
-          </Text>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -107,6 +64,59 @@ const Noti = () => {
         keyExtractor={(item: any) => item.id}
         data={notifications}
         renderItem={({ item }: any) => <NotiItem item={item} />}
+        ListEmptyComponent={() => {
+          if (loading) {
+            return (
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                <ActivityIndicator
+                  size="small"
+                  color={isDark ? "#fff" : "#000"}
+                />
+              </View>
+            );
+          }
+          if (notifications.length == 0) {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
+                }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                    backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
+                  }}>
+                  <Text>
+                    <MaterialCommunityIcons
+                      color="#2a52b9"
+                      name="bell"
+                      size={24}
+                    />
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#2a52b9",
+                      fontSize: 20,
+                      fontWeight: "600",
+                    }}>
+                    最新のお知らせはありません
+                  </Text>
+                </View>
+              </View>
+            );
+          }
+        }}
         estimatedItemSize={91}
       />
     </View>

@@ -667,7 +667,6 @@ const StockListScreen = () => {
       } else {
         setMarketListData(mData);
       }
-      console.log("mData------", mData);
       setMarketData(mData);
 
       if (mData.length < 50) {
@@ -694,13 +693,6 @@ const StockListScreen = () => {
   useEffect(() => {
     fetchData();
   }, [page, debouncedSearchTerm]);
-
-  console.log(
-    "marketListData-------",
-    marketListData.length,
-    "marketData---------",
-    marketData.length
-  );
 
   const fetchFilter = async () => {
     try {
@@ -907,6 +899,7 @@ const StockListScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{
         flex: 1,
+        backgroundColor: bgColor,
       }}>
       <StatusBar
         translucent={true}
