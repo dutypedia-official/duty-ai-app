@@ -25,7 +25,6 @@ const useSocket = create<Store>((set, get) => ({
         autoConnect: true,
       }
     );
-    console.log(socket?.id);
 
     set({ socket });
   },
