@@ -199,7 +199,8 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
+      tokenCache={tokenCache}
+    >
       <NavigationContainer>
         <RootLayoutNav />
       </NavigationContainer>
@@ -361,13 +362,22 @@ function RootLayoutNav() {
       apiKey="phc_s5HpI2azRTOp1wUjmfQR2ghMvWiFKtvtyRhVL8rVCpa"
       options={{
         host: "https://us.i.posthog.com",
-      }}>
+      }}
+    >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
             <PaperProvider theme={PaperTheme}>
-              <Stack>
+              <Stack
+                screenOptions={{
+                  contentStyle: {
+                    backgroundColor:
+                      colorScheme === "dark" ? "#0F0F0F" : "#F0F2F5",
+                    flex: 1,
+                  },
+                }}
+              >
                 <Stack.Screen name="(start)" options={{ headerShown: false }} />
                 <Stack.Screen
                   name="(start-jp)"
