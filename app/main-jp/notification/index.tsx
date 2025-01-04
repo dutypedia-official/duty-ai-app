@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -18,6 +18,7 @@ import { ActivityIndicator, Text } from "react-native-paper";
 import { SvgUri } from "react-native-svg";
 import { formatDate } from "date-fns/format";
 import { FlashList } from "@shopify/flash-list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Noti = () => {
   const colorScheme = useColorScheme();
@@ -27,7 +28,7 @@ const Noti = () => {
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
   const { refreash, setRefreash, mainServerAvailable } = useUi();
-
+  const inset = useSafeAreaInsets();
   const [loading, setLoading] = useState<boolean>(true);
   const borderColor = isDark ? "#191919" : "#EAEDED";
   const client = apiClient();
@@ -65,57 +66,55 @@ const Noti = () => {
         data={notifications}
         renderItem={({ item }: any) => <NotiItem item={item} />}
         ListEmptyComponent={() => {
-          if (loading) {
-            return (
+          return (
+            <View
+              style={{
+                flex: 1,
+                height:
+                  Dimensions.get("screen").height -
+                  inset.top -
+                  inset.bottom -
+                  80,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
+              }}>
               <View
                 style={{
-                  backgroundColor: "transparent",
+                  flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
-                }}>
-                <ActivityIndicator
-                  size="small"
-                  color={isDark ? "#fff" : "#000"}
-                />
-              </View>
-            );
-          }
-          if (notifications.length == 0) {
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  gap: 10,
                   backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
                 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 10,
-                    backgroundColor: isDark ? "#0F0F0F" : "#F0F2F5",
-                  }}>
-                  <Text>
-                    <MaterialCommunityIcons
-                      color="#2a52b9"
-                      name="bell"
-                      size={24}
-                    />
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#2a52b9",
-                      fontSize: 20,
-                      fontWeight: "600",
-                    }}>
-                    最新のお知らせはありません
-                  </Text>
-                </View>
+                {loading && (
+                  <ActivityIndicator
+                    size="small"
+                    color={isDark ? "#fff" : "#000"}
+                  />
+                )}
+                {!loading && notifications.length === 0 && (
+                  <Fragment>
+                    <Text>
+                      <MaterialCommunityIcons
+                        color="#2a52b9"
+                        name="bell"
+                        size={24}
+                      />
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#2a52b9",
+                        fontSize: 20,
+                        fontWeight: "600",
+                      }}>
+                      最新のお知らせはありません
+                    </Text>
+                  </Fragment>
+                )}
               </View>
-            );
-          }
+            </View>
+          );
         }}
         estimatedItemSize={91}
       />

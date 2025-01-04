@@ -14,9 +14,11 @@ import { BlurView } from "expo-blur";
 import { Tabs, usePathname, useRouter, useSegments } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Easing,
   Platform,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   useColorScheme,
   View,
@@ -167,8 +169,6 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={({ route }) => ({
-        animation: "shift",
-        lazy: true,
         headerStyle: {
           backgroundColor: bgColor,
         },
@@ -186,6 +186,24 @@ export default function TabLayout() {
             style={StyleSheet.absoluteFill}
           />
         ),
+        sceneContainerStyle: {
+          backgroundColor: colorScheme === "dark" ? "#121212" : "white",
+        },
+        // tabBarButton: (props) => {
+        //   return (
+        //     <TouchableHighlight
+        //       underlayColor="gray"
+        //       style={{
+        //         justifyContent: "center",
+        //         alignItems: "center",
+        //         borderRadius: 100, // Rounded corners
+        //         overflow: "hidden", // Prevent highlight color overflow
+        //       }}
+        //       {...props}
+        //     />
+        //   );
+        // },
+        animation: "shift",
       })}>
       <Tabs.Screen
         name="feed"

@@ -14,6 +14,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { SafeAreaView, Text, useThemeColor, View } from "../Themed";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FeedCom() {
   const colorScheme = useColorScheme();
@@ -25,6 +26,7 @@ export default function FeedCom() {
   const [activeSlide, setActiveSlide] = useState("NI225");
   const borderColor = useThemeColor({}, "border");
   const [loading, setLoading] = useState(true);
+  const inset = useSafeAreaInsets();
 
   const fetchData = async (init: boolean = true) => {
     try {
@@ -40,10 +42,6 @@ export default function FeedCom() {
   const filteredIndex = indexData?.overview?.find(
     (item: any) => item?.name === activeSlide
   );
-
-  const rt = indexData?.technical?.find((fitem: any) => fitem?.name === "NI225")
-    ?.technical?.close;
-  console.log("rt-----------------", rt);
 
   const onSlideChange = (slideName: string) => {
     setActiveSlide(slideName);
@@ -292,8 +290,9 @@ export default function FeedCom() {
                   {loading ? (
                     <View
                       style={{
+                        flex: 1,
+                        height: 300,
                         backgroundColor: bgColor,
-                        height: 100,
                         alignItems: "center",
                         alignContent: "center",
                         justifyContent: "center",
