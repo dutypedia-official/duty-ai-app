@@ -7,7 +7,8 @@ import {
 } from "@react-navigation/native";
 
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
 import {
   useColorScheme,
@@ -39,7 +40,7 @@ import { PostHogProvider } from "posthog-react-native";
 import useMarket from "@/lib/hooks/useMarket";
 import { NavigationContainer } from "@react-navigation/native";
 
-// Prevent the splash screen from hiding automatically
+// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 const CURRENT_IOS_VERSION = 10;
@@ -184,7 +185,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hide();
     }
   }, [loaded]);
 

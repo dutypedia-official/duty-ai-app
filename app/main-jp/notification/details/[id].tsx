@@ -16,11 +16,14 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { ActivityIndicator, Modal, Portal } from "react-native-paper";
+import { ActivityIndicator, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as Clipboard from "expo-clipboard";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 export default function NotiDetails() {
   const { getToken } = useAuth();
@@ -143,9 +146,36 @@ export default function NotiDetails() {
           height: "100%",
         }}>
         <Portal>
-          <Modal visible={visible} onDismiss={hideModal}>
-            <Pressable
-              onPress={hideModal}
+          <Modal visible={visible} transparent={true} onDismiss={hideModal}>
+            <TouchableWithoutFeedback onPress={hideModal}>
+              <ImageViewer
+                renderIndicator={() => {
+                  return <></>;
+                }} // Hides the image count indicator
+                imageUrls={[
+                  {
+                    url: isDark ? data?.photoDark : data?.photoLight,
+                  },
+                ]}
+                enableSwipeDown={true}
+                onSwipeDown={hideModal}
+                enableImageZoom={true}
+                loadingRender={() => (
+                  <ActivityIndicator
+                    size="small"
+                    color={isDark ? "#FFFFFF" : "#000000"}
+                    style={{
+                      position: "absolute",
+                      alignSelf: "center",
+                      top: "50%",
+                      zIndex: 2,
+                    }}
+                  />
+                )}
+                backgroundColor="rgba(0, 0, 0, 0.6)"
+              />
+
+              {/* <View
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
                 height: "100%",
@@ -180,7 +210,8 @@ export default function NotiDetails() {
                   />
                 </View>
               </View>
-            </Pressable>
+            </View> */}
+            </TouchableWithoutFeedback>
           </Modal>
         </Portal>
         <View>
@@ -270,7 +301,8 @@ export default function NotiDetails() {
                       />
                     )}
                     <View style={{ paddingHorizontal: 10 }}>
-                      <View
+                      <Pressable
+                        onPress={showModal}
                         style={{
                           position: "relative",
                           aspectRatio: 360 / 260,
@@ -313,7 +345,7 @@ export default function NotiDetails() {
                             </Pressable>
                           </View>
                         )}
-                      </View>
+                      </Pressable>
                     </View>
                   </View>
                 </View>

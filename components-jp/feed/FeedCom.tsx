@@ -13,7 +13,12 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { SafeAreaView, Text, useThemeColor, View } from "../Themed";
+import {
+  SafeAreaView,
+  Text,
+  useThemeColor,
+  View,
+} from "@/components-jp/Themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FeedCom() {
@@ -157,118 +162,131 @@ export default function FeedCom() {
                     alignItems: "flex-start",
                     alignSelf: "flex-start",
                   }}>
-                  {indexData?.overview
-                    ?.slice(0, 3)
-                    ?.map((item: any, i: number) => {
-                      const isNeg = item?.overview?.change < 0;
-
-                      const getIntegerPart = (value: number | string) => {
-                        const strValue = value?.toString() || "";
-                        return strValue.split(".")[0];
-                      };
-
-                      const getDecimalPart = (value: number | string) => {
-                        const strValue = value?.toString() || "";
-                        const decimalPart = strValue.split(".")[1];
-                        return decimalPart ? decimalPart.substring(0, 2) : "";
-                      };
-
+                  {loading &&
+                    Array.from({ length: 4 }).map((_, i) => {
                       return (
-                        <TouchableOpacity
-                          onPress={() => onSlideChange(item?.name)}
+                        <View
                           key={i}
                           style={{
                             width: Dimensions.get("window").width * 0.38,
                             aspectRatio: 1036 / 1184,
+                            backgroundColor: bgColor,
+                            alignItems: "center",
+                            alignContent: "center",
+                            justifyContent: "center",
+                          }}></View>
+                      );
+                    })}
+                  {indexData?.overview?.map((item: any, i: number) => {
+                    const isNeg = item?.overview?.change < 0;
+
+                    const getIntegerPart = (value: number | string) => {
+                      const strValue = value?.toString() || "";
+                      return strValue.split(".")[0];
+                    };
+
+                    const getDecimalPart = (value: number | string) => {
+                      const strValue = value?.toString() || "";
+                      const decimalPart = strValue.split(".")[1];
+                      return decimalPart ? decimalPart.substring(0, 2) : "";
+                    };
+
+                    return (
+                      <TouchableOpacity
+                        onPress={() => onSlideChange(item?.name)}
+                        key={i}
+                        style={{
+                          width: Dimensions.get("window").width * 0.38,
+                          aspectRatio: 1036 / 1184,
+                          borderRadius: 12,
+                          position: "relative",
+                          borderWidth: 1,
+                          borderColor:
+                            activeSlide === item?.name
+                              ? borderColor
+                              : "transparent",
+                        }}>
+                        <Image
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                            position: "absolute",
                             borderRadius: 12,
-                            position: "relative",
-                            borderWidth: 1,
-                            borderColor:
-                              activeSlide === item?.name
-                                ? borderColor
-                                : "transparent",
+                          }}
+                          resizeMode="cover"
+                          source={
+                            isNeg
+                              ? isDark
+                                ? require("../../assets/images/negative-dark.png")
+                                : require("../../assets/images/negative-light.png")
+                              : isDark
+                              ? require("../../assets/images/positive-dark.png")
+                              : require("../../assets/images/positive-light.png")
+                          }
+                        />
+                        <View
+                          style={{
+                            position: "absolute",
+                            left: 0,
+                            top: 0,
+                            backgroundColor: "transparent",
+                            width: "100%",
+                            height: "100%",
+                            gap: 8,
+                            paddingLeft: 8,
+                            paddingRight: 8,
+                            paddingTop: 12,
                           }}>
-                          <Image
-                            style={{
-                              height: "100%",
-                              width: "100%",
-                              position: "absolute",
-                              borderRadius: 12,
-                            }}
-                            resizeMode="cover"
-                            source={
-                              isNeg
-                                ? isDark
-                                  ? require("../../assets/images/negative-dark.png")
-                                  : require("../../assets/images/negative-light.png")
-                                : isDark
-                                ? require("../../assets/images/positive-dark.png")
-                                : require("../../assets/images/positive-light.png")
-                            }
-                          />
                           <View
                             style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 0,
-                              backgroundColor: "transparent",
                               width: "100%",
-                              height: "100%",
-                              gap: 8,
-                              paddingLeft: 8,
-                              paddingRight: 8,
-                              paddingTop: 12,
+                              backgroundColor: "transparent",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
                             }}>
-                            <View
+                            <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
+                              {item?.name}
+                            </Text>
+                            <Text
                               style={{
-                                width: "100%",
-                                backgroundColor: "transparent",
-                                flexDirection: "row",
-                                justifyContent: "space-between",
+                                fontSize: 12,
+                                color: isNeg ? "#FF0000" : "#20E5FF",
                               }}>
-                              <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
-                                {item?.name}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: isNeg ? "#FF0000" : "#20E5FF",
-                                }}>
-                                <AntDesign
-                                  name={isNeg ? "arrowdown" : "arrowup"}
-                                  size={12}
-                                  color={isNeg ? "#FF0000" : "#20E5FF"}
-                                />
-                                {isNeg &&
-                                  "-" +
-                                    formatChange(item?.overview?.change) +
-                                    "%"}
-                              </Text>
-                            </View>
-                            <Text style={{ fontSize: 16 }}>
-                              {getIntegerPart(
+                              <AntDesign
+                                name={isNeg ? "arrowdown" : "arrowup"}
+                                size={12}
+                                color={isNeg ? "#FF0000" : "#20E5FF"}
+                              />
+                              {isNeg &&
+                                "-" +
+                                  formatChange(item?.overview?.change) +
+                                  "%"}
+                            </Text>
+                          </View>
+                          <Text style={{ fontSize: 16 }}>
+                            {getIntegerPart(
+                              indexData?.technical?.find(
+                                (fitem: any) => fitem?.name === item?.name
+                              )?.technical?.close
+                            )}
+                            {"."}
+                            <Text style={{ color: "#6E6E6E" }}>
+                              {getDecimalPart(
                                 indexData?.technical?.find(
                                   (fitem: any) => fitem?.name === item?.name
                                 )?.technical?.close
                               )}
-                              {"."}
-                              <Text style={{ color: "#6E6E6E" }}>
-                                {getDecimalPart(
-                                  indexData?.technical?.find(
-                                    (fitem: any) => fitem?.name === item?.name
-                                  )?.technical?.close
-                                )}
-                              </Text>
                             </Text>
-                            {/* <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
+                          </Text>
+                          {/* <Text style={{ fontSize: 12, color: "#6E6E6E" }}>
                               {getIntegerPart(item?.data?.[1]?.value) +
                                 "." +
                                 getDecimalPart(item?.data?.[1]?.value)}
                             </Text> */}
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
               </ScrollView>
             </View>

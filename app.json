@@ -59,7 +59,19 @@
       ],
       "expo-font",
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#06112d",
+          "image": "./assets/images/splash-dark.png",
+          "dark": {
+            "image": "./assets/images/splash-dark.png",
+            "backgroundColor": "#06112d"
+          }
+          // "imageWidth": 200
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

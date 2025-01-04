@@ -220,6 +220,7 @@ export const StockListItem = ({
           }}>
           <View
             style={{
+              flex: 1,
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
               flexDirection: "row",
               gap: 8,
@@ -255,14 +256,18 @@ export const StockListItem = ({
               </View>
               {logoUrl && <SvgUri uri={logoUrl} width={24} height={24} />}
             </View>
-            <View style={{ backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5" }}>
+            <View
+              style={{
+                backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
+                flex: 1,
+              }}>
               <Text
                 style={{
                   color: "#00B0FF",
                   fontSize: 20,
                   fontWeight: "bold",
                 }}
-                numberOfLines={1}
+                numberOfLines={2}
                 ellipsizeMode="tail">
                 {name}
               </Text>
