@@ -1,47 +1,33 @@
-import { DarkScheme, LightScheme } from "@/constants/PaperColors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-
 import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
-import {
-  useColorScheme,
-  AppState,
-  View,
-  Platform,
-  SafeAreaView,
-} from "react-native";
-import { PaperProvider, MD3LightTheme, MD3DarkTheme } from "react-native-paper";
+import "react-native-reanimated";
+
+import { useColorScheme } from "@/components/useColorScheme";
+import Constants from "expo-constants";
 import { ClerkProvider, useAuth, useUser } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
-import Toast from "react-native-toast-message";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { DarkScheme, LightScheme } from "@/constants/PaperColors";
 import * as SystemUI from "expo-system-ui";
-import "react-native-get-random-values";
-import "react-native-url-polyfill/auto";
-import Constants from "expo-constants";
-import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
-import useLang from "@/lib/hooks/useLang";
-import * as Linking from "expo-linking";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
+import Colors from "@/constants/Colors";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
+import { Platform } from "react-native";
 import useSocket from "@/lib/hooks/useSocket";
+import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
-import Colors from "@/constants/Colors";
-import { StatusBar } from "expo-status-bar";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { PostHogProvider } from "posthog-react-native";
+import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
-import { NavigationContainer } from "@react-navigation/native";
-
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
 
 const CURRENT_IOS_VERSION = 10;
 const CURRENT_ANDROID_VERSION = 10;
@@ -84,6 +70,9 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(start)",
 };
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -171,10 +160,10 @@ export default function RootLayout() {
   const { connect, socket } = useSocket();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    Courier: require("../assets/fonts/CourierPrime-Regular.ttf"),
     ...FontAwesome.font,
   });
 
+  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -185,13 +174,14 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hide();
+      SplashScreen.hideAsync();
     }
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
+
   return (
     <ClerkProvider
       publishableKey={
@@ -201,35 +191,44 @@ export default function RootLayout() {
       }
       tokenCache={tokenCache}
     >
-      <NavigationContainer>
-        <RootLayoutNav />
-      </NavigationContainer>
+      <RootLayoutNav />
     </ClerkProvider>
   );
 }
 
 function RootLayoutNav() {
-  const { isLoaded, isSignedIn } = useAuth();
-  const { selectMarket } = useMarket();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const router = useRouter();
   const { setUpdateInfo, language } = useLang();
-  const [expoPushToken, setExpoPushToken] = useState("");
+  const { isLoaded, isSignedIn } = useAuth();
+  const colorScheme = useColorScheme();
+  const [update, setUpdate] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { socket } = useSocket();
+  const client = apiClient();
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
-  const [update, setUpdate] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { getToken } = useAuth();
-  const { socket } = useSocket();
+
   const { setRefreash, refreash, mainServerAvailable, setMainServerAvailable } =
     useUi();
+  const [expoPushToken, setExpoPushToken] = useState("");
   const { user } = useUser();
+  const { getToken } = useAuth();
+  const { selectMarket } = useMarket();
 
-  const client = apiClient();
+  const PaperLightTheme = {
+    ...MD3LightTheme,
+    colors: LightScheme,
+  };
+
+  const PaperDarkTheme = {
+    ...MD3DarkTheme,
+    colors: DarkScheme,
+  };
+
+  const PaperTheme = colorScheme === "dark" ? PaperDarkTheme : PaperLightTheme;
+  SystemUI.setBackgroundColorAsync(colorScheme === "dark" ? "#050505" : "#fff");
 
   const checkUpdate = async () => {
     try {
@@ -258,19 +257,6 @@ function RootLayoutNav() {
       setIsLoading(false);
     }
   };
-
-  const PaperLightTheme = {
-    ...MD3LightTheme,
-    colors: LightScheme,
-  };
-
-  const PaperDarkTheme = {
-    ...MD3DarkTheme,
-    colors: DarkScheme,
-  };
-
-  const PaperTheme = colorScheme === "dark" ? PaperDarkTheme : PaperLightTheme;
-  SystemUI.setBackgroundColorAsync(colorScheme === "dark" ? "#050505" : "#fff");
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -323,8 +309,8 @@ function RootLayoutNav() {
       });
     }
     return () => {
-      if (socket) {
-        socket.off(`new-noti`);
+      if (socket && user) {
+        socket.off(`new-noti-${user.id}`);
       }
     };
   }, [socket, user]);
@@ -358,47 +344,19 @@ function RootLayoutNav() {
   }
 
   return (
-    <PostHogProvider
-      apiKey="phc_s5HpI2azRTOp1wUjmfQR2ghMvWiFKtvtyRhVL8rVCpa"
-      options={{
-        host: "https://us.i.posthog.com",
-      }}
-    >
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <BottomSheetModalProvider>
-            <PaperProvider theme={PaperTheme}>
-              <Stack
-                screenOptions={{
-                  contentStyle: {
-                    backgroundColor:
-                      colorScheme === "dark" ? "#0F0F0F" : "#F0F2F5",
-                    flex: 1,
-                  },
-                }}
-              >
-                <Stack.Screen name="(start)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="(start-jp)"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="main" options={{ headerShown: false }} />
-                <Stack.Screen name="main-jp" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="update/index"
-                  options={{ headerShown: false, title: "Update Available" }}
-                />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: "modal" }}
-                />
-              </Stack>
-            </PaperProvider>
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-        <Toast />
-      </ThemeProvider>
-    </PostHogProvider>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <StatusBar backgroundColor={Colors[colorScheme ?? "dark"].background} />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <PaperProvider theme={PaperTheme}>
+          <Stack>
+            <Stack.Screen name="(start)" options={{ headerShown: false }} />
+            <Stack.Screen name="(start-jp)" options={{ headerShown: false }} />
+            <Stack.Screen name="main" options={{ headerShown: false }} />
+            <Stack.Screen name="main-jp" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </PaperProvider>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }

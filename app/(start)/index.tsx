@@ -14,7 +14,7 @@ import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useRef } from "react";
 import { SegmentedButtons, Text } from "react-native-paper";
-import { SafeAreaView, View } from "../../components/Themed";
+import { View, SafeAreaView } from "@/components-jp/Themed";
 import useLang from "../../lib/hooks/useLang";
 
 export default function StartScreen() {

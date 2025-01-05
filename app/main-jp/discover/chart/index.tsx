@@ -1099,6 +1099,25 @@ const StockListScreen = () => {
             setPage((prevPage) => prevPage + 1);
           }
         }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={() => {
+          if (initialStocks.length > 0 && hasMore) {
+            return (
+              <View
+                style={{
+                  paddingVertical: 16,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <ActivityIndicator
+                  size="small"
+                  color={isDark ? "#00B0FF" : "#34495E"}
+                />
+              </View>
+            );
+          }
+          return null;
+        }}
       />
 
       {Platform.OS === "ios" ? (

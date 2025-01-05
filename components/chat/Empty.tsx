@@ -16,7 +16,7 @@ import {
 import { Modal, Portal } from "react-native-paper";
 import WebView from "react-native-webview";
 import MagicIcon from "../svgs/magic";
-import { Text, View, useThemeColor } from "../Themed";
+import { Text, View, useThemeColor } from "@/components/Themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const RenderChatEmpty = ({ onPressRelated }: any) => {
@@ -226,25 +226,11 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
             if (val.includes("▶️ Duty AI ব্যাবহার ভিডিও")) {
               setVisible(true);
             } else if (val.includes("⚖️ Golden choice")) {
-              if (pathname === "/main/home") {
-                router.push("/main/home/vipsignal/list/");
-              } else {
-                router.push("/main/discover/vipsignal/list/");
-              }
+              router.push("/main/home/vipsignal/list");
             } else if (val.includes("🔍 Stock Scanner")) {
-              setTemplate("scanner");
-              //push with data
-              if (pathname === "/main/home") {
-                router.push({
-                  pathname: "/main/home/scanner/",
-                  params: { next: "scanner" },
-                });
-              } else {
-                router.push({
-                  pathname: "/main/discover/",
-                  params: { next: "scanner" },
-                });
-              }
+              router.push({
+                pathname: "/main/home/scanner",
+              });
             } else {
               onPressRelated(prompt);
             }

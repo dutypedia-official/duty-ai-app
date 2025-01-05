@@ -10,9 +10,9 @@
     "sdkVersion": "52.0.0",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-dark.png",
+      "image": "./assets/images/white-plash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#06112d"
+      "backgroundColor": "#F0F2F5"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -25,9 +25,9 @@
     },
     "android": {
       "splash": {
-        "image": "./assets/images/splash-dark.png",
+        "image": "./assets/images/white-splash",
         "resizeMode": "cover",
-        "backgroundColor": "#06112d"
+        "backgroundColor": "#F0F2F5"
       },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -63,13 +63,12 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#06112d",
-          "image": "./assets/images/splash-dark.png",
+          "backgroundColor": "#F0F2F5",
+          "image": "./assets/images/bal-plash.png",
           "dark": {
-            "image": "./assets/images/splash-dark.png",
-            "backgroundColor": "#06112d"
+            "image": "./assets/images/dark-splash.png",
+            "backgroundColor": "#0F0F0F"
           }
-          // "imageWidth": 200
         }
       ]
     ],

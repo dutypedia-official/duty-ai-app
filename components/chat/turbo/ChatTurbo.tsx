@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { throttle } from "lodash";
 import React, { useEffect, useState } from "react";
+import * as Crypto from "expo-crypto";
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -31,9 +32,8 @@ import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import EventSource from "react-native-sse";
 import Toast from "react-native-toast-message";
-import { v4 as uuid } from "uuid";
-import RenderChatEmpty from "../Empty";
-import TypingAnimation from "../TypingAnimation";
+import RenderChatEmpty from "@/components/chat/Empty";
+import TypingAnimation from "@/components/chat/TypingAnimation";
 
 type Message = {
   text: string;
@@ -131,10 +131,16 @@ const ChatTurbo = ({ fromPath }: any) => {
       return;
     }
     setInputText("");
+
+    console.log("activeConversationId", activeConversationId);
+
     const token = await getToken();
-    const id = uuid();
+
+    const id = Crypto.randomUUID();
+    console.log("token", id);
+
     const newMessage = {
-      _id: uuid(),
+      _id: Crypto.randomUUID(),
       createdAt: new Date(),
       text: txt,
       user: {
@@ -142,6 +148,7 @@ const ChatTurbo = ({ fromPath }: any) => {
         name: "human",
       },
     };
+
     setRelatedPrompts([]);
     setMessages((prevMessages) => {
       const newMessages = [
@@ -242,12 +249,12 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.101:8000/chat/finance`
+          ? `http://192.168.0.103:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.0.101:8000/chat/forex`
+          ? `http://192.168.0.103:8000/chat/forex`
           : template == "scanner"
-          ? `http://192.168.0.101:8000/chat/screener`
-          : `http://192.168.0.101:8000/chat/pro`;
+          ? `http://192.168.0.103:8000/chat/screener`
+          : `http://192.168.0.103:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -402,7 +409,8 @@ const ChatTurbo = ({ fromPath }: any) => {
           flexDirection: "row",
           justifyContent: item?.user?._id == 1 ? "flex-end" : "flex-start",
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <Pressable
           onLongPress={async () => {
             await Clipboard.setStringAsync(item.text);
@@ -437,7 +445,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                   ? "#33353A"
                   : "#DADCE0"
                 : "transparent",
-          }}>
+          }}
+        >
           {item?.user?._id == 1 ? (
             <Text
               style={{
@@ -447,7 +456,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                       ? "white"
                       : "#3A3D42"
                     : "white",
-              }}>
+              }}
+            >
               {item.text}
             </Text>
           ) : item.text === "..." ? (
@@ -556,7 +566,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                   height: 1,
                   marginVertical: 10,
                 },
-              }}>
+              }}
+            >
               {item.text}
             </Markdown>
           )}
@@ -573,7 +584,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                       alignItems: "center",
                       backgroundColor: "transparent",
                       paddingBottom: 6,
-                    }}>
+                    }}
+                  >
                     <Text>View Chart</Text>
                     <TouchableOpacity
                       onPress={() => {
@@ -591,7 +603,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                         gap: 4,
                         backgroundColor: isDark ? "#333333" : "#EAEDED",
                         borderColor: isDark ? "#333333" : "#EAEDED",
-                      }}>
+                      }}
+                    >
                       <Text>
                         <MaterialIcons
                           name="show-chart"
@@ -603,7 +616,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                         style={{
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontSize: 12,
-                        }}>
+                        }}
+                      >
                         Chart
                       </Text>
                     </TouchableOpacity>
@@ -655,7 +669,8 @@ const ChatTurbo = ({ fromPath }: any) => {
               backgroundColor: "transparent",
               justifyContent: "flex-end",
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Text style={{ opacity: 0.5, fontSize: 10 }}>
               {new Date(item.createdAt).toLocaleString(undefined, {
                 year: "numeric",
@@ -716,7 +731,8 @@ const ChatTurbo = ({ fromPath }: any) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}>
+        onPress={stopEventSource}
+      >
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -761,7 +777,7 @@ const ChatTurbo = ({ fromPath }: any) => {
 
     return () => {
       setActiveConversationId(null);
-      setTemplate("finance");
+      // setTemplate("finance");
       setRelatedPrompts([]);
     };
   }, []);
@@ -800,7 +816,8 @@ const ChatTurbo = ({ fromPath }: any) => {
         // marginTop: fromPath ? -54 : 0,
         paddingTop: fromPath ? 0 : insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
-      }}>
+      }}
+    >
       {template === "scanner" && (
         <>
           <StatusBar translucent={true} backgroundColor="transparent" />
@@ -837,7 +854,8 @@ const ChatTurbo = ({ fromPath }: any) => {
               position: "absolute",
               paddingTop: insets.top,
               zIndex: 10,
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 setActiveConversationId(null);
@@ -856,7 +874,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                 elevation: 5,
                 width: 36,
                 height: 36,
-              }}>
+              }}
+            >
               <Text>
                 <Ionicons
                   name={"chevron-back"}
@@ -896,11 +915,13 @@ const ChatTurbo = ({ fromPath }: any) => {
                       marginRight: 12,
                       marginVertical: 8,
                       backgroundColor: "transparent",
-                    }}>
+                    }}
+                  >
                     {relatedPrompts.map((p: any, i: number) => (
                       <TouchableOpacity
                         key={i}
-                        onPress={() => sendMessage(p.prompt || p.question)}>
+                        onPress={() => sendMessage(p.prompt || p.question)}
+                      >
                         <View
                           style={{
                             borderWidth: 1,
@@ -909,7 +930,8 @@ const ChatTurbo = ({ fromPath }: any) => {
                             paddingHorizontal: 8,
                             paddingVertical: 8,
                             alignSelf: "flex-start",
-                          }}>
+                          }}
+                        >
                           <Text style={{ opacity: 0.5 }} numberOfLines={2}>
                             {p.prompt || p.question}
                           </Text>
@@ -940,13 +962,15 @@ const ChatTurbo = ({ fromPath }: any) => {
               borderTopWidth: 1,
               borderBottomWidth: template === "scanner" ? 0 : 1,
               marginBottom: 0,
-            }}>
+            }}
+          >
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() => {
                 setActiveConversationId(null);
                 setRelatedPrompts([]);
-              }}>
+              }}
+            >
               <MaterialIcons
                 // style={{ opacity: inputText ? 1 : 0.3 }}
                 name="post-add"
@@ -981,7 +1005,8 @@ const ChatTurbo = ({ fromPath }: any) => {
             {/* {streaming && stopButton()} */}
             <TouchableOpacity
               style={{ padding: 4 }}
-              onPress={() => sendMessage(inputText)}>
+              onPress={() => sendMessage(inputText)}
+            >
               <Ionicons
                 style={{ opacity: inputText ? 1 : 0.3 }}
                 name="send"

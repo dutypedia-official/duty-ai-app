@@ -68,9 +68,11 @@ export default function TabLayout() {
       ["details", "vipsignal", "scanner"].includes(segment)
     );
     setHideTabBar(shouldHide);
-
-    if (shouldHide) {
+    if (pathname.includes("scanner")) {
       setTemplate("scanner");
+    }
+    if (pathname === "/main-jp/home") {
+      setTemplate("finance");
     }
   }, [segments, isFocused, router]);
 
