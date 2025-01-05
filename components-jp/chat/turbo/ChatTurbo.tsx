@@ -31,9 +31,9 @@ import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import EventSource from "react-native-sse";
 import Toast from "react-native-toast-message";
-import { v4 as uuid } from "uuid";
 import TypingAnimation from "@/components-jp/chat/TypingAnimation";
 import RenderChatEmpty from "@/components-jp/chat/Empty";
+import * as Crypto from "expo-crypto";
 
 type Message = {
   text: string;
@@ -132,9 +132,9 @@ const ChatTurbo = ({ fromPath }: any) => {
     }
     setInputText("");
     const token = await getToken();
-    const id = uuid();
+    const id = Crypto.randomUUID();
     const newMessage = {
-      _id: uuid(),
+      _id: Crypto.randomUUID(),
       createdAt: new Date(),
       text: txt,
       user: {

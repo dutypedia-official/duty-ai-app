@@ -153,6 +153,7 @@ export const StockListItem = ({
     useChat();
   const { getToken } = useAuth();
   const client = apiClient();
+  const bgColor = useThemeColor({}, "background");
 
   const isFav = favs?.find((fav: any) => fav.symbol === name);
 
@@ -223,93 +224,6 @@ export const StockListItem = ({
 
   return (
     <View>
-      {/* <Portal>
-        <Modal visible={visible} onDismiss={hideModal} dismissable={false}>
-          <View
-            style={{
-              padding: 20,
-              margin: 40,
-              borderRadius: 8,
-              position: "relative",
-            }}>
-            <TouchableOpacity
-              onPress={hideModal}
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-              }}>
-              <Text>
-                <Entypo name="circle-with-cross" size={24} />
-              </Text>
-            </TouchableOpacity>
-
-            <View
-              style={{
-                marginTop: 32,
-                borderWidth: 1,
-                backgroundColor: lf6f6f6,
-                borderRadius: 8,
-                borderColor: borderColor,
-              }}>
-              <TextInput
-                maxLength={8}
-                style={{
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  textAlign: "center",
-                  color: textColor,
-                }}
-                placeholder="00:00"
-                placeholderTextColor="#888"
-                value={targetPrice}
-                onChangeText={(text) =>
-                  setTargetPrice(text.replace(/[^0-9.]/g, ""))
-                }
-                keyboardType="numeric"
-              />
-            </View>
-            <TouchableOpacity
-              disabled={
-                loading ||
-                parseFloat(targetPrice) < 1 ||
-                parseFloat(targetPrice) == currentAlarm?.price
-              }
-              onPress={handelSetAlerm}
-              style={{
-                marginTop: 20,
-                marginBottom: 10,
-                backgroundColor:
-                  parseFloat(targetPrice) > 0 &&
-                  parseFloat(targetPrice) != currentAlarm?.price
-                    ? "#152f4a"
-                    : "#9ca7b1",
-                borderRadius: 8,
-                padding: 16,
-              }}>
-              <Text style={{ textAlign: "center", color: "white" }}>
-                {loading ? "Please wait..." : "Set Alarm"}
-              </Text>
-            </TouchableOpacity>
-
-            {currentAlarm && (
-              <TouchableOpacity
-                onPress={handelDeleteAlerm}
-                style={{
-                  marginTop: 10,
-                  marginBottom: 10,
-                  backgroundColor: "#e74c3c",
-                  borderRadius: 8,
-                  padding: 16,
-                }}>
-                <Text style={{ textAlign: "center", color: "white" }}>
-                  {loading ? "Please wait..." : "Delete Alarm"}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </Modal>
-      </Portal> */}
       <View
         style={{
           flexDirection: "column",
@@ -1113,57 +1027,52 @@ const StockListScreen = () => {
           </View>
         )}
         keyExtractor={(item: any) => item.symbol}
-        style={styles.list}
+        // style={styles.list}
         refreshControl={
           <RefreshControl refreshing={screenRefresh} onRefresh={onRefresh} />
         }
+        onEndReachedThreshold={0.5}
+        // ListFooterComponent={() => {
+        //   if (initialStocks.length > 0) {
+        //     return (
+        //       <View
+        //         style={{
+        //           paddingVertical: 16,
+        //           justifyContent: "center",
+        //           alignItems: "center",
+        //         }}>
+        //         <ActivityIndicator
+        //           size="small"
+        //           color={isDark ? "#00B0FF" : "#34495E"}
+        //         />
+        //       </View>
+        //     );
+        //   }
+        //   return null;
+        // }}
       />
 
-      {Platform.OS === "ios" ? (
-        <SheetCardIos
-          bottomSheetRef={bottomSheetRef}
-          currentAlarm={currentAlarm}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          textColor={textColor}
-          targetPrice={targetPrice}
-          setTargetPrice={setTargetPrice}
-          inputText={inputText}
-          currentAiAlerm={currentAiAlerm}
-          setInputText={setInputText}
-          error={error}
-          handelSetAlerm={handelSetAlerm}
-          loading={loading}
-          loadingDeleteAlarm={loadingDeleteAlarm}
-          loadingAiAlarm={loadingAiAlarm}
-          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-          handelDeleteAlerm={handelDeleteAlerm}
-          handelSetAiAlerm={handelSetAiAlerm}
-          handelDeleteAiAlerm={handelDeleteAiAlerm}
-        />
-      ) : (
-        <SheetCard
-          bottomSheetRef={bottomSheetRef}
-          currentAlarm={currentAlarm}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          textColor={textColor}
-          targetPrice={targetPrice}
-          setTargetPrice={setTargetPrice}
-          inputText={inputText}
-          currentAiAlerm={currentAiAlerm}
-          setInputText={setInputText}
-          error={error}
-          handelSetAlerm={handelSetAlerm}
-          loading={loading}
-          loadingDeleteAlarm={loadingDeleteAlarm}
-          loadingAiAlarm={loadingAiAlarm}
-          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-          handelDeleteAlerm={handelDeleteAlerm}
-          handelSetAiAlerm={handelSetAiAlerm}
-          handelDeleteAiAlerm={handelDeleteAiAlerm}
-        />
-      )}
+      <SheetCardIos
+        bottomSheetRef={bottomSheetRef}
+        currentAlarm={currentAlarm}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        textColor={textColor}
+        targetPrice={targetPrice}
+        setTargetPrice={setTargetPrice}
+        inputText={inputText}
+        currentAiAlerm={currentAiAlerm}
+        setInputText={setInputText}
+        error={error}
+        handelSetAlerm={handelSetAlerm}
+        loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+        handelDeleteAlerm={handelDeleteAlerm}
+        handelSetAiAlerm={handelSetAiAlerm}
+        handelDeleteAiAlerm={handelDeleteAiAlerm}
+      />
     </KeyboardAvoidingView>
   );
 };

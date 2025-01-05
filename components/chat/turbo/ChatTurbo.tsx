@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { throttle } from "lodash";
 import React, { useEffect, useState } from "react";
+import * as Crypto from "expo-crypto";
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -31,9 +32,8 @@ import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import EventSource from "react-native-sse";
 import Toast from "react-native-toast-message";
-import { v4 as uuid } from "uuid";
-import RenderChatEmpty from "../Empty";
-import TypingAnimation from "../TypingAnimation";
+import RenderChatEmpty from "@/components/chat/Empty";
+import TypingAnimation from "@/components/chat/TypingAnimation";
 
 type Message = {
   text: string;
@@ -131,10 +131,16 @@ const ChatTurbo = ({ fromPath }: any) => {
       return;
     }
     setInputText("");
+
+    console.log("activeConversationId", activeConversationId);
+
     const token = await getToken();
-    const id = uuid();
+
+    const id = Crypto.randomUUID();
+    console.log("token", id);
+
     const newMessage = {
-      _id: uuid(),
+      _id: Crypto.randomUUID(),
       createdAt: new Date(),
       text: txt,
       user: {
@@ -142,6 +148,7 @@ const ChatTurbo = ({ fromPath }: any) => {
         name: "human",
       },
     };
+
     setRelatedPrompts([]);
     setMessages((prevMessages) => {
       const newMessages = [
@@ -761,7 +768,7 @@ const ChatTurbo = ({ fromPath }: any) => {
 
     return () => {
       setActiveConversationId(null);
-      setTemplate("finance");
+      // setTemplate("finance");
       setRelatedPrompts([]);
     };
   }, []);

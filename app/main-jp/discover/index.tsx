@@ -76,9 +76,9 @@ export default function DiscoverScreen() {
     if (redirectToList == "yes") {
       console.log(redirectToList);
 
-      router.push("/main-jp/discover/chart/");
+      router.push("/main-jp/discover/chart");
     } else if (next == "scanner") {
-      router.push("/main-jp/discover/scanner/");
+      router.push("/main-jp/discover/scanner");
     }
   }, []);
 
@@ -296,51 +296,28 @@ export default function DiscoverScreen() {
         />
         {/* <PopularPrompts /> */}
       </ScrollView>
-      {Platform.OS === "ios" ? (
-        <SheetCardIos
-          bottomSheetRef={bottomSheetRef}
-          currentAlarm={currentAlarm}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          textColor={textColor}
-          targetPrice={targetPrice}
-          setTargetPrice={setTargetPrice}
-          inputText={inputText}
-          currentAiAlerm={currentAiAlerm}
-          setInputText={setInputText}
-          error={error}
-          handelSetAlerm={handelSetAlerm}
-          loading={loading}
-          loadingDeleteAlarm={loadingDeleteAlarm}
-          loadingAiAlarm={loadingAiAlarm}
-          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-          handelDeleteAlerm={handelDeleteAlerm}
-          handelSetAiAlerm={handelSetAiAlerm}
-          handelDeleteAiAlerm={handelDeleteAiAlerm}
-        />
-      ) : (
-        <SheetCard
-          bottomSheetRef={bottomSheetRef}
-          currentAlarm={currentAlarm}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          textColor={textColor}
-          targetPrice={targetPrice}
-          setTargetPrice={setTargetPrice}
-          inputText={inputText}
-          currentAiAlerm={currentAiAlerm}
-          setInputText={setInputText}
-          error={error}
-          handelSetAlerm={handelSetAlerm}
-          loading={loading}
-          loadingDeleteAlarm={loadingDeleteAlarm}
-          loadingAiAlarm={loadingAiAlarm}
-          loadingDeleteAiAlarm={loadingDeleteAiAlarm}
-          handelDeleteAlerm={handelDeleteAlerm}
-          handelSetAiAlerm={handelSetAiAlerm}
-          handelDeleteAiAlerm={handelDeleteAiAlerm}
-        />
-      )}
+
+      <SheetCardIos
+        bottomSheetRef={bottomSheetRef}
+        currentAlarm={currentAlarm}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        textColor={textColor}
+        targetPrice={targetPrice}
+        setTargetPrice={setTargetPrice}
+        inputText={inputText}
+        currentAiAlerm={currentAiAlerm}
+        setInputText={setInputText}
+        error={error}
+        handelSetAlerm={handelSetAlerm}
+        loading={loading}
+        loadingDeleteAlarm={loadingDeleteAlarm}
+        loadingAiAlarm={loadingAiAlarm}
+        loadingDeleteAiAlarm={loadingDeleteAiAlarm}
+        handelDeleteAlerm={handelDeleteAlerm}
+        handelSetAiAlerm={handelSetAiAlerm}
+        handelDeleteAiAlerm={handelDeleteAiAlerm}
+      />
     </SafeAreaView>
   );
 }

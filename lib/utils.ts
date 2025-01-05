@@ -1,4 +1,3 @@
-import he from "he";
 import Toast from "react-native-toast-message";
 
 export async function fetchWithTimeout(url: string, options: any = {}) {
@@ -68,7 +67,8 @@ export const translate = async (text: string, targetLang: string = "bn") => {
     const pattern = /class="(?:t0|result-container)">(.*?)</s;
     const match = result.match(pattern);
     if (match && match[1]) {
-      return he.decode(match[1]);
+      return null;
+      // return he.decode(match[1]);
     } else {
       return null;
     }
