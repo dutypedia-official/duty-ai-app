@@ -10,7 +10,7 @@
     "sdkVersion": "52.0.0",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/white-plash.png",
+      "image": "./assets/images/white-splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#F0F2F5"
     },
@@ -64,7 +64,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#F0F2F5",
-          "image": "./assets/images/bal-plash.png",
+          "image": "./assets/images/white-splash.png",
           "dark": {
             "image": "./assets/images/dark-splash.png",
             "backgroundColor": "#0F0F0F"
