@@ -137,7 +137,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     const token = await getToken();
 
     const id = Crypto.randomUUID();
-    console.log("token", id);
+    console.log("first id", id);
 
     const newMessage = {
       _id: Crypto.randomUUID(),
@@ -148,6 +148,8 @@ const ChatTurbo = ({ fromPath }: any) => {
         name: "human",
       },
     };
+
+    console.log("second id", newMessage._id);
 
     setRelatedPrompts([]);
     setMessages((prevMessages) => {
@@ -235,8 +237,6 @@ const ChatTurbo = ({ fromPath }: any) => {
       };
 
       const baseUrl = mainServerAvailable ? MAIN_SERVER_URL : BACKUP_SERVER_URL;
-
-      console.log("baseUrl------>", baseUrl);
 
       const url =
         template == "finance"
@@ -754,7 +754,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     };
 
     if (isLoading || streaming) {
-      setDisplayMessages(sortMessages(messages.slice(-2)));
+      setDisplayMessages((prev) => sortMessages(messages.slice(0, 2)));
     } else {
       setDisplayMessages(sortMessages(messages));
     }
