@@ -22,7 +22,7 @@ import { useRouter } from "expo-router";
 import { useWarmUpBrowser } from "@/lib/hooks/useWarmUpBrowser";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ActivityIndicator, Modal, Portal } from "react-native-paper";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import WebView from "react-native-webview";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
@@ -72,14 +72,14 @@ export default function Signup() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.replace("/main");
+        router.dismissTo("/main/home");
       }
     } catch (err) {
       console.error(err);
     }
   };
   return (
-    <>
+    <Fragment>
       <LinearGradient
         colors={["#4A148C", "#2A2B2A"]}
         start={{ x: 0, y: 0.5 }}
@@ -436,7 +436,7 @@ export default function Signup() {
           </View>
         </View>
       </SafeAreaView>
-    </>
+    </Fragment>
   );
 }
 

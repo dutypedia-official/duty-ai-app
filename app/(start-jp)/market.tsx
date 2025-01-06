@@ -4,13 +4,15 @@ import { Candles_SVG } from "@/assets/svgs/candles_svg";
 import { Glob_SVG } from "@/assets/svgs/glob_svg";
 import { Jp_flag } from "@/assets/svgs/jp_flag";
 import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
+import { apiClient } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Pressable,
@@ -29,6 +31,11 @@ export default function Market() {
   const router = useRouter();
   const { language } = useLang();
   const { selectMarket, setSelectMarket } = useMarket();
+  const [jpIndexData, setJpIndexData] = useState<any>([]);
+  const [bdIndexData, setBdIndexData] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
+  const client = apiClient();
+  const isFocused = useIsFocused();
 
   const angleInDegrees = 157;
   const angleInRadians = (angleInDegrees * Math.PI) / 180;
@@ -43,31 +50,87 @@ export default function Market() {
     y: 0.5 + Math.sin(angleInRadians) / 2,
   };
 
+  const fetchData = async (init: boolean = true) => {
+    try {
+      const { data } = await client.get(`/tools/get-jp-index`);
+      setJpIndexData(data);
+      // console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [isFocused]);
+
+  const fetchDataBd = async (init: boolean = true) => {
+    try {
+      const { data } = await client.get(`/tools/get-dsebd-index`);
+      setBdIndexData(data);
+      // console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataBd();
+  }, [isFocused]);
+
+  const isNegJP = jpIndexData?.overview?.[0]?.overview?.change
+    ?.toString()
+    .includes("-");
+
+  const isNegBD = bdIndexData?.dseXIndex?.[2]?.toString().includes("-");
+
   const markets = [
     {
       flag: Jp_flag,
       country: "Japan",
       name: "日本市場",
-      total: "24,640.89",
-      percentage: "+118.00(+0.30%)",
+      total:
+        Number(jpIndexData?.technical?.[0]?.technical?.close).toFixed(2) || "",
+      totalValue: "",
+      percentage:
+        `${isNegJP ? "-" : "+"}${Math.abs(
+          Number(jpIndexData?.overview?.[0]?.overview?.change)
+        ).toFixed(2)}%` || "",
       language: "Jp",
     },
     {
       flag: Bd_flag,
       country: "Bangladesh",
       name: "ঢাকা স্টক এক্সচেঞ্জ",
-      total: "24,640.89",
-      percentage: "+118.00(+0.30%)",
+      total: Number(bdIndexData?.dseXIndex?.[0]).toFixed(2) || "",
+      totalValue: Number(bdIndexData?.totalValue).toFixed(2) || "",
+      percentage:
+        `${isNegBD ? "-" : "+"}${Math.abs(
+          Number(bdIndexData?.dseXIndex?.[2]?.replace("%", ""))
+        ).toFixed(2)}%` || "",
       language: "Bn",
     },
   ];
 
-  const filteredMarkets =
-    language === "Bn" || language === "En"
-      ? markets.filter(
-          (market) => market.language === "Bn" || market.language !== "Bn" // Include Bangladesh market
-        )
-      : markets.filter((market) => market.language !== "Bn"); // Exclude Bangladesh market
+  const title = () => {
+    if (language === "Jp") {
+      return "分析する市場を選択してください";
+    } else if (language === "Bn") {
+      return "বাজার নির্বাচন করুন";
+    } else {
+      return "Select Market for Analysis";
+    }
+  };
+
+  const filteredMarkets = () => {
+    if (language === "Bn") {
+      return markets.filter((market) => market.language === "Bn");
+    } else {
+      return markets;
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -207,9 +270,7 @@ export default function Market() {
                 fontWeight: "600",
                 marginVertical: 22,
               }}>
-              {language === "Jp"
-                ? "分析する市場を選択してください"
-                : "Select Market for Analysis"}
+              {title()}
             </Text>
           </View>
           <View
@@ -217,7 +278,7 @@ export default function Market() {
               gap: 24,
               marginBottom: 24,
             }}>
-            {filteredMarkets?.map((item, i) => {
+            {filteredMarkets()?.map((item, i) => {
               return (
                 <TouchableOpacity
                   key={i}
@@ -326,10 +387,10 @@ export default function Market() {
           </View>
         </View>
 
-        <Pressable
+        <TouchableOpacity
           disabled={selectMarket === "" ? true : false}
           onPress={() =>
-            language === "Jp"
+            selectMarket === "Japan"
               ? router.push("/(start-jp)/login")
               : router.push("/(start)/login")
           }
@@ -374,7 +435,7 @@ export default function Market() {
               </Text>
             </LinearGradient>
           </LinearGradient>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

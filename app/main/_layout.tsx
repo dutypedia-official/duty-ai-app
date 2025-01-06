@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, useColorScheme } from "react-native";
 import { SvgXml } from "react-native-svg";
 import Colors from "../../constants/Colors";
+import { PanGestureHandler } from "react-native-gesture-handler";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -198,25 +199,7 @@ export default function TabLayout() {
             style={StyleSheet.absoluteFill}
           />
         ),
-        // tabBarStyle: { position: "absolute" },
-        // tabBarBackground: () => (
-        //   <BlurView
-        //     intensity={100}
-        //     tint={colorScheme === "dark" ? "dark" : "light"}
-        //     style={StyleSheet.absoluteFill}
-        //   />
-        // ),
       })}>
-      {/* <Tabs.Screen
-        name="chat"
-        options={{
-          title: isBn ? "চ্যাট" : "Chat",
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="md-chatbubble-ellipses-outline" color={color} />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="feed"
         options={{
@@ -234,10 +217,15 @@ export default function TabLayout() {
         options={{
           title: isBn ? "অনুসন্ধান" : "Discover",
           headerShown: false,
-          // unmountOnBlur: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="compass-outline" color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push("/main-jp/discover");
+          },
         }}
       />
       <Tabs.Screen
@@ -245,7 +233,6 @@ export default function TabLayout() {
         options={{
           title: isBn ? "চ্যাট" : "Stock Analysis",
           headerShown: false,
-          // unmountOnBlur: true,
           tabBarIcon: ({ color, focused }) =>
             focused ? (
               colorScheme === "dark" ? (
@@ -258,15 +245,6 @@ export default function TabLayout() {
             ),
         }}
       />
-      {/* <Tabs.Screen
-        name="history"
-        options={{
-          title: isBn ? "ইতিহাস" : "History",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="time-outline" color={color} />
-          ),
-        }}
-      /> */}
 
       <Tabs.Screen
         name="notification"

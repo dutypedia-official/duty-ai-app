@@ -1005,7 +1005,7 @@ const StockListScreen = () => {
           <View
             style={{
               backgroundColor: bgColor,
-              marginHorizontal: 12,
+              paddingHorizontal: 12,
             }}>
             <StockListItem
               changePer={item.changePer}

@@ -25,7 +25,7 @@
     },
     "android": {
       "splash": {
-        "image": "./assets/images/white-splash",
+        "image": "./assets/images/white-splash.png",
         "resizeMode": "cover",
         "backgroundColor": "#F0F2F5"
       },
@@ -69,6 +69,13 @@
             "image": "./assets/images/dark-splash.png",
             "backgroundColor": "#0F0F0F"
           }
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
         }
       ]
     ],

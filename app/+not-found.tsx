@@ -1,33 +1,54 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Stack, useRouter } from "expo-router";
+import { StyleSheet, Image } from "react-native";
 
-import { Text, View } from '@/components/Themed';
+import { Text, View } from "../components/Themed";
+import { Button } from "react-native-paper";
+import { Fragment } from "react";
 
 export default function NotFoundScreen() {
-  return (
-    <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>This screen doesn't exist.</Text>
+  const router = useRouter();
 
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Go to home screen!</Text>
-        </Link>
+  return (
+    <Fragment>
+      <Stack.Screen options={{ title: "Oops!" }} />
+      <View style={styles.container}>
+        <Image
+          style={{ height: 200, width: 200 }}
+          resizeMode="contain"
+          source={require("@/assets/images/404.png")}
+        />
+        <Text style={styles.title}>
+          The screen you visited is not on earth!
+        </Text>
+
+        <Button
+          onPress={() => {
+            router.back();
+          }}
+          icon="logout"
+          style={{ borderRadius: 4, marginTop: 12, width: "100%" }}
+          labelStyle={{ fontWeight: "bold" }}
+          contentStyle={{ paddingVertical: 4 }}
+          mode="outlined">
+          Go Back
+        </Button>
       </View>
-    </>
+    </Fragment>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 24,
   },
   link: {
     marginTop: 15,
@@ -35,6 +56,6 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#2e78b7',
+    color: "#2e78b7",
   },
 });

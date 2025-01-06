@@ -204,8 +204,7 @@ export default function TabLayout() {
         //   );
         // },
         animation: "shift",
-      })}
-    >
+      })}>
       <Tabs.Screen
         name="feed"
         options={{

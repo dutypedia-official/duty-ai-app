@@ -68,7 +68,7 @@ export default function Signup() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.replace("/main-jp");
+        router.dismissTo("/main-jp/home");
       }
     } catch (err) {
       console.error(err);

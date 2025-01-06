@@ -1,23 +1,22 @@
 import {
   Dimensions,
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
 
-import { Video } from "expo-av";
+import useMarket from "@/lib/hooks/useMarket";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Fragment, useRef } from "react";
-import { SegmentedButtons, Text } from "react-native-paper";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { Fragment } from "react";
+import { Text } from "react-native-paper";
 import { SafeAreaView, View } from "../../components/Themed";
 import useLang from "../../lib/hooks/useLang";
-import { Ionicons } from "@expo/vector-icons";
-import useMarket from "@/lib/hooks/useMarket";
 
 export default function StartScreen() {
   const { setSelectMarket } = useMarket();
@@ -26,7 +25,12 @@ export default function StartScreen() {
   const isBn = language === "Bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
-  const videoRef = useRef<any>(null);
+  const videoSource = require("@/assets/video/background.mp4");
+
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = false;
+    player.play();
+  });
 
   const languages = [
     {
@@ -52,8 +56,10 @@ export default function StartScreen() {
         height: Dimensions.get("screen").height,
       }}>
       <StatusBar style="light" />
-      <Video
-        ref={videoRef}
+      <VideoView
+        player={player}
+        contentFit={"fill"}
+        nativeControls={false}
         style={{
           width: Dimensions.get("screen").width,
           height: Dimensions.get("screen").height,
@@ -63,13 +69,7 @@ export default function StartScreen() {
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: -1,
         }}
-        source={require("../../assets/video/background.mp4")}
-        shouldPlay={true}
-        isLooping={false}
-        //@ts-ignore
-        resizeMode={"cover"}
       />
       <ScrollView contentContainerStyle={styles.container}>
         <Stack.Screen

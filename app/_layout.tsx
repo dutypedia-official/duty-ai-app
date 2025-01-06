@@ -28,6 +28,7 @@ import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
+import Toast from "react-native-toast-message";
 
 const CURRENT_IOS_VERSION = 10;
 const CURRENT_ANDROID_VERSION = 10;
@@ -352,8 +353,10 @@ function RootLayoutNav() {
             <Stack.Screen name="(start-jp)" options={{ headerShown: false }} />
             <Stack.Screen name="main" options={{ headerShown: false }} />
             <Stack.Screen name="main-jp" options={{ headerShown: false }} />
+            <Stack.Screen name="maintenance" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           </Stack>
+          <Toast />
         </PaperProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
