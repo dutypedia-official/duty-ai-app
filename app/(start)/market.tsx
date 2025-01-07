@@ -1,9 +1,11 @@
+import { bar_chart_neg_svg } from "@/assets/svgs/bar_chart_neg_svg";
 import { bar_chart_svg } from "@/assets/svgs/bar_chart_svg";
 import { Bd_flag } from "@/assets/svgs/bg_flag";
 import { Candles_SVG } from "@/assets/svgs/candles_svg";
 import { Glob_SVG } from "@/assets/svgs/glob_svg";
 import { Jp_flag } from "@/assets/svgs/jp_flag";
 import { SafeAreaView, useThemeColor } from "@/components-jp/Themed";
+import TermsAndConditions from "@/components/terms";
 import { apiClient } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
@@ -22,6 +24,7 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
@@ -31,6 +34,7 @@ export default function Market() {
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
   const { language } = useLang();
+  const [selectedTemp, setSelectedTemp] = useState("");
   const { selectMarket, setSelectMarket } = useMarket();
   const [jpIndexData, setJpIndexData] = useState<any>([]);
   const [bdIndexData, setBdIndexData] = useState<any>([]);
@@ -128,8 +132,10 @@ export default function Market() {
   const filteredMarkets = () => {
     if (language === "Bn") {
       return markets.filter((market) => market.language === "Bn");
+    } else if (language === "Jp") {
+      return markets.filter((market) => market.language === "Jp");
     } else {
-      return markets;
+      return markets.filter((market) => market.language === "Bn");
     }
   };
 
@@ -289,12 +295,12 @@ export default function Market() {
                   <TouchableOpacity
                     key={i}
                     onPress={() => {
-                      setSelectMarket(item.country);
+                      setSelectedTemp(item.country);
                     }}
                     style={{
                       borderWidth: 2,
                       borderColor:
-                        selectMarket === item?.country
+                        selectedTemp === item?.country
                           ? "#BFABFF"
                           : "transparent",
                       borderRadius: 12,
@@ -384,7 +390,13 @@ export default function Market() {
                             style={{
                               width: 70,
                             }}>
-                            <SvgXml xml={bar_chart_svg} />
+                            <SvgXml
+                              xml={
+                                item?.percentage.toString().includes("-")
+                                  ? bar_chart_neg_svg
+                                  : bar_chart_svg
+                              }
+                            />
                           </View>
                         </View>
                       </View>
@@ -397,18 +409,21 @@ export default function Market() {
         </View>
 
         <TouchableOpacity
-          disabled={selectMarket === "" ? true : false}
-          onPress={() =>
-            selectMarket === "Japan"
-              ? router.push("/(start-jp)/login")
-              : router.push("/(start)/login")
-          }
+          disabled={selectedTemp === "" ? true : false}
+          onPress={() => {
+            router.push({
+              pathname: "/terms",
+              params: {
+                market: selectedTemp,
+              },
+            });
+          }}
           style={{
             paddingBottom: 16,
           }}>
           <LinearGradient
             colors={
-              selectMarket === ""
+              selectedTemp === ""
                 ? ["#4F5A5F", "#3A3D3F"]
                 : ["#FF6FD8", "#00FFC6"]
             }
@@ -421,7 +436,7 @@ export default function Market() {
             }}>
             <LinearGradient
               colors={
-                selectMarket === ""
+                selectedTemp === ""
                   ? ["#4F5A5F", "#3A3D3F"]
                   : ["#FF6FD8", "#973FCD", "#3813C2"]
               }
@@ -437,13 +452,13 @@ export default function Market() {
                   fontWeight: "bold",
                   paddingVertical: 16,
                   textAlign: "center",
-                  color: selectMarket === "" ? "#717171" : "#FFD700",
+                  color: selectedTemp === "" ? "#717171" : "#FFD700",
                 }}>
                 {language === "Jp"
                   ? "次"
                   : language === "Bn"
                   ? "পরবর্তী"
-                  : "Next"}
+                  : "Confirm"}
               </Text>
             </LinearGradient>
           </LinearGradient>

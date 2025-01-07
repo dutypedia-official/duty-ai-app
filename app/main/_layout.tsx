@@ -66,7 +66,9 @@ export default function TabLayout() {
   useEffect(() => {
     setHideTabNav(false);
     const shouldHide = segments.some((segment: string) =>
-      ["details", "vipsignal", "scanner"].includes(segment)
+      ["details", "vipsignal", "scanner", "change-market", "terms"].includes(
+        segment
+      )
     );
     setHideTabBar(shouldHide);
     if (pathname.includes("scanner")) {
@@ -220,12 +222,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="compass-outline" color={color} />
           ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            router.push("/main-jp/discover");
-          },
         }}
       />
       <Tabs.Screen

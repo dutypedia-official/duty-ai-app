@@ -270,12 +270,12 @@ export default function FeedCom() {
     iframe.requestFullscreen();
   `;
 
-  const onRefresh = useCallback(() => {
-    setScreenRefresh(true);
-    setTimeout(() => {
-      setScreenRefresh(false);
-    }, 2000);
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setScreenRefresh(true);
+  //   setTimeout(() => {
+  //     setScreenRefresh(false);
+  //   }, 2000);
+  // }, []);
 
   return (
     // <SafeAreaView
@@ -286,9 +286,10 @@ export default function FeedCom() {
     //   }}>
     <SafeAreaView>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
-        }>
+      // refreshControl={
+      //   <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
+      // }
+      >
         <View style={styles.container}>
           {/* <TouchableOpacity
             onPress={() => {

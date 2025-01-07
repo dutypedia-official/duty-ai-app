@@ -28,7 +28,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 
-export default function Market() {
+export default function ChangeMarket() {
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
@@ -85,6 +85,10 @@ export default function Market() {
     fetchDataBd();
   }, [isFocused]);
 
+  useEffect(() => {
+    setSelectedTemp(selectMarket);
+  }, [isFocused, selectMarket]);
+
   const isNegJP = jpIndexData?.overview?.[0]?.overview?.change
     ?.toString()
     .includes("-");
@@ -120,23 +124,7 @@ export default function Market() {
   ];
 
   const title = () => {
-    if (language === "Jp") {
-      return "分析する市場を選択してください";
-    } else if (language === "Bn") {
-      return "বাজার নির্বাচন করুন";
-    } else {
-      return "Select Market for Analysis";
-    }
-  };
-
-  const filteredMarkets = () => {
-    if (language === "Bn") {
-      return markets.filter((market) => market.language === "Bn");
-    } else if (language === "Jp") {
-      return markets.filter((market) => market.language === "Jp");
-    } else {
-      return markets.filter((market) => market.language === "Bn");
-    }
+    return "分析する市場を選択してください";
   };
 
   return (
@@ -186,16 +174,6 @@ export default function Market() {
       </View>
 
       <StatusBar style="light" />
-
-      <Stack.Screen
-        options={{
-          headerShown: false,
-          title: "Market",
-          headerStyle: {
-            backgroundColor: bgColor,
-          },
-        }}
-      />
 
       <View
         style={{
@@ -285,7 +263,7 @@ export default function Market() {
               gap: 24,
               marginBottom: 24,
             }}>
-            {filteredMarkets()?.map((item, i) => {
+            {markets?.map((item, i) => {
               return (
                 <TouchableOpacity
                   key={i}
@@ -406,7 +384,7 @@ export default function Market() {
           disabled={selectedTemp === "" ? true : false}
           onPress={() => {
             router.push({
-              pathname: "/terms",
+              pathname: "/main-jp/setting/terms",
               params: {
                 market: selectedTemp,
               },

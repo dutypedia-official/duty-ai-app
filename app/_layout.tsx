@@ -319,25 +319,43 @@ function RootLayoutNav() {
     checkUpdate();
   }, []);
 
+  console.log("selectMarket---------", selectMarket, language);
+
   useEffect(() => {
     if (isLoaded && !isLoading) {
+      // Step 1: Check if the app needs to be updated
       if (update?.update) {
         router.replace("/update");
-      } else if (isSignedIn) {
-        if (selectMarket === "Bangladesh") {
-          router.replace("/main/home");
-        } else {
-          router.replace("/main-jp/home");
-        }
-      } else {
-        if (selectMarket === "Bangladesh") {
-          router.replace("/(start)");
-        } else {
+        return;
+      }
+
+      // Step 2: User is not signed in
+      if (!isSignedIn) {
+        // Redirect to language selection
+        if (language === "Jp") {
           router.replace("/(start-jp)");
+        } else {
+          router.replace("/(start)");
+        }
+      }
+      // Step 3: User is signed in but has not selected a market
+      else if (!selectMarket) {
+        if (language === "Jp") {
+          router.replace("/(start-jp)/market");
+        } else {
+          router.replace("/(start)/market");
+        }
+      }
+      // Step 4: User is signed in and has selected a market
+      else {
+        if (selectMarket === "Japan") {
+          router.replace("/main-jp/home");
+        } else {
+          router.replace("/main/home");
         }
       }
     }
-  }, [isLoaded, isLoading, update]);
+  }, [isLoaded, isLoading, update, isSignedIn, selectMarket]);
 
   if (!isLoaded || isLoading) {
     return null;

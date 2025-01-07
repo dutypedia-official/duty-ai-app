@@ -34,6 +34,26 @@ export default function Layout() {
         name="select-language"
         options={{ title: "Select Language" }}
       />
+      <Stack.Screen
+        name="change-market"
+        options={{
+          title: "Change Market",
+          headerShown: false,
+          headerTitleStyle: {
+            color: isDark ? "#FFFFFF" : "#1E1E1E",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="terms"
+        options={{
+          title: "Change Market Terms",
+          headerShown: false,
+          headerTitleStyle: {
+            color: isDark ? "#FFFFFF" : "#1E1E1E",
+          },
+        }}
+      />
     </Stack>
   );
 }

@@ -14,8 +14,11 @@ import { StatusBar } from "expo-status-bar";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Text } from "react-native-paper";
 import useLang from "../../lib/hooks/useLang";
+import { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function StartScreen() {
+  const isFocused = useIsFocused();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
   const isBn = language === "Bn";
@@ -27,6 +30,16 @@ export default function StartScreen() {
     player.loop = false;
     player.play();
   });
+
+  useEffect(() => {
+    if (isFocused) {
+      // If the screen is focused, play the video
+      player.play();
+    } else {
+      // If the screen is not focused, pause the video
+      player.pause();
+    }
+  }, [isFocused, player]);
 
   const languages = [
     {

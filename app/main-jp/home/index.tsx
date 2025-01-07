@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View } from "@/components/Themed";
 import useChat from "@/lib/hooks/useChat";
 import useVipSignal from "@/lib/hooks/useVipSignal";
 import { useIsFocused } from "@react-navigation/native";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -29,5 +29,6 @@ export default function ChatScreen() {
     setAnswer(null);
   }, [isFocused]);
 
+  console.log("jp-layout", usePathname());
   return <ChatTurbo key={template} />;
 }

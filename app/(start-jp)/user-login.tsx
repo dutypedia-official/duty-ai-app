@@ -162,7 +162,7 @@ export default function UserLoginScreen() {
         });
         await setActive({ session: completeSignIn.createdSessionId });
         console.log("Logged in successfully!");
-        router.dismissTo("/main-jp/home");
+        router.dismissTo("/(start-jp)/market");
       } catch (err: any) {
         console.error(JSON.stringify(err, null, 2));
         Toast.show({
@@ -186,7 +186,7 @@ export default function UserLoginScreen() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.dismissTo("/main-jp/home");
+        router.dismissTo("/(start-jp)/market");
       }
     } catch (err) {
       console.error(err);

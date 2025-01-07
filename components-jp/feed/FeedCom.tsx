@@ -1,7 +1,14 @@
+import {
+  SafeAreaView,
+  Text,
+  useThemeColor,
+  View,
+} from "@/components-jp/Themed";
 import { apiClient } from "@/lib/api";
 import useFeedData from "@/lib/hooks/useFeedData";
 import useUi from "@/lib/hooks/useUi";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -13,12 +20,6 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import {
-  SafeAreaView,
-  Text,
-  useThemeColor,
-  View,
-} from "@/components-jp/Themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FeedCom() {
@@ -32,6 +33,7 @@ export default function FeedCom() {
   const borderColor = useThemeColor({}, "border");
   const [loading, setLoading] = useState(true);
   const inset = useSafeAreaInsets();
+  const isFocused = useIsFocused();
 
   const fetchData = async (init: boolean = true) => {
     try {
@@ -54,12 +56,7 @@ export default function FeedCom() {
 
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 600000); // 600000 ms = 10 minutes
-
-    return () => clearInterval(intervalId);
-  }, []);
+  }, [isFocused]);
 
   const injectedJavaScript = `
     document.getElementsByTagName('video')[0].play();
@@ -67,12 +64,12 @@ export default function FeedCom() {
     iframe.requestFullscreen();
   `;
 
-  const onRefresh = useCallback(() => {
-    setScreenRefresh(true);
-    setTimeout(() => {
-      setScreenRefresh(false);
-    }, 2000);
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setScreenRefresh(true);
+  //   setTimeout(() => {
+  //     setScreenRefresh(false);
+  //   }, 2000);
+  // }, []);
 
   const titleMap: any = {
     change: "1 day",
@@ -121,9 +118,10 @@ export default function FeedCom() {
         flex: 1,
       }}>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
-        }>
+      // refreshControl={
+      //   <RefreshControl refreshing={refreash} onRefresh={onRefresh} />
+      // }
+      >
         <View style={styles.container}>
           {loading ? (
             <View

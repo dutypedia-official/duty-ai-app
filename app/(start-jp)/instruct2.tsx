@@ -13,12 +13,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Text } from "react-native-paper";
 import { SafeAreaView, View } from "../../components/Themed";
 import useLang from "../../lib/hooks/useLang";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function StartScreen() {
+  const isFocused = useIsFocused();
   const { setSelectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
@@ -31,6 +33,16 @@ export default function StartScreen() {
     player.loop = false;
     player.play();
   });
+
+  useEffect(() => {
+    if (isFocused) {
+      // If the screen is focused, play the video
+      player.play();
+    } else {
+      // If the screen is not focused, pause the video
+      player.pause();
+    }
+  }, [isFocused, player]);
 
   const languages = [
     {
@@ -159,7 +171,7 @@ export default function StartScreen() {
         <TouchableOpacity
           onPress={() => {
             setSelectMarket("");
-            router.push("/(start-jp)/market");
+            router.push("/(start-jp)/login");
           }}>
           <LinearGradient
             colors={["#00A3FF", "#00FFC6"]}

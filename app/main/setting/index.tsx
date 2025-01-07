@@ -18,6 +18,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import { apiClient } from "@/lib/api";
 import axios from "axios";
+import useMarket from "@/lib/hooks/useMarket";
+import { SvgXml } from "react-native-svg";
+import { globe_change_dark } from "@/components/svgs/globe_change_dark";
+import { globe_change } from "@/components/svgs/globe_change";
 
 export default function SettingScreen() {
   const { signOut, isSignedIn, getToken } = useAuth();
@@ -30,6 +34,7 @@ export default function SettingScreen() {
   const langStore = useLang();
   const { language, setLanguage, setAutoTranslateTo } = langStore;
   const isBn = language === "Bn";
+  const { setSelectMarket } = useMarket();
   const isDark = useColorScheme() === "dark";
   const bgColor = useThemeColor({}, "background");
   const client = apiClient();
@@ -62,6 +67,23 @@ export default function SettingScreen() {
         router.push("/main/setting/select-language");
       },
     },
+    {
+      title: isBn ? "বাজার পরিবর্তন" : "Change Market",
+      leftIcon: (
+        <SvgXml
+          xml={!isDark ? globe_change_dark : globe_change}
+          width={24}
+          height={24}
+        />
+      ),
+      rightIcon: (
+        <Ionicons name="chevron-forward" size={24} color={textColor} />
+      ),
+      action: () => {
+        router.push("/main/setting/change-market");
+      },
+    },
+
     // {
     //   title: isBn ? "ভাষা" : "Language and Translator",
     //   leftIcon: <Ionicons name="language" size={24} color={textColor} />,
@@ -205,6 +227,8 @@ export default function SettingScreen() {
         <Button
           onPress={() => {
             signOut();
+            setLanguage("En");
+            setSelectMarket("");
             router.replace("/(start)/login");
           }}
           icon="logout"
