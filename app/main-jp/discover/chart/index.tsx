@@ -906,14 +906,10 @@ const StockListScreen = () => {
         flex: 1,
         backgroundColor: bgColor,
       }}>
-      <StatusBar
-        translucent={true}
-        backgroundColor={
-          isDark ? "rgba(0,0,0,0.5)" : "rgba(255, 255, 255, 0.5)"
-        }
-      />
+      <StatusBar translucent={true} />
       <FlatList
         data={initialStocks}
+        showsVerticalScrollIndicator={true}
         stickyHeaderIndices={[0]}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={() => {

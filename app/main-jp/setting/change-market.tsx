@@ -24,6 +24,7 @@ import {
   View,
   StyleSheet,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
@@ -33,14 +34,15 @@ export default function ChangeMarket() {
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
   const { language } = useLang();
-  const [selectedTemp, setSelectedTemp] = useState("");
   const { selectMarket, setSelectMarket } = useMarket();
+  const [selectedTemp, setSelectedTemp] = useState(selectMarket);
   const [jpIndexData, setJpIndexData] = useState<any>([]);
   const [bdIndexData, setBdIndexData] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
   const client = apiClient();
   const isFocused = useIsFocused();
-  const [openM, setOpenM] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setLanguage } = useLang();
 
   const angleInDegrees = 157;
   const angleInRadians = (angleInDegrees * Math.PI) / 180;
@@ -88,6 +90,15 @@ export default function ChangeMarket() {
   useEffect(() => {
     setSelectedTemp(selectMarket);
   }, [isFocused, selectMarket]);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true); // Show loading spinner
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate loading
+    setSelectMarket(selectedTemp); // Save selected market
+    setLanguage("En"); // Set language
+    setIsSubmitting(false); // Stop spinner
+    router.replace("/main/home"); // Navigate to the next layout
+  };
 
   const isNegJP = jpIndexData?.overview?.[0]?.overview?.change
     ?.toString()
@@ -381,21 +392,18 @@ export default function ChangeMarket() {
         </View>
 
         <TouchableOpacity
-          disabled={selectedTemp === "" ? true : false}
-          onPress={() => {
-            router.push({
-              pathname: "/main-jp/setting/terms",
-              params: {
-                market: selectedTemp,
-              },
-            });
-          }}
+          onPress={handleSubmit}
+          disabled={
+            selectedTemp === "" || selectedTemp === selectMarket || isSubmitting
+          }
           style={{
             paddingBottom: 16,
           }}>
           <LinearGradient
             colors={
-              selectedTemp === ""
+              selectedTemp === "" ||
+              selectedTemp === selectMarket ||
+              isSubmitting
                 ? ["#4F5A5F", "#3A3D3F"]
                 : ["#FF6FD8", "#00FFC6"]
             }
@@ -408,27 +416,43 @@ export default function ChangeMarket() {
             }}>
             <LinearGradient
               colors={
-                selectedTemp === ""
+                selectedTemp === "" ||
+                selectedTemp === selectMarket ||
+                isSubmitting
                   ? ["#4F5A5F", "#3A3D3F"]
                   : ["#FF6FD8", "#973FCD", "#3813C2"]
               }
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={{ borderRadius: 100, opacity: 0.8 }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  paddingVertical: 16,
-                  textAlign: "center",
-                  color: selectedTemp === "" ? "#717171" : "#FFD700",
-                }}>
-                {language === "Jp"
-                  ? "次"
-                  : language === "Bn"
-                  ? "পরবর্তী"
-                  : "Confirm"}
-              </Text>
+              {isSubmitting ? (
+                <View
+                  style={{
+                    paddingVertical: 18,
+                  }}>
+                  <ActivityIndicator color="#fff" />
+                </View>
+              ) : (
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    paddingVertical: 16,
+                    textAlign: "center",
+                    color:
+                      selectedTemp === "" ||
+                      selectedTemp === selectMarket ||
+                      isSubmitting
+                        ? "#717171"
+                        : "#FFD700",
+                  }}>
+                  {language === "Jp"
+                    ? "次"
+                    : language === "Bn"
+                    ? "পরবর্তী"
+                    : "Confirm"}
+                </Text>
+              )}
             </LinearGradient>
           </LinearGradient>
         </TouchableOpacity>
