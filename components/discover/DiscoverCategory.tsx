@@ -8,7 +8,7 @@ const DiscoverCategory = () => {
   const router = useRouter();
   const { setTemplate, setActiveConversationId } = useChat();
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   return (
     <View>
@@ -100,7 +100,7 @@ const DiscoverCategory = () => {
 
         <TouchableOpacity
           onPress={() => {
-            router.push("/main/discover/chart/");
+            router.push("/main/discover/chart");
           }}
           style={{
             width: "48%",

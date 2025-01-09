@@ -21,7 +21,7 @@ export default function StartScreen() {
   const isFocused = useIsFocused();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const videoSource = require("@/assets/video/background.mp4");
@@ -43,15 +43,15 @@ export default function StartScreen() {
 
   const languages = [
     {
-      value: "Bn",
+      value: "bn",
       label: "বাংলা",
     },
     {
-      value: "Jp",
+      value: "ja",
       label: "日本語",
     },
     {
-      value: "En",
+      value: "en",
       label: "English",
     },
   ];
@@ -105,9 +105,9 @@ export default function StartScreen() {
                 height: 90,
                 color: "#fff",
               }}>
-              {language === "Jp"
+              {language === "ja"
                 ? "言語を選択"
-                : language === "Bn"
+                : language === "bn"
                 ? "ভাষা নির্বাচন করুন"
                 : "Select Language"}
             </Text>
@@ -174,7 +174,7 @@ export default function StartScreen() {
 
         <Pressable
           onPress={() => {
-            if (language === "Jp") {
+            if (language === "ja") {
               router.push("/(start-jp)/instruct2");
             } else {
               router.push("/(start)/instruct2");
@@ -202,7 +202,7 @@ export default function StartScreen() {
                   textAlign: "center",
                   color: "#FFD700",
                 }}>
-                {language === "Jp" ? "次" : isBn ? "পরবর্তী" : "Next"}
+                {language === "ja" ? "次" : isBn ? "পরবর্তী" : "Next"}
               </Text>
             </LinearGradient>
           </LinearGradient>

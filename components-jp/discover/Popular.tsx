@@ -113,7 +113,7 @@ const prompts = [
 
 const PopularPrompts = () => {
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const router = useRouter();
   const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
     useChat();
@@ -126,8 +126,7 @@ const PopularPrompts = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           paddingVertical: 20,
-        }}
-      >
+        }}>
         <Text style={{ fontSize: 20 }}>
           {isBn ? "জনপ্রিয় নির্দেশ" : "Popular prompts"}
         </Text>
@@ -144,31 +143,28 @@ const PopularPrompts = () => {
             alignItems: "flex-start",
             alignSelf: "flex-start",
             gap: 12,
-          }}
-        >
+          }}>
           {prompts.slice(0, 10).map((item: any, index) => (
             <TouchableOpacity
               onPress={() => {
                 setTemplate(item.template);
                 setActiveConversationId(null);
                 setPrompt(item.title);
-                router.push("/main");
+                router.push("/main-jp/home");
               }}
               key={index}
               style={{
                 borderRadius: 100,
                 borderWidth: 1,
                 backgroundColor: l545454,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 14,
                   marginHorizontal: 20,
                   marginVertical: 8,
                   color: "white",
-                }}
-              >
+                }}>
                 {item.title?.length > MaxLimit
                   ? item.title.substring(0, MaxLimit - 3) + "..."
                   : item.title}
@@ -190,31 +186,28 @@ const PopularPrompts = () => {
             alignItems: "flex-start",
             alignSelf: "flex-start",
             gap: 12,
-          }}
-        >
+          }}>
           {prompts.slice(10, 20).map((item: any, index) => (
             <TouchableOpacity
               onPress={() => {
                 setTemplate(item.template);
                 setActiveConversationId(null);
                 setPrompt(item.title);
-                router.push("/main");
+                router.push("/main-jp/home");
               }}
               key={index}
               style={{
                 borderRadius: 100,
                 borderWidth: 1,
                 backgroundColor: l545454,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 14,
                   marginHorizontal: 20,
                   marginVertical: 8,
                   color: "white",
-                }}
-              >
+                }}>
                 {item.title?.length > MaxLimit
                   ? item.title.substring(0, MaxLimit - 3) + "..."
                   : item.title}

@@ -12,7 +12,7 @@ import { Text, View, useThemeColor } from "../Themed";
 
 const DiscoverHistory = () => {
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const router = useRouter();
   const { getToken } = useAuth();
   const { refreash, mainServerAvailable } = useUi();

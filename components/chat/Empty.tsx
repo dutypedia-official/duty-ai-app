@@ -26,7 +26,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const { user } = useUser();
   const [name, setName] = useState("");
   const { language, setLanguage } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const router = useRouter();

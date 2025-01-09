@@ -34,18 +34,18 @@ const Noti = () => {
   const client = apiClient();
 
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   const fetchData = async () => {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/noti/get-all/1",
+        `/noti/get-all/1?country="JP"`,
         token,
         {},
         mainServerAvailable
       );
-      console.log("jjjj", data);
+      console.log("notifications-------", data);
       setRefreash(!refreash);
       setNotifications(data);
     } catch (error) {

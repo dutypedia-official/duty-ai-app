@@ -33,7 +33,6 @@ export default function ChangeMarket() {
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const router = useRouter();
-  const { language } = useLang();
   const { selectMarket, setSelectMarket } = useMarket();
   const [selectedTemp, setSelectedTemp] = useState(selectMarket);
   const [jpIndexData, setJpIndexData] = useState<any>([]);
@@ -42,7 +41,7 @@ export default function ChangeMarket() {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setLanguage } = useLang();
+  const { language, setLanguage } = useLang();
 
   const angleInDegrees = 157;
   const angleInRadians = (angleInDegrees * Math.PI) / 180;
@@ -95,7 +94,7 @@ export default function ChangeMarket() {
     setIsSubmitting(true); // Show loading spinner
     await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate loading
     setSelectMarket(selectedTemp); // Save selected market
-    setLanguage("En"); // Set language
+    setLanguage("en"); // Set language
     setIsSubmitting(false); // Stop spinner
     router.replace("/main-jp/home"); // Navigate to the next layout
   };
@@ -118,7 +117,7 @@ export default function ChangeMarket() {
         `${isNegJP ? "-" : "+"}${Math.abs(
           Number(jpIndexData?.overview?.[0]?.overview?.change)
         ).toFixed(2)}%` || "",
-      language: "Jp",
+      language: "ja",
     },
     {
       flag: Bd_flag,
@@ -130,12 +129,18 @@ export default function ChangeMarket() {
         `${isNegBD ? "-" : "+"}${Math.abs(
           Number(bdIndexData?.dseXIndex?.[2]?.replace("%", ""))
         ).toFixed(2)}%` || "",
-      language: "Bn",
+      language: "bn",
     },
   ];
 
   const title = () => {
-    return "分析する市場を選択してください";
+    if (language === "ja") {
+      return "分析する市場を選択してください";
+    } else if (language === "bn") {
+      return "বাজার নির্বাচন করুন";
+    } else {
+      return "Select Market for Analysis";
+    }
   };
 
   return (
@@ -446,9 +451,9 @@ export default function ChangeMarket() {
                         ? "#717171"
                         : "#FFD700",
                   }}>
-                  {language === "Jp"
+                  {language === "ja"
                     ? "次"
-                    : language === "Bn"
+                    : language === "bn"
                     ? "পরবর্তী"
                     : "Confirm"}
                 </Text>

@@ -74,7 +74,7 @@ export default function CustomChat({ fromPath }: any) {
   const [timeLeft, setTimeLeft] = useState(30);
   const [isFailed, setIsFailed] = useState<any>(false);
   const { language, setLanguage } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const {
     activeConversationId,
     setActiveConversationId,

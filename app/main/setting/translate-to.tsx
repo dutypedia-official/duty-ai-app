@@ -47,7 +47,7 @@ export default function TranslatorScreen() {
     isTranslate,
     setIsTranslate,
   } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   useEffect(() => {
     if (!user) {
@@ -66,8 +66,7 @@ export default function TranslatorScreen() {
           {languages.map((lang, i) => (
             <TouchableOpacity
               onPress={() => setAutoTranslateTo(lang.value)}
-              key={i}
-            >
+              key={i}>
               <View
                 style={{
                   flexDirection: "row",
@@ -75,8 +74,7 @@ export default function TranslatorScreen() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -84,12 +82,10 @@ export default function TranslatorScreen() {
                     alignItems: "center",
                     flex: 1,
                     paddingVertical: 8,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{ fontSize: 18, fontWeight: "600" }}
-                    numberOfLines={1}
-                  >
+                    numberOfLines={1}>
                     {lang.name}
                   </Text>
                 </View>

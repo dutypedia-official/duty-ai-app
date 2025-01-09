@@ -67,7 +67,7 @@ export default function UserLoginScreen() {
   const { startOAuthFlow: appleAuth } = useOAuth({ strategy: "oauth_apple" });
   const langStore = useLang();
   const { language } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const bgColor = useThemeColor({}, "background");
   const [isFocused, setIsFocused] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // State to track keyboard visibility

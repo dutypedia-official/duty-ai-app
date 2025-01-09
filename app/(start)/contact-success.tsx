@@ -9,7 +9,7 @@ import { Button, Text } from "react-native-paper";
 const ContactSuccessScreen = () => {
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const primaryColor = useThemeColor({}, "primary");
   const router = useRouter();
   return (
@@ -47,8 +47,7 @@ const ContactSuccessScreen = () => {
         style={{ borderRadius: 4, marginTop: 12 }}
         labelStyle={{ fontWeight: "bold" }}
         contentStyle={{ paddingVertical: 4 }}
-        mode="contained"
-      >
+        mode="contained">
         {isBn ? "ফিরে যান" : "Back"}
       </Button>
     </SafeAreaView>

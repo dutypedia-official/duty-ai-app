@@ -24,7 +24,7 @@ export default function StartScreen() {
   const { setSelectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const videoSource = require("@/assets/video/background.mp4");
@@ -46,15 +46,15 @@ export default function StartScreen() {
 
   const languages = [
     {
-      value: "Bn",
+      value: "bn",
       label: "বাংলা",
     },
     {
-      value: "Jp",
+      value: "ja",
       label: "日本語",
     },
     {
-      value: "En",
+      value: "en",
       label: "English",
     },
   ];

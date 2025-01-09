@@ -29,8 +29,11 @@ import useUi from "@/lib/hooks/useUi";
 import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
+import * as Localization from "expo-localization";
 
-const CURRENT_IOS_VERSION = 10;
+type SupportedLanguage = "en" | "bn" | "ja";
+
+const CURRENT_IOS_VERSION = 6;
 const CURRENT_ANDROID_VERSION = 10;
 
 // const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -197,7 +200,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { setUpdateInfo, language } = useLang();
+  const { setUpdateInfo, language, setLanguage } = useLang();
   const { isLoaded, isSignedIn } = useAuth();
   const colorScheme = useColorScheme();
   const [update, setUpdate] = useState<any>(null);
@@ -319,7 +322,28 @@ function RootLayoutNav() {
     checkUpdate();
   }, []);
 
-  console.log("selectMarket---------", selectMarket, language);
+  const determineLanguage = (
+    currentLanguage: SupportedLanguage | null
+  ): SupportedLanguage => {
+    const supportedLanguages: SupportedLanguage[] = ["en", "bn", "ja"];
+    const languageCode = Localization.getLocales()[0]?.languageCode;
+
+    if (currentLanguage === null) {
+      return supportedLanguages.includes(languageCode as SupportedLanguage)
+        ? (languageCode as SupportedLanguage)
+        : "en";
+    }
+
+    return currentLanguage;
+  };
+
+  // Automatically determine and set language on app load
+  useEffect(() => {
+    if (language === null) {
+      const defaultLanguage = determineLanguage(language);
+      setLanguage(defaultLanguage);
+    }
+  }, [language]);
 
   useEffect(() => {
     if (isLoaded && !isLoading) {
@@ -332,7 +356,7 @@ function RootLayoutNav() {
       // Step 2: User is not signed in
       if (!isSignedIn) {
         // Redirect to language selection
-        if (language === "Jp") {
+        if (language === "ja") {
           router.replace("/(start-jp)");
         } else {
           router.replace("/(start)");
@@ -340,7 +364,7 @@ function RootLayoutNav() {
       }
       // Step 3: User is signed in but has not selected a market
       else if (!selectMarket) {
-        if (language === "Jp") {
+        if (language === "ja") {
           router.replace("/(start-jp)/market");
         } else {
           router.replace("/(start)/market");

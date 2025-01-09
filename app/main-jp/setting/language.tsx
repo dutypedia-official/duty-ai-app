@@ -23,7 +23,7 @@ export default function LanguageScreen() {
   const textColor = useThemeColor({}, "text");
   const langStore = useLang();
   const { language, setLanguage, setAutoTranslateTo } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   const test = async () => {
     const token = await getToken();
@@ -46,7 +46,7 @@ export default function LanguageScreen() {
       leftIcon: <Ionicons name="language" size={24} color={textColor} />,
       rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
       action: () => {
-        setLanguage(language == "Bn" ? "En" : "Bn");
+        setLanguage(language == "bn" ? "en" : "bn");
       },
     },
     {
@@ -74,16 +74,14 @@ export default function LanguageScreen() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
                     gap: 8,
                     alignItems: "center",
                     flex: 1,
-                  }}
-                >
+                  }}>
                   {/* {setting.leftIcon} */}
 
                   <Text numberOfLines={1}>{setting.title}</Text>

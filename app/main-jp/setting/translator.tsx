@@ -24,7 +24,7 @@ export default function TranslateToScreen() {
   const textColor = useThemeColor({}, "text");
   const langStore = useLang();
   const { language, autoTranslateTo, isTranslate, setIsTranslate } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   useEffect(() => {
     if (!user) {
@@ -80,16 +80,14 @@ export default function TranslateToScreen() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 12,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
                     gap: 8,
                     alignItems: "center",
                     flex: 1,
-                  }}
-                >
+                  }}>
                   {/* {setting.leftIcon} */}
 
                   <Text numberOfLines={1}>{setting.title}</Text>

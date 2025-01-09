@@ -50,7 +50,7 @@ export default function Login() {
   });
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const [visible, setVisible] = useState(false);
   const bgColor = useThemeColor({}, "background");
 
@@ -72,7 +72,7 @@ export default function Login() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.replace("/main/home/");
+        router.replace("/main/home");
       }
     } catch (err) {
       console.error(err);

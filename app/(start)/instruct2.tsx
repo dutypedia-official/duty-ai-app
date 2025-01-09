@@ -24,7 +24,7 @@ export default function StartScreen() {
   const isFocused = useIsFocused();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const videoSource = require("@/assets/video/background.mp4");
@@ -46,21 +46,21 @@ export default function StartScreen() {
 
   const languages = [
     {
-      value: "Bn",
+      value: "bn",
       label: "বাংলা",
     },
     {
-      value: "Jp",
+      value: "ja",
       label: "日本語",
     },
     {
-      value: "En",
+      value: "en",
       label: "English",
     },
   ];
 
   const title = () => {
-    if (language === "Jp") {
+    if (language === "ja") {
       return (
         <Fragment>
           <Text
@@ -98,7 +98,7 @@ export default function StartScreen() {
           </Text>
         </Fragment>
       );
-    } else if (language === "Bn") {
+    } else if (language === "bn") {
       return (
         <Fragment>
           <Text
@@ -201,7 +201,7 @@ export default function StartScreen() {
   };
 
   const subTitle = () => {
-    if (language === "Bn") {
+    if (language === "bn") {
       return "বাজার গবেষণা এখন অনেক সহজ";
     } else {
       return "Simplifying Market Data";
@@ -324,7 +324,7 @@ export default function StartScreen() {
                   fontSize: 20,
                   textAlign: "center",
                 }}>
-                {language === "Bn" ? "পরবর্তী" : "Next"}
+                {language === "bn" ? "পরবর্তী" : "Next"}
               </Text>
               <View
                 style={{

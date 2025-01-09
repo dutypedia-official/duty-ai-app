@@ -3,8 +3,8 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface LangStore {
-  language: "En" | "Bn" | "Jp" | any;
-  setLanguage: (lang: "En" | "Bn" | "Jp" | any) => void;
+  language: "en" | "bn" | "ja" | any;
+  setLanguage: (lang: "en" | "bn" | "ja" | any) => void;
   autoTranslateTo: string | null;
   setAutoTranslateTo: (lang: string) => void;
   isTranslate: boolean;
@@ -16,7 +16,7 @@ interface LangStore {
 const useLang = create<LangStore>()(
   persist(
     (set, get) => ({
-      language: "En",
+      language: null,
       setLanguage: (lang) => set({ language: lang }),
       autoTranslateTo: null,
       setAutoTranslateTo: (lang) => set({ autoTranslateTo: lang }),

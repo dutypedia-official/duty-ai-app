@@ -11,7 +11,7 @@ import { Fragment } from "react";
 export default function Ins1Screen() {
   const langStore = useLang();
   const { language } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen

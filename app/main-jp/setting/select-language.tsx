@@ -21,7 +21,7 @@ export default function LanguageScreen() {
   const { selectMarket } = useMarket();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   const path = usePathname();
 
@@ -32,17 +32,17 @@ export default function LanguageScreen() {
       return [
         {
           name: "বাংলা",
-          value: "Bn",
+          value: "bn",
           action: () => {
-            setLanguage("Bn");
+            setLanguage("bn");
             router.back();
           },
         },
         {
           name: "English",
-          value: "En",
+          value: "en",
           action: () => {
-            setLanguage("En");
+            setLanguage("en");
             router.back();
           },
         },
@@ -51,17 +51,17 @@ export default function LanguageScreen() {
       return [
         {
           name: "English",
-          value: "En",
+          value: "en",
           action: () => {
-            setLanguage("En");
+            setLanguage("en");
             router.back();
           },
         },
         {
           name: "Japanese",
-          value: "Jp",
+          value: "ja",
           action: () => {
-            setLanguage("Jp");
+            setLanguage("ja");
             router.back();
           },
         },

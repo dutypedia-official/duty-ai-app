@@ -103,7 +103,7 @@ export default function Market() {
         `${isNegJP ? "-" : "+"}${Math.abs(
           Number(jpIndexData?.overview?.[0]?.overview?.change)
         ).toFixed(2)}%` || "",
-      language: "Jp",
+      language: "ja",
     },
     {
       flag: Bd_flag,
@@ -115,14 +115,14 @@ export default function Market() {
         `${isNegBD ? "-" : "+"}${Math.abs(
           Number(bdIndexData?.dseXIndex?.[2]?.replace("%", ""))
         ).toFixed(2)}%` || "",
-      language: "Bn",
+      language: "bn",
     },
   ];
 
   const title = () => {
-    if (language === "Jp") {
+    if (language === "ja") {
       return "分析する市場を選択してください";
-    } else if (language === "Bn") {
+    } else if (language === "bn") {
       return "বাজার নির্বাচন করুন";
     } else {
       return "Select Market for Analysis";
@@ -130,12 +130,12 @@ export default function Market() {
   };
 
   const filteredMarkets = () => {
-    if (language === "Bn") {
-      return markets.filter((market) => market.language === "Bn");
-    } else if (language === "Jp") {
-      return markets.filter((market) => market.language === "Jp");
+    if (language === "bn") {
+      return markets.filter((market) => market.language === "bn");
+    } else if (language === "ja") {
+      return markets.filter((market) => market.language === "ja");
     } else {
-      return markets.filter((market) => market.language === "Bn");
+      return markets.filter((market) => market.language === "bn");
     }
   };
 
@@ -454,9 +454,9 @@ export default function Market() {
                   textAlign: "center",
                   color: selectedTemp === "" ? "#717171" : "#FFD700",
                 }}>
-                {language === "Jp"
+                {language === "jp"
                   ? "次"
-                  : language === "Bn"
+                  : language === "bn"
                   ? "পরবর্তী"
                   : "Confirm"}
               </Text>

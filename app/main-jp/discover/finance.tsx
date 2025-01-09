@@ -27,7 +27,7 @@ interface Props {
 }
 export default function DiscoverScreen() {
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const categoriesData = isBn ? discoverDataBn : discoverData;
   const colorScheme = useColorScheme();
   const router = useRouter();
@@ -177,7 +177,7 @@ export default function DiscoverScreen() {
                   } else {
                     setTemplate(item.template);
                     setActiveConversationId(null);
-                    router.push("/main-jp");
+                    router.push("/main-jp/home");
                   }
                 }}
                 key={index}>

@@ -24,6 +24,7 @@ import {
   View,
   StyleSheet,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
@@ -103,7 +104,7 @@ export default function Market() {
         `${isNegJP ? "-" : "+"}${Math.abs(
           Number(jpIndexData?.overview?.[0]?.overview?.change)
         ).toFixed(2)}%` || "",
-      language: "Jp",
+      language: "ja",
     },
     {
       flag: Bd_flag,
@@ -115,14 +116,14 @@ export default function Market() {
         `${isNegBD ? "-" : "+"}${Math.abs(
           Number(bdIndexData?.dseXIndex?.[2]?.replace("%", ""))
         ).toFixed(2)}%` || "",
-      language: "Bn",
+      language: "bn",
     },
   ];
 
   const title = () => {
-    if (language === "Jp") {
+    if (language === "ja") {
       return "分析する市場を選択してください";
-    } else if (language === "Bn") {
+    } else if (language === "bn") {
       return "বাজার নির্বাচন করুন";
     } else {
       return "Select Market for Analysis";
@@ -130,12 +131,12 @@ export default function Market() {
   };
 
   const filteredMarkets = () => {
-    if (language === "Bn") {
-      return markets.filter((market) => market.language === "Bn");
-    } else if (language === "Jp") {
-      return markets.filter((market) => market.language === "Jp");
+    if (language === "bn") {
+      return markets.filter((market) => market.language === "bn");
+    } else if (language === "ja") {
+      return markets.filter((market) => market.language === "ja");
     } else {
-      return markets.filter((market) => market.language === "Bn");
+      return markets.filter((market) => market.language === "bn");
     }
   };
 
@@ -285,120 +286,126 @@ export default function Market() {
               gap: 24,
               marginBottom: 24,
             }}>
-            {filteredMarkets()?.map((item, i) => {
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => {
-                    setSelectedTemp(item.country);
-                  }}
-                  style={{
-                    borderWidth: 2,
-                    borderColor:
-                      selectedTemp === item?.country
-                        ? "#BFABFF"
-                        : "transparent",
-                    borderRadius: 12,
-                    shadowColor: "#000000",
-                    shadowOffset: { width: 0, height: 12 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 4,
-                    elevation: 5,
-                  }}>
-                  <LinearGradient
-                    colors={["#1A1D34", "#2F345C"]}
-                    start={start}
-                    end={end}
+            {loading ? (
+              <View>
+                <ActivityIndicator />
+              </View>
+            ) : (
+              filteredMarkets()?.map((item, i) => {
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      setSelectedTemp(item.country);
+                    }}
                     style={{
+                      borderWidth: 2,
+                      borderColor:
+                        selectedTemp === item?.country
+                          ? "#BFABFF"
+                          : "transparent",
                       borderRadius: 12,
-                      width: "100%",
-                      paddingVertical: 24,
-                      paddingRight: 24,
-                      paddingLeft: 12,
+                      shadowColor: "#000000",
+                      shadowOffset: { width: 0, height: 12 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 4,
+                      elevation: 5,
                     }}>
-                    <View
+                    <LinearGradient
+                      colors={["#1A1D34", "#2F345C"]}
+                      start={start}
+                      end={end}
                       style={{
-                        gap: 24,
+                        borderRadius: 12,
+                        width: "100%",
+                        paddingVertical: 24,
+                        paddingRight: 24,
+                        paddingLeft: 12,
                       }}>
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 6,
+                          gap: 24,
                         }}>
                         <View
                           style={{
-                            width: 38,
-                            height: 38,
-                            borderRadius: 100,
-                            justifyContent: "center",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 6,
+                          }}>
+                          <View
+                            style={{
+                              width: 38,
+                              height: 38,
+                              borderRadius: 100,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}>
+                            <SvgXml xml={item.flag} />
+                          </View>
+                          <View style={{ gap: 6 }}>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                color: "#ECECEC",
+                                fontWeight: "700",
+                              }}>
+                              {item.country}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: "#ECECEC",
+                              }}>
+                              {item?.name}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
                             alignItems: "center",
                           }}>
-                          <SvgXml xml={item.flag} />
-                        </View>
-                        <View style={{ gap: 6 }}>
-                          <Text
+                          <View
                             style={{
-                              fontSize: 20,
-                              color: "#ECECEC",
-                              fontWeight: "700",
+                              gap: 7,
                             }}>
-                            {item.country}
-                          </Text>
-                          <Text
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: "#DADADA",
+                              }}>
+                              {item?.total}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: item?.percentage.toString().includes("-")
+                                  ? "#CE1300"
+                                  : "#DADADA",
+                              }}>
+                              {item?.percentage}
+                            </Text>
+                          </View>
+                          <View
                             style={{
-                              fontSize: 16,
-                              color: "#ECECEC",
+                              width: 70,
                             }}>
-                            {item?.name}
-                          </Text>
-                        </View>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}>
-                        <View
-                          style={{
-                            gap: 7,
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              color: "#DADADA",
-                            }}>
-                            {item?.total}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              color: item?.percentage.toString().includes("-")
-                                ? "#CE1300"
-                                : "#DADADA",
-                            }}>
-                            {item?.percentage}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            width: 70,
-                          }}>
-                          <SvgXml
-                            xml={
-                              item?.percentage.toString().includes("-")
-                                ? bar_chart_neg_svg
-                                : bar_chart_svg
-                            }
-                          />
+                            <SvgXml
+                              xml={
+                                item?.percentage.toString().includes("-")
+                                  ? bar_chart_neg_svg
+                                  : bar_chart_svg
+                              }
+                            />
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              );
-            })}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                );
+              })
+            )}
           </View>
         </View>
 
@@ -445,9 +452,9 @@ export default function Market() {
                   textAlign: "center",
                   color: selectedTemp === "" ? "#717171" : "#FFD700",
                 }}>
-                {language === "Jp"
+                {language === "ja"
                   ? "次"
-                  : language === "Bn"
+                  : language === "bn"
                   ? "পরবর্তী"
                   : "Confirm"}
               </Text>

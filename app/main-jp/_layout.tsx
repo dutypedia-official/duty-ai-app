@@ -56,7 +56,7 @@ export default function TabLayout() {
     hideTabNav,
     setHideTabNav,
   } = useUi();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const segments: any = useSegments();
   const isFocused = useIsFocused();
   const client = apiClient();
@@ -92,7 +92,7 @@ export default function TabLayout() {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/noti/get-unread-count",
+        `/noti/get-unread-count?country="JP"`,
         token,
         {},
         mainServerAvailable

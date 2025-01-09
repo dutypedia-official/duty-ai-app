@@ -30,7 +30,7 @@ const Noti = () => {
   const client = apiClient();
 
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
 
   const fetchData = async () => {
     try {

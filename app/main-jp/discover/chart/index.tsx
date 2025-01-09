@@ -159,11 +159,11 @@ export const StockListItem = ({
       const token = await getToken();
 
       const response = await client.post(
-        "/tools/fav-symbol",
+        `/tools/fav-symbol?country="JP"`,
         {
           symbol: name,
           price,
-          currency: "BDT",
+          currency: "JPY",
           trading: "10.12",
           change,
           logo: logoUrl,
@@ -559,7 +559,7 @@ export const StockListItem = ({
 const StockListScreen = () => {
   const inset = useSafeAreaInsets();
   const { language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const [sortByName, setSortByName] = useState(false);
   const {
     refreash,

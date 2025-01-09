@@ -104,7 +104,7 @@ const DiscoverHistory = () => {
               <TouchableOpacity
                 onPress={() => {
                   setActiveConversationId(item.id);
-                  router.push("/main-jp/home/");
+                  router.push("/main-jp/home");
                 }}
                 key={index}
                 style={{

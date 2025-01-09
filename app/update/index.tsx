@@ -22,7 +22,7 @@ import { SvgXml } from "react-native-svg";
 
 export default function UpdatePage() {
   const { updateInfo, language } = useLang();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
 

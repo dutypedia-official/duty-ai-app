@@ -29,7 +29,7 @@ export default function SupportScreen() {
   const langStore = useLang();
   const client = apiClient();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -103,8 +103,7 @@ export default function SupportScreen() {
             style={{ borderRadius: 4, marginTop: 12 }}
             labelStyle={{ fontWeight: "bold" }}
             contentStyle={{ flexDirection: "row-reverse", paddingVertical: 4 }}
-            mode="contained"
-          >
+            mode="contained">
             {isBn ? "সাবমিট" : "Submit"}
           </Button>
         </KeyboardAvoidingView>

@@ -24,7 +24,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 export default function ContactScreen() {
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const [text, setText] = useState("");
   const headerHeight = useHeaderHeight();
   const textColor = useThemeColor({}, "text");

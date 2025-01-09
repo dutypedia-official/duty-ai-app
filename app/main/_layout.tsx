@@ -48,7 +48,7 @@ export default function TabLayout() {
     hideTabNav,
     setHideTabNav,
   } = useUi();
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const segments: any = useSegments();
   const isFocused = useIsFocused();
   const client = apiClient();

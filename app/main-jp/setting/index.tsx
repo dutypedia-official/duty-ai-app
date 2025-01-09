@@ -33,7 +33,7 @@ export default function SettingScreen() {
   const textColor = useThemeColor({}, "text");
   const langStore = useLang();
   const { language, setLanguage, setAutoTranslateTo } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const { setSelectMarket } = useMarket();
   const isDark = useColorScheme() === "dark";
   const bgColor = useThemeColor({}, "background");
@@ -60,7 +60,7 @@ export default function SettingScreen() {
 
   const generalSettings = [
     // {
-    //   title: language === "Jp" ? "言語" : isBn ? "ভাষা" : "Language",
+    //   title: language === "ja" ? "言語" : isBn ? "ভাষা" : "Language",
     //   leftIcon: <Ionicons name="language" size={24} color={textColor} />,
     //   rightIcon: (
     //     <Ionicons name="chevron-forward" size={24} color={textColor} />
@@ -226,7 +226,7 @@ export default function SettingScreen() {
         <Button
           onPress={() => {
             signOut();
-            setLanguage("En");
+            setLanguage("en");
             setSelectMarket("");
             router.replace("/(start-jp)/login");
           }}

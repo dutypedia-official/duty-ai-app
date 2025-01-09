@@ -46,7 +46,7 @@ export default function Signup() {
   });
   const langStore = useLang();
   const { language, setLanguage } = langStore;
-  const isBn = language === "Bn";
+  const isBn = language === "bn";
   const [visible, setVisible] = useState(false);
   const bgColor = useThemeColor({}, "background");
 
