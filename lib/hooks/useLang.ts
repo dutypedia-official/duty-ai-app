@@ -16,7 +16,7 @@ interface LangStore {
 const useLang = create<LangStore>()(
   persist(
     (set, get) => ({
-      language: null,
+      language: "",
       setLanguage: (lang) => set({ language: lang }),
       autoTranslateTo: null,
       setAutoTranslateTo: (lang) => set({ autoTranslateTo: lang }),
