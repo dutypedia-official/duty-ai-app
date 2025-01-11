@@ -131,8 +131,14 @@ const ChatTurbo = ({ fromPath }: any) => {
       return;
     }
     setInputText("");
+
+    console.log("activeConversationId", activeConversationId);
+
     const token = await getToken();
+
     const id = Crypto.randomUUID();
+    console.log("first id", id);
+
     const newMessage = {
       _id: Crypto.randomUUID(),
       createdAt: new Date(),
@@ -142,6 +148,9 @@ const ChatTurbo = ({ fromPath }: any) => {
         name: "human",
       },
     };
+
+    console.log("second id", newMessage._id);
+
     setRelatedPrompts([]);
     setMessages((prevMessages) => {
       const newMessages = [
@@ -229,24 +238,22 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const baseUrl = mainServerAvailable ? MAIN_SERVER_URL : BACKUP_SERVER_URL;
 
-      console.log("baseUrl------>", baseUrl);
-
       const url =
         template == "finance"
-          ? `${baseUrl}/chat/finance/jp`
+          ? `${baseUrl}/chat/finance`
           : template == "forex"
           ? `${baseUrl}/chat/forex`
           : template == "scanner"
-          ? `${baseUrl}/chat/screener/jp`
+          ? `${baseUrl}/chat/screener`
           : `${baseUrl}/chat/pro`;
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.0.102:8000/chat/finance/jp`
+          ? `http://192.168.0.102:8000/chat/finance`
           : template == "forex"
           ? `http://192.168.0.102:8000/chat/forex`
           : template == "scanner"
-          ? `http://192.168.0.102:8000/chat/screener/jp`
+          ? `http://192.168.0.102:8000/chat/screener`
           : `http://192.168.0.102:8000/chat/pro`;
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
@@ -747,7 +754,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     };
 
     if (isLoading || streaming) {
-      setDisplayMessages(sortMessages(messages.slice(0, 2)));
+      setDisplayMessages((prev) => sortMessages(messages.slice(0, 2)));
     } else {
       setDisplayMessages(sortMessages(messages));
     }
@@ -794,9 +801,9 @@ const ChatTurbo = ({ fromPath }: any) => {
     if (template == "general") {
       return "Ask anything";
     } else if (template == "finance") {
-      return "銘柄を入力してください";
+      return "Enter full company name";
     } else if (template == "scanner") {
-      return "銘柄を入力してください";
+      return "Enter full company name";
     } else {
       return "Enter currency pair name";
     }
@@ -807,7 +814,7 @@ const ChatTurbo = ({ fromPath }: any) => {
       style={{
         flex: 1,
         // marginTop: fromPath ? -54 : 0,
-        paddingTop: fromPath ? 0 : insets.top,
+        paddingTop: insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
       }}
     >
@@ -835,6 +842,53 @@ const ChatTurbo = ({ fromPath }: any) => {
             />
           )}
 
+          <View
+            style={{
+              backgroundColor: "transparent",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingVertical: 10,
+              paddingHorizontal: 12,
+              gap: 25,
+              position: "absolute",
+              paddingTop: insets.top,
+              zIndex: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setActiveConversationId(null);
+                router.back();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDark ? "#00A6A6" : "#6EA8D5",
+                borderRadius: 50,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 5,
+                width: 36,
+                height: 36,
+              }}
+            >
+              <Text>
+                <Ionicons
+                  name={"chevron-back"}
+                  size={24}
+                  style={{ color: "#FFFFFF" }}
+                />
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {fromPath && (
+        <>
           <View
             style={{
               backgroundColor: "transparent",
@@ -950,10 +1004,10 @@ const ChatTurbo = ({ fromPath }: any) => {
                     : "#E8E9EC"
                   : inputBgColor,
               borderBottomColor:
-                template === "scanner" ? "#3A7CA5" : borderColor,
+                template === "scanner" ? "transparent" : borderColor,
               borderTopColor: template === "scanner" ? "#3A7CA5" : borderColor,
               borderTopWidth: 1,
-              borderBottomWidth: 1,
+              borderBottomWidth: template === "scanner" ? 0 : 1,
               marginBottom: 0,
             }}
           >
@@ -1016,18 +1070,6 @@ const ChatTurbo = ({ fromPath }: any) => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      {/* {template === "scanner" && (
-        <View
-          style={{
-            backgroundColor: isDark ? "#2C2F33" : "#E8E9EC",
-            height: insets.bottom,
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        />
-      )} */}
     </SafeAreaView>
   );
 };

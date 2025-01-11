@@ -29,7 +29,8 @@ export default function Layout() {
         headerStyle: {
           backgroundColor: bgColor,
         },
-      }}>
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{ title: "Discover", headerShown: false }}
@@ -49,7 +50,7 @@ export default function Layout() {
               : template == "finance"
               ? "Finance"
               : "Forex",
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -69,7 +70,6 @@ export default function Layout() {
         options={{
           title: "Select 3 stock",
           headerShown: false,
-          headerBackTitleVisible: false,
           headerTitleStyle: {
             color: isDark ? "#FFD700" : "#366000",
           },
@@ -82,7 +82,6 @@ export default function Layout() {
         options={{
           title: "scanner",
           headerShown: false,
-          headerBackTitleVisible: false,
         }}
       />
     </Stack>
