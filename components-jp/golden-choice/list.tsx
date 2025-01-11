@@ -56,11 +56,11 @@ const SignalList = ({
       // Remove the stock if already selected
       removeSelectStock(description);
     } else {
-      // Limit selection to 3 stocks
-      if (selectStock.length >= 3) {
+      // Limit selection to 5 stocks
+      if (selectStock.length >= 5) {
         Toast.show({
           type: "error",
-          text1: "You can select only 3 stocks",
+          text1: "You can select only 5 stocks",
         });
         return;
       }
@@ -82,7 +82,7 @@ const SignalList = ({
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
-          opacity: selectStock.length >= 3 && !isSelected ? 0.2 : 1,
+          opacity: selectStock.length >= 5 && !isSelected ? 0.2 : 1,
         }}>
         <LinearGradient
           colors={isDark ? ["#171717", "#0D0D0D"] : [cardBgColor, cardBgColor]}
@@ -259,7 +259,7 @@ const List = () => {
 
   let filterData = searchTerm === "" ? marketListData : marketData;
 
-  const isDisable = selectStock.length < 3 ? true : false;
+  const isDisable = selectStock.length < 3 || selectStock.length > 5;
 
   const injectedJavaScript = `
     document.getElementsByTagName('video')[0].play();
@@ -339,7 +339,7 @@ const List = () => {
             textAlign: "center",
             color: isDark ? "#FFD700" : "#366000",
           }}>
-          Select 3 stock
+          Select 5 stock
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>

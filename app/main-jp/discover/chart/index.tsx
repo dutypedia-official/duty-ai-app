@@ -899,6 +899,165 @@ const StockListScreen = () => {
     currentAlarm ? `${currentAlarm?.price}` : ""
   );
 
+  const ListHeaderComponent = React.useMemo(() => {
+    return (
+      <View
+        style={{
+          zIndex: 9,
+          backgroundColor: bgColor,
+          paddingTop: inset.top,
+        }}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => {
+              router.back();
+            }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}>
+            <Text>
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                style={{ color: isDark ? "#00B0FF" : "#34495E" }}
+              />
+            </Text>
+            <Text
+              style={[
+                styles.headerTitle,
+                { color: isDark ? "#00B0FF" : "#2980B9" },
+              ]}>
+              {isBn ? "স্টক লিস্ট" : "Stock List"}
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              gap: 12,
+              alignItems: "center",
+            }}>
+            <View
+              style={[
+                styles.searchContainer,
+                { borderColor: isDark ? "#333333" : "#D1D1D1" },
+              ]}>
+              <TextInput
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  color: textColor,
+                  height: "100%",
+                  paddingLeft: 12, // 12-pixel gap from the left border
+                  paddingVertical: 0,
+                }}
+                placeholder="Search stock"
+                placeholderTextColor={isDark ? "#fff" : "#34495E"}
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+              />
+              <Feather
+                name="search"
+                size={20}
+                color={isDark ? "#333333" : "#34495E"}
+                style={styles.searchIcon}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setSortByName(!sortByName);
+              }}>
+              <FontAwesome
+                name="sort-alpha-asc"
+                size={24}
+                color={sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <ScrollView
+          style={{
+            flexGrow: 0,
+            flexShrink: 0,
+            paddingVertical: 12,
+          }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            alignItems: "flex-start",
+            alignSelf: "flex-start",
+            gap: 12,
+            paddingLeft: 12,
+          }}>
+          {filteredItems.map((item: any, index) => (
+            <TouchableOpacity
+              onPress={() => {
+                setActiveFilter(item.value);
+              }}
+              key={index}
+              style={{
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: isDark ? "#333333" : "#B0BEC5",
+                backgroundColor:
+                  activeFilter != item.value
+                    ? isDark
+                      ? "#1C1C1C"
+                      : "#E0E0E0"
+                    : "#00796B",
+              }}>
+              <Text
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                  fontSize: 14,
+                  color:
+                    activeFilter != item.value
+                      ? isDark
+                        ? "#B0BEC5"
+                        : "#fff"
+                      : "white",
+                }}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }, [searchTerm, activeFilter, sortByName]);
+
+  // Avoid unnecessary re-renders by memoizing the renderItem
+  const renderItem = useCallback(({ item }: any) => {
+    return (
+      <View
+        style={{
+          backgroundColor: bgColor,
+          marginHorizontal: 12,
+        }}>
+        <StockListItem
+          changePer={item.changePer}
+          name={item.description}
+          price={getPrice(item)}
+          change={item.change}
+          logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
+          volume={item.volume}
+          value={item.value}
+          alerms={alerms}
+          aiAlerms={aiAlerms}
+          favs={favorites}
+          trading={item.trade}
+          targetPrice={targetPrice}
+          setCompanyName={setCompanyName}
+          item={item}
+          bottomSheetRef={bottomSheetRef}
+        />
+      </View>
+    );
+  }, []);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -910,6 +1069,7 @@ const StockListScreen = () => {
       <FlatList
         data={initialStocks}
         showsVerticalScrollIndicator={true}
+        keyboardShouldPersistTaps="handled"
         stickyHeaderIndices={[0]}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={() => {
@@ -928,163 +1088,8 @@ const StockListScreen = () => {
             </View>
           );
         }}
-        ListHeaderComponent={() => {
-          return (
-            <View
-              style={{
-                zIndex: 9,
-                backgroundColor: bgColor,
-                paddingTop: inset.top,
-              }}>
-              <View style={styles.header}>
-                <TouchableOpacity
-                  onPress={() => {
-                    router.back();
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 8,
-                  }}>
-                  <Text>
-                    <Ionicons
-                      name="chevron-back"
-                      size={24}
-                      style={{ color: isDark ? "#00B0FF" : "#34495E" }}
-                    />
-                  </Text>
-                  <Text
-                    style={[
-                      styles.headerTitle,
-                      { color: isDark ? "#00B0FF" : "#2980B9" },
-                    ]}>
-                    {isBn ? "স্টক লিস্ট" : "Stock List"}
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    gap: 12,
-                    alignItems: "center",
-                  }}>
-                  <View
-                    style={[
-                      styles.searchContainer,
-                      { borderColor: isDark ? "#333333" : "#D1D1D1" },
-                    ]}>
-                    <TextInput
-                      style={{
-                        flex: 1,
-                        fontSize: 14,
-                        color: textColor,
-                        height: "100%",
-                        paddingLeft: 12, // 12-pixel gap from the left border
-                        paddingVertical: 0,
-                      }}
-                      placeholder="Search stock"
-                      placeholderTextColor={isDark ? "#fff" : "#34495E"}
-                      value={searchTerm}
-                      onChangeText={setSearchTerm}
-                    />
-                    <Feather
-                      name="search"
-                      size={20}
-                      color={isDark ? "#333333" : "#34495E"}
-                      style={styles.searchIcon}
-                    />
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSortByName(!sortByName);
-                    }}>
-                    <FontAwesome
-                      name="sort-alpha-asc"
-                      size={24}
-                      color={
-                        sortByName ? "#00B0FF" : isDark ? "#a1a1a1" : "#909090"
-                      }
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <ScrollView
-                style={{
-                  flexGrow: 0,
-                  flexShrink: 0,
-                  paddingVertical: 12,
-                }}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{
-                  alignItems: "flex-start",
-                  alignSelf: "flex-start",
-                  gap: 12,
-                  paddingLeft: 12,
-                }}>
-                {filteredItems.map((item: any, index) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setActiveFilter(item.value);
-                    }}
-                    key={index}
-                    style={{
-                      borderRadius: 8,
-                      borderWidth: 1,
-                      borderColor: isDark ? "#333333" : "#B0BEC5",
-                      backgroundColor:
-                        activeFilter != item.value
-                          ? isDark
-                            ? "#1C1C1C"
-                            : "#E0E0E0"
-                          : "#00796B",
-                    }}>
-                    <Text
-                      style={{
-                        paddingHorizontal: 12,
-                        paddingVertical: 10,
-                        fontSize: 14,
-                        color:
-                          activeFilter != item.value
-                            ? isDark
-                              ? "#B0BEC5"
-                              : "#fff"
-                            : "white",
-                      }}>
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          );
-        }}
-        renderItem={({ item }: any) => (
-          <View
-            style={{
-              backgroundColor: bgColor,
-              marginHorizontal: 12,
-            }}>
-            <StockListItem
-              changePer={item.changePer}
-              name={item.description}
-              price={getPrice(item)}
-              change={item.change}
-              logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
-              volume={item.volume}
-              value={item.value}
-              alerms={alerms}
-              aiAlerms={aiAlerms}
-              favs={favorites}
-              trading={item.trade}
-              targetPrice={targetPrice}
-              setCompanyName={setCompanyName}
-              item={item}
-              bottomSheetRef={bottomSheetRef}
-            />
-          </View>
-        )}
+        ListHeaderComponent={ListHeaderComponent}
+        renderItem={renderItem}
         keyExtractor={(item: any) => item.description}
         // style={styles.list}
         refreshControl={

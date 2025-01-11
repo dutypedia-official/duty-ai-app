@@ -327,39 +327,48 @@ export default function UserLoginScreen() {
                             backgroundColor: "transparent",
                             position: "relative",
                           }}>
-                          <TextInput
-                            style={[
-                              styles.input,
-                              {
-                                paddingRight: 40,
-                              },
-                              error ? styles.errorInput : null,
-                              isFocused ? styles.focusedInput : null,
-                            ]}
-                            placeholder={"パスワード"}
-                            placeholderTextColor="#BDC3C7"
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                            onChangeText={onChange}
-                            value={value}
-                            secureTextEntry={!showPass}
-                          />
-                          <TouchableOpacity
-                            onPress={() => setShowPass(!showPass)}
+                          {/* Wrapper for TextInput and Icon */}
+                          <View
                             style={{
-                              position: "absolute",
-                              right: 15,
-                              top: "50%",
-                              transform: [{ translateY: -12 }],
-                              zIndex: 10,
+                              position: "relative",
+                              minHeight: 60, // Ensures consistent height for the container
+                              justifyContent: "center",
                             }}>
-                            <Ionicons
-                              name={!showPass ? "eye" : "eye-off"}
-                              size={24}
-                              color="#BDC3C7"
+                            <TextInput
+                              style={[
+                                styles.input,
+                                {
+                                  paddingRight: 40,
+                                },
+                                error ? styles.errorInput : null,
+                                isFocused ? styles.focusedInput : null,
+                              ]}
+                              placeholder={"パスワード"}
+                              placeholderTextColor="#BDC3C7"
+                              onBlur={handleBlur}
+                              onFocus={handleFocus}
+                              onChangeText={onChange}
+                              value={value}
+                              secureTextEntry={!showPass}
                             />
-                          </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => setShowPass(!showPass)}
+                              style={{
+                                position: "absolute",
+                                right: 15,
+                                top: "50%",
+                                transform: [{ translateY: -12 }],
+                                zIndex: 10,
+                              }}>
+                              <Ionicons
+                                name={!showPass ? "eye" : "eye-off"}
+                                size={24}
+                                color="#BDC3C7"
+                              />
+                            </TouchableOpacity>
+                          </View>
 
+                          {/* Error Message */}
                           {error && (
                             <View
                               style={{
@@ -381,6 +390,7 @@ export default function UserLoginScreen() {
                       );
                     }}
                   />
+
                   <View
                     style={{
                       flexDirection: "row",

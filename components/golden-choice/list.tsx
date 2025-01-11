@@ -60,27 +60,23 @@ const SignalList = ({
         text1: `${symbol} has been removed from selection`,
       });
     } else {
-      // Limit selection to 3 stocks
-      if (selectStock.length >= 3) {
+      // Limit selection to 5 stocks
+      if (selectStock.length >= 5) {
         Toast.show({
           type: "error",
-          text1: "You can select only 3 stocks",
+          text1: "You can select only 5 stocks",
         });
         return;
       }
 
       // Add the stock if not already selected
       setSelectStock(symbol);
-
-      Toast.show({
-        type: "success",
-        text1: `You have selected ${symbol}`,
-      });
     }
   };
 
   const isSelected = selectStock.includes(item?.symbol);
 
+  console.log("symbol---------", selectStock);
   return (
     <View
       style={{
@@ -91,7 +87,7 @@ const SignalList = ({
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
-          opacity: selectStock.length >= 3 && !isSelected ? 0.2 : 1,
+          opacity: selectStock.length >= 5 && !isSelected ? 0.2 : 1,
         }}>
         <LinearGradient
           colors={isDark ? ["#171717", "#0D0D0D"] : [cardBgColor, cardBgColor]}
@@ -205,7 +201,6 @@ const List = () => {
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const cardBgColor = isDark ? "#1E1E1E" : "#EAEDED";
-  const graDient = isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"];
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const videoUrl = "https://www.youtube.com/embed/A4L792q0q9Q?autoplay=1";
@@ -217,7 +212,7 @@ const List = () => {
   const filterData = marketData?.filter((stock: any) =>
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const isDisable = selectStock.length < 3 ? true : false;
+  const isDisable = selectStock.length < 3 || selectStock.length > 5;
 
   const injectedJavaScript = `
     document.getElementsByTagName('video')[0].play();
@@ -287,7 +282,7 @@ const List = () => {
             textAlign: "center",
             color: isDark ? "#FFD700" : "#366000",
           }}>
-          Select 3 stock
+          Select 5 stock
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
@@ -358,7 +353,7 @@ const List = () => {
       <View style={{ flex: 1, gap: 24, paddingTop: 10 }}>
         <View style={{ backgroundColor: "transparent", paddingHorizontal: 10 }}>
           <LinearGradient
-            colors={graDient}
+            colors={isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -504,7 +499,7 @@ const List = () => {
               if (isDisable) {
                 Toast.show({
                   type: "error",
-                  text1: "Please select 3 stocks",
+                  text1: "Please select 5 stocks",
                 });
                 return;
               }

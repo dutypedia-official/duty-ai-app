@@ -16,7 +16,7 @@ export default function Details() {
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const params = useLocalSearchParams();
-  const data = JSON.parse(`${params?.data}`);
+  const data = JSON.parse(`${params?.id}`);
   const borderColor = useThemeColor({}, "border");
 
   console.log("data----------", data?.details);

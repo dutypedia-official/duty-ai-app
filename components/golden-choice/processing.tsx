@@ -109,7 +109,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
               <LottieView
                 style={{ flex: 1 }}
                 source={
-                  index === 1
+                  index % 2 !== 0
                     ? require("@/assets/animations/handoff.json")
                     : require("@/assets/animations/collecting.json")
                 }

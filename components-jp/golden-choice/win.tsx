@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { usePathname, useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -250,16 +250,14 @@ export default function Win() {
               </View>
             </LinearGradient>
 
-            <LinearGradient
-              colors={isDark ? ["#8B0000", "#4A0202"] : ["#F0F2F5", "#FFF3B0"]}
-              start={{ x: 1, y: 0 }}
-              end={{ x: 1, y: 1 }}
+            <View
               style={{
                 paddingVertical: 24,
                 paddingHorizontal: 8,
-                backgroundColor: "transparent",
+                backgroundColor: isDark ? "#8B0101" : "#F7F2D3",
                 width: "40%",
                 gap: 20,
+                overflow: "visible",
               }}>
               <View
                 style={{
@@ -368,7 +366,7 @@ export default function Win() {
                   </Text>
                 </View>
               </View>
-            </LinearGradient>
+            </View>
             <LinearGradient
               colors={isDark ? ["#D1D5DB", "#A6A9AD"] : ["#FFFFFF", "#FFFFFF"]}
               start={{ x: 1, y: 0 }}
@@ -639,7 +637,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["1位"]?.銘柄
                                 ),
@@ -651,7 +649,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["1位"]?.銘柄
                                 ),
@@ -791,7 +789,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["2位"]?.銘柄
                                 ),
@@ -803,7 +801,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["2位"]?.銘柄
                                 ),
@@ -865,8 +863,6 @@ export default function Win() {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    borderBottomLeftRadius: 12,
-                    borderBottomRightRadius: 12,
                   }}>
                   <View
                     style={{
@@ -950,7 +946,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/home/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["3位"]?.銘柄
                                 ),
@@ -962,7 +958,7 @@ export default function Win() {
                           router.push({
                             pathname: `/main-jp/discover/vipsignal/list/[id]`,
                             params: {
-                              data: JSON.stringify({
+                              id: JSON.stringify({
                                 details: specific(
                                   answer?.leaderboard["3位"].銘柄
                                 ),
@@ -997,6 +993,334 @@ export default function Win() {
                 </LinearGradient>
               </View>
             </View>
+
+            {answer?.leaderboard["4位"]?.銘柄?.[0] && (
+              <Fragment>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#A9A9A9", "#D3D3D3"] : ["#FFD700", "#F0F2F5"]
+                  }
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ height: 1 }}></LinearGradient>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                  }}>
+                  <View
+                    style={{
+                      borderTopLeftRadius: 12,
+                      borderTopRightRadius: 12,
+                    }}>
+                    <LinearGradient
+                      colors={
+                        isDark ? ["#D3D3D3", "#A9A9D3"] : ["#F5F5F5", "#F5F5F5"]
+                      }
+                      start={isDark ? { x: 1, y: 0 } : { x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        paddingHorizontal: 10,
+                        paddingVertical: 12,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 8,
+                          alignItems: "center",
+                          width: "65%",
+                        }}>
+                        <View
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 100,
+                            overflow: "hidden",
+                            backgroundColor: "transparent",
+                            position: "relative",
+                          }}>
+                          <View
+                            style={{
+                              width: 24,
+                              height: 24,
+                              backgroundColor: "#fff",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              position: "absolute",
+                              left: 0,
+                              top: 0,
+                            }}>
+                            <Text
+                              style={{
+                                fontWeight: "700",
+                                fontSize: 12,
+                                color: "#1E1E1E",
+                              }}>
+                              {answer?.leaderboard["4位"]?.銘柄?.[0]}
+                            </Text>
+                          </View>
+
+                          {answer?.leaderboard["4位"]?.銘柄 && (
+                            <SvgUri
+                              uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["4位"]?.銘柄}.svg`}
+                              width={24}
+                              height={24}
+                              style={{
+                                backgroundColor: "transparent",
+                              }}
+                            />
+                          )}
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text
+                            ellipsizeMode="tail"
+                            numberOfLines={1}
+                            style={{
+                              fontWeight: "normal",
+                              color: isDark ? "#F0F0F0" : "#6B6B6B",
+                              fontSize: 14,
+                            }}>
+                            {answer?.leaderboard["4位"]?.銘柄}
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 20,
+                          alignItems: "center",
+                        }}>
+                        <View
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 100,
+                            backgroundColor: "transparent",
+                            position: "relative",
+                            aspectRatio: 720 / 964,
+                          }}></View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (pathname.includes("/main-jp/home")) {
+                              router.push({
+                                pathname: `/main-jp/home/vipsignal/list/[id]`,
+                                params: {
+                                  id: JSON.stringify({
+                                    details: specific(
+                                      answer?.leaderboard["4位"]?.銘柄
+                                    ),
+                                    name: answer?.leaderboard["4位"]?.銘柄,
+                                  }),
+                                },
+                              });
+                            } else {
+                              router.push({
+                                pathname: `/main-jp/discover/vipsignal/list/[id]`,
+                                params: {
+                                  id: JSON.stringify({
+                                    details: specific(
+                                      answer?.leaderboard["4位"].銘柄
+                                    ),
+                                    name: answer?.leaderboard["4位"].銘柄,
+                                  }),
+                                },
+                              });
+                            }
+                          }}
+                          style={{
+                            backgroundColor: "transparent",
+                            borderWidth: 1,
+                            borderColor: isDark ? "#B08D57" : "#D4AF37",
+                            borderRadius: 36,
+                          }}>
+                          <LinearGradient
+                            colors={["transparent", "transparent"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{ borderRadius: 36 }}>
+                            <Text
+                              style={{
+                                color: "#8B7500",
+                                paddingHorizontal: 12,
+                                paddingVertical: 10,
+                              }}>
+                              View
+                            </Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </View>
+                    </LinearGradient>
+                  </View>
+                </View>
+              </Fragment>
+            )}
+
+            {answer?.leaderboard["5位"]?.銘柄?.[0] && (
+              <Fragment>
+                <LinearGradient
+                  colors={
+                    isDark ? ["#A9A9A9", "#D3D3D3"] : ["#FFD700", "#F0F2F5"]
+                  }
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ height: 1 }}></LinearGradient>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                  }}>
+                  <View
+                    style={{
+                      borderTopLeftRadius: 12,
+                      borderTopRightRadius: 12,
+                    }}>
+                    <LinearGradient
+                      colors={
+                        isDark ? ["#D3D3D3", "#A9A9D3"] : ["#F5F5F5", "#F5F5F5"]
+                      }
+                      start={isDark ? { x: 1, y: 0 } : { x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        paddingHorizontal: 10,
+                        paddingVertical: 12,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderBottomLeftRadius: 12,
+                        borderBottomRightRadius: 12,
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 8,
+                          alignItems: "center",
+                          width: "65%",
+                        }}>
+                        <View
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 100,
+                            overflow: "hidden",
+                            backgroundColor: "transparent",
+                            position: "relative",
+                          }}>
+                          <View
+                            style={{
+                              width: 24,
+                              height: 24,
+                              backgroundColor: "#fff",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              position: "absolute",
+                              left: 0,
+                              top: 0,
+                            }}>
+                            <Text
+                              style={{
+                                fontWeight: "700",
+                                fontSize: 12,
+                                color: "#1E1E1E",
+                              }}>
+                              {answer?.leaderboard["5位"]?.銘柄?.[0]}
+                            </Text>
+                          </View>
+
+                          {answer?.leaderboard["5位"]?.銘柄 && (
+                            <SvgUri
+                              uri={`https://s3-api.bayah.app/cdn/symbol/logo/${answer?.leaderboard["5位"]?.銘柄}.svg`}
+                              width={24}
+                              height={24}
+                              style={{
+                                backgroundColor: "transparent",
+                              }}
+                            />
+                          )}
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text
+                            ellipsizeMode="tail"
+                            numberOfLines={1}
+                            style={{
+                              fontWeight: "normal",
+                              color: isDark ? "#F0F0F0" : "#6B6B6B",
+                              fontSize: 14,
+                            }}>
+                            {answer?.leaderboard["5位"]?.銘柄}
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 20,
+                          alignItems: "center",
+                        }}>
+                        <View
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 100,
+                            backgroundColor: "transparent",
+                            position: "relative",
+                            aspectRatio: 720 / 964,
+                          }}></View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (pathname.includes("/main-jp/home")) {
+                              router.push({
+                                pathname: `/main-jp/home/vipsignal/list/[id]`,
+                                params: {
+                                  id: JSON.stringify({
+                                    details: specific(
+                                      answer?.leaderboard["5位"]?.銘柄
+                                    ),
+                                    name: answer?.leaderboard["5位"]?.銘柄,
+                                  }),
+                                },
+                              });
+                            } else {
+                              router.push({
+                                pathname: `/main-jp/discover/vipsignal/list/[id]`,
+                                params: {
+                                  id: JSON.stringify({
+                                    details: specific(
+                                      answer?.leaderboard["5位"].銘柄
+                                    ),
+                                    name: answer?.leaderboard["5位"].銘柄,
+                                  }),
+                                },
+                              });
+                            }
+                          }}
+                          style={{
+                            backgroundColor: "transparent",
+                            borderWidth: 1,
+                            borderColor: isDark ? "#B08D57" : "#D4AF37",
+                            borderRadius: 36,
+                          }}>
+                          <LinearGradient
+                            colors={["transparent", "transparent"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{ borderRadius: 36 }}>
+                            <Text
+                              style={{
+                                color: "#8B7500",
+                                paddingHorizontal: 12,
+                                paddingVertical: 10,
+                              }}>
+                              View
+                            </Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </View>
+                    </LinearGradient>
+                  </View>
+                </View>
+              </Fragment>
+            )}
           </View>
         </View>
         <View
