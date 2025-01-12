@@ -68,23 +68,23 @@ export const getPrice = (item: any) => {
 
 const filteredItems = [
   {
-    name: "All",
+    name: "全ての株",
     value: "",
   },
   {
-    name: "Top gainers",
+    name: "最大上昇株",
     value: "gainers",
   },
   {
-    name: "Biggest losers",
+    name: "最大下落株",
     value: "losers",
   },
   {
-    name: "Most active",
+    name: "最も活発な株",
     value: "most_volatile",
   },
   {
-    name: "Best performing",
+    name: "最高のパフォーマンス",
     value: "best_performing",
   },
 ];
@@ -159,7 +159,7 @@ export const StockListItem = ({
       const token = await getToken();
 
       const response = await client.post(
-        `/tools/fav-symbol?country="JP"`,
+        `/tools/fav-symbol?country=JP`,
         {
           symbol: name,
           price,
@@ -465,7 +465,7 @@ export const StockListItem = ({
               </Text>
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                Chart
+                チャート
               </Text>
             </TouchableOpacity>
 
@@ -513,7 +513,9 @@ export const StockListItem = ({
               </Text>
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm || currentAiAlarm ? "Edit Alerm" : "Set Alarm"}
+                {currentAlarm || currentAiAlarm
+                  ? "アラーム編集"
+                  : "アラーム設定"}
               </Text>
             </TouchableOpacity>
 
@@ -546,7 +548,7 @@ export const StockListItem = ({
               </Text>
               <Text
                 style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                Ask AI
+                AIに質問
               </Text>
             </TouchableOpacity>
           </View>
@@ -645,7 +647,7 @@ const StockListScreen = () => {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/tools/get-favs",
+        "/tools/get-favs?country=JP",
         token,
         {},
         mainServerAvailable
@@ -953,7 +955,7 @@ const StockListScreen = () => {
                   paddingLeft: 12, // 12-pixel gap from the left border
                   paddingVertical: 0,
                 }}
-                placeholder="Search stock"
+                placeholder="株を検索"
                 placeholderTextColor={isDark ? "#fff" : "#34495E"}
                 value={searchTerm}
                 onChangeText={setSearchTerm}

@@ -57,6 +57,20 @@ export default function Win() {
   const specific = (details: any) =>
     answer.stocks.find((銘柄: any) => 銘柄.名前 === details);
 
+  // Get leaderboard entries as an array, ensuring answer is not null or undefined
+  const leaderboardEntries = answer?.leaderboard
+    ? Object.entries(answer.leaderboard)
+    : []; // Default to an empty array if answer or leaderboard is null or undefined
+
+  // Example: Check if a specific entry is the last
+  const isLast = (key: any) => {
+    // Ensure leaderboardEntries is not empty
+    if (leaderboardEntries.length === 0) return false;
+
+    const lastKey = leaderboardEntries[leaderboardEntries.length - 1][0];
+    return key === lastKey;
+  };
+
   return (
     <LinearGradient
       colors={isDark ? ["#121212", "#000000"] : ["#F0F2F5", "#F0F2F5"]}
@@ -863,6 +877,8 @@ export default function Win() {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    borderBottomLeftRadius: isLast("3位") ? 12 : 0,
+                    borderBottomRightRadius: isLast("3位") ? 12 : 0,
                   }}>
                   <View
                     style={{
@@ -1024,6 +1040,8 @@ export default function Win() {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        borderBottomLeftRadius: isLast("4位") ? 12 : 0,
+                        borderBottomRightRadius: isLast("4位") ? 12 : 0,
                       }}>
                       <View
                         style={{
@@ -1187,8 +1205,8 @@ export default function Win() {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        borderBottomLeftRadius: 12,
-                        borderBottomRightRadius: 12,
+                        borderBottomLeftRadius: isLast("5位") ? 12 : 0,
+                        borderBottomRightRadius: isLast("5位") ? 12 : 0,
                       }}>
                       <View
                         style={{

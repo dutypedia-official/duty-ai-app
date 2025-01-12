@@ -57,7 +57,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const financePrompts = [
     "📰 日本株式マーケットニュース",
     "📱 トヨタに投資すべきか",
-    "▶️ Duty AI ビデオチュートリアル",
+    // "▶️ Duty AI ビデオチュートリアル",
     "🔍 Stock Scanner",
     "⚖️ Golden choice",
   ];
@@ -270,7 +270,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
-                    fontSize: 16,
+                    fontSize: 18,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
                   numberOfLines={2}>

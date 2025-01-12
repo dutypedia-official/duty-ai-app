@@ -539,7 +539,7 @@ const List = () => {
             paddingVertical: 10,
             gap: 12,
           }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               alignContent: "center",
               alignItems: "center",
@@ -565,7 +565,7 @@ const List = () => {
                 style={{ marginLeft: 15 }}
               />
             </Pressable>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={() => {
               if (isDisable) {

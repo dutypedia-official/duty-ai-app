@@ -183,7 +183,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={({ route }) => ({
-        animation: "shift",
+        animation: "fade",
         headerStyle: {
           backgroundColor: bgColor,
         },

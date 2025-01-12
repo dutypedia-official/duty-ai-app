@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  GestureResponderEvent,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
@@ -18,6 +20,20 @@ const TermsAndConditions = ({ market }: { market?: any }) => {
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
   const { setSelectMarket } = useMarket();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Helper function to create a delay using a Promise
+  const delay = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handlePress = async (event: GestureResponderEvent): Promise<void> => {
+    setIsLoading(true); // Start loading
+    await delay(3000); // Wait for 3 seconds
+    setSelectMarket(market); // Set the market after loading
+    setIsLoading(false); // Stop loading
+    router.replace("/main-jp/home"); // Perform the navigation
+  };
+
   return (
     <View
       style={[
@@ -191,17 +207,17 @@ const TermsAndConditions = ({ market }: { market?: any }) => {
             Continued use of the app constitutes your acceptance of these terms.
           </Text>
         </ScrollView>
-        <TouchableOpacity
-          onPress={() => {
-            setSelectMarket(market);
-            router.replace("/main-jp/home");
-          }}>
+        <TouchableOpacity onPress={handlePress}>
           <LinearGradient
             colors={["#4E73DF", "#8E44AD"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.button}>
-            <Text style={styles.buttonText}>I Agree</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>I Agree</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
       </View>

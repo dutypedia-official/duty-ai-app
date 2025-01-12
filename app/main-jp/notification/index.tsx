@@ -40,7 +40,7 @@ const Noti = () => {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        `/noti/get-all/1?country="JP"`,
+        `/noti/get-all/1?country=JP`,
         token,
         {},
         mainServerAvailable

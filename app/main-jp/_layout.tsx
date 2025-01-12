@@ -8,21 +8,11 @@ import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
 import IonIcon from "@expo/vector-icons/Ionicons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
-import BottomSheet from "@gorhom/bottom-sheet";
 import { useIsFocused } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { Tabs, usePathname, useRouter, useSegments } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Easing,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { Platform, StyleSheet, useColorScheme } from "react-native";
 import { SvgXml } from "react-native-svg";
 import Colors from "../../constants/Colors";
 
@@ -56,7 +46,6 @@ export default function TabLayout() {
     hideTabNav,
     setHideTabNav,
   } = useUi();
-  const isBn = language === "bn";
   const segments: any = useSegments();
   const isFocused = useIsFocused();
   const client = apiClient();
@@ -92,7 +81,7 @@ export default function TabLayout() {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        `/noti/get-unread-count?country="JP"`,
+        `/noti/get-unread-count?country=JP`,
         token,
         {},
         mainServerAvailable
@@ -191,26 +180,13 @@ export default function TabLayout() {
         sceneContainerStyle: {
           backgroundColor: colorScheme === "dark" ? "#121212" : "white",
         },
-        // tabBarButton: (props) => {
-        //   return (
-        //     <TouchableHighlight
-        //       underlayColor="gray"
-        //       style={{
-        //         justifyContent: "center",
-        //         alignItems: "center",
-        //         borderRadius: 100, // Rounded corners
-        //         overflow: "hidden", // Prevent highlight color overflow
-        //       }}
-        //       {...props}
-        //     />
-        //   );
-        // },
+
         animation: "shift",
       })}>
       <Tabs.Screen
         name="feed"
         options={{
-          title: isBn ? "ফিড" : "Feed",
+          title: "フィード",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIconLine name="feed" color={color} />
@@ -221,7 +197,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="discover"
         options={{
-          title: isBn ? "অনুসন্ধান" : "Discover",
+          title: "発見",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="compass-outline" color={color} />
@@ -231,7 +207,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: isBn ? "চ্যাট" : "Stock Analysis",
+          title: "株式分析",
           headerShown: false,
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -245,20 +221,11 @@ export default function TabLayout() {
             ),
         }}
       />
-      {/* <Tabs.Screen
-              name="history"
-              options={{
-                title: isBn ? "ইতিহাস" : "History",
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="time-outline" color={color} />
-                ),
-              }}
-            /> */}
 
       <Tabs.Screen
         name="notification"
         options={{
-          title: isBn ? "নোটিফিকেশান" : "Notification",
+          title: "通知",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="notifications-outline" color={color} />
           ),
@@ -274,19 +241,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="setting"
         options={{
-          title: isBn ? "সেটিং" : "Setting",
+          title: "設定",
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
-      {/* <Tabs.Screen
-        name="setting"
-        options={{
-          title: isBn ? "সেটিং" : "Setting",
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
-        }}
-      /> */}
     </Tabs>
   );
 }

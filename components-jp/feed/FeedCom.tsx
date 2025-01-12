@@ -7,6 +7,7 @@ import {
 import { apiClient } from "@/lib/api";
 import useFeedData from "@/lib/hooks/useFeedData";
 import useUi from "@/lib/hooks/useUi";
+import { useUser } from "@clerk/clerk-expo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
@@ -23,6 +24,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FeedCom() {
+  const { user } = useUser();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { refreash, setRefreash, screenRefresh, setScreenRefresh } = useUi();
@@ -111,6 +113,9 @@ export default function FeedCom() {
     return Math.abs(value).toFixed(2); // Absolute value and round to 2 decimal places
   };
 
+  if (!user) {
+    return null;
+  }
   return (
     <SafeAreaView
       style={{
@@ -403,6 +408,7 @@ export default function FeedCom() {
                                   backgroundColor: "transparent",
                                   alignItems: "flex-end",
                                   justifyContent: "center",
+                                  paddingRight: 12,
                                 }}>
                                 <Text
                                   style={{

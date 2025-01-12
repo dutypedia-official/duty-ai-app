@@ -26,8 +26,10 @@ import { SafeAreaView, Text, useThemeColor, View } from "../Themed";
 import { LinearGradient } from "expo-linear-gradient";
 import useFeedData from "@/lib/hooks/useFeedData";
 import useUi from "@/lib/hooks/useUi";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function FeedCom() {
+  const { user } = useUser();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [loading, setLoading] = useState(true);
@@ -277,6 +279,9 @@ export default function FeedCom() {
   //   }, 2000);
   // }, []);
 
+  if (!user) {
+    return null;
+  }
   return (
     // <SafeAreaView
     //   edges={["top", "left", "right"]}

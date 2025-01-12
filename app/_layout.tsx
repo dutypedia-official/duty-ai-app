@@ -22,7 +22,7 @@ import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/Colors";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { Platform } from "react-native";
+import { ActivityIndicator, Platform, Text, View } from "react-native";
 import useSocket from "@/lib/hooks/useSocket";
 import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
@@ -175,12 +175,6 @@ export default function RootLayout() {
   useEffect(() => {
     connect();
   }, []);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
 
   if (!loaded) {
     return null;
@@ -381,8 +375,17 @@ function RootLayoutNav() {
     }
   }, [isLoaded, isLoading, update, isSignedIn, selectMarket]);
 
+  const colorscheme = useColorScheme();
+  const isDark = colorscheme === "dark";
+
+  useEffect(() => {
+    if (isLoaded && !isLoading) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoaded, isLoading]);
+
   if (!isLoaded || isLoading) {
-    return null;
+    return <StatusBar backgroundColor={Colors["light"].background} />;
   }
 
   return (

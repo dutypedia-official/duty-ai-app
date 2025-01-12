@@ -109,7 +109,7 @@ export default function DiscoverScreen() {
   const fetchData = async () => {
     try {
       const token = await getToken();
-      const { data } = await client.get(`/tools/get-favs?country="JP"`, token);
+      const { data } = await client.get(`/tools/get-favs?country=JP`, token);
       const { data: alermData } = await client.get("/noti/get-alerms", token);
       setAlerms(alermData?.alerms);
       setFavorites(data);

@@ -41,7 +41,7 @@ export default function Layout() {
         options={{
           title:
             template == "general"
-              ? "Real Time Chat"
+              ? "リアルタイムチャット"
               : template == "finance"
               ? "Finance"
               : "FX",

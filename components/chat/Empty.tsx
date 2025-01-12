@@ -58,7 +58,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
 
   const financePrompts = [
     "📰 Bangladesh stock market news",
-    "📱 Should I Invest in GP BD",
+    "📱 গ্রামীনফোন স্টকটি কেমন হবে",
     "📊 আজকের ইনডেক্স সম্পর্কে বল",
     "▶️ Duty AI ব্যাবহার ভিডিও",
     "🔍 Stock Scanner",
@@ -269,7 +269,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                 <Text
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
-                    fontSize: 16,
+                    fontSize: 18,
                     width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
                   }}
                   numberOfLines={2}>
