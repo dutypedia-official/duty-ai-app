@@ -51,9 +51,10 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const financePrompts = [
     "📰 日本株式マーケットニュース",
     "📱 トヨタに投資すべきか",
+    "📊 今日の指数について教えてください。",
     // "▶️ Duty AI ビデオチュートリアル",
     "🔍 ストックスキャナー",
-    "ゴールデン チョイス",
+    "⚖️ ゴールデン チョイス",
   ];
 
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
@@ -219,7 +220,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           const promptPress = (val: any) => {
             if (val.includes("▶️ Duty AI ビデオチュートリアル")) {
               setVisible(true);
-            } else if (val.includes("ゴールデン チョイス")) {
+            } else if (val.includes("⚖️ ゴールデン チョイス")) {
               router.push("/main-jp/home/vipsignal/list");
             } else if (val.includes("🔍 ストックスキャナー")) {
               router.push({
@@ -265,7 +266,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
                     fontSize: 18,
-                    width: prompt.includes("ゴールデン チョイス")
+                    width: prompt.includes("⚖️ ゴールデン チョイス")
                       ? "90%"
                       : "auto",
                   }}
@@ -273,7 +274,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   {prompt}
                 </Text>
 
-                {prompt.includes("ゴールデン チョイス") && (
+                {prompt.includes("⚖️ ゴールデン チョイス") && (
                   <Entypo
                     name="chevron-small-right"
                     size={24}
