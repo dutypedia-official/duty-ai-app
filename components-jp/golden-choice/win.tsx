@@ -71,6 +71,8 @@ export default function Win() {
     return key === lastKey;
   };
 
+  console.log("answer----------------", answer);
+
   return (
     <LinearGradient
       colors={isDark ? ["#121212", "#000000"] : ["#F0F2F5", "#F0F2F5"]}
@@ -241,7 +243,7 @@ export default function Win() {
                       color: "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["2位"].スコア} point
+                    {answer?.leaderboard["2位"].スコア} ポイント
                   </Text>
                 </View>
               </View>
@@ -359,7 +361,7 @@ export default function Win() {
                       color: isDark ? "#FFFFFF" : "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["1位"].スコア} point
+                    {answer?.leaderboard["1位"].スコア} ポイント
                   </Text>
                 </View>
               </View>
@@ -470,7 +472,7 @@ export default function Win() {
                       color: "#777777",
                       fontSize: 10,
                     }}>
-                    {answer?.leaderboard["3位"]?.スコア} point
+                    {answer?.leaderboard["3位"]?.スコア} ポイント
                   </Text>
                 </View>
               </View>
@@ -690,7 +692,7 @@ export default function Win() {
                             paddingHorizontal: 12,
                             paddingVertical: 10,
                           }}>
-                          View
+                          表示
                         </Text>
                       </LinearGradient>
                     </TouchableOpacity>
@@ -842,7 +844,7 @@ export default function Win() {
                             paddingHorizontal: 12,
                             paddingVertical: 10,
                           }}>
-                          View
+                          表示
                         </Text>
                       </LinearGradient>
                     </TouchableOpacity>
@@ -1001,7 +1003,7 @@ export default function Win() {
                             paddingHorizontal: 12,
                             paddingVertical: 10,
                           }}>
-                          View
+                          表示
                         </Text>
                       </LinearGradient>
                     </TouchableOpacity>
@@ -1164,7 +1166,7 @@ export default function Win() {
                                 paddingHorizontal: 12,
                                 paddingVertical: 10,
                               }}>
-                              View
+                              表示
                             </Text>
                           </LinearGradient>
                         </TouchableOpacity>
@@ -1329,7 +1331,7 @@ export default function Win() {
                                 paddingHorizontal: 12,
                                 paddingVertical: 10,
                               }}>
-                              View
+                              表示
                             </Text>
                           </LinearGradient>
                         </TouchableOpacity>
@@ -1395,7 +1397,7 @@ export default function Win() {
                     paddingVertical: 12,
                     textAlign: "center",
                   }}>
-                  Cancel
+                  キャンセル
                 </Text>
               </LinearGradient>
             </LinearGradient>

@@ -277,12 +277,12 @@ const List = () => {
           ellipsizeMode="tail"
           style={{
             flex: 1,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: "bold",
             textAlign: "center",
             color: isDark ? "#FFD700" : "#366000",
           }}>
-          Select 5 stock
+          Select 3 to 5 stock
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>

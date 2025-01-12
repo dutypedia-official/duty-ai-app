@@ -45,12 +45,12 @@ export default function Layout() {
               : template == "finance"
               ? "Finance"
               : "FX",
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="history"
-        options={{ title: "History", headerShown: true }}
+        options={{ title: "履歴", headerBackTitle: "発見", headerShown: true }}
       />
 
       <Stack.Screen
@@ -65,7 +65,6 @@ export default function Layout() {
         options={{
           title: "Select 3 stock",
           headerShown: false,
-          headerBackTitleVisible: false,
           headerTitleStyle: {
             color: isDark ? "#FFD700" : "#366000",
           },
@@ -78,7 +77,6 @@ export default function Layout() {
         options={{
           title: "scanner",
           headerShown: false,
-          headerBackTitleVisible: false,
         }}
       />
     </Stack>

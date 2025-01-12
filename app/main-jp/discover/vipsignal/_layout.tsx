@@ -33,7 +33,7 @@ export default function Layout() {
         options={{
           headerBackTitleVisible: false,
           headerBackVisible: false,
-          headerTitle: "Processing",
+          headerTitle: "処理中",
           headerTitleStyle: {
             color: isDark ? "#FFD700" : "#8B7500",
             fontSize: 24,

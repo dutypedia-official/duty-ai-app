@@ -105,10 +105,10 @@ export default function TabTwoScreen() {
               fontWeight: "bold",
               textTransform: "capitalize",
             }}>
-            No history yet
+            まだ履歴がありません
           </Text>
           <Text style={{ textAlign: "center", opacity: 0.5, marginTop: 8 }}>
-            Start chat with the AI to create your history
+            履歴を作成するためにAIとチャットを開始してください
           </Text>
         </View>
       </SafeAreaView>
@@ -132,7 +132,7 @@ export default function TabTwoScreen() {
           <TouchableOpacity
             onPress={() => {
               setActiveConversationId(item.id);
-              router.push("/main-jp/home/");
+              router.push("/main-jp/home");
             }}
             key={index}>
             <Card mode="contained" style={{ backgroundColor: bgColor }}>

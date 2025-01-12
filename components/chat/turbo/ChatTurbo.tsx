@@ -805,7 +805,7 @@ const ChatTurbo = ({ fromPath }: any) => {
       style={{
         flex: 1,
         // marginTop: fromPath ? -54 : 0,
-        paddingTop: fromPath ? 0 : insets.top,
+        paddingTop: insets.top,
         backgroundColor: template === "scanner" ? "transparent" : bgColor,
       }}>
       {template === "scanner" && (
@@ -864,6 +864,53 @@ const ChatTurbo = ({ fromPath }: any) => {
                 width: 36,
                 height: 36,
               }}>
+              <Text>
+                <Ionicons
+                  name={"chevron-back"}
+                  size={24}
+                  style={{ color: "#FFFFFF" }}
+                />
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {fromPath && (
+        <>
+          <View
+            style={{
+              backgroundColor: "transparent",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingVertical: 10,
+              paddingHorizontal: 12,
+              gap: 25,
+              position: "absolute",
+              paddingTop: insets.top,
+              zIndex: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setActiveConversationId(null);
+                router.back();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDark ? "#00A6A6" : "#6EA8D5",
+                borderRadius: 50,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 5,
+                width: 36,
+                height: 36,
+              }}
+            >
               <Text>
                 <Ionicons
                   name={"chevron-back"}

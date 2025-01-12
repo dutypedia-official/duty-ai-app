@@ -17,7 +17,7 @@ export default function Layout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Notification",
+          title: "通知",
           headerTitleStyle: {
             color: isDark ? "#FFFFFF" : "#1E1E1E",
           },

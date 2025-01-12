@@ -70,7 +70,7 @@ export default function SettingScreen() {
     //   },
     // },
     {
-      title: "Change Market",
+      title: "市場を変更",
       leftIcon: (
         <SvgXml
           xml={!isDark ? globe_change_dark : globe_change}

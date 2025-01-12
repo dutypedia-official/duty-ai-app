@@ -931,7 +931,7 @@ const StockListScreen = () => {
                 styles.headerTitle,
                 { color: isDark ? "#00B0FF" : "#2980B9" },
               ]}>
-              {isBn ? "স্টক লিস্ট" : "Stock List"}
+              株リスト
             </Text>
           </TouchableOpacity>
           <View

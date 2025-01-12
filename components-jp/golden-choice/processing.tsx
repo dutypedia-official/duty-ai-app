@@ -75,9 +75,9 @@ export const ProcessingDataList = ({ index, item }: any) => {
             }}
             numberOfLines={1}
             ellipsizeMode="tail">
-            {selectStock.some((data) => item.label === data) && "Collecting"}{" "}
+            {selectStock.some((data) => item.label === data) && "収集中"}{" "}
             {item.label}{" "}
-            {selectStock.some((data) => item.label === data) && "Data"}
+            {selectStock.some((data) => item.label === data) && "データ"}
           </Text>
 
           {/* Display check icon if completed */}
@@ -105,9 +105,9 @@ export const ProcessingDataList = ({ index, item }: any) => {
             alignSelf: "center",
             aspectRatio: 16 / 9,
           }}>
-          {!item?.label.includes("Analysis fundamental") &&
-            !item?.label.includes("Analysis technical") &&
-            !item?.label.includes("Our Algorithm") && (
+          {!item?.label.includes("ファンダメンタル分析") &&
+            !item?.label.includes("テクニカル分析") &&
+            !item?.label.includes("私たちのアルゴリズム") && (
               <LottieView
                 style={{ flex: 1 }}
                 source={
@@ -119,7 +119,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
                 loop
               />
             )}
-          {item?.label.includes("Analysis fundamental") && (
+          {item?.label.includes("ファンダメンタル分析") && (
             <LottieView
               style={{ flex: 1 }}
               source={require("@/assets/animations/optimize.json")}
@@ -127,7 +127,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
               loop
             />
           )}
-          {item?.label.includes("Analysis technical") && (
+          {item?.label.includes("テクニカル分析") && (
             <LottieView
               style={{ flex: 1 }}
               source={require("@/assets/animations/search.json")}
@@ -135,7 +135,7 @@ export const ProcessingDataList = ({ index, item }: any) => {
               loop
             />
           )}
-          {item?.label.includes("Our Algorithm") && (
+          {item?.label.includes("私たちのアルゴリズム") && (
             <LottieView
               style={{ flex: 1 }}
               source={require("@/assets/animations/search.json")}
@@ -190,17 +190,17 @@ const Processing = () => {
       isCompleted: false,
     })),
     {
-      label: "Analysis fundamental",
+      label: "ファンダメンタル分析",
       isProcessing: false,
       isCompleted: false,
     },
     {
-      label: "Analysis technical",
+      label: "テクニカル分析",
       isProcessing: false,
       isCompleted: false,
     },
     {
-      label: "Our Algorithm",
+      label: "私たちのアルゴリズム",
       isProcessing: false,
       isCompleted: false,
     },
@@ -327,7 +327,7 @@ const Processing = () => {
             textAlign: "center",
             color: isDark ? "#FFD700" : "#8B7500",
           }}>
-          Processing
+          処理中
         </Text>
       </View>
       <View style={{ paddingTop: 20, flex: 1 }}>
@@ -391,7 +391,7 @@ const Processing = () => {
                     paddingVertical: 12,
                     textAlign: "center",
                   }}>
-                  Cancel
+                  キャンセル
                 </Text>
               </LinearGradient>
             </LinearGradient>

@@ -135,13 +135,7 @@ export default function ChangeMarket() {
   ];
 
   const title = () => {
-    if (language === "ja") {
-      return "分析する市場を選択してください";
-    } else if (language === "bn") {
-      return "বাজার নির্বাচন করুন";
-    } else {
-      return "Select Market for Analysis";
-    }
+    return "分析する市場を選択してください";
   };
 
   return (
@@ -452,11 +446,7 @@ export default function ChangeMarket() {
                         ? "#717171"
                         : "#FFD700",
                   }}>
-                  {language === "ja"
-                    ? "次"
-                    : language === "bn"
-                    ? "পরবর্তী"
-                    : "Confirm"}
+                  確認する
                 </Text>
               )}
             </LinearGradient>

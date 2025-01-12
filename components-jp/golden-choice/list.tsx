@@ -60,7 +60,7 @@ const SignalList = ({
       if (selectStock.length >= 5) {
         Toast.show({
           type: "error",
-          text1: "You can select only 5 stocks",
+          text1: "最大で5つの株しか選択できません",
         });
         return;
       }
@@ -178,7 +178,7 @@ const SignalList = ({
                     paddingHorizontal: 12,
                     paddingVertical: 10,
                   }}>
-                  Select
+                  選択
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -334,12 +334,12 @@ const List = () => {
           ellipsizeMode="tail"
           style={{
             flex: 1,
-            fontSize: 24,
+            fontSize: 16,
             fontWeight: "bold",
             textAlign: "center",
             color: isDark ? "#FFD700" : "#366000",
           }}>
-          Select 5 stock
+          3から5つの株を選択してください
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
@@ -437,7 +437,7 @@ const List = () => {
                   paddingLeft: 12,
                   paddingVertical: 0,
                 }}
-                placeholder="Search by stock name"
+                placeholder="株名で検索"
                 placeholderTextColor={"#8B7500"}
                 value={searchTerm}
                 onChangeText={setSearchTerm}
@@ -571,7 +571,7 @@ const List = () => {
               if (isDisable) {
                 Toast.show({
                   type: "error",
-                  text1: "Please select 3 stocks",
+                  text1: "3つの株を選択してください",
                 });
                 return;
               }
@@ -644,7 +644,7 @@ const List = () => {
                           : 1
                         : 1,
                   }}>
-                  {isDark ? "Start processing" : "Start"}
+                  {isDark ? "処理を開始します" : "開始"}
                 </Text>
               </LinearGradient>
             </LinearGradient>

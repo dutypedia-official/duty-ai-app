@@ -20,7 +20,7 @@ export default function Layout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Setting",
+          title: "設定",
           headerTitleStyle: {
             color: isDark ? "#FFFFFF" : "#1E1E1E",
           },

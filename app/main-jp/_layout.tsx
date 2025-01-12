@@ -99,7 +99,7 @@ export default function TabLayout() {
   const fetchDataFeed = async (init: boolean = true) => {
     try {
       const { data } = await client.get(
-        `/tools/get-dsebd-index`,
+        `/tools/get-jp-index`,
         null,
         {},
         mainServerAvailable
@@ -120,7 +120,7 @@ export default function TabLayout() {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/messages/conv/get-all",
+        "/messages/conv/get-all?country=JP",
         token,
         {},
         mainServerAvailable
@@ -141,7 +141,7 @@ export default function TabLayout() {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/tools/get-favs",
+        "/tools/get-favs?country=JP",
         token,
         {},
         mainServerAvailable
@@ -180,7 +180,6 @@ export default function TabLayout() {
         sceneContainerStyle: {
           backgroundColor: colorScheme === "dark" ? "#121212" : "white",
         },
-
         animation: "shift",
       })}>
       <Tabs.Screen

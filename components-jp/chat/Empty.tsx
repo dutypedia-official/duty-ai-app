@@ -40,26 +40,20 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
   const pathname = usePathname();
 
   const generalPrompts = [
-    "📰 Top news bangladesh",
-    "⚽ Today top sports news",
-    "💡 Give me a online business idea",
-    "🏠 Remote Work Opportunities",
-    "✈️ Budget Travel Tips",
+    "📰 今日の注目ニュースは何ですか？",
+    "⚽ 今日のトップスポーツニュースは何ですか？",
+    "💡 オンラインビジネスのアイデアを教えてください。",
+    "🏠 リモートワークの機会について教えてください。",
+    "✈️ お得に旅行するためのヒントを教えてください。",
   ];
-  const generalPromptsBn = [
-    "📰 বাংলাদেশের শীর্ষ সংবাদ",
-    "⚽ আজকের সেরা ক্রীড়া খবর",
-    "💡 একটি অনলাইন ব্যবসার ধারণা দাও",
-    "🏠 রিমোট কাজের সুযোগ",
-    "✈️ বাজেট ভ্রমণ টিপস",
-  ];
+  const generalPromptsBn = [""];
 
   const financePrompts = [
     "📰 日本株式マーケットニュース",
     "📱 トヨタに投資すべきか",
     // "▶️ Duty AI ビデオチュートリアル",
-    "🔍 Stock Scanner",
-    "⚖️ Golden choice",
+    "🔍 ストックスキャナー",
+    "ゴールデン チョイス",
   ];
 
   const forexPrompts = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP"];
@@ -89,7 +83,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
 
   const subTitleFn = () => {
     if (template == "general") {
-      return "How can I help you today?";
+      return "今日はどのようにお手伝いできますか？";
     } else if (template == "forex") {
       return "FXについて話しましょう";
     } else if (template == "finance") {
@@ -97,7 +91,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
     } else if (template == "scanner") {
       return "銘柄スクリーニング";
     } else {
-      return "How can I help you today?";
+      return "今日はどのようにお手伝いできますか？";
     }
   };
 
@@ -213,7 +207,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           )}
           <Text
             style={{
-              fontSize: 30,
+              fontSize: 24,
               fontWeight: "400",
               opacity: 0.5,
             }}>
@@ -225,9 +219,9 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           const promptPress = (val: any) => {
             if (val.includes("▶️ Duty AI ビデオチュートリアル")) {
               setVisible(true);
-            } else if (val.includes("⚖️ Golden choice")) {
+            } else if (val.includes("ゴールデン チョイス")) {
               router.push("/main-jp/home/vipsignal/list");
-            } else if (val.includes("🔍 Stock Scanner")) {
+            } else if (val.includes("🔍 ストックスキャナー")) {
               router.push({
                 pathname: "/main-jp/home/scanner",
               });
@@ -271,20 +265,22 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                   style={{
                     opacity: template === "scanner" ? 1 : 0.8,
                     fontSize: 18,
-                    width: prompt.includes("⚖️ Golden choice") ? "90%" : "auto",
+                    width: prompt.includes("ゴールデン チョイス")
+                      ? "90%"
+                      : "auto",
                   }}
                   numberOfLines={2}>
                   {prompt}
                 </Text>
 
-                {prompt.includes("⚖️ Golden choice") && (
+                {prompt.includes("ゴールデン チョイス") && (
                   <Entypo
                     name="chevron-small-right"
                     size={24}
                     color={isDark ? "#565656" : "#A4A1A1"}
                   />
                 )}
-                {prompt.includes("🔍 Stock Scanner") && (
+                {prompt.includes("🔍 ストックスキャナー") && (
                   <MagicIcon
                     style={{
                       width: 20,
