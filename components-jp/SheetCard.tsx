@@ -345,7 +345,7 @@ export default function SheetCard({
                             fontSize: 16,
                             fontWeight: "600",
                           }}>
-                          Enter Price
+                          価格を入力してください
                         </Text>
                         <View
                           style={{

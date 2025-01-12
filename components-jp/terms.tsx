@@ -207,7 +207,15 @@ const TermsAndConditions = ({ market }: { market?: any }) => {
             Continued use of the app constitutes your acceptance of these terms.
           </Text>
         </ScrollView>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+          }}
+          onPress={handlePress}>
           <LinearGradient
             colors={["#4E73DF", "#8E44AD"]}
             start={{ x: 0.5, y: 0 }}
@@ -255,10 +263,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     height: 60,
     alignItems: "center",
     justifyContent: "center",

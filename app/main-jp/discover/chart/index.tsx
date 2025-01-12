@@ -141,7 +141,7 @@ export const StockListItem = ({
   const { getToken } = useAuth();
   const client = apiClient();
 
-  const isFav = favs?.find((fav: any) => fav.symbol === name);
+  const isFav = favs?.find((fav: any) => fav.symbol === item?.name);
 
   // const [targetPrice, setTargetPrice] = useState(
   //   currentAlarm ? `${currentAlarm.price}` : ""
@@ -161,7 +161,7 @@ export const StockListItem = ({
       const response = await client.post(
         `/tools/fav-symbol?country=JP`,
         {
-          symbol: name,
+          symbol: item?.name,
           price,
           currency: "JPY",
           trading: "10.12",
@@ -184,21 +184,23 @@ export const StockListItem = ({
 
   const infoData = [
     {
-      name: "Vol ",
+      name: "出来高",
       value: volume,
     },
   ];
 
   useEffect(() => {
     if (Array.isArray(alerms)) {
-      const cAlarm = alerms?.find((a: any) => a.symbol == name);
+      const cAlarm = alerms?.find((a: any) => a.symbol == item?.name);
       setCurrentAlarm(cAlarm);
     }
     if (Array.isArray(aiAlerms)) {
-      const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == name);
+      const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == item?.name);
       setCurrentAiAlarm(cAiAlerm);
     }
   }, [alerms, aiAlerms]);
+
+  console.log("currentAiAlarm-----------------", aiAlerms);
 
   return (
     <View>
@@ -481,9 +483,10 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
               onPress={() => {
+                const shortCode = item?.name;
                 setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
-                  name,
+                  shortCode,
                   price,
                   value,
                   change,
@@ -491,7 +494,7 @@ export const StockListItem = ({
                   volume,
                   changePer,
                 });
-                setCompanyName(name);
+                setCompanyName(shortCode);
 
                 // global
                 bottomSheetRef.current?.expand();
@@ -629,7 +632,7 @@ const StockListScreen = () => {
     try {
       const token = await getToken();
       const { data } = await client.get(
-        "/noti/get-alerms",
+        "/noti/get-alerms?country=JP",
         token,
         {},
         mainServerAvailable
@@ -743,10 +746,10 @@ const StockListScreen = () => {
         });
       }
       await client.post(
-        "/noti/create-alerm",
+        "/noti/create-alerm?country=JP",
         {
           price: parseFloat(targetPrice),
-          symbol: selectedStock?.name,
+          symbol: selectedStock?.shortCode,
           condition:
             parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
               ? "Up"
@@ -786,9 +789,9 @@ const StockListScreen = () => {
       setLoadingAiAlarm(true);
       const token = await getToken();
       await client.post(
-        "/noti/create-ai-alerm",
+        "/noti/create-ai-alerm?country=JP",
         {
-          symbol: selectedStock?.name,
+          symbol: selectedStock?.shortCode,
           prompt: inputText,
         },
         token,
@@ -890,6 +893,7 @@ const StockListScreen = () => {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [companyName, setCompanyName] = useState(null);
+
   const currentAlarm: any = alerms?.find(
     (alerm: any) => alerm.symbol === companyName
   );

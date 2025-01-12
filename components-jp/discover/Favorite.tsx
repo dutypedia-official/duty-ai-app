@@ -54,7 +54,7 @@ const Favorite = ({
         renderItem={({ item }: any) => (
           <StockListItem
             aiAlerms={aiAlerms}
-            name={item.symbol}
+            name={item.description}
             price={getPrice(item)}
             change={item.change}
             logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
@@ -90,7 +90,7 @@ const Favorite = ({
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  router.push("/main-jp/discover/chart/");
+                  router.push("/main-jp/discover/chart");
                 }}
                 style={{
                   alignItems: "center",

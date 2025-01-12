@@ -987,10 +987,10 @@ const ChatTurbo = ({ fromPath }: any) => {
                     : "#E8E9EC"
                   : inputBgColor,
               borderBottomColor:
-                template === "scanner" ? "transparent" : borderColor,
+                template === "scanner" ? "#3A7CA5" : borderColor,
               borderTopColor: template === "scanner" ? "#3A7CA5" : borderColor,
               borderTopWidth: 1,
-              borderBottomWidth: template === "scanner" ? 0 : 1,
+              borderBottomWidth: 1,
               marginBottom: 0,
             }}>
             <TouchableOpacity
@@ -1050,6 +1050,22 @@ const ChatTurbo = ({ fromPath }: any) => {
           </View>
         </View>
       </KeyboardAvoidingView>
+      {template === "scanner" && (
+        <View
+          style={{
+            backgroundColor:
+              template === "scanner"
+                ? isDark
+                  ? "#2C2F33"
+                  : "#E8E9EC"
+                : inputBgColor,
+            height: insets.bottom,
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}></View>
+      )}
     </SafeAreaView>
   );
 };
