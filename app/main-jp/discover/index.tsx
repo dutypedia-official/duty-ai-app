@@ -110,7 +110,10 @@ export default function DiscoverScreen() {
     try {
       const token = await getToken();
       const { data } = await client.get(`/tools/get-favs?country=JP`, token);
-      const { data: alermData } = await client.get("/noti/get-alerms", token);
+      const { data: alermData } = await client.get(
+        "/noti/get-alerms?country=JP",
+        token
+      );
       setAlerms(alermData?.alerms);
       setFavorites(data);
       setAiAlerms(alermData?.aiAlerms);
@@ -145,13 +148,14 @@ export default function DiscoverScreen() {
         "/noti/create-alerm",
         {
           price: parseFloat(targetPrice),
-          symbol: selectedStock?.name,
+          symbol: selectedStock?.shortCode,
           condition:
             parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
               ? "Up"
               : "Down",
         },
         token,
+        {},
         mainServerAvailable
       );
 
@@ -186,7 +190,7 @@ export default function DiscoverScreen() {
       await client.post(
         "/noti/create-ai-alerm",
         {
-          symbol: selectedStock?.name,
+          symbol: selectedStock?.shortCode,
           prompt: inputText,
           country: "JP",
         },
@@ -279,6 +283,7 @@ export default function DiscoverScreen() {
   const [targetPrice, setTargetPrice] = useState(
     currentAlarm ? `${currentAlarm?.price}` : ""
   );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView ref={scrollRef}>

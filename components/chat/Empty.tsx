@@ -235,6 +235,27 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               onPressRelated(prompt);
             }
           };
+
+          const borderWidthDiff = (val: any) => {
+            if (val.includes("🔍 Stock Scanner")) {
+              return isDark ? 1 : 2;
+            } else if (val.includes("⚖️ Golden choice")) {
+              return isDark ? 1 : 2;
+            } else {
+              return isDark ? 1 : 1;
+            }
+          };
+
+          const borderColorDiff = (val: any) => {
+            if (val.includes("🔍 Stock Scanner")) {
+              return isDark ? "#5BBAB2" : "#4A90E2";
+            } else if (val.includes("⚖️ Golden choice")) {
+              return isDark ? "#BCAA63" : "#FFD700";
+            } else {
+              return isDark ? "#2A2A2A" : "#D6D6D6";
+            }
+          };
+
           return (
             <TouchableOpacity
               key={i}
@@ -242,13 +263,14 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               onPress={() => promptPress(prompt)}>
               <View
                 style={{
-                  borderWidth: template === "scanner" ? 1.5 : 0,
+                  borderWidth:
+                    template === "scanner" ? 1.5 : borderWidthDiff(prompt),
                   borderColor:
                     template === "scanner"
                       ? isDark
                         ? "#3A7CA5"
                         : "#8AB4C9"
-                      : borderColor,
+                      : borderColorDiff(prompt),
                   borderRadius: 12,
                   paddingHorizontal: 16,
                   paddingVertical: 12,
@@ -260,7 +282,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
                         ? "#2D2F34"
                         : "#E8ECEF"
                       : isDark
-                      ? bubbleLeftBgColor
+                      ? "#141414"
                       : "white",
                   display: "flex",
                   flexDirection: "row",
