@@ -9,12 +9,12 @@ export default function ChatScreen() {
   const { setActiveConversationId, setTemplate, template } = useChat();
   const isFocused = useIsFocused();
 
-  // useEffect(() => {
-  //   if (isFocused && template == "finance") {
-  //     setActiveConversationId(null);
-  //     setTemplate("general");
-  //   }
-  // }, [isFocused, template]);
+  useEffect(() => {
+    if (isFocused && template == "finance") {
+      setActiveConversationId(null);
+      setTemplate("general");
+    }
+  }, [isFocused, template]);
 
   return <ChatTurbo fromPath={fromPath} />;
 }

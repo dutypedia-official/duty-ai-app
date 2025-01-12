@@ -188,6 +188,7 @@ export default function DiscoverScreen() {
         {
           symbol: selectedStock?.name,
           prompt: inputText,
+          country: "JP",
         },
         token,
         mainServerAvailable

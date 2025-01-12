@@ -244,10 +244,10 @@ export default function CustomChat({ fromPath }: any) {
 
         const urlLocal =
           template == "finance"
-            ? `http://192.168.0.101:8000/chat/finance`
+            ? `http://192.168.0.102:8000/chat/finance`
             : template == "forex"
-            ? `http://192.168.0.101:8000/chat/forex`
-            : `http://192.168.0.101:8000/chat/pro`;
+            ? `http://192.168.0.102:8000/chat/forex`
+            : `http://192.168.0.102:8000/chat/pro`;
         es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
           ...options,
           pollingInterval: 0,
@@ -432,7 +432,8 @@ export default function CustomChat({ fromPath }: any) {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}>
+        onPress={stopEventSource}
+      >
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -500,14 +501,16 @@ export default function CustomChat({ fromPath }: any) {
       style={{
         flex: 1,
         marginTop: fromPath ? -50 : 0,
-      }}>
+      }}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 15 : 0}
         style={{
           flex: 1,
           justifyContent: "flex-end",
-        }}>
+        }}
+      >
         <View>
           <View
             style={{
@@ -515,7 +518,8 @@ export default function CustomChat({ fromPath }: any) {
               justifyContent: "space-between",
               padding: 10,
               // backgroundColor: primaryColor,
-            }}>
+            }}
+          >
             {renderActions("")}
             {/* <View style={{ flex: 1, backgroundColor: "transparent" }}> */}
             {renderInputToolbar("")}
