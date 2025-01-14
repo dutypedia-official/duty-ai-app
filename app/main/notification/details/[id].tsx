@@ -1,29 +1,35 @@
+import NotiCommentCard from "@/components-jp/notif/commentCard";
+import NotiInput from "@/components-jp/notif/notiInput";
 import { SafeAreaView, Text, useThemeColor } from "@/components/Themed";
 import { apiClient } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
+import { AntDesign } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   Pressable,
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
   View,
-  Modal,
 } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
 import Markdown from "react-native-markdown-display";
 import { ActivityIndicator, Portal } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import * as Clipboard from "expo-clipboard";
-import ImageViewer from "react-native-image-zoom-viewer";
 
 export default function NotiDetails() {
   const { getToken } = useAuth();
@@ -40,8 +46,10 @@ export default function NotiDetails() {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const params = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
   const pathname = usePathname();
-  console.log("path----------------------", pathname);
+  const [expanded, setExpanded] = useState(false);
+
   const borderColor = useThemeColor({}, "border");
 
   const fetchData = async () => {
@@ -66,6 +74,10 @@ export default function NotiDetails() {
     fetchData();
   }, [params?.id, isFocused]);
 
+  const logoUrl = `https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg`;
+
+  const comment = `Ei keywords gulo diye Dribbble, Behance, ba Figma Community te khujle bhalo result pabe. Figma CommunityEi keywords gulo diye Dribbble, Behance, ba Figma Community te khujle bhalo result pabe. Figma CommunityEi keywords gulo diye Dribbble, Behance, ba Figma Community te khujle bhalo result pabe. Figma CommunityEi keywords gulo diye Dribbble, Behance, ba Figma Community te khujle bhalo result pabe. Figma Community`;
+
   const isNeg = data?.changePer?.startsWith("-");
 
   if (loading || !data) {
@@ -86,14 +98,14 @@ export default function NotiDetails() {
   }
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: isDark ? "#171B26" : "#FFFFFF",
-      }}>
-      <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <View
         style={{
-          backgroundColor: "transparent",
+          position: "absolute",
+          zIndex: 999,
+          paddingTop: insets.top + 10,
+          backgroundColor: "#171B26",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
@@ -140,42 +152,49 @@ export default function NotiDetails() {
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
-      <View
+      <ScrollView
         style={{
-          backgroundColor: "transparent",
-          height: "100%",
+          backgroundColor: isDark ? "#171B26" : "#FFFFFF",
         }}>
-        <Portal>
-          <Modal visible={visible} transparent={true} onDismiss={hideModal}>
-            <TouchableWithoutFeedback onPress={hideModal}>
-              <ImageViewer
-                renderIndicator={() => {
-                  return <></>;
-                }} // Hides the image count indicator
-                imageUrls={[
-                  {
-                    url: isDark ? data?.photoDark : data?.photoLight,
-                  },
-                ]}
-                enableSwipeDown={true}
-                onSwipeDown={hideModal}
-                enableImageZoom={true}
-                loadingRender={() => (
-                  <ActivityIndicator
-                    size="small"
-                    color={isDark ? "#FFFFFF" : "#000000"}
-                    style={{
-                      position: "absolute",
-                      alignSelf: "center",
-                      top: "50%",
-                      zIndex: 2,
-                    }}
-                  />
-                )}
-                backgroundColor="rgba(0, 0, 0, 0.8)"
-              />
+        <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
 
-              {/* <View
+        <View
+          style={{
+            backgroundColor: "transparent",
+            height: "100%",
+            marginTop: insets.top + 64,
+          }}>
+          <Portal>
+            <Modal visible={visible} transparent={true} onDismiss={hideModal}>
+              <TouchableWithoutFeedback onPress={hideModal}>
+                <ImageViewer
+                  renderIndicator={() => {
+                    return <></>;
+                  }} // Hides the image count indicator
+                  imageUrls={[
+                    {
+                      url: isDark ? data?.photoDark : data?.photoLight,
+                    },
+                  ]}
+                  enableSwipeDown={true}
+                  onSwipeDown={hideModal}
+                  enableImageZoom={true}
+                  loadingRender={() => (
+                    <ActivityIndicator
+                      size="small"
+                      color={isDark ? "#FFFFFF" : "#000000"}
+                      style={{
+                        position: "absolute",
+                        alignSelf: "center",
+                        top: "50%",
+                        zIndex: 2,
+                      }}
+                    />
+                  )}
+                  backgroundColor="rgba(0, 0, 0, 0.8)"
+                />
+
+                {/* <View
                       style={{
                         backgroundColor: "rgba(0, 0, 0, 0.6)",
                         height: "100%",
@@ -211,11 +230,10 @@ export default function NotiDetails() {
                         </View>
                       </View>
                     </View> */}
-            </TouchableWithoutFeedback>
-          </Modal>
-        </Portal>
-        <View>
-          <ScrollView style={{ height: "86%" }}>
+              </TouchableWithoutFeedback>
+            </Modal>
+          </Portal>
+          <View>
             <View style={{ backgroundColor: "transparent", gap: 32 }}>
               {data?.photoLight && data?.photoDark && (
                 <Image
@@ -351,7 +369,7 @@ export default function NotiDetails() {
                 </View>
               )}
 
-              <View style={{ backgroundColor: "transparent" }}>
+              <View style={{ backgroundColor: "transparent", gap: 24 }}>
                 <Pressable
                   onLongPress={async () => {
                     await Clipboard.setStringAsync(data?.content);
@@ -363,9 +381,10 @@ export default function NotiDetails() {
                     });
                   }}
                   style={{
-                    gap: 16,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    // gap: 16,
                     paddingHorizontal: 12,
-                    paddingVertical: 10,
                   }}>
                   <Markdown
                     style={{
@@ -463,14 +482,138 @@ export default function NotiDetails() {
                         marginVertical: 10,
                       },
                     }}>
-                    {data?.content}
+                    {expanded ? data?.content : data?.content.substring(0, 186)}
                   </Markdown>
+                  <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: "bold",
+                        color: !isDark ? "#4C4C4C" : "#0078FF",
+                      }}>
+                      {expanded ? "...Read Less" : "Read More..."}
+                    </Text>
+                  </TouchableOpacity>
                 </Pressable>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginHorizontal: 12,
+                  }}>
+                  <View
+                    style={{
+                      borderRadius: 100,
+                      position: "relative",
+                      overflow: "hidden",
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        position: "relative",
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignContent: "space-between",
+                          alignItems: "center",
+                        }}>
+                        <TouchableOpacity
+                          style={{
+                            paddingLeft: 12,
+                            paddingRight: 8,
+                            paddingVertical: 8,
+                          }}>
+                          <AntDesign
+                            name="like2"
+                            size={20}
+                            color={isDark ? "white" : "#999999"}
+                          />
+                        </TouchableOpacity>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: isDark ? "white" : "#999999",
+                            marginRight: 12,
+                          }}>
+                          10k
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          width: 1.5,
+                          height: "50%",
+                          backgroundColor: "white",
+                        }}></View>
+                      <TouchableOpacity
+                        style={{
+                          paddingRight: 12,
+                          paddingLeft: 12,
+                          paddingVertical: 8,
+                        }}>
+                        <AntDesign
+                          name="dislike2"
+                          size={20}
+                          color={isDark ? "white" : "#999999"}
+                          style={{
+                            transform: [{ scaleX: -1 }],
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: isDark ? "#F2F2F2" : "#F6F6F6",
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        opacity: 0.2,
+                        pointerEvents: "none",
+                      }}></View>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      borderRadius: 100,
+                      position: "relative",
+                      overflow: "hidden",
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        color: isDark ? "white" : "#999999",
+                      }}>
+                      0 Comment
+                    </Text>
+                    <View
+                      style={{
+                        backgroundColor: isDark ? "#F2F2F2" : "#F6F6F6",
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        opacity: 0.2,
+                      }}></View>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    marginHorizontal: 12,
+                    gap: 24,
+                  }}>
+                  <NotiInput />
+                  <NotiCommentCard comment={comment} logoUrl={logoUrl} />
+                </View>
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

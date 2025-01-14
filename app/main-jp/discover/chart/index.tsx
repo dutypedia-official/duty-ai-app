@@ -25,6 +25,7 @@ import React, {
 import {
   ActivityIndicator,
   Animated,
+  Dimensions,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -604,7 +605,7 @@ const StockListScreen = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const [loadingData, setLoadingData] = useState(true);
+  const [loadingData, setLoadingData] = useState(false);
 
   let initialStocks =
     activeFilter !== ""
@@ -612,21 +613,10 @@ const StockListScreen = () => {
       : searchTerm === ""
       ? marketListData
       : marketData;
+
   const le5e5e5 = useThemeColor({}, "le5e5e5");
   const bgColor = useThemeColor({}, "background");
   const borderColor = useThemeColor({}, "border");
-
-  // Filter stocks based on the search term
-  // let filteredStocks = initialStocks?.filter((stock: any) =>
-  //   stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
-  // if (sortByName) {
-  //   filteredStocks = filteredStocks.sort(
-  //     (a: { symbol: string }, b: { symbol: any }) =>
-  //       a.symbol.localeCompare(b.symbol)
-  //   );
-  // }
 
   const fetchAlerms = async () => {
     try {
@@ -702,10 +692,11 @@ const StockListScreen = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, debouncedSearchTerm]);
+  }, [page, debouncedSearchTerm, activeFilter]);
 
   const fetchFilter = async () => {
     try {
+      setFilterByCategory([]);
       setLoadingData(true);
       const { data } = await client.get(
         `/tools/get-market-category/JP/${activeFilter}`,
@@ -713,9 +704,7 @@ const StockListScreen = () => {
         {},
         mainServerAvailable
       );
-
       setFilterByCategory(data[activeFilter]);
-      console.log(data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -723,11 +712,13 @@ const StockListScreen = () => {
     }
   };
 
-  // console.log("activeFilter------------", activeFilter);
-
   useEffect(() => {
     fetchFilter();
-  }, [activeFilter]);
+    if (activeFilter !== "") {
+      setMarketData([]);
+      setMarketListData([]);
+    }
+  }, [activeFilter, debouncedSearchTerm]);
 
   const handelSetAlerm = async () => {
     if (!selectedStock) {
@@ -1080,10 +1071,15 @@ const StockListScreen = () => {
         stickyHeaderIndices={[0]}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={() => {
-          return (
+          return loadingData || initialStocks?.length === 0 ? (
             <View
               style={{
                 flex: 1,
+                height:
+                  Dimensions.get("screen").height -
+                  inset.bottom -
+                  inset.top -
+                  200,
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "center",
@@ -1092,6 +1088,22 @@ const StockListScreen = () => {
                 size="small"
                 color={isDark ? "#00B0FF" : "#34495E"}
               />
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height:
+                  Dimensions.get("screen").height -
+                  inset.bottom -
+                  inset.top -
+                  200,
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Text style={{ color: textColor, fontSize: 16 }}>
+                在庫が見つかりません
+              </Text>
             </View>
           );
         }}

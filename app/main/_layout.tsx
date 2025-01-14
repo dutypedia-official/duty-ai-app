@@ -98,26 +98,26 @@ export default function TabLayout() {
     getUnreadNotiCount();
   }, [refreash]);
 
-  const fetchData = async () => {
-    try {
-      const { data: mData } = await client.get(
-        "/tools/get-stock-market",
-        null,
-        {},
-        mainServerAvailable
-      );
-      setMarketData(mData);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(!isLoading);
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     const { data: mData } = await client.get(
+  //       "/tools/get-stock-market",
+  //       null,
+  //       {},
+  //       mainServerAvailable
+  //     );
+  //     setMarketData(mData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(!isLoading);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchData();
-    console.log("fetching data stock list");
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  //   console.log("fetching data stock list");
+  // }, []);
 
   const fetchDataFeed = async (init: boolean = true) => {
     try {
