@@ -20,10 +20,11 @@ export const apiClient = () => {
   const BASE_URL = isRunningInExpoGo
     ? "http://192.168.225.188:8000"
     : `https://api.dutyai.app`;
-  const addBaseUrl = (url: string, mainServer: boolean) =>
-    mainServer ? `${BASE_URL}${url}` : `${BACKUP_SERVER_URL}${url}`;
+  const addBaseUrl = (url: string, mainServer: boolean) => {
+    console.log("API-------", url);
+    return mainServer ? `${BASE_URL}${url}` : `${BACKUP_SERVER_URL}${url}`;
+  };
 
-  console.log("BASE_URL-------", BASE_URL);
   return {
     get: (
       url: string,
