@@ -13,7 +13,7 @@ export default function ChatScreen() {
   const { setAnswer, clearSelectStock } = useVipSignal();
 
   useEffect(() => {
-    if (isFocused && template !== "finance") {
+    if (isFocused) {
       setActiveConversationId(null);
       setTemplate("finance");
     }
