@@ -10,8 +10,9 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { getPrice, StockListItem } from "../../app/main/discover/chart/index";
+import { getPrice } from "../../app/main/discover/chart/index";
 import { useThemeColor } from "../Themed";
+import { StockListItem } from "../chart/StockListItem";
 
 const Favorite = ({
   bottomSheetRef,
@@ -96,7 +97,7 @@ const Favorite = ({
           </Text>
           <TouchableOpacity
             onPress={() => {
-              router.push("/main/discover/chart/");
+              router.push("/main/discover/chart");
             }}
             style={{
               alignItems: "center",
