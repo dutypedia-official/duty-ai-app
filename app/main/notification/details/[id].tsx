@@ -1,5 +1,6 @@
-import NotiCommentCard from "@/components-jp/notif/commentCard";
-import NotiInput from "@/components-jp/notif/notiInput";
+import NotiCommentCard from "@/components/notif/commentCard";
+import MdxContent from "@/components/notif/mdxContent";
+import NotiInput from "@/components/notif/notiInput";
 import { SafeAreaView, Text, useThemeColor } from "@/components/Themed";
 import { apiClient } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
@@ -41,7 +42,7 @@ export default function NotiDetails() {
   const [loading2, setLoading2] = useState<boolean>(true);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const bgColor = useThemeColor({}, "background");
+
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -49,8 +50,6 @@ export default function NotiDetails() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
-
-  const borderColor = useThemeColor({}, "border");
 
   const fetchData = async () => {
     try {
@@ -105,7 +104,7 @@ export default function NotiDetails() {
           position: "absolute",
           zIndex: 999,
           paddingTop: insets.top + 10,
-          backgroundColor: "#171B26",
+          backgroundColor: isDark ? "#171B26" : "#fff",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
@@ -371,6 +370,7 @@ export default function NotiDetails() {
 
               <View style={{ backgroundColor: "transparent", gap: 24 }}>
                 <Pressable
+                  onPress={() => setExpanded(!expanded)}
                   onLongPress={async () => {
                     await Clipboard.setStringAsync(data?.content);
                     Toast.show({
@@ -386,115 +386,22 @@ export default function NotiDetails() {
                     // gap: 16,
                     paddingHorizontal: 12,
                   }}>
-                  <Markdown
-                    style={{
-                      body: {
-                        color: !isDark ? "#4C4C4C" : "#E0E0E0",
-                        fontSize: 14,
-                      },
-                      // Headings
-                      heading1: {
-                        fontSize: 24,
-                        fontWeight: "bold",
-                        marginVertical: 10,
-                      },
-                      heading2: {
-                        fontSize: 22,
-                        fontWeight: "bold",
-                        marginVertical: 8,
-                      },
-                      heading3: {
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        marginVertical: 6,
-                      },
-                      heading4: {
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        marginVertical: 5,
-                      },
-                      heading5: {
-                        fontSize: 16,
-                        fontWeight: "bold",
-                        marginVertical: 4,
-                      },
-                      heading6: {
-                        fontSize: 14,
-                        fontWeight: "bold",
-                        marginVertical: 3,
-                      },
-                      // Lists
-                      bullet_list: { marginVertical: 5 },
-                      ordered_list: { marginVertical: 5 },
-                      list_item: { marginVertical: 3, flexDirection: "row" },
-                      bullet_list_icon: {
-                        marginRight: 5,
-                      },
-                      ordered_list_icon: {
-                        marginRight: 5,
-                      },
-                      // Code
-                      code_inline: {
-                        fontFamily: "monospace",
-                        backgroundColor: "rgba(0, 0, 0, 0.05)",
-                        borderRadius: 3,
-                        paddingHorizontal: 4,
-                      },
-                      fence: {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                        borderRadius: 5,
-                        padding: 10,
-                        marginVertical: 5,
-                      },
-                      // Table
-                      table: {
-                        borderWidth: 1,
-                        borderColor: borderColor,
-                        marginVertical: 10,
-                      },
-                      tr: {
-                        borderBottomWidth: 1,
-                        borderColor: borderColor,
-                      },
-                      th: {
-                        fontWeight: "bold",
-                        padding: 5,
-                        borderRightWidth: 1,
-                        borderColor: borderColor,
-                      },
-                      td: {
-                        padding: 5,
-                        borderRightWidth: 1,
-                        borderColor: borderColor,
-                      },
-                      // Blockquote
-                      blockquote: {
-                        backgroundColor: "rgba(0, 0, 0, 0.05)",
-                        borderLeftWidth: 4,
-                        paddingHorizontal: 10,
-                        paddingVertical: 5,
-                        marginVertical: 5,
-                      },
-                      // Horizontal rule
-                      hr: {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                        height: 1,
-                        marginVertical: 10,
-                      },
-                    }}>
-                    {expanded ? data?.content : data?.content.substring(0, 186)}
-                  </Markdown>
-                  <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: "bold",
-                        color: !isDark ? "#4C4C4C" : "#0078FF",
-                      }}>
-                      {expanded ? "...Read Less" : "Read More..."}
-                    </Text>
-                  </TouchableOpacity>
+                  <MdxContent data={data} expanded={expanded} />
+
+                  {data && (
+                    <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "bold",
+                          color: !isDark ? "#4C4C4C" : "#0078FF",
+                        }}>
+                        {expanded ? "...Read Less" : "Read More..."}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </Pressable>
+
                 <View
                   style={{
                     backgroundColor: "transparent",
@@ -605,6 +512,7 @@ export default function NotiDetails() {
                     backgroundColor: "transparent",
                     marginHorizontal: 12,
                     gap: 24,
+                    paddingBottom: insets.bottom + 40,
                   }}>
                   <NotiInput />
                   <NotiCommentCard comment={comment} logoUrl={logoUrl} />

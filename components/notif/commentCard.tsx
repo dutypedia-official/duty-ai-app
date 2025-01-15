@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   Image,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -107,7 +108,10 @@ export default function NotiCommentCard({
             width: 36,
           }}></View>
 
-        <View
+        <Pressable
+          onPress={() => {
+            setViewMoreComment(!viewMoreComment);
+          }}
           style={{
             flex: 1,
             flexDirection: "row",
@@ -137,7 +141,7 @@ export default function NotiCommentCard({
               {viewMoreComment ? "...See less" : "See more..."}
             </Text>
           </TouchableOpacity>
-        </View>
+        </Pressable>
       </View>
     </View>
   );
