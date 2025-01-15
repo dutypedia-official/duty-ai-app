@@ -162,32 +162,37 @@ export default function SheetCardIos({
         backgroundColor: "transparent",
       }}
       android_keyboardInputMode="adjustResize"
-      animateOnMount={true}>
+      animateOnMount={true}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View
           style={{
             flex: 1,
             marginTop: insets.top,
-          }}>
+          }}
+        >
           <LinearGradient
             colors={isDark ? ["#1C1C1E", "#2A2A2D"] : ["#FFFFFF", "#F3F4F6"]}
             style={{
               flex: 1,
-            }}>
+            }}
+          >
             {/* close button */}
             <View
               style={{
                 backgroundColor: "transparent",
                 paddingHorizontal: 14,
                 paddingVertical: 14,
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={() => bottomSheetRef.current?.close()}
                 style={{
                   position: "relative",
                   alignSelf: "flex-end",
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <AntDesign
                   name="close"
                   size={20}
@@ -201,12 +206,14 @@ export default function SheetCardIos({
               style={{
                 backgroundColor: "transparent",
                 paddingHorizontal: 14,
-              }}>
+              }}
+            >
               <View
                 style={{
                   backgroundColor: "transparent",
                   flexDirection: "row",
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   onPress={() => {
                     setActiveTab("priceAlarm");
@@ -223,7 +230,8 @@ export default function SheetCardIos({
                     borderTopLeftRadius: 12,
                     borderBottomLeftRadius: 12,
                     width: "50%",
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: isDark
@@ -236,7 +244,8 @@ export default function SheetCardIos({
                       fontWeight: "bold",
                       fontSize: 16,
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     Price alarm
                   </Text>
                 </TouchableOpacity>
@@ -259,7 +268,8 @@ export default function SheetCardIos({
                     alignItems: "center",
                     justifyContent: "center",
                     alignContent: "center",
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flex: 1,
@@ -268,7 +278,8 @@ export default function SheetCardIos({
                       backgroundColor: "transparent",
                       justifyContent: "center",
                       alignContent: "center",
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         backgroundColor: "transparent",
@@ -277,7 +288,8 @@ export default function SheetCardIos({
                         justifyContent: "center",
                         alignContent: "center",
                         marginRight: 5,
-                      }}>
+                      }}
+                    >
                       {activeTab === "aiAlarm" ? (
                         <MagicIcon />
                       ) : isDark ? (
@@ -292,7 +304,8 @@ export default function SheetCardIos({
                         justifyContent: "center",
                         alignContent: "center",
                         marginTop: -1,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark
@@ -307,7 +320,8 @@ export default function SheetCardIos({
                           textAlign: "center",
                           justifyContent: "center",
                           alignContent: "center",
-                        }}>
+                        }}
+                      >
                         Ai alarm
                       </Text>
                     </View>
@@ -324,27 +338,32 @@ export default function SheetCardIos({
                 flex: 1,
                 backgroundColor: "transparent",
                 marginTop: 28, //40 top to tabs
-              }}>
+              }}
+            >
               <BottomSheetScrollView
                 contentContainerStyle={{
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: "transparent",
-                  }}>
+                  }}
+                >
                   {activeTab === "priceAlarm" && (
                     <View
                       style={{
                         backgroundColor: "transparent",
                         gap: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark ? "#F5F5F5" : "#424242",
                           fontSize: 16,
                           fontWeight: "600",
-                        }}>
+                        }}
+                      >
                         Enter Price
                       </Text>
                       <View
@@ -353,7 +372,8 @@ export default function SheetCardIos({
                           backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
                           borderRadius: 8,
                           borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
+                        }}
+                      >
                         <TextInput
                           maxLength={8}
                           style={{
@@ -380,13 +400,15 @@ export default function SheetCardIos({
                       style={{
                         backgroundColor: "transparent",
                         gap: 12,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: isDark ? "#F5F5F5" : "#424242",
                           fontSize: 16,
                           fontWeight: "600",
-                        }}>
+                        }}
+                      >
                         Type your Instruction
                       </Text>
                       <View
@@ -395,7 +417,8 @@ export default function SheetCardIos({
                           backgroundColor: isDark ? "#2C2C2E" : "#FFFFFF",
                           borderRadius: 8,
                           borderColor: isDark ? "#3A3A3C" : "#D1D1D1",
-                        }}>
+                        }}
+                      >
                         <TextInput
                           multiline
                           maxLength={120}
@@ -425,7 +448,8 @@ export default function SheetCardIos({
                           style={{
                             color: "#CE1300",
                             fontSize: 14,
-                          }}>
+                          }}
+                        >
                           {error}
                         </Text>
                       )}
@@ -434,7 +458,8 @@ export default function SheetCardIos({
                         style={{
                           fontSize: 14,
                           color: isDark ? "#D1D1D1" : "#595959",
-                        }}>
+                        }}
+                      >
                         Kindly provide clear, stock-related instructions{" "}
                         <Text
                           style={{
@@ -444,7 +469,8 @@ export default function SheetCardIos({
                                 : isDark
                                 ? "#D1D1D1"
                                 : "#595959",
-                          }}>
+                          }}
+                        >
                           within 120 characters
                         </Text>
                         . The AI will monitor your stock continuously and notify
@@ -465,20 +491,23 @@ export default function SheetCardIos({
                   paddingHorizontal: 14,
                   paddingBottom: insets.bottom + 14,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <Animated.View
                   style={{
                     opacity: buttonOpacity,
                     display: isKeyboardVisible ? "none" : "flex", // Hide when keyboard is visible
                     backgroundColor: "transparent",
                     gap: 12,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       handelSetAlerm();
                     }}
                     // disabled={}
-                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}>
+                    style={{ opacity: targetPrice.trim() ? 1 : 0.5 }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -487,7 +516,8 @@ export default function SheetCardIos({
                         paddingHorizontal: 4,
                         paddingVertical: 16,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       {loading && (
                         <ActivityIndicator
                           size="small"
@@ -503,7 +533,8 @@ export default function SheetCardIos({
                             fontSize: 16,
                             textAlign: "center",
                             height: 19,
-                          }}>
+                          }}
+                        >
                           Set alarm
                         </Text>
                       )}
@@ -513,7 +544,8 @@ export default function SheetCardIos({
                     <TouchableOpacity
                       onPress={() => {
                         handelDeleteAlerm();
-                      }}>
+                      }}
+                    >
                       <LinearGradient
                         colors={
                           isDark
@@ -524,7 +556,8 @@ export default function SheetCardIos({
                           paddingHorizontal: 4,
                           paddingVertical: 16,
                           borderRadius: 12,
-                        }}>
+                        }}
+                      >
                         {loadingDeleteAlarm && (
                           <ActivityIndicator
                             size="small"
@@ -540,7 +573,8 @@ export default function SheetCardIos({
                               fontSize: 16,
                               textAlign: "center",
                               height: 19,
-                            }}>
+                            }}
+                          >
                             Delete alarm
                           </Text>
                         )}
@@ -557,14 +591,16 @@ export default function SheetCardIos({
                   paddingHorizontal: 14,
                   paddingBottom: insets.bottom + 14,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <Animated.View
                   style={{
                     opacity: buttonOpacity,
                     display: isKeyboardVisible ? "none" : "flex", // Hide when keyboard is visible
                     backgroundColor: "transparent",
                     gap: 12,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       handelSetAiAlerm();
@@ -581,7 +617,8 @@ export default function SheetCardIos({
                         currentAiAlerm?.prompt === undefined
                           ? 1
                           : 0.5,
-                    }}>
+                    }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#6C63FF", "#3D4DB7"] : ["#64B5F6", "#1976D2"]
@@ -590,7 +627,8 @@ export default function SheetCardIos({
                         paddingHorizontal: 4,
                         paddingVertical: 16,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       {loadingAiAlarm && (
                         <ActivityIndicator
                           size="small"
@@ -606,7 +644,8 @@ export default function SheetCardIos({
                             fontSize: 16,
                             textAlign: "center",
                             height: 19,
-                          }}>
+                          }}
+                        >
                           Set alarm
                         </Text>
                       )}
@@ -617,7 +656,8 @@ export default function SheetCardIos({
                     <TouchableOpacity
                       onPress={() => {
                         handelDeleteAiAlerm();
-                      }}>
+                      }}
+                    >
                       <LinearGradient
                         colors={
                           isDark
@@ -628,7 +668,8 @@ export default function SheetCardIos({
                           paddingHorizontal: 4,
                           paddingVertical: 16,
                           borderRadius: 12,
-                        }}>
+                        }}
+                      >
                         {loadingDeleteAiAlarm && (
                           <ActivityIndicator
                             size="small"
@@ -644,7 +685,8 @@ export default function SheetCardIos({
                               fontSize: 16,
                               textAlign: "center",
                               height: 19,
-                            }}>
+                            }}
+                          >
                             Delete alarm
                           </Text>
                         )}
