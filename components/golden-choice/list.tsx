@@ -1,9 +1,13 @@
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import { apiClient } from "@/lib/api";
 import useStockData from "@/lib/hooks/useStockData";
+import useUi from "@/lib/hooks/useUi";
 import useVipSignal from "@/lib/hooks/useVipSignal";
+import { useAuth } from "@clerk/clerk-expo";
 import { Feather } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useIsFocused } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, usePathname, useRouter } from "expo-router";
@@ -195,7 +199,11 @@ const SignalList = ({
 };
 
 const List = () => {
+  const { refreash, mainServerAvailable } = useUi();
   const { selectStock } = useVipSignal();
+  const isFocused = useIsFocused();
+  const [marketData, setMarketData] = useState<any>([]);
+  const [loadingData, setLoadingData] = useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -207,7 +215,28 @@ const List = () => {
   const pathname = usePathname();
   console.log("pathname", pathname);
   const router = useRouter();
-  const { marketData, setMarketData } = useStockData();
+  const client = apiClient();
+
+  const fetchData = async () => {
+    try {
+      setLoadingData(true);
+      const { data: mData } = await client.get(
+        "/tools/get-stock-market",
+        null,
+        {},
+        mainServerAvailable
+      );
+      setMarketData(mData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [isFocused]);
 
   const filterData = marketData?.filter((stock: any) =>
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
@@ -433,25 +462,41 @@ const List = () => {
                     end={{ x: 1, y: 0 }}
                     style={{ height: 1 }}></LinearGradient>
                 )}
-                ListEmptyComponent={
-                  <View
-                    style={{
-                      backgroundColor: "transparent",
-                      padding: 12,
-                      height: Dimensions.get("window").height,
-                    }}>
-                    <View>
-                      <Text
+                ListEmptyComponent={() => {
+                  if (loadingData) {
+                    return (
+                      <View
                         style={{
-                          color: isDark ? "#F0F0F0" : "#6B6B6B",
-                          fontSize: 16,
-                          textAlign: "center",
+                          backgroundColor: "transparent",
+                          padding: 12,
+                          height: Dimensions.get("window").height,
                         }}>
-                        No stock found
-                      </Text>
+                        <View>
+                          <ActivityIndicator />
+                        </View>
+                      </View>
+                    );
+                  }
+                  return (
+                    <View
+                      style={{
+                        backgroundColor: "transparent",
+                        padding: 12,
+                        height: Dimensions.get("window").height,
+                      }}>
+                      <View>
+                        <Text
+                          style={{
+                            color: isDark ? "#F0F0F0" : "#6B6B6B",
+                            fontSize: 16,
+                            textAlign: "center",
+                          }}>
+                          No stock found
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                }
+                  );
+                }}
               />
             </View>
           </LinearGradient>

@@ -316,28 +316,17 @@ function RootLayoutNav() {
     checkUpdate();
   }, []);
 
-  const determineLanguage = (
-    currentLanguage: SupportedLanguage | null
-  ): SupportedLanguage => {
-    const supportedLanguages: SupportedLanguage[] = ["en", "bn", "ja"];
-    const languageCode = Localization.getLocales()[0]?.languageCode;
-
-    if (currentLanguage === null) {
-      return supportedLanguages.includes(languageCode as SupportedLanguage)
-        ? (languageCode as SupportedLanguage)
-        : "en";
-    }
-
-    return currentLanguage;
-  };
-
-  // Automatically determine and set language on app load
+  // Automatically set language if none is selected
   useEffect(() => {
-    if (language === null) {
-      const defaultLanguage = determineLanguage(language);
+    if (!language) {
+      const deviceLanguage = Localization.getLocales()[0]?.languageCode || "en";
+      const supportedLanguages = ["en", "bn", "ja"];
+      const defaultLanguage = supportedLanguages.includes(deviceLanguage)
+        ? deviceLanguage
+        : "en";
       setLanguage(defaultLanguage);
     }
-  }, [language]);
+  }, [language, setLanguage]);
 
   useEffect(() => {
     if (isLoaded && !isLoading) {

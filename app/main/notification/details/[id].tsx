@@ -98,7 +98,10 @@ export default function NotiDetails() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      keyboardVerticalOffset={400}
+      style={{
+        flex: 1,
+      }}>
       <View
         style={{
           position: "absolute",
@@ -108,7 +111,7 @@ export default function NotiDetails() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingVertical: 10,
+          paddingBottom: 10,
           paddingHorizontal: 12,
           gap: 25,
         }}>
@@ -152,8 +155,11 @@ export default function NotiDetails() {
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={{
           backgroundColor: isDark ? "#171B26" : "#FFFFFF",
+          height: "100%",
+          flex: 1,
         }}>
         <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
 
@@ -161,7 +167,7 @@ export default function NotiDetails() {
           style={{
             backgroundColor: "transparent",
             height: "100%",
-            marginTop: insets.top + 64,
+            marginTop: Platform.OS === "ios" ? insets.top : insets.top + 64,
           }}>
           <Portal>
             <Modal visible={visible} transparent={true} onDismiss={hideModal}>
@@ -232,7 +238,10 @@ export default function NotiDetails() {
               </TouchableWithoutFeedback>
             </Modal>
           </Portal>
-          <View>
+          <View
+            style={{
+              flex: 1,
+            }}>
             <View style={{ backgroundColor: "transparent", gap: 32 }}>
               {data?.photoLight && data?.photoDark && (
                 <Image
@@ -368,7 +377,11 @@ export default function NotiDetails() {
                 </View>
               )}
 
-              <View style={{ backgroundColor: "transparent", gap: 24 }}>
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  gap: 24,
+                }}>
                 <Pressable
                   onPress={() => setExpanded(!expanded)}
                   onLongPress={async () => {
@@ -385,21 +398,9 @@ export default function NotiDetails() {
                     flexWrap: "wrap",
                     // gap: 16,
                     paddingHorizontal: 12,
+                    flex: 1,
                   }}>
                   <MdxContent data={data} expanded={expanded} />
-
-                  {data && (
-                    <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          color: !isDark ? "#4C4C4C" : "#0078FF",
-                        }}>
-                        {expanded ? "...Read Less" : "Read More..."}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
                 </Pressable>
 
                 <View

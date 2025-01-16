@@ -1,7 +1,8 @@
-import { View, Text, useColorScheme } from "react-native";
+import { View, Text, useColorScheme, Dimensions } from "react-native";
 import React from "react";
 import Markdown from "react-native-markdown-display";
 import { useThemeColor } from "@/components/Themed";
+import { Paragraph } from "react-native-paper";
 
 export default function MdxContent({
   data,
@@ -110,8 +111,13 @@ export default function MdxContent({
           height: 1,
           marginVertical: 10,
         },
+        paragraph: {
+          lineHeight: 20,
+        },
       }}>
-      {expanded ? data?.content : data?.content.substring(0, 186)}
+      {expanded || !data?.content
+        ? `${data?.content} **...Read Less**`
+        : `${data?.content.substring(0, 186)} **Read More...**`}
     </Markdown>
   );
 }

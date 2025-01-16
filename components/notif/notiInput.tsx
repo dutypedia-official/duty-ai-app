@@ -60,7 +60,7 @@ export default function NotiInput() {
           backgroundColor: "transparent",
         }}>
         <TouchableOpacity
-          // disabled={}
+          disabled={loading || commentText.length === 0 ? true : false}
           onPress={() => {
             // setLoading(true);
           }}
