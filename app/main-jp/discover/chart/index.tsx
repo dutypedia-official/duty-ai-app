@@ -1,30 +1,14 @@
 import { Text, useThemeColor, View } from "@/components-jp/Themed";
 import { apiClient } from "@/lib/api";
-import useChat from "@/lib/hooks/useChat";
 import useLang from "@/lib/hooks/useLang";
 import useStockData from "@/lib/hooks/useStockData";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
-import {
-  Feather,
-  FontAwesome,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Animated,
   Dimensions,
   FlatList,
   KeyboardAvoidingView,
@@ -37,13 +21,12 @@ import {
   useColorScheme,
 } from "react-native";
 
-import SheetCard from "@/components-jp/SheetCard";
 import SheetCardIos from "@/components-jp/SheetCardios";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SvgUri } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
+import { StockListItem } from "@/components-jp/chart/StockListItem";
 
 export const getPrice = (item: any) => {
   //Check if the time is between 10 am to 2pm
@@ -89,478 +72,6 @@ const filteredItems = [
     value: "best_performing",
   },
 ];
-
-export const StockListItem = ({
-  name,
-  price,
-  value,
-  change,
-  logoUrl,
-  volume,
-  alerms,
-  aiAlerms,
-  changePer,
-  favs,
-  onFavList = false,
-  trading,
-  targetPrice,
-  setCompanyName,
-  item,
-  bottomSheetRef,
-}: any) => {
-  const isPositive = !change?.startsWith("-");
-  const isPositivePer = !changePer?.startsWith("-");
-  const [visible, setVisible] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const colorScheme = useColorScheme();
-  const changeColor = isPositive
-    ? colorScheme == "dark"
-      ? "#58FF54"
-      : "#44da00"
-    : "#FE003D";
-  const isDark = colorScheme === "dark";
-  const lf6f6f6 = useThemeColor({}, "lf6f6f6");
-  const borderColor = useThemeColor({}, "border");
-  const l004662 = useThemeColor({}, "l004662");
-  const router = useRouter();
-  const [currentAlarm, setCurrentAlarm] = useState<any>(null);
-  const [currentAiAlarm, setCurrentAiAlarm] = useState<any>(null);
-  const {
-    setRefreashFav,
-    refreashFav,
-    refreash,
-    setRefreash,
-    mainServerAvailable,
-    selectedStock,
-    setSelectedStock,
-    selectedAlarmShit,
-    setSelectedAlarmShit,
-  } = useUi();
-  const textColor = useThemeColor({}, "text");
-  const { setTemplate, setActiveConversationId, setPrompt, setSubmitPrompt } =
-    useChat();
-  const { getToken } = useAuth();
-  const client = apiClient();
-
-  const isFav = favs?.find((fav: any) => fav.symbol === item?.name);
-
-  // const [targetPrice, setTargetPrice] = useState(
-  //   currentAlarm ? `${currentAlarm.price}` : ""
-  // );
-
-  const { setStockName } = useStockData();
-  const [isFavorite, setIsFavorite] = useState(
-    onFavList ? true : isFav ? true : false
-  );
-  const isPositiveBtn = !trading?.startsWith("-");
-
-  const toggleFavorite = async () => {
-    try {
-      setIsFavorite(!isFavorite);
-      const token = await getToken();
-
-      const response = await client.post(
-        `/tools/fav-symbol?country=JP`,
-        {
-          symbol: item?.name,
-          price,
-          currency: "JPY",
-          trading: "10.12",
-          change,
-          logo: logoUrl,
-          volume,
-        },
-        token,
-        {},
-        mainServerAvailable
-      );
-      setRefreashFav(!refreashFav);
-      console.log(response.data);
-    } catch (error) {
-    } finally {
-    }
-
-    // Optionally, you can add logic to update the favorite status in your backend or state management
-  };
-
-  const infoData = [
-    {
-      name: "出来高",
-      value: volume,
-    },
-  ];
-
-  useEffect(() => {
-    if (Array.isArray(alerms)) {
-      const cAlarm = alerms?.find((a: any) => a.symbol == item?.name);
-      setCurrentAlarm(cAlarm);
-    }
-    if (Array.isArray(aiAlerms)) {
-      const cAiAlerm = aiAlerms?.find((a: any) => a.symbol == item?.name);
-      setCurrentAiAlarm(cAiAlerm);
-    }
-  }, [alerms, aiAlerms]);
-
-  console.log("currentAiAlarm-----------------", aiAlerms);
-
-  return (
-    <View>
-      <View
-        style={{
-          flexDirection: "column",
-          backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-          padding: 12,
-          borderRadius: 12,
-          marginVertical: 10,
-          gap: 12,
-        }}>
-        <View
-          style={{
-            backgroundColor: "transparent",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-              flexDirection: "row",
-              gap: 8,
-            }}>
-            <View
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 100,
-                overflow: "hidden",
-                backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-                position: "relative",
-              }}>
-              <View
-                style={{
-                  width: 24,
-                  height: 24,
-                  backgroundColor: "#FFFFFF",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                }}>
-                <Text
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 12,
-                    color: "#1E1E1E",
-                  }}>
-                  {name?.[0]}
-                </Text>
-              </View>
-              {logoUrl && <SvgUri uri={logoUrl} width={24} height={24} />}
-            </View>
-            <View
-              style={{
-                backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-                flex: 1,
-              }}>
-              <Text
-                style={{
-                  color: "#00B0FF",
-                  fontSize: 20,
-                  fontWeight: "bold",
-                }}
-                numberOfLines={2}
-                ellipsizeMode="tail">
-                {name}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
-            }}>
-            <TouchableOpacity onPress={toggleFavorite}>
-              {isFavorite ? (
-                <AntDesign name="heart" size={20} color="#FF0000" />
-              ) : (
-                <AntDesign name="hearto" size={20} color="#FF0000" />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: "transparent",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            gap: 12,
-          }}>
-          <View
-            style={{
-              backgroundColor: "transparent",
-              flex: 1,
-              gap: 12,
-            }}>
-            <View style={{ backgroundColor: "transparent" }}>
-              <Text
-                style={{
-                  color: isDark ? "#FFFFFF" : "#000000",
-                  fontSize: 14,
-                  fontWeight: "800",
-                }}>
-                ৳ {price}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "transparent",
-                flexDirection: "row",
-                alignItems: "center",
-              }}>
-              {infoData?.map((info: any, idx: number) => {
-                return (
-                  <Fragment key={idx}>
-                    <View
-                      style={{
-                        width: "33.33%",
-                        backgroundColor: "transparent",
-                        flexDirection: "column",
-                        alignItems: idx === 0 ? "flex-start" : "center",
-                        justifyContent: "flex-start",
-                        gap: 4,
-                      }}>
-                      <Text
-                        style={{
-                          color: isDark ? "#FFFFFF" : "#000000",
-                          fontSize: 10,
-                          fontWeight: "bold",
-                        }}>
-                        {info?.name}
-                      </Text>
-
-                      <Text
-                        style={{
-                          color: isDark ? "#FFFFFF" : "#000000",
-                          fontSize: 10,
-                        }}>
-                        {info?.value}
-                      </Text>
-                    </View>
-
-                    {idx !== infoData?.length - 1 && (
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: "#555555",
-                          paddingVertical: 8,
-                        }}
-                      />
-                    )}
-                  </Fragment>
-                );
-              })}
-            </View>
-          </View>
-          <View
-            style={{
-              backgroundColor: "transparent",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              width: 80,
-            }}>
-            {/* <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 4,
-                backgroundColor: "transparent",
-              }}>
-              <AntDesign
-                style={{ color: changeColor, paddingTop: 6 }}
-                name={isPositive ? "caretup" : "caretdown"}
-                size={14}
-              />
-              <Text
-                style={{
-                  fontSize: 12,
-                  marginTop: 4,
-                  textAlign: "right",
-                  color: changeColor,
-                }}>
-                {new Intl.NumberFormat("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(parseFloat(change)) + "%"}
-              </Text>
-            </View> */}
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isPositive ? "#2ECC2E" : "#CE1300",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-                width: 56,
-                justifyContent: "center",
-              }}>
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontSize: 12,
-                  textAlign: "center",
-                }}>
-                {new Intl.NumberFormat("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(parseFloat(change)) + "%"}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.itemButtonsContainer}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              backgroundColor: "transparent",
-              width: "100%",
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                // router.push({
-                //   pathname: "/main/discover/chart/details",
-                //   params: { symbol: name },
-                // });
-                WebBrowser.openBrowserAsync(
-                  `https://www.tradingview.com/chart/?symbol=TSE:${item?.name}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=TSE:${item?.name}&theme=${colorScheme}`,
-                  {
-                    showTitle: false,
-                    enableBarCollapsing: false,
-                  }
-                );
-              }}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isDark ? "#333333" : "#EAEDED",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-              }}>
-              <Text>
-                <MaterialIcons
-                  name="show-chart"
-                  size={14}
-                  color={isDark ? "#ffffff" : "#5188D4"}
-                />
-              </Text>
-              <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                チャート
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isDark ? "#333333" : "#EAEDED",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-              }}
-              onPress={() => {
-                const shortCode = item?.name;
-                setSelectedAlarmShit(currentAlarm);
-                setSelectedStock({
-                  shortCode,
-                  price,
-                  value,
-                  change,
-                  logoUrl,
-                  volume,
-                  changePer,
-                });
-                setCompanyName(shortCode);
-
-                // global
-                bottomSheetRef.current?.expand();
-              }}>
-              <Text style={{ color: "white" }}>
-                {currentAlarm || currentAiAlarm ? (
-                  <MaterialIcons
-                    color="#CE1300"
-                    name="edit-notifications"
-                    size={14}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={"bell-plus"}
-                    size={14}
-                    color={isDark ? "#ffffff" : "#5188D4"}
-                  />
-                )}
-              </Text>
-              <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                {currentAlarm || currentAiAlarm
-                  ? "アラーム編集"
-                  : "アラーム設定"}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setTemplate("finance");
-                setActiveConversationId(null);
-                setPrompt(`DSEBD:${name} bangladesh`);
-                router.push({
-                  pathname: "/main-jp/discover/chat",
-                  params: { fromPath: "list" },
-                });
-              }}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 6,
-                borderRadius: 4,
-                gap: 4,
-                backgroundColor: isDark ? "#333333" : "#EAEDED",
-                borderColor: isDark ? "#333333" : "#EAEDED",
-              }}>
-              <Text style={{ color: "white" }}>
-                <FontAwesome
-                  name="magic"
-                  size={14}
-                  color={isDark ? "#5188D4" : "#5188D4"}
-                />
-              </Text>
-              <Text
-                style={{ color: isDark ? "#FFFFFF" : "#000000", fontSize: 12 }}>
-                AIに質問
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const StockListScreen = () => {
   const inset = useSafeAreaInsets();
@@ -614,9 +125,7 @@ const StockListScreen = () => {
       ? marketListData
       : marketData;
 
-  const le5e5e5 = useThemeColor({}, "le5e5e5");
   const bgColor = useThemeColor({}, "background");
-  const borderColor = useThemeColor({}, "border");
 
   const fetchAlerms = async () => {
     try {
@@ -627,6 +136,8 @@ const StockListScreen = () => {
         {},
         mainServerAvailable
       );
+
+      console.log(data, "alerms");
 
       setAlerms(data?.alerms);
       setAiAlerms(data?.aiAlerms);
@@ -692,7 +203,7 @@ const StockListScreen = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, debouncedSearchTerm, activeFilter]);
+  }, [page, debouncedSearchTerm, activeFilter, refreash]);
 
   const fetchFilter = async () => {
     try {
@@ -904,7 +415,8 @@ const StockListScreen = () => {
           zIndex: 9,
           backgroundColor: bgColor,
           paddingTop: inset.top,
-        }}>
+        }}
+      >
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => {
@@ -914,7 +426,8 @@ const StockListScreen = () => {
               flexDirection: "row",
               alignItems: "center",
               gap: 8,
-            }}>
+            }}
+          >
             <Text>
               <Ionicons
                 name="chevron-back"
@@ -926,7 +439,8 @@ const StockListScreen = () => {
               style={[
                 styles.headerTitle,
                 { color: isDark ? "#00B0FF" : "#2980B9" },
-              ]}>
+              ]}
+            >
               株リスト
             </Text>
           </TouchableOpacity>
@@ -936,12 +450,14 @@ const StockListScreen = () => {
               flexDirection: "row",
               gap: 12,
               alignItems: "center",
-            }}>
+            }}
+          >
             <View
               style={[
                 styles.searchContainer,
                 { borderColor: isDark ? "#333333" : "#D1D1D1" },
-              ]}>
+              ]}
+            >
               <TextInput
                 style={{
                   flex: 1,
@@ -966,7 +482,8 @@ const StockListScreen = () => {
             <TouchableOpacity
               onPress={() => {
                 setSortByName(!sortByName);
-              }}>
+              }}
+            >
               <FontAwesome
                 name="sort-alpha-asc"
                 size={24}
@@ -989,7 +506,8 @@ const StockListScreen = () => {
             alignSelf: "flex-start",
             gap: 12,
             paddingLeft: 12,
-          }}>
+          }}
+        >
           {filteredItems.map((item: any, index) => (
             <TouchableOpacity
               onPress={() => {
@@ -1006,7 +524,8 @@ const StockListScreen = () => {
                       ? "#1C1C1C"
                       : "#E0E0E0"
                     : "#00796B",
-              }}>
+              }}
+            >
               <Text
                 style={{
                   paddingHorizontal: 12,
@@ -1018,7 +537,8 @@ const StockListScreen = () => {
                         ? "#B0BEC5"
                         : "#fff"
                       : "white",
-                }}>
+                }}
+              >
                 {item.name}
               </Text>
             </TouchableOpacity>
@@ -1029,40 +549,45 @@ const StockListScreen = () => {
   }, [searchTerm, activeFilter, sortByName]);
 
   // Avoid unnecessary re-renders by memoizing the renderItem
-  const renderItem = useCallback(({ item }: any) => {
-    return (
-      <View
-        style={{
-          backgroundColor: bgColor,
-          marginHorizontal: 12,
-        }}>
-        <StockListItem
-          changePer={item.changePer}
-          name={item.description}
-          price={getPrice(item)}
-          change={item.change}
-          logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
-          volume={item.volume}
-          value={item.value}
-          alerms={alerms}
-          aiAlerms={aiAlerms}
-          favs={favorites}
-          trading={item.trade}
-          targetPrice={targetPrice}
-          setCompanyName={setCompanyName}
-          item={item}
-          bottomSheetRef={bottomSheetRef}
-        />
-      </View>
-    );
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: any) => {
+      return (
+        <View
+          style={{
+            backgroundColor: bgColor,
+            marginHorizontal: 12,
+          }}
+        >
+          <StockListItem
+            changePer={item.changePer}
+            name={item.description}
+            price={getPrice(item)}
+            change={item.change}
+            logoUrl={`https://s3-api.bayah.app/cdn/symbol/logo/${item.symbol}.svg`}
+            volume={item.volume}
+            value={item.value}
+            alerms={alerms}
+            aiAlerms={aiAlerms}
+            favs={favorites}
+            trading={item.trade}
+            targetPrice={targetPrice}
+            setCompanyName={setCompanyName}
+            item={item}
+            bottomSheetRef={bottomSheetRef}
+          />
+        </View>
+      );
+    },
+    [alerms, aiAlerms, favorites, refreash, refreashFav]
+  );
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{
         flex: 1,
         backgroundColor: bgColor,
-      }}>
+      }}
+    >
       <StatusBar translucent={true} />
       <FlatList
         data={initialStocks}
@@ -1083,7 +608,8 @@ const StockListScreen = () => {
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "center",
-              }}>
+              }}
+            >
               <ActivityIndicator
                 size="small"
                 color={isDark ? "#00B0FF" : "#34495E"}
@@ -1100,7 +626,8 @@ const StockListScreen = () => {
                   200,
                 justifyContent: "center",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <Text style={{ color: textColor, fontSize: 16 }}>
                 在庫が見つかりません
               </Text>
@@ -1128,7 +655,8 @@ const StockListScreen = () => {
                   paddingVertical: 16,
                   justifyContent: "center",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <ActivityIndicator
                   size="small"
                   color={isDark ? "#00B0FF" : "#34495E"}

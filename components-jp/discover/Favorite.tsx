@@ -5,11 +5,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import {
-  getPrice,
-  StockListItem,
-} from "../../app/main-jp/discover/chart/index";
+import { getPrice } from "../../app/main-jp/discover/chart/index";
 import { useThemeColor } from "../Themed";
+import { StockListItem } from "../chart/StockListItem";
 
 const Favorite = ({
   bottomSheetRef,
@@ -38,13 +36,15 @@ const Favorite = ({
           paddingVertical: 20,
           alignItems: "center",
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <Text
           style={{
             fontSize: 24,
             fontWeight: "bold",
             color: isDark ? "#D2D2D2" : "black",
-          }}>
+          }}
+        >
           お気に入り <AntDesign name="heart" size={20} color="#ff3e30" />
         </Text>
       </View>
@@ -78,14 +78,16 @@ const Favorite = ({
                 alignItems: "center",
                 paddingTop: 50,
                 backgroundColor: "transparent",
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontSize: 14,
                   textAlign: "center",
                   paddingVertical: 12,
                   color: isDark ? "#D2D2D2" : "black",
-                }}>
+                }}
+              >
                 お気に入りがありません。クリックして追加
               </Text>
               <TouchableOpacity
@@ -96,7 +98,8 @@ const Favorite = ({
                   alignItems: "center",
                   position: "relative",
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <LinearGradient
                   colors={
                     isDark
@@ -112,12 +115,14 @@ const Favorite = ({
                     borderRadius: 4,
                     opacity: 0.9,
                     padding: 8,
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       opacity: 0.7,
                       color: isDark ? "white" : "black",
-                    }}>
+                    }}
+                  >
                     <MaterialIcons
                       name="addchart"
                       size={38}
