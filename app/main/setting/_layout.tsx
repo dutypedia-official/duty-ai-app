@@ -54,6 +54,13 @@ export default function Layout() {
           },
         }}
       />
+      <Stack.Screen
+        name="update-setting"
+        options={{
+          title: "",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

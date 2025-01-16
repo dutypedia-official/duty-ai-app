@@ -155,8 +155,6 @@ const StockListScreen = () => {
   };
 
   useEffect(() => {
-    console.log("ggggggggggggggg");
-
     fetchData();
   }, [refreash]);
 
@@ -303,227 +301,6 @@ const StockListScreen = () => {
     }
   };
 
-  const currentAlarm: any = alerms?.find(
-    (alerm: any) => alerm.symbol === companyName
-  );
-  const currentAiAlerm: any = aiAlerms?.find(
-    (alerm: any) => alerm.symbol === companyName
-  );
-
-  const [targetPrice, setTargetPrice] = useState(
-    currentAlarm ? `${currentAlarm?.price}` : ""
-  );
-
-  // const fetchAlerms = async () => {
-  //   try {
-  //     const token = await getToken();
-  //     const { data } = await client.get(
-  //       "/noti/get-alerms",
-  //       token,
-  //       {},
-  //       mainServerAvailable
-  //     );
-
-  //     setAlerms(data?.alerms);
-  //     setAiAlerms(data?.aiAlerms);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //   }
-  // };
-
-  // const fetchFavs = async () => {
-  //   try {
-  //     const token = await getToken();
-  //     const { data } = await client.get(
-  //       "/tools/get-favs",
-  //       token,
-  //       {},
-  //       mainServerAvailable
-  //     );
-  //     setFavorites(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const fetchData = async () => {
-  //   try {
-  //     setMarketData([]);
-  //     setLoadingData(true);
-  //     const { data: mData } = await client.get(
-  //       "/tools/get-stock-market",
-  //       null,
-  //       {},
-  //       mainServerAvailable
-  //     );
-  //     setMarketData(mData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoadingData(false);
-  //   }
-  // };
-
-  // const handelSetAlerm = async () => {
-  //   if (!selectedStock) {
-  //     return Toast.show({
-  //       type: "error",
-  //       text1: "Select a stock first!",
-  //     });
-  //   }
-  //   try {
-  //     setLoading(true);
-  //     const token = await getToken();
-  //     if (+selectedStock?.price?.replace(",", "") === parseFloat(targetPrice)) {
-  //       return Toast.show({
-  //         type: "error",
-  //         text1: "Price is same as current price!",
-  //       });
-  //     }
-  //     await client.post(
-  //       "/noti/create-alerm",
-  //       {
-  //         price: parseFloat(targetPrice),
-  //         symbol: selectedStock?.name,
-  //         condition:
-  //           parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
-  //             ? "Up"
-  //             : "Down",
-  //       },
-  //       token,
-  //       {},
-  //       mainServerAvailable
-  //     );
-
-  //     Toast.show({
-  //       type: "success",
-  //       text1: "Alarm set successfully",
-  //     });
-
-  //     setRefreash(!refreash);
-  //     setRefreashFav(!refreashFav);
-
-  //     // hideModal();
-  //     bottomSheetRef.current?.close();
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const handelSetAiAlerm = async () => {
-  //   if (!selectedStock) {
-  //     return Toast.show({
-  //       type: "error",
-  //       text1: "Select a stock first!",
-  //     });
-  //   }
-  //   try {
-  //     setError(null);
-  //     setLoadingAiAlarm(true);
-  //     const token = await getToken();
-  //     await client.post(
-  //       "/noti/create-ai-alerm",
-  //       {
-  //         symbol: selectedStock?.name,
-  //         prompt: inputText,
-  //       },
-  //       token,
-  //       mainServerAvailable
-  //     );
-
-  //     Toast.show({
-  //       type: "success",
-  //       text1: "Alarm set successfully",
-  //     });
-
-  //     setRefreash(!refreash);
-  //     setRefreashFav(!refreashFav);
-
-  //     // hideModal();
-  //     bottomSheetRef.current?.close();
-  //   } catch (error: any) {
-  //     console.log(error.response?.data);
-  //     setError(error.response?.data?.detail);
-  //   } finally {
-  //     setLoadingAiAlarm(false);
-  //   }
-  // };
-
-  // const handelDeleteAlerm = async () => {
-  //   try {
-  //     setLoadingDeleteAlarm(true);
-  //     const token = await getToken();
-  //     await client.delete(
-  //       `/noti/delete-alerm/${currentAlarm.id}`,
-  //       token,
-  //       {},
-  //       mainServerAvailable
-  //     );
-  //     Toast.show({
-  //       type: "success",
-  //       text1: "Alarm deleted successfully",
-  //     });
-  //     setRefreash(!refreash);
-  //     setRefreashFav(!refreashFav);
-  //     // hideModal();
-  //     bottomSheetRef.current?.close();
-  //   } catch (error) {
-  //     console.log(error);
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Error deleting alarm",
-  //     });
-  //   } finally {
-  //     setLoadingDeleteAlarm(false);
-  //   }
-  // };
-  // const handelDeleteAiAlerm = async () => {
-  //   try {
-  //     setLoadingDeleteAiAlarm(true);
-  //     const token = await getToken();
-  //     await client.delete(
-  //       `/noti/delete-ai-alerm/${selectedStock.name}`,
-  //       token,
-  //       {},
-  //       mainServerAvailable
-  //     );
-  //     Toast.show({
-  //       type: "success",
-  //       text1: "Alarm deleted successfully",
-  //     });
-  //     setRefreash(!refreash);
-  //     setRefreashFav(!refreashFav);
-  //     // hideModal();
-  //     bottomSheetRef.current?.close();
-  //   } catch (error) {
-  //     console.log(error);
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Error deleting alarm",
-  //     });
-  //   } finally {
-  //     setLoadingDeleteAiAlarm(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAlerms();
-  // }, [refreash]);
-
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     fetchFavs();
-  //   }, 600000); // 600000 ms = 10 minutes
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, [searchTerm, activeFilter, inputText]);
-
   const onRefresh = useCallback(() => {
     setScreenRefresh(true);
     setTimeout(() => {
@@ -534,16 +311,16 @@ const StockListScreen = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [companyName, setCompanyName] = useState(null);
 
-  // const currentAlarm: any = alerms?.find(
-  //   (alerm: any) => alerm.symbol === companyName
-  // );
-  // const currentAiAlerm: any = aiAlerms?.find(
-  //   (alerm: any) => alerm.symbol === companyName
-  // );
+  const currentAlarm: any = alerms?.find(
+    (alerm: any) => alerm.symbol === companyName
+  );
+  const currentAiAlerm: any = aiAlerms?.find(
+    (alerm: any) => alerm.symbol === companyName
+  );
 
-  // const [targetPrice, setTargetPrice] = useState(
-  //   currentAlarm ? `${currentAlarm?.price}` : ""
-  // );
+  const [targetPrice, setTargetPrice] = useState(
+    currentAlarm ? `${currentAlarm?.price}` : ""
+  );
 
   const ListHeaderComponent = React.useMemo(() => {
     return (
@@ -675,7 +452,7 @@ const StockListScreen = () => {
         </ScrollView>
       </View>
     );
-  }, [searchTerm]);
+  }, [searchTerm, activeFilter]);
 
   // Avoid unnecessary re-renders by memoizing the renderItem
   const renderItem = useCallback(
@@ -686,9 +463,6 @@ const StockListScreen = () => {
             backgroundColor: bgColor,
             paddingHorizontal: 12,
           }}>
-          <TouchableOpacity onPress={() => setRefreash(!refreash)}>
-            <Text>dfgdfgfd</Text>
-          </TouchableOpacity>
           <StockListItem
             changePer={item.changePer}
             name={item.symbol}
