@@ -247,6 +247,14 @@ const StockListScreen = () => {
           text1: "Price is same as current price!",
         });
       }
+      console.log({
+        price: parseFloat(targetPrice),
+        symbol: selectedStock?.shortCode,
+        condition:
+          parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
+            ? "Up"
+            : "Down",
+      });
 
       await client.post(
         "/noti/create-alerm?country=JP",
@@ -560,6 +568,7 @@ const StockListScreen = () => {
           }}
         >
           <StockListItem
+            shortCode={item.symbol}
             changePer={item.changePer}
             name={item.description}
             price={getPrice(item)}
