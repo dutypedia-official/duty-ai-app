@@ -359,7 +359,6 @@ function RootLayoutNav() {
           router.replace("/main-jp/home");
         } else {
           router.replace("/main/home");
-          // router.replace("/main/setting/update-setting");
         }
       }
     }

@@ -53,7 +53,9 @@ const Favorite = ({
         data={favorites}
         renderItem={({ item }: any) => (
           <StockListItem
+            item={item}
             aiAlerms={aiAlerms}
+            shortCode={item.symbol}
             name={item.description}
             price={getPrice(item)}
             change={item.change}

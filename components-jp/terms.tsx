@@ -108,103 +108,92 @@ const TermsAndConditions = ({ market }: { market?: any }) => {
       </View>
       <View style={styles.background}>
         <ScrollView contentContainerStyle={[styles.contentContainer]}>
-          <Text style={styles.heading}>Terms and Conditions for Duty AI</Text>
+          <Text style={styles.heading}>Duty AI 利用規約</Text>
 
-          <Text style={styles.subheading}>1. User Agreement</Text>
+          <Text style={styles.subheading}>1. 利用契約</Text>
           <Text style={styles.paragraph}>
-            By accessing or using Duty AI, you acknowledge and agree to these
-            terms, which govern the app's use and its features.
+            Duty AI
+            を利用することで、ユーザーは本規約に同意し、アプリの使用およびその機能に関する規定を遵守することを確認します。
           </Text>
 
-          <Text style={styles.subheading}>2. Educational Purpose</Text>
+          <Text style={styles.subheading}>2.教育目的</Text>
           <Text style={styles.paragraph}>
-            Duty AI is designed as an educational tool to provide insights and
-            analyses related to the stock market. All features, signals, and
-            notifications within the app are intended solely for informational
-            and educational purposes.
+            Duty AI
+            は、株式市場に関する洞察や分析を提供する教育ツールとして設計されています。本アプリの全機能、シグナル、および通知は、情報提供および教育目的のみに利用されるものとします。
           </Text>
 
-          <Text style={styles.subheading}>3. No Financial Liability</Text>
+          <Text style={styles.subheading}>3. 金銭的責任の免責</Text>
           <Text style={styles.paragraph}>
-            The analyses, predictions, and signals provided through Duty AI are
-            generated for educational purposes only. Users are advised to
-            exercise their own judgment and discretion when making financial
-            decisions. Duty AI and its developers do not bear responsibility for
-            any financial outcomes, including profits or losses, resulting from
-            the use of the app.
+            Duty AI
+            が提供する分析、予測、およびシグナルは、教育目的のみに基づくものであり、財務上の判断や決定についてはユーザー自身の判断と責任に委ねられます。Duty
+            AI
+            およびその開発者は、本アプリの利用により発生した利益または損失を含む財務結果について一切責任を負いません。
           </Text>
 
-          <Text style={styles.subheading}>4. Account Responsibility</Text>
+          <Text style={styles.subheading}>4. アカウントの責任</Text>
           <Text style={styles.paragraph}>
-            Users may need to create accounts for personalized experiences.
-            Maintaining the confidentiality of account details is the user's
-            responsibility.
+            個別の体験を提供するためにアカウントの作成が必要な場合があります。アカウント情報の管理とその機密性の保持は、ユーザーの責任となります。
           </Text>
 
-          <Text style={styles.subheading}>5. Data Usage</Text>
+          <Text style={styles.subheading}>5. データ利用</Text>
           <Text style={styles.paragraph}>
-            Duty AI collects minimal user data necessary for providing a
-            seamless and personalized experience. Measures are in place to
-            secure and protect this data. By using the app, you consent to this
-            data collection as outlined in our privacy policy.
+            Duty AI
+            は、円滑でパーソナライズされた体験を提供するために必要最低限のデータを収集します。このデータは適切な手段で保護されます。本アプリを利用することで、プライバシーポリシーに記載されたデータ収集に同意したものとみなされます。
           </Text>
 
-          <Text style={styles.subheading}>6. User-Generated Content</Text>
+          <Text style={styles.subheading}>6. ユーザー生成コンテンツ</Text>
           <Text style={styles.paragraph}>
-            Users are solely responsible for any content they generate or share
-            within the platform. Duty AI reserves the right to moderate or
-            remove any content deemed inappropriate or in violation of these
-            terms.
+            ユーザーがプラットフォーム内で生成または共有するコンテンツについては、全責任がユーザーにあります。Duty
+            AI
+            は、不適切または本規約に違反するコンテンツを管理または削除する権利を有します。
           </Text>
 
-          <Text style={styles.subheading}>7. Notifications and Alerts</Text>
+          <Text style={styles.subheading}>7. 通知およびアラート</Text>
           <Text style={styles.paragraph}>
-            Notifications and trade analyses provided by Duty AI are part of its
-            educational features. These should not be considered as financial
-            advice or a recommendation to buy or sell stocks. Duty AI does not
-            guarantee the accuracy, completeness, or reliability of any such
-            notifications or analyses.
+            Duty AI
+            が提供する通知およびトレード分析は、教育目的の機能の一部です。これらは投資助言や株式の売買の推奨として解釈されるべきではありません。Duty
+            AI
+            は、これらの通知や分析の正確性、完全性、信頼性について保証しません。
           </Text>
 
-          <Text style={styles.subheading}>8. Risk Disclaimer</Text>
+          <Text style={styles.subheading}>8. リスクに関する免責事項</Text>
           <Text style={styles.paragraph}>
-            The stock market is inherently volatile and carries significant
-            risks. Users are strongly encouraged to seek professional financial
-            advice before making any trading decisions. Duty AI explicitly
-            disclaims any liability for actions taken based on the app's
-            content.
+            株式市場は本質的に変動性が高く、重大なリスクを伴います。ユーザーは、投資決定を行う前に専門の金融アドバイザーに相談することを強く推奨します。Duty
+            AI
+            は、本アプリの内容に基づいて行動した結果について明示的に責任を負いません。
           </Text>
 
-          <Text style={styles.subheading}>9. Prohibited Activities</Text>
+          <Text style={styles.subheading}>9. 禁止行為</Text>
           <Text style={styles.paragraph}>
-            Users must not engage in illegal, abusive, or fraudulent activities
-            while using Duty AI. The app may suspend or terminate access for
-            violations.
+            Duty AI
+            を利用する際、違法行為、虐待的行為、または詐欺的行為を行ってはなりません。規約違反が確認された場合、アプリの利用を停止または終了する権利を有します。
           </Text>
 
-          <Text style={styles.subheading}>10. Intellectual Property</Text>
+          <Text style={styles.subheading}>10. 知的財産権</Text>
           <Text style={styles.paragraph}>
-            All intellectual property rights related to Duty AI, including its
-            content and algorithms, belong to the app's developers.
+            Duty AI
+            に関連するコンテンツやアルゴリズムを含むすべての知的財産権は、アプリの開発者に帰属します。
           </Text>
 
-          <Text style={styles.subheading}>11. Updates and Modifications</Text>
+          <Text style={styles.subheading}>11. 更新および変更</Text>
           <Text style={styles.paragraph}>
-            Duty AI reserves the right to update or modify these terms as
-            necessary. Users are advised to review the terms periodically.
+            Duty AI
+            は必要に応じて本規約を更新または変更する権利を有します。ユーザーは定期的に規約を確認することを推奨します。
           </Text>
 
-          <Text style={styles.subheading}>12. Support and Contact</Text>
+          <Text style={styles.subheading}>12. サポートとお問い合わせ</Text>
           <Text style={styles.paragraph}>
-            For any questions, support requests, or reports of technical issues,
-            users may contact us at support@dutybd.com.
+            ご質問、サポートの依頼、または技術的な問題の報告については、
+            <Text style={styles.link}>duty.com.bd@gmail.com</Text>
+            までお問い合わせください。
           </Text>
 
+          <Text style={styles.subheading}>最終的な確認最終的な確認</Text>
           <Text style={styles.paragraph}>
-            By using Duty AI, users acknowledge that the app is intended for
-            educational purposes only. Duty AI is not responsible for financial
-            decisions or outcomes derived from the use of its features.
-            Continued use of the app constitutes your acceptance of these terms.
+            Duty AI
+            を利用することで、ユーザーは本アプリが教育目的のみに設計されていることを理解したとみなされます。Duty
+            AI
+            は、その機能の利用に基づく財務上の決定または結果について責任を負いません。本アプリを継続して使用することで、ユーザーは本規約に同意したものとみなされます。
           </Text>
         </ScrollView>
         <TouchableOpacity
@@ -224,7 +213,7 @@ const TermsAndConditions = ({ market }: { market?: any }) => {
             {isLoading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>I Agree</Text>
+              <Text style={styles.buttonText}>私は同意した</Text>
             )}
           </LinearGradient>
         </TouchableOpacity>
@@ -261,6 +250,12 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#FFFFFF",
     marginBottom: 16,
+  },
+  link: {
+    textDecorationLine: "underline",
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#FFFFFF",
   },
   button: {
     height: 60,

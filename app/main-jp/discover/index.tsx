@@ -144,8 +144,16 @@ export default function DiscoverScreen() {
           text1: "Price is same as current price!",
         });
       }
+      console.log(
+        parseFloat(targetPrice),
+        selectedStock,
+        parseFloat(targetPrice) > +selectedStock?.price?.replace(",", "")
+          ? "Up"
+          : "Down"
+      );
+
       await client.post(
-        "/noti/create-alerm",
+        "/noti/create-alerm?country=JP",
         {
           price: parseFloat(targetPrice),
           symbol: selectedStock?.shortCode,

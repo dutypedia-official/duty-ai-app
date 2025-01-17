@@ -19,6 +19,7 @@ import { SvgUri } from "react-native-svg";
 
 export const StockListItem = ({
   name,
+  shortCode,
   price,
   value,
   change,
@@ -430,10 +431,10 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
               onPress={() => {
-                const shortCode = item?.name;
                 setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
                   shortCode,
+                  item,
                   price,
                   value,
                   change,

@@ -61,6 +61,13 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="recharge"
+        options={{
+          title: "Recharge",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
