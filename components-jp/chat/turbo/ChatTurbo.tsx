@@ -1016,6 +1016,7 @@ const ChatTurbo = ({ fromPath }: any) => {
               onPress={() => {
                 setActiveConversationId(null);
                 setRelatedPrompts([]);
+                setStreaming(false);
               }}
             >
               <MaterialIcons
