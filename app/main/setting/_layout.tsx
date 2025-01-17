@@ -68,6 +68,13 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="recharge-history"
+        options={{
+          title: "Recharge History",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

@@ -1,64 +1,62 @@
-import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
-import React from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { setting_bg_light } from "@/assets/icons/setting_bg_light";
+import HistoryCard from "@/components/notif/historyCard";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
-import RechargeCard from "@/components/notif/rechargeCard";
+import { router } from "expo-router";
+import React from "react";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SvgXml } from "react-native-svg";
 
-export default function Recharge() {
+export default function RechargeHistory() {
   const insets = useSafeAreaInsets();
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const bgColor = useThemeColor({}, "background");
 
-  const cards = [
+  const transaction = [
     {
-      id: "1",
-      bonus: "5",
-      coin: "10000",
-      expiryDate: "3",
-      amount: "100",
-      isPopular: true,
-    },
-    {
-      id: "12",
-      bonus: "2",
-      coin: "10000",
-      expiryDate: "8",
-      amount: "100",
-      isPopular: false,
-    },
-    {
-      id: "119",
-      coin: "10000",
-      expiryDate: "3",
-      amount: "100",
-      isPopular: false,
-    },
-    {
-      id: "73",
-      bonus: "5",
-      coin: "10000",
-      expiryDate: "3",
-      amount: "100",
-      isPopular: false,
+      id: "21",
+      coin: "50000",
+      status: "500 bdt",
+      createdAt: "2024-08-08T11:21:11.053000Z",
     },
     {
       id: "82",
-      bonus: "2",
-      coin: "10000",
-      expiryDate: "8",
-      amount: "100",
-      isPopular: false,
+      coin: "50000",
+      status: "bonus",
+      createdAt: "2024-08-08T11:21:11.053000Z",
     },
     {
-      id: "27",
-      coin: "10000",
-      expiryDate: "3",
-      amount: "100",
-      isPopular: false,
+      id: "24",
+      coin: "50000",
+      status: "Coupon applied",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "211",
+      coin: "50000",
+      status: "500 bdt",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "3482",
+      coin: "50000",
+      status: "bonus",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "924",
+      coin: "50000",
+      status: "Coupon applied",
+      createdAt: "2024-08-08T11:21:11.053000Z",
     },
   ];
   return (
@@ -67,6 +65,24 @@ export default function Recharge() {
         flex: 1,
         backgroundColor: bgColor,
       }}>
+      <View
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          width: "100%",
+          height: "100%",
+          zIndex: 1000,
+        }}>
+        <Image
+          source={require("@/assets/images/setting_bg_light.png")}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          resizeMode="cover"
+        />
+      </View>
+
       <View
         style={{
           position: "absolute",
@@ -116,7 +132,7 @@ export default function Recharge() {
             textAlign: "center",
             color: isDark ? "#fff" : "#333333",
           }}>
-          Recharge
+          Recharge History
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
       </View>
@@ -132,12 +148,12 @@ export default function Recharge() {
             backgroundColor: "transparent",
           }}>
           <FlashList
-            data={cards}
+            data={transaction}
             keyExtractor={(item) => item.id}
             contentContainerStyle={{
               paddingVertical: 10,
             }}
-            renderItem={({ item }) => <RechargeCard item={item} />}
+            renderItem={({ item }) => <HistoryCard item={item} />}
           />
         </View>
       </SafeAreaView>

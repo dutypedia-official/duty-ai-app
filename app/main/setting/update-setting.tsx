@@ -1,7 +1,11 @@
 import { coin } from "@/assets/icons/coin";
+import { email, email_dark } from "@/assets/icons/email";
+import { exit, exit_dark } from "@/assets/icons/exit";
 import { globe, globeDark } from "@/assets/icons/globe";
 import { setting_bg_light } from "@/assets/icons/setting_bg_light";
 import { fb, file, shield, yt } from "@/assets/icons/socials";
+import { trash, trash_dark } from "@/assets/icons/trash";
+import LowBalance from "@/components/low-balance";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { differenceInSeconds } from "date-fns";
@@ -9,6 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   Image,
   ScrollView,
   Text,
@@ -26,6 +31,7 @@ export default function UpdateSetting() {
   const bgColor = useThemeColor({}, "background");
   const expiryDate = new Date("2025-01-26T00:00:00");
   const [timeLeft, setTimeLeft] = useState("");
+  const [alertBalance, setAlertBalance] = useState(false);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -56,14 +62,18 @@ export default function UpdateSetting() {
 
   const settingOptions = [
     {
-      leftIcon: <FontAwesome name="envelope" size={24} color="#E5A100" />,
+      leftIcon: (
+        <View>
+          <SvgXml xml={isDark ? email_dark : email} width={24} height={24} />
+        </View>
+      ),
       rightIcon: (
         <FontAwesome
           name="angle-right"
           size={24}
           color="#E2B74D"
           style={{
-            transform: [{ rotate: "-60deg" }],
+            transform: [{ rotate: "-50deg" }],
           }}
         />
       ),
@@ -81,35 +91,39 @@ export default function UpdateSetting() {
           size={24}
           color="#E2B74D"
           style={{
-            transform: [{ rotate: "-60deg" }],
+            transform: [{ rotate: "-50deg" }],
           }}
         />
       ),
       title: "Recharge History",
     },
     {
-      leftIcon: <FontAwesome6 name="trash" size={24} color="#FF7043" />,
+      leftIcon: (
+        <SvgXml xml={isDark ? trash_dark : trash} width={24} height={24} />
+      ),
       rightIcon: (
         <FontAwesome
           name="angle-right"
           size={24}
           color="#E2B74D"
           style={{
-            transform: [{ rotate: "-60deg" }],
+            transform: [{ rotate: "-50deg" }],
           }}
         />
       ),
       title: "Delete account",
     },
     {
-      leftIcon: <FontAwesome name="envelope" size={24} color="#E5A100" />,
+      leftIcon: (
+        <SvgXml xml={isDark ? exit_dark : exit} width={24} height={24} />
+      ),
       rightIcon: (
         <FontAwesome
           name="angle-right"
           size={24}
           color="#E2B74D"
           style={{
-            transform: [{ rotate: "-60deg" }],
+            transform: [{ rotate: "-50deg" }],
           }}
         />
       ),
@@ -136,23 +150,29 @@ export default function UpdateSetting() {
     },
   ];
   return (
-    <ScrollView>
+    <ScrollView
+      style={{
+        backgroundColor: bgColor,
+      }}>
       <View
         style={{
           flex: 1,
-          backgroundColor: bgColor,
         }}>
         <View
           style={{
             position: "absolute",
             pointerEvents: "none",
-            flex: 1,
             width: "100%",
             height: "100%",
-            top: 0,
-            left: 0,
           }}>
-          <SvgXml xml={setting_bg_light} preserveAspectRatio="xMidYMid slice" />
+          <Image
+            source={require("@/assets/images/setting_bg_light.png")}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            resizeMode="cover"
+          />
         </View>
 
         <SafeAreaView
@@ -262,125 +282,138 @@ export default function UpdateSetting() {
                   flexDirection: "row",
                   justifyContent: "space-between",
                 }}>
-                <LinearGradient
-                  colors={
-                    isDark ? ["#E2B74D", "#C89D2F"] : ["#FFFFFF", "#FFFFFF"]
-                  }
+                <TouchableOpacity
                   style={{
                     width: "48%",
-                    borderWidth: 1,
-                    borderColor: isDark ? "#333333" : "#E0E0E0",
-                    borderRadius: 12,
-                    paddingHorizontal: 14,
-                    paddingBottom: 12,
-                    paddingTop: 28,
                   }}>
-                  <View style={{}}>
+                  <LinearGradient
+                    colors={
+                      isDark ? ["#E2B74D", "#C89D2F"] : ["#FFE6E6", "#FFE6E6"]
+                    }
+                    style={{
+                      borderWidth: 1,
+                      borderColor: isDark ? "#333333" : "#E0E0E0",
+                      borderRadius: 12,
+                      paddingHorizontal: 14,
+                      paddingVertical: 16,
+                    }}>
                     <View
                       style={{
-                        flexDirection: "row",
-                        gap: 8,
-                        alignItems: "center",
+                        gap: 10,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "medium",
-                          color: isDark ? "#ffff" : "#333333",
-                        }}>
-                        Balance
-                      </Text>
                       <View
                         style={{
                           flexDirection: "row",
-                          gap: 4,
+                          gap: 8,
+                          alignItems: "center",
                         }}>
                         <Text
                           style={{
-                            fontSize: 16,
-                            fontWeight: "bold",
-                            color: isDark ? "#009C42" : "#4CAF50",
+                            fontSize: 14,
+                            fontWeight: "medium",
+                            color: isDark ? "#ffff" : "#333333",
                           }}>
-                          1000k
+                          Balance
                         </Text>
-                        <View>
-                          <SvgXml xml={coin} />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 4,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: isDark ? "#009C42" : "#4CAF50",
+                            }}>
+                            1000k
+                          </Text>
+                          <View>
+                            <SvgXml xml={coin} />
+                          </View>
                         </View>
                       </View>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: "medium",
+                            color: isDark ? "#774900" : "#757575",
+                          }}>
+                          Expire 12/11/2025
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: "medium",
-                          color: isDark ? "#774900" : "#757575",
-                        }}>
-                        Expire 12/11/2025
-                      </Text>
-                    </View>
-                  </View>
-                </LinearGradient>
+                  </LinearGradient>
+                </TouchableOpacity>
 
-                <LinearGradient
-                  colors={
-                    isDark ? ["#1C1C1C", "#292929"] : ["#FFFFFF", "#FFFFFF"]
-                  }
+                <TouchableOpacity
+                  onPress={() => setAlertBalance(true)}
                   style={{
                     width: "48%",
-                    borderWidth: 1,
-                    borderColor: isDark ? "#333333" : "#E0E0E0",
-                    borderRadius: 12,
-                    paddingHorizontal: 14,
-                    paddingBottom: 12,
-                    paddingTop: 28,
                   }}>
-                  <View style={{}}>
+                  <LinearGradient
+                    colors={
+                      isDark ? ["#1C1C1C", "#292929"] : ["#FFFFFF", "#FFFFFF"]
+                    }
+                    style={{
+                      borderWidth: 1,
+                      borderColor: isDark ? "#333333" : "#E0E0E0",
+                      borderRadius: 12,
+                      paddingHorizontal: 14,
+                      paddingVertical: 16,
+                    }}>
                     <View
                       style={{
-                        flexDirection: "row",
-                        gap: 8,
-                        alignItems: "center",
+                        gap: 10,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "medium",
-                          color: isDark ? "#ffff" : "#333333",
-                        }}>
-                        Bonus
-                      </Text>
                       <View
                         style={{
                           flexDirection: "row",
-                          gap: 4,
+                          gap: 8,
+                          alignItems: "center",
                         }}>
                         <Text
                           style={{
-                            fontSize: 16,
-                            fontWeight: "bold",
-                            color: isDark ? "#F39C12" : "#FF7043",
+                            fontSize: 14,
+                            fontWeight: "medium",
+                            color: isDark ? "#ffff" : "#333333",
                           }}>
-                          100
+                          Bonus
                         </Text>
-                        <View>
-                          <SvgXml xml={coin} />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 4,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: isDark ? "#F39C12" : "#FF7043",
+                            }}>
+                            100
+                          </Text>
+                          <View>
+                            <SvgXml xml={coin} />
+                          </View>
                         </View>
                       </View>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: "medium",
+                            color: isDark ? "#E74C3C" : "#E53935",
+                          }}>
+                          {timeLeft !== "Expired"
+                            ? `Expires in: ${timeLeft}`
+                            : "Expired"}
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: "medium",
-                          color: isDark ? "#E74C3C" : "#E53935",
-                        }}>
-                        {timeLeft !== "Expired"
-                          ? `Expires in: ${timeLeft}`
-                          : "Expired"}
-                      </Text>
-                    </View>
-                  </View>
-                </LinearGradient>
+                  </LinearGradient>
+                </TouchableOpacity>
               </View>
               <View style={{ gap: 16 }}>
                 <TouchableOpacity
@@ -432,11 +465,11 @@ export default function UpdateSetting() {
                   {settingOptions?.map((item, i) => {
                     return (
                       <TouchableOpacity
+                        key={i}
                         style={{
                           width: "48%",
                         }}>
                         <LinearGradient
-                          key={i}
                           colors={
                             isDark
                               ? ["#1A1A1A", "#1A1A1A"]
@@ -488,7 +521,7 @@ export default function UpdateSetting() {
                 }}>
                 {socialLinks?.map((item, i) => {
                   return (
-                    <TouchableOpacity>
+                    <TouchableOpacity key={i}>
                       <View
                         style={{
                           borderWidth: 1,
@@ -509,6 +542,8 @@ export default function UpdateSetting() {
           </View>
         </SafeAreaView>
       </View>
+
+      <LowBalance open={alertBalance} setOpen={setAlertBalance} />
     </ScrollView>
   );
 }

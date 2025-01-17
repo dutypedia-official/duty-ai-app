@@ -1,9 +1,16 @@
 import { coin } from "@/assets/icons/coin";
 import React from "react";
-import { Image, Text, useColorScheme, View } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SvgXml } from "react-native-svg";
 import { useThemeColor } from "../Themed";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 
 export default function RechargeCard({ item }: { item: any }) {
   const colorscheme = useColorScheme();
@@ -62,7 +69,7 @@ export default function RechargeCard({ item }: { item: any }) {
               <View>
                 <LinearGradient
                   colors={
-                    isDark ? ["#4CAF50", "#4CAF50"] : ["#800055", "#800055"]
+                    !isDark ? ["#4CAF50", "#4CAF50"] : ["#800055", "#800055"]
                   }
                   style={{
                     borderRadius: 10,
@@ -110,28 +117,33 @@ export default function RechargeCard({ item }: { item: any }) {
                   fontSize: 14,
                   color: isDark ? "#9B9B9B" : "#333333",
                 }}>
-                Valid for 30 days
+                Valid for {item?.expiryDate} days
               </Text>
             </View>
             <View>
-              <LinearGradient
-                colors={["#CBF201", "#86A000", "#758C00"]}
-                style={{
-                  borderRadius: 12,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 19,
-                  paddingVertical: 12,
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("/main/setting/recharge-history");
                 }}>
-                <Text
+                <LinearGradient
+                  colors={["#CBF201", "#86A000", "#758C00"]}
                   style={{
-                    fontSize: 16,
-                    color: "#FFFFFF",
-                    fontWeight: "semibold",
+                    borderRadius: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingHorizontal: 19,
+                    paddingVertical: 12,
                   }}>
-                  Buy ৳ {item?.amount}
-                </Text>
-              </LinearGradient>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: "#FFFFFF",
+                      fontWeight: "semibold",
+                    }}>
+                    Buy ৳ {item?.amount}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
