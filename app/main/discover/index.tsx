@@ -141,6 +141,7 @@ export default function DiscoverScreen() {
           text1: "Price is same as current price!",
         });
       }
+
       await client.post(
         "/noti/create-alerm",
         {
