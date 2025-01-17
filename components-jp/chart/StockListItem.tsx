@@ -126,8 +126,6 @@ export const StockListItem = ({
     }
   }, [alerms, aiAlerms]);
 
-  console.log("currentAiAlarm-----------------", aiAlerms);
-
   return (
     <View>
       <View
@@ -409,6 +407,8 @@ export const StockListItem = ({
                 borderColor: isDark ? "#333333" : "#EAEDED",
               }}
               onPress={() => {
+                console.log(shortCode);
+
                 setSelectedAlarmShit(currentAlarm);
                 setSelectedStock({
                   shortCode,

@@ -301,14 +301,15 @@ const ChatTurbo = ({ fromPath }: any) => {
                   ])
                     .then(function (responses) {
                       const { data } = responses[0];
-
-                      setRelatedPrompts([
-                        ...data,
-                        {
-                          label: "বাংলায় এই স্টকের বিষয়ে বল",
-                          prompt: "বাংলায় এই স্টকের বিষয়ে বল",
-                        },
-                      ]);
+                      if (messages.length > 0) {
+                        setRelatedPrompts([
+                          ...data,
+                          {
+                            label: "বাংলায় এই স্টকের বিষয়ে বল",
+                            prompt: "বাংলায় এই স্টকের বিষয়ে বল",
+                          },
+                        ]);
+                      }
                     })
                     .catch(function (error) {
                       console.log(error);
@@ -328,8 +329,9 @@ const ChatTurbo = ({ fromPath }: any) => {
                   ])
                     .then(function (responses) {
                       const { data } = responses[0];
-
-                      setRelatedPrompts(data);
+                      if (messages.length > 0) {
+                        setRelatedPrompts(data);
+                      }
                     })
                     .catch(function (error) {
                       console.log(error);
@@ -351,7 +353,9 @@ const ChatTurbo = ({ fromPath }: any) => {
                   .then(function (responses) {
                     const { data } = responses[0];
                     console.log(data);
-                    setRelatedPrompts(data);
+                    if (messages.length > 0) {
+                      setRelatedPrompts(data);
+                    }
                   })
                   .catch(function (error) {
                     console.log(error);
@@ -1000,6 +1004,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                 setRelatedPrompts([]);
                 setStreaming(false);
                 setIsLoading(false);
+                setMessages([]);
               }}>
               <MaterialIcons
                 // style={{ opacity: inputText ? 1 : 0.3 }}
