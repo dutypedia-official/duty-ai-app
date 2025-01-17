@@ -999,6 +999,7 @@ const ChatTurbo = ({ fromPath }: any) => {
                 setActiveConversationId(null);
                 setRelatedPrompts([]);
                 setStreaming(false);
+                setIsLoading(false);
               }}>
               <MaterialIcons
                 // style={{ opacity: inputText ? 1 : 0.3 }}

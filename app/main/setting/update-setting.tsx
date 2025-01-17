@@ -436,9 +436,24 @@ export default function UpdateSetting() {
                         borderRadius: 12,
                         padding: 12,
                       }}>
-                      <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}>
                         <View>
                           <SvgXml xml={coin} width={34.48} height={36} />
+                        </View>
+                        <View>
+                          <FontAwesome
+                            name="angle-right"
+                            size={24}
+                            color={isDark ? "#E2B74D" : "#fff"}
+                            style={{
+                              transform: [{ rotate: "-50deg" }],
+                            }}
+                          />
                         </View>
                       </View>
                       <View>
