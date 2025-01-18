@@ -75,6 +75,13 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="portfolio"
+        options={{
+          title: "Portfolio",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
