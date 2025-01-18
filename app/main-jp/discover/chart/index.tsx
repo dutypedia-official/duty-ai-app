@@ -361,7 +361,7 @@ const StockListScreen = () => {
       setLoadingDeleteAiAlarm(true);
       const token = await getToken();
       await client.delete(
-        `/noti/delete-ai-alerm/${selectedStock.name}`,
+        `/noti/delete-ai-alerm/${selectedStock.shortCode}`,
         token,
         {},
         mainServerAvailable
