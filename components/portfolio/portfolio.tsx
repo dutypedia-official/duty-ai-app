@@ -1,11 +1,21 @@
-import { View, Text } from "react-native";
 import React from "react";
-import AssetsBal from "./assetsBal";
+import { ScrollView, View } from "react-native";
+import AssetsBalCard from "./assetsBalCard";
+import StockPortfolio from "./stockPortfolio";
+import TransactionCard from "./transactionCard";
 
 export default function Portfolio() {
   return (
-    <View>
-      <AssetsBal />
-    </View>
+    <ScrollView>
+      <View
+        style={{
+          gap: 20,
+          paddingVertical: 24,
+        }}>
+        <AssetsBalCard />
+        <StockPortfolio />
+        <TransactionCard />
+      </View>
+    </ScrollView>
   );
 }
