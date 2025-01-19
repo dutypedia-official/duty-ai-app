@@ -33,8 +33,8 @@ import * as Localization from "expo-localization";
 
 type SupportedLanguage = "en" | "bn" | "ja";
 
-const CURRENT_IOS_VERSION = 6;
-const CURRENT_ANDROID_VERSION = 10;
+const CURRENT_IOS_VERSION = 11;
+const CURRENT_ANDROID_VERSION = 11;
 
 // const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -187,7 +187,8 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
+      tokenCache={tokenCache}
+    >
       <RootLayoutNav />
     </ClerkProvider>
   );

@@ -5,6 +5,8 @@ import {
   View,
   RefreshControl,
   useColorScheme,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import DiscoverCategory from "@/components/discover/DiscoverCategory";
 import DiscoverHistory from "@/components/discover/DiscoverHistory";
@@ -25,6 +27,7 @@ import { apiClient } from "@/lib/api";
 import useStockData from "@/lib/hooks/useStockData";
 import BottomSheet from "@gorhom/bottom-sheet";
 import SheetCardIos from "@/components/SheetCardios";
+import { Button } from "react-native-paper";
 
 interface Props {
   onCategoryChanged: (category: string) => void;
@@ -45,23 +48,11 @@ export default function DiscoverScreen() {
     mainServerAvailable,
   } = useUi();
   const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<ScrollView>(null);
   const itemsRef = useRef<Array<any | null>>([]);
   const bgColor = useThemeColor({}, "background");
   const { setTemplate, template, setActiveConversationId } = useChat();
   const { setAnswer, clearSelectStock } = useVipSignal();
   const isFocused = useIsFocused();
-
-  const selectCategory = (index: number) => {
-    const selected = itemsRef.current[index];
-    setActiveIndex(index);
-    selected?.measure((x: number) => {
-      if (Platform.OS === "ios") {
-        scrollRef.current?.scrollTo({ x: x, y: 0, animated: true });
-      }
-    });
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
 
   const onRefresh = useCallback(() => {
     setScreenRefresh(true);
@@ -281,7 +272,7 @@ export default function DiscoverScreen() {
   );
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView ref={scrollRef}>
+      <ScrollView>
         <DiscoverHistory />
         <View style={{ marginTop: 24, backgroundColor: "transparent" }} />
         <DiscoverCategory />
@@ -295,7 +286,6 @@ export default function DiscoverScreen() {
           aiAlerms={aiAlerms}
           favorites={favorites}
         />
-        {/* <PopularPrompts /> */}
       </ScrollView>
 
       <SheetCardIos

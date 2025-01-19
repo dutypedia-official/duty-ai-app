@@ -81,7 +81,8 @@ const VipSignal = () => {
       style={{
         paddingHorizontal: 12,
         backgroundColor: bgColor,
-      }}>
+      }}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -89,13 +90,15 @@ const VipSignal = () => {
           paddingVertical: 20,
           alignItems: "center",
           backgroundColor: "transparent",
-        }}>
+        }}
+      >
         <Text
           style={{
             fontSize: 24,
             fontWeight: "bold",
             color: isDark ? "#FFD700" : "#8B7500",
-          }}>
+          }}
+        >
           Exclusive 👑
           {/* Vip <Foundation name="crown" size={24} color="black" /> */}
         </Text>
@@ -112,13 +115,15 @@ const VipSignal = () => {
                 }}
                 colors={item?.bgColor}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}>
+                end={{ x: 1, y: 0 }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                     gap: 12,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       width: 36,
@@ -127,7 +132,8 @@ const VipSignal = () => {
                       justifyContent: "center",
                       alignContent: "center",
                       backgroundColor: "#000000",
-                    }}>
+                    }}
+                  >
                     {item.icon}
                   </View>
                   <View
@@ -135,14 +141,16 @@ const VipSignal = () => {
                       flex: 1,
                       flexDirection: "row",
                       justifyContent: "space-between",
-                    }}>
+                    }}
+                  >
                     <View style={{ gap: 4 }}>
                       <Text
                         style={{
                           fontSize: 20,
                           color: isDark ? "#FFD700" : "#8B7500",
                           fontWeight: "bold",
-                        }}>
+                        }}
+                      >
                         {item.title}
                       </Text>
                       <Text
@@ -150,7 +158,8 @@ const VipSignal = () => {
                           fontSize: 10,
                           color: isDark ? "#FFFFFF" : "#757575",
                           fontWeight: "normal",
-                        }}>
+                        }}
+                      >
                         {item.subTitle}
                       </Text>
                     </View>
@@ -158,7 +167,8 @@ const VipSignal = () => {
                       style={{
                         alignContent: "center",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       {/* <Text
                         style={{
                           fontSize: 14,

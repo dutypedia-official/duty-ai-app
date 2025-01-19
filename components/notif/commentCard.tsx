@@ -7,22 +7,19 @@ import {
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
+import { format } from "date-fns";
 
-export default function NotiCommentCard({
-  logoUrl,
-  comment,
-}: {
-  logoUrl: any;
-  comment: any;
-}) {
+export default function NotiCommentCard({ comment }: { comment: any }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [viewMoreComment, setViewMoreComment] = useState(false);
+
   return (
     <View
       style={{
         flex: 1,
-      }}>
+      }}
+    >
       <View>
         <View
           style={{
@@ -30,7 +27,8 @@ export default function NotiCommentCard({
             flexDirection: "row",
             alignItems: "flex-start",
             gap: 8,
-          }}>
+          }}
+        >
           <View
             style={{
               width: 36,
@@ -39,7 +37,8 @@ export default function NotiCommentCard({
               overflow: "hidden",
               backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
               position: "relative",
-            }}>
+            }}
+          >
             <View
               style={{
                 width: 36,
@@ -50,19 +49,25 @@ export default function NotiCommentCard({
                 position: "absolute",
                 left: 0,
                 top: 0,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: "700",
                   fontSize: 12,
                   color: "#1E1E1E",
-                }}>
+                }}
+              >
                 A
               </Text>
             </View>
 
-            {logoUrl && (
-              <Image source={{ uri: logoUrl }} width={36} height={36} />
+            {comment?.user?.profilePhoto && (
+              <Image
+                source={{ uri: comment?.user?.profilePhoto }}
+                width={36}
+                height={36}
+              />
             )}
           </View>
           <View
@@ -71,15 +76,17 @@ export default function NotiCommentCard({
               flexShrink: 1,
               justifyContent: "space-between",
               flex: 1,
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 14,
                 fontWeight: "bold",
                 color: isDark ? "#87CEEB" : "#000000",
               }}
-              numberOfLines={1}>
-              Salma Akater abcdefg...
+              numberOfLines={1}
+            >
+              {comment?.user?.name}
             </Text>
 
             <Text
@@ -89,8 +96,9 @@ export default function NotiCommentCard({
                 color: isDark ? "#D3D3D3" : "#004662",
                 fontSize: 12,
                 fontWeight: "normal",
-              }}>
-              01/01/2025 1 minute ago
+              }}
+            >
+              {format(new Date(comment?.createdAt), "dd/MM/yyyy hh:mm a")}
             </Text>
           </View>
         </View>
@@ -102,11 +110,13 @@ export default function NotiCommentCard({
           alignItems: "flex-start",
           flex: 1,
           marginTop: 5,
-        }}>
+        }}
+      >
         <View
           style={{
             width: 36,
-          }}></View>
+          }}
+        ></View>
 
         <Pressable
           onPress={() => {
@@ -117,7 +127,8 @@ export default function NotiCommentCard({
             flexDirection: "row",
             alignItems: "center",
             flexWrap: "wrap",
-          }}>
+          }}
+        >
           <Text
             // numberOfLines={3}
             style={{
@@ -125,22 +136,27 @@ export default function NotiCommentCard({
               alignItems: "center",
               justifyContent: "center",
               color: isDark ? "#EAEAEA" : "#333333",
-            }}>
-            {viewMoreComment ? comment : comment?.substring(0, 186)}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              setViewMoreComment(!viewMoreComment);
             }}
-            style={{}}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                color: isDark ? "#00FFFF" : "#0078FF",
-              }}>
-              {viewMoreComment ? "...See less" : "See more..."}
-            </Text>
-          </TouchableOpacity>
+          >
+            {viewMoreComment ? comment.text : comment?.text?.substring(0, 186)}
+          </Text>
+          {comment?.text?.length > 186 && (
+            <TouchableOpacity
+              onPress={() => {
+                setViewMoreComment(!viewMoreComment);
+              }}
+              style={{}}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: isDark ? "#00FFFF" : "#0078FF",
+                }}
+              >
+                {viewMoreComment ? "...See less" : "See more..."}
+              </Text>
+            </TouchableOpacity>
+          )}
         </Pressable>
       </View>
     </View>
