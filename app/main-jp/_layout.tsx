@@ -77,24 +77,24 @@ export default function TabLayout() {
     }
   }, [segments, isFocused, router]);
 
-  const getUnreadNotiCount = async () => {
-    try {
-      const token = await getToken();
-      const { data } = await client.get(
-        `/noti/get-unread-count?country=JP`,
-        token,
-        {},
-        mainServerAvailable
-      );
-      setCount(data.count);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getUnreadNotiCount = async () => {
+  //   try {
+  //     const token = await getToken();
+  //     const { data } = await client.get(
+  //       `/noti/get-unread-count?country=JP`,
+  //       token,
+  //       {},
+  //       mainServerAvailable
+  //     );
+  //     setCount(data.count);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getUnreadNotiCount();
-  }, [refreash]);
+  // useEffect(() => {
+  //   getUnreadNotiCount();
+  // }, [refreash]);
 
   const fetchDataFeed = async (init: boolean = true) => {
     try {

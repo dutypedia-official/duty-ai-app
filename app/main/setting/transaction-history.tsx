@@ -1,26 +1,23 @@
-import {
-  View,
-  Text,
-  useColorScheme,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-  Dimensions,
-  Animated,
-} from "react-native";
-import React, { useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import TransactionTabContent from "@/components/portfolio/transactionTabContent";
+import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useThemeColor } from "@/components/Themed";
+import React, { useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import TransactionTabContent from "@/components/portfolio/transactionTabContent";
-import { FlashList } from "@shopify/flash-list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TransactionHistory() {
   const colorscheme = useColorScheme();
@@ -62,7 +59,7 @@ export default function TransactionHistory() {
     },
   ];
 
-  const data = [
+  const profit = [
     {
       id: "lk7yu34y74re",
       symbol: "GP",
@@ -79,22 +76,92 @@ export default function TransactionHistory() {
       amount: "966542",
     },
   ];
+
+  const losses = [
+    {
+      id: "lk7yu34y74re",
+      symbol: "GP",
+      amount: "786542",
+    },
+    {
+      id: "lk7yu34y74re",
+      symbol: "DFAK",
+      amount: "786542",
+    },
+    {
+      id: "89k7yu34y74re",
+      symbol: "THDTU",
+      amount: "786542",
+    },
+  ];
+
+  const withdraw = [
+    {
+      id: "lk7yu34y74re",
+      amount: "78656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "lk7yu34y74re",
+      amount: "78656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "6k7yu34y74re",
+      amount: "78656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+  ];
+
+  const deposit = [
+    {
+      id: "lk7yu34y74re",
+      amount: "78656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "l9i7yu34y74re",
+      amount: "988656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+    {
+      id: "lk7yu34y74re",
+      amount: "78656",
+      createdAt: "2024-08-08T11:21:11.053000Z",
+    },
+  ];
+
+  let data: {
+    id: string;
+    symbol?: string;
+    amount: string;
+    createdAt?: string;
+  }[] = [];
+
+  if (activeTab === "profit") data = profit;
+  else if (activeTab === "losses") data = losses;
+  else if (activeTab === "withdraw")
+    data = withdraw.map((item) => ({ ...item, symbol: undefined }));
+  else if (activeTab === "deposit")
+    data = deposit.map((item) => ({ ...item, symbol: undefined }));
+
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: isDark ? bgColor : "#fff",
       }}>
+      <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
       <View
         style={{
           position: "absolute",
           zIndex: 999,
-          paddingTop: insets.top + 10,
+          paddingTop: insets.top + 24,
+          paddingBottom: 24,
           backgroundColor: isDark ? bgColor : "#fff",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingBottom: 10,
           paddingHorizontal: 12,
           gap: 25,
         }}>
@@ -138,94 +205,88 @@ export default function TransactionHistory() {
         </Text>
         <View style={{ backgroundColor: "transparent", width: 32 }}></View>
       </View>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
+
+      <SafeAreaView
         style={{
-          height: "100%",
           flex: 1,
+          backgroundColor: isDark ? bgColor : "#fff",
         }}>
-        <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
+        <FlatList
+          contentContainerStyle={{
+            marginTop: 84,
+            paddingHorizontal: 12,
+            paddingTop: 12,
+            backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
+            borderRadius: 16,
+          }}
+          data={data}
+          keyExtractor={(item) => item?.id}
+          ListHeaderComponent={() => {
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: isDark ? "#262626" : "#F0F2F5",
+                  padding: 4,
+                  borderRadius: 8,
+                  marginHorizontal: "auto",
+                  width: "100%",
+                }}>
+                {tabs?.map((item, i) => {
+                  const active = i === activeTabIndex;
 
-        <View
-          style={{
-            height: "100%",
-            marginTop: Platform.OS === "ios" ? insets.top : insets.top + 64,
-          }}>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: isDark ? "#262626" : "#F0F2F5",
-                padding: 4,
-                borderRadius: 8,
-                marginHorizontal: "auto",
-              }}>
-              {tabs?.map((item, i) => {
-                const active = i === activeTabIndex;
-
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() => {
-                      handleTabPress(i);
-                      setActiveTab(item?.value);
-                    }}
-                    style={{
-                      backgroundColor: active
-                        ? isDark
-                          ? "#FFFFFF"
-                          : "#FFFFFF"
-                        : "transparent",
-                      paddingVertical: 8,
-                      paddingHorizontal: 12,
-                      borderRadius: 4,
-                      width: (Dimensions.get("window").width - 58) / 4,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        textAlign: "center",
-                        fontWeight: "medium",
-                        color: active
-                          ? isDark
-                            ? "#000000"
-                            : "#2D3748"
-                          : isDark
-                          ? "#718096"
-                          : "#718096",
-                      }}>
-                      {item?.tabName}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            <View style={{}}>
-              <FlashList
-                data={data}
-                estimatedItemSize={100}
-                keyExtractor={(item) => item?.id}
-                renderItem={({ item }) => {
                   return (
-                    <View
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => {
+                        handleTabPress(i);
+                        setActiveTab(item?.value);
+                      }}
                       style={{
-                        backgroundColor: "red",
-                        paddingHorizontal: 12,
+                        backgroundColor: active
+                          ? isDark
+                            ? "#FFFFFF"
+                            : "#FFFFFF"
+                          : "transparent",
                         paddingVertical: 8,
+                        paddingHorizontal: 12,
+                        borderRadius: 4,
+                        width: (Dimensions.get("window").width - 32) / 4,
                       }}>
-                      {/* <TransactionTabContent
-                      activeTab={activeTab}
-                      isLast={2}
-                      item={item}
-                    /> */}
-                    </View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          textAlign: "center",
+                          fontWeight: "medium",
+                          color: active
+                            ? isDark
+                              ? "#000000"
+                              : "#2D3748"
+                            : isDark
+                            ? "#718096"
+                            : "#718096",
+                        }}>
+                        {item?.tabName}
+                      </Text>
+                    </TouchableOpacity>
                   );
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+                })}
+              </View>
+            );
+          }}
+          renderItem={({ item, index }) => {
+            return (
+              <View style={{}}>
+                <TransactionTabContent
+                  activeTab={activeTab}
+                  isLast={index === data.length - 1}
+                  item={item}
+                />
+              </View>
+            );
+          }}
+        />
+      </SafeAreaView>
     </View>
   );
 }

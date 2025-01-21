@@ -30,7 +30,6 @@ export default function TransactionTabContent({
             paddingVertical: 16,
             borderBottomWidth: isLast ? 0 : 1,
             borderColor: isDark ? "#202020" : "#F1F1F1",
-            backgroundColor: "red",
           }}>
           <View
             style={{
