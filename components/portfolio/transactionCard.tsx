@@ -12,6 +12,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import TransactionTabContent from "./transactionTabContent";
+import { router } from "expo-router";
 
 export default function TransactionCard() {
   const colorScheme = useColorScheme();
@@ -33,15 +35,87 @@ export default function TransactionCard() {
   const tabs = [
     {
       tabName: "Profit",
+      value: "profit",
+      data: [
+        {
+          id: "lk7yu34y74re",
+          symbol: "GP",
+          amount: "966542",
+        },
+        {
+          id: "lk7yu34y74re",
+          symbol: "ROBI",
+          amount: "966542",
+        },
+        {
+          id: "34yu34y74re",
+          symbol: "IFIC",
+          amount: "966542",
+        },
+      ],
     },
     {
       tabName: "Losses",
+      value: "losses",
+      data: [
+        {
+          id: "lk7yu34y74re",
+          symbol: "GP",
+          amount: "786542",
+        },
+        {
+          id: "lk7yu34y74re",
+          symbol: "DFAK",
+          amount: "786542",
+        },
+        {
+          id: "89k7yu34y74re",
+          symbol: "THDTU",
+          amount: "786542",
+        },
+      ],
     },
     {
       tabName: "Withdraw",
+      value: "withdraw",
+      data: [
+        {
+          id: "lk7yu34y74re",
+          amount: "78656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+        {
+          id: "lk7yu34y74re",
+          amount: "78656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+        {
+          id: "6k7yu34y74re",
+          amount: "78656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+      ],
     },
     {
       tabName: "Deposit",
+      value: "deposit",
+      data: [
+        {
+          id: "lk7yu34y74re",
+          amount: "78656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+        {
+          id: "l9i7yu34y74re",
+          amount: "988656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+        {
+          id: "lk7yu34y74re",
+          amount: "78656",
+          createdAt: "2024-08-08T11:21:11.053000Z",
+        },
+      ],
     },
   ];
 
@@ -64,7 +138,8 @@ export default function TransactionCard() {
             }}>
             All transaction history
           </Text>
-          <View
+          <TouchableOpacity
+            onPress={() => router.push("/main/setting/transaction-history")}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -77,7 +152,7 @@ export default function TransactionCard() {
               See all
             </Text>
             <FontAwesome name="angle-right" size={14} color={"#4A5568"} />
-          </View>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -86,7 +161,7 @@ export default function TransactionCard() {
             borderWidth: 1,
             borderRadius: 16,
             borderColor: isDark ? "#262626" : "#E0E0E0",
-            overflow: "hidden",
+            // overflow: "hidden",
           }}>
           <View
             style={{
@@ -131,31 +206,51 @@ export default function TransactionCard() {
               );
             })}
           </View>
-          <Animated.View
-            style={[
-              {
-                width: Dimensions.get("screen").width * 3,
-                flexDirection: "row",
-                paddingLeft: 12,
-              },
-              animatedStyle,
-            ]}>
-            {tabs?.map((tabData, i) => {
-              return (
-                <View
-                  key={i}
-                  style={{
-                    width: Dimensions.get("screen").width,
-                    gap: 24,
-                  }}>
-                  <Text>lorem</Text>
-                  {/* {tabData?.data?.map((item, id) => {
-                          return <TabContentArea key={id} item={item} />;
-                        })} */}
-                </View>
-              );
-            })}
-          </Animated.View>
+
+          <View
+            style={{
+              overflow: "hidden",
+            }}>
+            <Animated.View
+              style={[
+                {
+                  width: Dimensions.get("screen").width * 4,
+                  flexDirection: "row",
+                },
+                animatedStyle,
+              ]}>
+              {tabs?.map((tabData, i) => {
+                const activeTab = tabData?.value;
+
+                return (
+                  <View
+                    key={i}
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      flex: 1,
+                      marginRight: 50,
+                    }}>
+                    <View
+                      style={{
+                        justifyContent: "space-between",
+                      }}>
+                      {tabData?.data?.map((item, id) => {
+                        return (
+                          <View key={id}>
+                            <TransactionTabContent
+                              activeTab={activeTab}
+                              isLast={tabData?.data.length - 1 === id}
+                              item={item}
+                            />
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                );
+              })}
+            </Animated.View>
+          </View>
         </View>
       </View>
     </View>

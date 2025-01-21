@@ -192,7 +192,7 @@ export default function ChangePassword() {
 
       if (completeSignIn?.status === "complete") {
         await setActive({ session: completeSignIn.createdSessionId });
-        router.push("/main/");
+        router.push("/main/home");
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));

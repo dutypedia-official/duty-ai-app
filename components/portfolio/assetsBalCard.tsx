@@ -1,6 +1,6 @@
 import { SafeAreaView } from "@/components/Themed";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   Text,
@@ -8,10 +8,15 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import DepositCard from "./depositCard";
+import WithdrawCard from "./withdrawCard";
 
 export default function AssetsBalCard() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const [isDeposit, setIsDeposit] = useState(false);
+  const [isWithdraw, setIsWithdraw] = useState(false);
+
   const logoUrl = `https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg`;
   const isNeg = true;
   return (
@@ -218,6 +223,9 @@ export default function AssetsBalCard() {
                   gap: 12,
                 }}>
                 <TouchableOpacity
+                  onPress={() => {
+                    setIsDeposit(true);
+                  }}
                   style={{
                     flex: 1,
                     shadowColor: "#1E90FF",
@@ -253,6 +261,9 @@ export default function AssetsBalCard() {
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  onPress={() => {
+                    setIsWithdraw(true);
+                  }}
                   style={{
                     flex: 1,
                     shadowColor: "#FF4500",
@@ -292,6 +303,8 @@ export default function AssetsBalCard() {
           </View>
         </LinearGradient>
       </View>
+      {isDeposit && <DepositCard open={isDeposit} setOpen={setIsDeposit} />}
+      {isWithdraw && <WithdrawCard open={isWithdraw} setOpen={setIsWithdraw} />}
     </SafeAreaView>
   );
 }

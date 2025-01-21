@@ -114,7 +114,7 @@ export default function VerifyEmail() {
 
         if (completeSignUp.status === "complete") {
           await setActive({ session: completeSignUp.createdSessionId });
-          router.push("/main/");
+          router.push("/main/home");
         } else {
           console.error(JSON.stringify(completeSignUp, null, 2));
         }
@@ -177,8 +177,7 @@ export default function VerifyEmail() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         <View
           style={{
             position: "absolute",
@@ -188,8 +187,7 @@ export default function VerifyEmail() {
             flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
-          }}
-        >
+          }}>
           <LinearGradient
             colors={["#4A148C", "#2A2B2A"]}
             start={{ x: 0, y: 0.5 }}
@@ -209,8 +207,7 @@ export default function VerifyEmail() {
               alignItems: "center",
               justifyContent: "center",
               zIndex: 0,
-            }}
-          >
+            }}>
             <LoginLogo
               width={Dimensions.get("screen").width / 6.5}
               height={Dimensions.get("screen").width / 6.5}
@@ -236,8 +233,7 @@ export default function VerifyEmail() {
               backgroundColor: "transparent",
               marginLeft: 20,
               paddingVertical: 10,
-            }}
-          >
+            }}>
             <TouchableOpacity
               onPress={() => {
                 router.back();
@@ -246,8 +242,7 @@ export default function VerifyEmail() {
                 {
                   // position: "absolute",
                 }
-              }
-            >
+              }>
               <LinearGradient
                 colors={["#6A4E9D", "#8E44AD"]}
                 start={{ x: 0, y: 0 }}
@@ -264,8 +259,7 @@ export default function VerifyEmail() {
                   elevation: 5,
                   width: 36,
                   height: 36,
-                }}
-              >
+                }}>
                 <Text>
                   <Ionicons
                     name="chevron-back"
@@ -284,21 +278,18 @@ export default function VerifyEmail() {
               paddingTop: 20,
               justifyContent: "space-between",
               flex: 1,
-            }}
-          >
+            }}>
             <View
               style={{
                 gap: 24,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: "#FFFFFF",
                   fontSize: 32,
                   fontWeight: "bold",
                   textAlign: "left",
-                }}
-              >
+                }}>
                 Verify your email
               </Text>
               <Text
@@ -308,8 +299,7 @@ export default function VerifyEmail() {
                   fontWeight: "normal",
                   textAlign: "left",
                   lineHeight: 24,
-                }}
-              >
+                }}>
                 A verification code has been sent to {"\n"}
                 {params?.email}. Please enter the code to proceed. If you don't
                 see it in your inbox, kindly check your spam or junk folder.
@@ -328,8 +318,7 @@ export default function VerifyEmail() {
                         color: "#EC2700",
                         fontWeight: "normal",
                         fontSize: 14,
-                      }}
-                    >
+                      }}>
                       {invalidCode}
                     </Text>
                   </View>
@@ -341,24 +330,21 @@ export default function VerifyEmail() {
                       color: "#FFFFFF",
                       fontWeight: "normal",
                       fontSize: 14,
-                    }}
-                  >
+                    }}>
                     Wait {formatTime(timeLeft)} before requesting another code
                   </Text>
                 ) : (
                   <View
                     style={{
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <View>
                       <Text
                         style={{
                           color: "#FFFFFF",
                           fontWeight: "normal",
                           fontSize: 14,
-                        }}
-                      >
+                        }}>
                         Did not receive it yet?{" "}
                       </Text>
                     </View>
@@ -368,8 +354,7 @@ export default function VerifyEmail() {
                           color: "#EC2700",
                           fontWeight: "normal",
                           fontSize: 14,
-                        }}
-                      >
+                        }}>
                         Send again.
                       </Text>
                     </TouchableOpacity>
@@ -386,12 +371,10 @@ export default function VerifyEmail() {
                 bottom: insets.bottom + 32, // Ensure there is always padding from the bottom
                 left: 20,
                 right: 20,
-              }}
-            >
+              }}>
               <TouchableOpacity
                 disabled={!isFormValid}
-                onPress={handleSubmit(onSubmit)}
-              >
+                onPress={handleSubmit(onSubmit)}>
                 <LinearGradient
                   colors={
                     !isFormValid
@@ -411,15 +394,13 @@ export default function VerifyEmail() {
                     shadowOpacity: 0.2,
                     shadowRadius: 8,
                     elevation: 3,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
                       position: "relative",
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         color: "#FFFFFF",
@@ -427,8 +408,7 @@ export default function VerifyEmail() {
                         fontSize: 20,
                         textAlign: "center",
                         opacity: isFormValid ? 1 : 0.5,
-                      }}
-                    >
+                      }}>
                       {isLoading && (
                         <ActivityIndicator
                           size="small"
@@ -442,8 +422,7 @@ export default function VerifyEmail() {
                       style={{
                         position: "absolute",
                         right: 0,
-                      }}
-                    >
+                      }}>
                       <Ionicons
                         name="chevron-forward"
                         size={24}

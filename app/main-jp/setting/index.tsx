@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  GestureResponderEvent,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -38,8 +40,22 @@ export default function SettingScreen() {
   const isDark = useColorScheme() === "dark";
   const bgColor = useThemeColor({}, "background");
   const client = apiClient();
-
   const path = usePathname();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Helper function to create a delay using a Promise
+  const delay = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handlePress = async (event: GestureResponderEvent): Promise<void> => {
+    setIsLoading(true); // Start loading
+    await delay(3000); // Wait for 3 seconds
+    await signOut();
+    setLanguage("en");
+    setSelectMarket("");
+    setIsLoading(false); // Stop loading
+    router.replace("/(start)"); // Perform the navigation
+  };
 
   console.log("path---------", path);
 
@@ -224,19 +240,14 @@ export default function SettingScreen() {
         </View>
 
         <Button
-          onPress={() => {
-            signOut();
-            setLanguage("en");
-            setSelectMarket("");
-            router.replace("/(start-jp)/login");
-          }}
-          icon="logout"
+          onPress={handlePress}
+          icon={isLoading ? "" : "logout"}
           textColor="red"
           style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
           mode="outlined">
-          ログアウト
+          {isLoading ? <ActivityIndicator /> : "ログアウト"}
         </Button>
       </View>
     </ScrollView>

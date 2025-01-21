@@ -72,7 +72,7 @@ export default function Signup() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.dismissTo("/main/home");
+        router.replace("/(start)/market");
       }
     } catch (err) {
       console.error(err);
@@ -258,7 +258,7 @@ export default function Signup() {
                   Create an account
                 </Text>
                 <TouchableOpacity
-                  onPress={() => router.push("/signup-form")}
+                  onPress={() => router.push("/(start)/signup-form")}
                   style={{
                     width: "100%",
                   }}>
@@ -295,30 +295,32 @@ export default function Signup() {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ width: "100%" }}
-                  onPress={() => onSelectAuth(Strategy.Apple)}>
-                  <LinearGradient
-                    colors={["#000000", "#2E2E2E"]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={styles.btnOutline}>
-                    <FontAwesome
-                      style={{ paddingLeft: 20 }}
-                      name="apple"
-                      size={30}
-                      color="#fff"
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "700",
-                        paddingLeft: 8,
-                      }}>
-                      {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Signup with Apple"}
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                {Platform.OS !== "android" && (
+                  <TouchableOpacity
+                    style={{ width: "100%" }}
+                    onPress={() => onSelectAuth(Strategy.Apple)}>
+                    <LinearGradient
+                      colors={["#000000", "#2E2E2E"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 0.5, y: 1 }}
+                      style={styles.btnOutline}>
+                      <FontAwesome
+                        style={{ paddingLeft: 20 }}
+                        name="apple"
+                        size={30}
+                        color="#fff"
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "700",
+                          paddingLeft: 8,
+                        }}>
+                        {isBn ? "অ্যাপল দিয়ে লগইন করুন" : "Signup with Apple"}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
                 {/* {Platform.OS === "android" && (
                   <TouchableOpacity
                     onPress={() => {
@@ -348,7 +350,7 @@ export default function Signup() {
                   color: "#FFFFFF",
                 }}>
                 Already have an account?{" "}
-                <Link href="/login" asChild>
+                <Link push href="/(start)/login" asChild>
                   <Text
                     style={{
                       color: "#2ECC71",

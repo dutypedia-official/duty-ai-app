@@ -3,19 +3,22 @@ import { ScrollView, View } from "react-native";
 import AssetsBalCard from "./assetsBalCard";
 import StockPortfolio from "./stockPortfolio";
 import TransactionCard from "./transactionCard";
+import { SafeAreaView } from "@/components/Themed";
 
 export default function Portfolio() {
   return (
-    <ScrollView>
-      <View
-        style={{
-          gap: 20,
-          paddingVertical: 24,
-        }}>
-        <AssetsBalCard />
-        <StockPortfolio />
-        <TransactionCard />
-      </View>
-    </ScrollView>
+    <SafeAreaView>
+      <ScrollView>
+        <View
+          style={{
+            gap: 20,
+            paddingBottom: 24,
+          }}>
+          <AssetsBalCard />
+          <StockPortfolio />
+          <TransactionCard />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

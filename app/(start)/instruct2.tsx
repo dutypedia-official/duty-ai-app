@@ -295,7 +295,6 @@ export default function StartScreen() {
 
         <TouchableOpacity
           onPress={() => {
-            setSelectMarket("");
             router.push("/(start)/login");
           }}>
           <LinearGradient

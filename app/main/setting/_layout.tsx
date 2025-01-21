@@ -82,6 +82,13 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="transaction-history"
+        options={{
+          title: "All transaction history ",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

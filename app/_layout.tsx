@@ -187,8 +187,7 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}
-    >
+      tokenCache={tokenCache}>
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -339,28 +338,23 @@ function RootLayoutNav() {
 
       // Step 2: User is not signed in
       if (!isSignedIn) {
-        // Redirect to language selection
-        if (language === "ja") {
-          router.replace("/(start-jp)");
-        } else {
-          router.replace("/(start)");
-        }
+        router.dismissTo("/(start)");
       }
       // Step 3: User is signed in but has not selected a market
-      else if (!selectMarket) {
+      else if (isSignedIn && !selectMarket) {
         if (language === "ja") {
-          router.replace("/(start-jp)/market");
+          router.dismissTo("/(start-jp)/market");
         } else {
-          router.replace("/(start)/market");
+          router.dismissTo("/(start)/market");
         }
       }
       // Step 4: User is signed in and has selected a market
       else {
-        if (selectMarket === "Japan") {
-          router.replace("/main-jp/home");
+        if (isSignedIn && selectMarket === "Japan") {
+          router.dismissTo("/main-jp/home");
         } else {
-          router.replace("/main/home");
-          // router.replace("/main/setting/portfolio");
+          router.dismissTo("/main/home");
+          // router.dismissTo("/main/setting/portfolio");
         }
       }
     }

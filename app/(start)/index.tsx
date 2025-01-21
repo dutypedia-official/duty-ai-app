@@ -68,8 +68,7 @@ export default function StartScreen() {
         backgroundColor: "#000",
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
-      }}
-    >
+      }}>
       <StatusBar style="light" />
 
       <VideoView
@@ -101,11 +100,9 @@ export default function StartScreen() {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "transparent",
-          }}
-        >
+          }}>
           <View
-            style={{ alignItems: "center", backgroundColor: "transparent" }}
-          >
+            style={{ alignItems: "center", backgroundColor: "transparent" }}>
             <Text
               style={{
                 fontWeight: "bold",
@@ -113,8 +110,7 @@ export default function StartScreen() {
                 paddingVertical: 30,
                 height: 90,
                 color: "#fff",
-              }}
-            >
+              }}>
               {language === "ja"
                 ? "言語を選択"
                 : language === "bn"
@@ -126,8 +122,7 @@ export default function StartScreen() {
               style={{
                 backgroundColor: "transparent",
                 gap: 12,
-              }}
-            >
+              }}>
               {languages?.map((item, i) => {
                 return (
                   <TouchableOpacity
@@ -136,8 +131,7 @@ export default function StartScreen() {
                     style={{
                       width: Dimensions.get("window").width - 24,
                       backgroundColor: "transparent",
-                    }}
-                  >
+                    }}>
                     <LinearGradient
                       colors={
                         language === item?.value
@@ -158,24 +152,21 @@ export default function StartScreen() {
                         borderWidth: 1,
                         borderColor:
                           language === item?.value ? "#6A00F4" : "#333333",
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           flexDirection: "row",
                           justifyContent: "center",
                           position: "relative",
                           backgroundColor: "transparent",
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
                             color: "#FFFFFF",
                             fontWeight: "bold",
                             fontSize: 20,
                             textAlign: "center",
-                          }}
-                        >
+                          }}>
                           {item?.label}
                         </Text>
                       </View>
@@ -194,8 +185,7 @@ export default function StartScreen() {
             } else {
               router.push("/(start)/instruct2");
             }
-          }}
-        >
+          }}>
           <LinearGradient
             colors={["#FF6FD8", "#00FFC6"]}
             start={{ x: 0, y: 0 }}
@@ -204,14 +194,12 @@ export default function StartScreen() {
               padding: 2,
               borderRadius: 100,
               opacity: 1,
-            }}
-          >
+            }}>
             <LinearGradient
               colors={["#FF6FD8", "#973FCD", "#3813C2"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
-              style={{ borderRadius: 100, opacity: 0.8 }}
-            >
+              style={{ borderRadius: 100, opacity: 0.8 }}>
               <Text
                 style={{
                   fontSize: 20,
@@ -219,8 +207,7 @@ export default function StartScreen() {
                   paddingVertical: 16,
                   textAlign: "center",
                   color: "#FFD700",
-                }}
-              >
+                }}>
                 {language === "ja" ? "次" : isBn ? "পরবর্তী" : "Next"}
               </Text>
             </LinearGradient>

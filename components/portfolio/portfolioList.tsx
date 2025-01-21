@@ -1,4 +1,4 @@
-import { View, Text, useColorScheme } from "react-native";
+import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
 import React from "react";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
@@ -20,7 +20,7 @@ export default function PortfolioList({
 
   console.log("item-----------", item?.symbol[0]);
   return (
-    <View
+    <TouchableOpacity
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -165,6 +165,6 @@ export default function PortfolioList({
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

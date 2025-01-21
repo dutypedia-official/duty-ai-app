@@ -68,7 +68,7 @@ export default function Signup() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.dismissTo("/main-jp/home");
+        router.replace("/(start-jp)/market");
       }
     } catch (err) {
       console.error(err);
@@ -291,30 +291,32 @@ export default function Signup() {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ width: "100%" }}
-                  onPress={() => onSelectAuth(Strategy.Apple)}>
-                  <LinearGradient
-                    colors={["#000000", "#2E2E2E"]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={styles.btnOutline}>
-                    <FontAwesome
-                      style={{ paddingLeft: 20 }}
-                      name="apple"
-                      size={30}
-                      color="#fff"
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "700",
-                        paddingLeft: 8,
-                      }}>
-                      Appleでアカウントを作成
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                {Platform.OS !== "android" && (
+                  <TouchableOpacity
+                    style={{ width: "100%" }}
+                    onPress={() => onSelectAuth(Strategy.Apple)}>
+                    <LinearGradient
+                      colors={["#000000", "#2E2E2E"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 0.5, y: 1 }}
+                      style={styles.btnOutline}>
+                      <FontAwesome
+                        style={{ paddingLeft: 20 }}
+                        name="apple"
+                        size={30}
+                        color="#fff"
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "700",
+                          paddingLeft: 8,
+                        }}>
+                        Appleでアカウントを作成
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
                 {/* {Platform.OS === "android" && (
                   <TouchableOpacity
                     onPress={() => {
@@ -345,7 +347,7 @@ export default function Signup() {
                   lineHeight: 36,
                 }}>
                 既にアカウントをお持ちの方{"\n"}
-                <Link href="/(start-jp)/login" asChild>
+                <Link push href="/(start-jp)/login" asChild>
                   <Text
                     style={{
                       color: "#2ECC71",

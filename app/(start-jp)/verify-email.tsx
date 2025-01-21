@@ -114,7 +114,7 @@ export default function VerifyEmail() {
 
         if (completeSignUp.status === "complete") {
           await setActive({ session: completeSignUp.createdSessionId });
-          router.push("/main-jp/");
+          router.push("/main-jp/home");
         } else {
           console.error(JSON.stringify(completeSignUp, null, 2));
         }

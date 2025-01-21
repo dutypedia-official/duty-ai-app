@@ -186,7 +186,7 @@ export default function UserLoginScreen() {
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
-        router.dismissTo("/(start-jp)/market");
+        router.replace("/(start-jp)/market");
       }
     } catch (err) {
       console.error(err);
@@ -488,7 +488,7 @@ export default function UserLoginScreen() {
                       lineHeight: 36,
                     }}>
                     まだアカウントをお持ちでない方{"\n"}
-                    <Link href="/(start-jp)/signup" asChild>
+                    <Link push href="/(start-jp)/signup" asChild>
                       <Text
                         style={{
                           color: "#2ECC71",
@@ -585,30 +585,32 @@ export default function UserLoginScreen() {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ width: "100%" }}
-                  onPress={() => onSelectAuth(Strategy.Apple)}>
-                  <LinearGradient
-                    colors={["#000000", "#2E2E2E"]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={styles.btnOutline}>
-                    <FontAwesome
-                      style={{ paddingLeft: 20 }}
-                      name="apple"
-                      size={30}
-                      color="#fff"
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "700",
-                        paddingLeft: 8,
-                      }}>
-                      Apple でログイン
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                {Platform.OS !== "android" && (
+                  <TouchableOpacity
+                    style={{ width: "100%" }}
+                    onPress={() => onSelectAuth(Strategy.Apple)}>
+                    <LinearGradient
+                      colors={["#000000", "#2E2E2E"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 0.5, y: 1 }}
+                      style={styles.btnOutline}>
+                      <FontAwesome
+                        style={{ paddingLeft: 20 }}
+                        name="apple"
+                        size={30}
+                        color="#fff"
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontWeight: "700",
+                          paddingLeft: 8,
+                        }}>
+                        Apple でログイン
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
               </Animated.View>
             )}
           </View>
