@@ -10,9 +10,9 @@ export default function ChatScreen() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && template == "finance") {
       setActiveConversationId(null);
-      setTemplate("finance");
+      setTemplate("general");
     }
   }, [isFocused, template]);
 

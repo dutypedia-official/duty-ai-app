@@ -18,7 +18,8 @@ const DiscoverCategory = () => {
           justifyContent: "space-between",
           paddingVertical: 20,
           paddingHorizontal: 12,
-        }}>
+        }}
+      >
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>
           {isBn ? "ক্যাটাগরি" : "Category"}
         </Text>
@@ -34,7 +35,8 @@ const DiscoverCategory = () => {
           gap: 13,
           justifyContent: "space-between",
           paddingHorizontal: 12,
-        }}>
+        }}
+      >
         <View
           style={{
             width: "47%",
@@ -43,7 +45,8 @@ const DiscoverCategory = () => {
             gap: 18,
             position: "relative",
             overflow: "hidden",
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               setTemplate("general");
@@ -58,7 +61,8 @@ const DiscoverCategory = () => {
               aspectRatio: 1065 / 571,
               backgroundColor: "transparent",
               position: "relative",
-            }}>
+            }}
+          >
             <Image
               style={{
                 height: "100%",
@@ -84,7 +88,8 @@ const DiscoverCategory = () => {
               aspectRatio: 1065 / 571,
               backgroundColor: "transparent",
               position: "relative",
-            }}>
+            }}
+          >
             <Image
               style={{
                 height: "100%",
@@ -107,7 +112,8 @@ const DiscoverCategory = () => {
             aspectRatio: 1065 / 1232.01,
             backgroundColor: "transparent",
             position: "relative",
-          }}>
+          }}
+        >
           <Image
             style={{
               height: "100%",
