@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Image,
   KeyboardAvoidingView,
   Modal,
   Text,
@@ -11,7 +12,9 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { SvgXml } from "react-native-svg";
 import * as z from "zod";
+import { radialBg } from "../svgs/radialBg";
 
 const schema = z.object({
   amount: z
@@ -62,19 +65,22 @@ export default function DepositCard({ open, setOpen }: any) {
             flex: 1,
             justifyContent: "center",
             alignContent: "center",
-            backgroundColor: "rgba(26,26,26,0.2)",
           }}>
-          {/* <Image
-          source={require("@/assets/images/radialBg.png")}
-          resizeMode="cover"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        /> */}
+          <SvgXml
+            xml={radialBg}
+            width="100%"
+            height="100%"
+            preserveAspectRatio="xMidYMid slice"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              pointerEvents: "none",
+            }}
+          />
+
           <View
             style={{
               shadowColor: "#000000",
@@ -285,7 +291,7 @@ export default function DepositCard({ open, setOpen }: any) {
                           ? "#FFFFFF"
                           : "#FFFFFF",
                       }}>
-                      Withdraw
+                      Deposit
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>

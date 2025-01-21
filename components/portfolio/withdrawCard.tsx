@@ -11,7 +11,9 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { SvgXml } from "react-native-svg";
 import * as z from "zod";
+import { radialBg } from "../svgs/radialBg";
 
 const schema = z.object({
   amount: z
@@ -64,17 +66,20 @@ export default function WithdrawCard({ open, setOpen }: any) {
             alignContent: "center",
             backgroundColor: "rgba(26,26,26,0.2)",
           }}>
-          {/* <Image
-          source={require("@/assets/images/radialBg.png")}
-          resizeMode="cover"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        /> */}
+          <SvgXml
+            xml={radialBg}
+            width="100%"
+            height="100%"
+            preserveAspectRatio="xMidYMid slice"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              pointerEvents: "none",
+            }}
+          />
           <View
             style={{
               shadowColor: "#000000",

@@ -85,7 +85,14 @@ export default function Layout() {
       <Stack.Screen
         name="transaction-history"
         options={{
-          title: "All transaction history ",
+          title: "All transaction history",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="buy-stock"
+        options={{
+          title: "Buy Stock",
           headerShown: false,
         }}
       />

@@ -452,7 +452,7 @@ export const StockListItem = ({
               onPress={() => {
                 setTemplate("finance");
                 setActiveConversationId(null);
-                setPrompt(`DSEBD:${name} bangladesh`);
+                setPrompt(`TSE:${name} JAPAN`);
                 router.push({
                   pathname: "/main-jp/discover/chat",
                   params: { fromPath: "list" },

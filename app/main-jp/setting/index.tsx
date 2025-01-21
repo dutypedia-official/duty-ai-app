@@ -108,7 +108,7 @@ export default function SettingScreen() {
     //     <Ionicons name="chevron-forward" size={24} color={textColor} />
     //   ),
     //   action: () => {
-    //     router.push("/main/setting/language");
+    //     router.push("/main-jp/setting/language");
     //   },
     // },
     {
@@ -149,7 +149,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/support");
+        router.push("/main-jp/setting/support");
       },
     },
     {
@@ -159,7 +159,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/delete-account");
+        router.push("/main-jp/setting/delete-account");
       },
     },
   ];

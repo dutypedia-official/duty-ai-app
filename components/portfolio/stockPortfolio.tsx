@@ -12,6 +12,7 @@ import { SvgUri } from "react-native-svg";
 import { FlashList } from "@shopify/flash-list";
 import PortfolioList from "./portfolioList";
 import { FlatList } from "react-native-gesture-handler";
+import { router } from "expo-router";
 
 export default function StockPortfolio() {
   const colorScheme = useColorScheme();
@@ -102,6 +103,9 @@ export default function StockPortfolio() {
           </View>
 
           <TouchableOpacity
+            onPress={() => {
+              router.push("/main/setting/buy-stock");
+            }}
             style={{
               width: "100%",
               shadowColor: "#1E90FF",
