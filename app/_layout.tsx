@@ -31,8 +31,6 @@ import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
 
-type SupportedLanguage = "en" | "bn" | "ja";
-
 const CURRENT_IOS_VERSION = 11;
 const CURRENT_ANDROID_VERSION = 11;
 
@@ -332,7 +330,7 @@ function RootLayoutNav() {
     if (isLoaded && !isLoading) {
       // Step 1: Check if the app needs to be updated
       if (update?.update) {
-        router.replace("/update");
+        router.dismissTo("/update");
         return;
       }
 

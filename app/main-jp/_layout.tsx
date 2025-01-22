@@ -35,7 +35,7 @@ function TabBarIconLine(props: {
 
 export default function TabLayout() {
   const { getToken } = useAuth();
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const colorScheme = useColorScheme();
   const langStore = useLang();
   const { language, setLanguage } = langStore;
@@ -228,7 +228,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="notifications-outline" color={color} />
           ),
-          tabBarBadge: count > 10 ? "10+" : count > 0 ? count : undefined,
+          // tabBarBadge: count > 10 ? "10+" : count > 0 ? count : undefined,
           headerStyle: {
             backgroundColor: bgColor,
             borderBottomWidth: 0.7,

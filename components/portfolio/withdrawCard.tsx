@@ -231,26 +231,35 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     flexGrow: 1,
                     borderRadius: 12,
                   }}>
-                  <LinearGradient
-                    colors={
-                      isDark ? ["#FF3A3A", "#FF5C5C"] : ["#D84315", "#FF8A65"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                  <View
                     style={{
-                      paddingVertical: 12,
-                      paddingHorizontal: 8,
-                      borderRadius: 12,
-                      alignItems: "center",
+                      shadowColor: "#FF4500",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.4,
+                      shadowRadius: 6,
+                      elevation: 4,
                     }}>
-                    <Text
+                    <LinearGradient
+                      colors={
+                        isDark ? ["#FF3A3A", "#FF5C5C"] : ["#D84315", "#FF8A65"]
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       style={{
-                        fontSize: 14,
-                        color: isDark ? "#FFFFFF" : "#FFFFFF",
+                        paddingVertical: 12,
+                        paddingHorizontal: 8,
+                        borderRadius: 8,
+                        alignItems: "center",
                       }}>
-                      Cancel
-                    </Text>
-                  </LinearGradient>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: isDark ? "#FFFFFF" : "#FFFFFF",
+                        }}>
+                        Cancel
+                      </Text>
+                    </LinearGradient>
+                  </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                   // disabled={!isFormValid}
@@ -261,38 +270,47 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     flexGrow: 1,
                     borderRadius: 12,
                   }}>
-                  <LinearGradient
-                    colors={
-                      !isFormValid
-                        ? isDark
-                          ? ["#3C3C47", "#3C3C47"]
-                          : ["#E0E0E0", "#E0E0E0"]
-                        : isDark
-                        ? ["#007BFF", "#1E90FF"]
-                        : ["#1E88E5", "#42A5F5"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                  <View
                     style={{
-                      paddingVertical: 12,
-                      paddingHorizontal: 8,
-                      borderRadius: 12,
-                      alignItems: "center",
+                      shadowColor: !isFormValid ? "transparent" : "#42A5F5",
+                      shadowOffset: { width: 0, height: !isFormValid ? 0 : 4 },
+                      shadowOpacity: !isFormValid ? 0 : 0.7,
+                      shadowRadius: !isFormValid ? 0 : 6,
+                      elevation: !isFormValid ? 0 : 4,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: !isFormValid
+                    <LinearGradient
+                      colors={
+                        !isFormValid
                           ? isDark
-                            ? "#666666"
-                            : "#A0A0A0"
+                            ? ["#3C3C47", "#3C3C47"]
+                            : ["#E0E0E0", "#E0E0E0"]
                           : isDark
-                          ? "#FFFFFF"
-                          : "#FFFFFF",
+                          ? ["#007BFF", "#1E90FF"]
+                          : ["#1E88E5", "#42A5F5"]
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 8,
+                        borderRadius: 8,
+                        alignItems: "center",
                       }}>
-                      Withdraw
-                    </Text>
-                  </LinearGradient>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: !isFormValid
+                            ? isDark
+                              ? "#666666"
+                              : "#A0A0A0"
+                            : isDark
+                            ? "#FFFFFF"
+                            : "#FFFFFF",
+                        }}>
+                        Withdraw
+                      </Text>
+                    </LinearGradient>
+                  </View>
                 </TouchableOpacity>
               </LinearGradient>
             </LinearGradient>

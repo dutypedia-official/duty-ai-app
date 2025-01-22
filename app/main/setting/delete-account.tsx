@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useAuth } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
 import useUi from "@/lib/hooks/useUi";
+import useMarket from "@/lib/hooks/useMarket";
 
 const DeleteAccount = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const DeleteAccount = () => {
   const [inputText, setInputText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const colorScheme = useColorScheme();
+  const { setSelectMarket } = useMarket();
 
   const handleDelete = async () => {
     if (inputText?.toLowerCase() === "delete my account") {
@@ -40,7 +42,8 @@ const DeleteAccount = () => {
           mainServerAvailable
         );
         await signOut();
-        router.replace("/login");
+        setSelectMarket("");
+        router.dismissTo("/(start)");
       } catch (error) {
         console.log(error);
         setIsLoading(false);
@@ -105,8 +108,7 @@ const DeleteAccount = () => {
         style={{ borderRadius: 4, marginTop: 12, width: "100%" }}
         labelStyle={{ fontWeight: "bold" }}
         contentStyle={{ paddingVertical: 4 }}
-        mode="contained"
-      >
+        mode="contained">
         Delete My Account and Data
       </Button>
 
@@ -114,8 +116,7 @@ const DeleteAccount = () => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+        onRequestClose={() => setModalVisible(false)}>
         <View
           style={{
             flex: 1,
@@ -125,8 +126,7 @@ const DeleteAccount = () => {
               colorScheme === "dark"
                 ? "rgba(256,256,256,0.5)"
                 : "rgba(0,0,0,0.5)",
-          }}
-        >
+          }}>
           <View style={styles.modalView}>
             <Text>Delete account</Text>
             <Text>Please enter "Delete My Account"</Text>
@@ -145,8 +145,7 @@ const DeleteAccount = () => {
                 style={{ borderRadius: 4, marginTop: 12, width: "100%" }}
                 labelStyle={{ fontWeight: "bold" }}
                 contentStyle={{ paddingVertical: 4 }}
-                mode="contained"
-              >
+                mode="contained">
                 Confirm
               </Button>
               <Button
@@ -156,8 +155,7 @@ const DeleteAccount = () => {
                 style={{ borderRadius: 4, marginTop: 12, width: "100%" }}
                 labelStyle={{ fontWeight: "bold" }}
                 contentStyle={{ paddingVertical: 4 }}
-                mode="contained"
-              >
+                mode="contained">
                 Cancel
               </Button>
             </View>

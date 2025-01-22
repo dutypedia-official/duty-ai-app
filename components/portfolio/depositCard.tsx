@@ -157,43 +157,53 @@ export default function DepositCard({ open, setOpen }: any) {
                           Enter Deposit Amount
                         </Text>
                       </View>
-                      <LinearGradient
-                        colors={
-                          isDark
-                            ? ["#292A36", "#292A36"]
-                            : ["#FFFFFF", "#F7F7F7"]
-                        }
-                        style={[
-                          {
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            borderColor: isDark ? "#3C3C47" : "#CCCCCC",
-                          },
-                          error && { borderColor: "#EC2700" },
-                        ]}>
-                        <TextInput
+                      <View
+                        style={{
+                          shadowColor: "#42A5F5",
+                          shadowOffset: { width: 0, height: 4 },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                          elevation: 4,
+                          borderRadius: 10,
+                        }}>
+                        <LinearGradient
+                          colors={
+                            isDark
+                              ? ["#292A36", "#292A36"]
+                              : ["#FFFFFF", "#F7F7F7"]
+                          }
                           style={[
                             {
-                              color: !isDark ? "#000" : "#fff",
-                              paddingHorizontal: 12,
-                              paddingVertical: 16,
-                              fontSize: 16,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              borderColor: isDark ? "#3C3C47" : "#CCCCCC",
                             },
-                          ]}
-                          placeholder="00.00"
-                          keyboardType="numeric"
-                          onBlur={() => {
-                            onBlur();
-                            setIsFocused(false);
-                          }}
-                          onFocus={() => {
-                            setIsFocused(true);
-                          }}
-                          onChangeText={onChange}
-                          value={value}
-                          inputMode="numeric"
-                        />
-                      </LinearGradient>
+                            error && { borderColor: "#EC2700" },
+                          ]}>
+                          <TextInput
+                            style={[
+                              {
+                                color: !isDark ? "#000" : "#fff",
+                                paddingHorizontal: 12,
+                                paddingVertical: 16,
+                                fontSize: 16,
+                              },
+                            ]}
+                            placeholder="00.00"
+                            keyboardType="numeric"
+                            onBlur={() => {
+                              onBlur();
+                              setIsFocused(false);
+                            }}
+                            onFocus={() => {
+                              setIsFocused(true);
+                            }}
+                            onChangeText={onChange}
+                            value={value}
+                            inputMode="numeric"
+                          />
+                        </LinearGradient>
+                      </View>
                       {/* {error && ( */}
                       <Text
                         style={{
@@ -232,26 +242,35 @@ export default function DepositCard({ open, setOpen }: any) {
                     flexGrow: 1,
                     borderRadius: 12,
                   }}>
-                  <LinearGradient
-                    colors={
-                      isDark ? ["#FF3A3A", "#FF5C5C"] : ["#D84315", "#FF8A65"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                  <View
                     style={{
-                      paddingVertical: 12,
-                      paddingHorizontal: 8,
-                      borderRadius: 12,
-                      alignItems: "center",
+                      shadowColor: "#FF4500",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.4,
+                      shadowRadius: 6,
+                      elevation: 4,
                     }}>
-                    <Text
+                    <LinearGradient
+                      colors={
+                        isDark ? ["#FF3A3A", "#FF5C5C"] : ["#D84315", "#FF8A65"]
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       style={{
-                        fontSize: 14,
-                        color: isDark ? "#FFFFFF" : "#FFFFFF",
+                        paddingVertical: 12,
+                        paddingHorizontal: 8,
+                        borderRadius: 8,
+                        alignItems: "center",
                       }}>
-                      Cancel
-                    </Text>
-                  </LinearGradient>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: isDark ? "#FFFFFF" : "#FFFFFF",
+                        }}>
+                        Cancel
+                      </Text>
+                    </LinearGradient>
+                  </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                   // disabled={!isFormValid}
@@ -262,38 +281,47 @@ export default function DepositCard({ open, setOpen }: any) {
                     flexGrow: 1,
                     borderRadius: 12,
                   }}>
-                  <LinearGradient
-                    colors={
-                      !isFormValid
-                        ? isDark
-                          ? ["#3C3C47", "#3C3C47"]
-                          : ["#E0E0E0", "#E0E0E0"]
-                        : isDark
-                        ? ["#007BFF", "#1E90FF"]
-                        : ["#1E88E5", "#42A5F5"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                  <View
                     style={{
-                      paddingVertical: 12,
-                      paddingHorizontal: 8,
-                      borderRadius: 12,
-                      alignItems: "center",
+                      shadowColor: !isFormValid ? "transparent" : "#42A5F5",
+                      shadowOffset: { width: 0, height: !isFormValid ? 0 : 4 },
+                      shadowOpacity: !isFormValid ? 0 : 0.7,
+                      shadowRadius: !isFormValid ? 0 : 6,
+                      elevation: !isFormValid ? 0 : 4,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: !isFormValid
+                    <LinearGradient
+                      colors={
+                        !isFormValid
                           ? isDark
-                            ? "#666666"
-                            : "#A0A0A0"
+                            ? ["#3C3C47", "#3C3C47"]
+                            : ["#E0E0E0", "#E0E0E0"]
                           : isDark
-                          ? "#FFFFFF"
-                          : "#FFFFFF",
+                          ? ["#007BFF", "#1E90FF"]
+                          : ["#1E88E5", "#42A5F5"]
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 8,
+                        borderRadius: 8,
+                        alignItems: "center",
                       }}>
-                      Deposit
-                    </Text>
-                  </LinearGradient>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: !isFormValid
+                            ? isDark
+                              ? "#666666"
+                              : "#A0A0A0"
+                            : isDark
+                            ? "#FFFFFF"
+                            : "#FFFFFF",
+                        }}>
+                        Deposit
+                      </Text>
+                    </LinearGradient>
+                  </View>
                 </TouchableOpacity>
               </LinearGradient>
             </LinearGradient>
