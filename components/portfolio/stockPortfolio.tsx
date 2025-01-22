@@ -108,11 +108,11 @@ export default function StockPortfolio() {
             }}
             style={{
               width: "100%",
-              shadowColor: "#1E90FF",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.4,
-              shadowRadius: 4,
-              elevation: 4,
+              shadowColor: "#000000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              elevation: 8,
             }}>
             <LinearGradient
               colors={["#1E90FF", "#007BFF"]}

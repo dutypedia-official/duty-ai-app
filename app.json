@@ -70,13 +70,7 @@
           }
         }
       ],
-      [
-        "expo-video",
-        {
-          "supportsBackgroundPlayback": false,
-          "supportsPictureInPicture": true
-        }
-      ],
+      ["expo-video"],
       ["expo-localization"]
     ],
     "experiments": {
