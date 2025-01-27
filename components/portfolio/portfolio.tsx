@@ -6,6 +6,7 @@ import TransactionCard from "./transactionCard";
 import { SafeAreaView } from "@/components/Themed";
 
 export default function Portfolio() {
+  const withdrawBalance = "4570";
   return (
     <SafeAreaView>
       <ScrollView>
@@ -14,8 +15,8 @@ export default function Portfolio() {
             gap: 20,
             paddingBottom: 24,
           }}>
-          <AssetsBalCard />
-          <StockPortfolio />
+          <AssetsBalCard withdrawBalance={withdrawBalance} />
+          <StockPortfolio withdrawBalance={withdrawBalance} />
           <TransactionCard />
         </View>
       </ScrollView>

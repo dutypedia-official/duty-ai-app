@@ -352,7 +352,6 @@ function RootLayoutNav() {
           router.dismissTo("/main-jp/home");
         } else {
           router.dismissTo("/main/home");
-          // router.dismissTo("/main/setting/portfolio");
         }
       }
     }

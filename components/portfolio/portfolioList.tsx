@@ -2,6 +2,8 @@ import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
 import React from "react";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
+import { router } from "expo-router";
+import useLang from "@/lib/hooks/useLang";
 
 export default function PortfolioList({
   isLast,
@@ -12,15 +14,25 @@ export default function PortfolioList({
 }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
 
   const sellPrice = item.buyPrice - item.currentPrice;
-  const isLoss = sellPrice < 0;
+  const isRisk = sellPrice < 0;
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.symbol}.svg`;
 
-  console.log("item-----------", item?.symbol[0]);
   return (
     <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "/main/setting/sell-stock/[id]",
+          params: {
+            id: item?.symbol,
+            isRisk: isRisk.toString(),
+          },
+        });
+      }}
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -95,7 +107,7 @@ export default function PortfolioList({
                 fontSize: 12,
                 fontWeight: "medium",
               }}>
-              Buy price ৳{item?.buyPrice}
+              {isBn ? "ক্রয় মূল্য" : "Buy price"} ৳{item?.buyPrice}
             </Text>
           </View>
         </View>
@@ -130,7 +142,7 @@ export default function PortfolioList({
               justifyContent: "flex-end",
               gap: 4,
             }}>
-            {isLoss ? (
+            {isRisk ? (
               <FontAwesome5
                 name="caret-down"
                 size={24}
@@ -145,7 +157,7 @@ export default function PortfolioList({
                 textAlign: "right",
                 fontSize: 12,
                 fontWeight: "medium",
-                color: isLoss
+                color: isRisk
                   ? isDark
                     ? "#FF6347"
                     : "#FF4500"
@@ -153,7 +165,8 @@ export default function PortfolioList({
                   ? "#28A745"
                   : "#28A745",
               }}>
-              Profit {isLoss ? "-" : "+"}৳{Math.abs(sellPrice).toFixed(2)}
+              {isRisk ? (isBn ? "লস" : "Loss") : isBn ? "লাভ" : "Profit"}{" "}
+              {isRisk ? "-" : "+"}৳{Math.abs(sellPrice).toFixed(2)}
             </Text>
           </View>
         </View>

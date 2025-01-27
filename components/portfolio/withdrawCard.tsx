@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
@@ -17,28 +17,45 @@ import { SvgXml } from "react-native-svg";
 import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
-
-const schema = z.object({
-  amount: z
-    .string({
-      required_error: "Required",
-    })
-    .min(2, {
-      message: "Required",
-    }),
-});
+import { Audio } from "expo-av";
+import { formattedBalance } from "@/lib/utils";
+import useLang from "@/lib/hooks/useLang";
 
 export default function WithdrawCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
 
   const [isFocused, setIsFocused] = useState(false);
+  const withdrawBalance = "59868";
+
+  const schema = z.object({
+    amount: z
+      .string({
+        required_error: "Amount is required", // Error message when the field is empty
+      })
+      .min(1, {
+        message: "Amount is required", // Error message for minimum length
+      })
+      .refine(
+        (value) => {
+          const amount = parseFloat(value);
+          const balance = parseFloat(withdrawBalance);
+          return !isNaN(amount) && amount <= balance;
+        },
+        {
+          message: `Your Fund is Low`,
+        }
+      ),
+  });
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
     watch,
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -50,8 +67,30 @@ export default function WithdrawCard({ open, setOpen }: any) {
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
   const onSubmit = async (data: any) => {
+    const sound = new Audio.Sound();
+    try {
+      // Load the MP3 file
+      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
+      await sound.playAsync();
+
+      // Wait for playback to finish
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync(); // Clean up
+          setOpen(false);
+          Keyboard.dismiss();
+        }
+      });
+    } catch (error) {
+      console.error("Error playing sound:", error);
+    }
     console.log("Form submitted:", data);
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
+
   return (
     <Modal
       visible={open}
@@ -121,16 +160,21 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       fontSize: 16,
                       textAlign: "center",
                     }}>
-                    Available for withdraw
+                    {isBn ? "উত্তোলনের জন্য আছে" : "Available for withdraw"}
                   </Text>
                   <Text
                     style={{
-                      color: isDark ? "#FDD835" : "#1E88E5",
+                      color:
+                        errors.amount || Number(withdrawBalance) === 0
+                          ? "#EC2700"
+                          : isDark
+                          ? "#FDD835"
+                          : "#1E88E5",
                       fontSize: 28,
                       fontWeight: "bold",
                       textAlign: "center",
                     }}>
-                    ৳19000.98
+                    ৳{formattedBalance(withdrawBalance)}
                   </Text>
                 </View>
                 <View
@@ -146,13 +190,40 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       fieldState: { error },
                     }) => (
                       <AnimatedInput
-                        label="Enter Amount"
+                        inputMode="numeric"
+                        label={isBn ? "পরিমাণ লিখুন" : "Enter Amount"}
                         placeholder="00.00"
                         isDark={isDark} // Set to false for light mode
                         onChange={onChange} // Update value
                         value={value} // Pass current value
                         onBlur={onBlur} // Validation logic
                         error={error} // Optional error message
+                        inputColor={
+                          isDark
+                            ? ["#292A36", "#292A36"]
+                            : ["#FFFFFF", "#F7F7F7"]
+                        }
+                        errorInputColor={"#EC2700"}
+                        inputShadow={{
+                          shadowColor: isDark ? "#333333" : "#42A5F5",
+                          shadowOffset: {
+                            width: 0,
+                            height: 4,
+                          },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                          elevation: 4,
+                        }}
+                        startColorOutRange={
+                          isDark
+                            ? ["#292A36", "#252531"]
+                            : ["#FCFCFC", "#EDEDED"]
+                        }
+                        endColorOutRange={
+                          isDark
+                            ? ["#292A36", "#292A36"]
+                            : ["#FCFCFC", "#FCFCFC"]
+                        }
                       />
                     )}
                   />
@@ -208,7 +279,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                             fontSize: 14,
                             color: isDark ? "#FFFFFF" : "#FFFFFF",
                           }}>
-                          Cancel
+                          {isBn ? "বাতিল করুন" : "Cancel"}
                         </Text>
                       </LinearGradient>
                     </View>
@@ -262,7 +333,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                               ? "#FFFFFF"
                               : "#FFFFFF",
                           }}>
-                          Withdraw
+                          {isBn ? "উত্তোলন করুন" : "Withdraw"}
                         </Text>
                       </LinearGradient>
                     </View>

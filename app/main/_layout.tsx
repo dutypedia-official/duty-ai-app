@@ -66,9 +66,14 @@ export default function TabLayout() {
   useEffect(() => {
     setHideTabNav(false);
     const shouldHide = segments.some((segment: string) =>
-      ["details", "vipsignal", "scanner", "change-market", "terms"].includes(
-        segment
-      )
+      [
+        "details",
+        "vipsignal",
+        "scanner",
+        "change-market",
+        "terms",
+        "portfolioEmpty1",
+      ].includes(segment)
     );
     setHideTabBar(shouldHide);
     if (pathname.includes("scanner")) {

@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
 import Portfolio from "@/components/portfolio/portfolio";
+import React from "react";
 
 export default function portfolio() {
   return <Portfolio />;

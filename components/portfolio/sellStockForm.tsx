@@ -9,111 +9,112 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "../Themed";
 import { LinearGradient } from "expo-linear-gradient";
-import { SvgUri } from "react-native-svg";
+import { SvgUri, SvgXml } from "react-native-svg";
 import AnimatedInput from "./AnimatedInput";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { router, useLocalSearchParams } from "expo-router";
-import { Audio } from "expo-av";
+import {
+  activeRadioSvg,
+  activeRadioSvgLight,
+  radioSvg,
+  radioSvgLight,
+} from "../svgs/radio";
 import useLang from "@/lib/hooks/useLang";
 
-const schema = z.object({
-  buyPrice: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-  quantity: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-  brokerFee: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-});
-
-export default function BuyStockForm() {
+export default function SellStockForm() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const params = useLocalSearchParams();
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const params = useLocalSearchParams();
+  const [selectedOption, setSelectedOption] = useState<string>("partialClose");
+
   const withdrawBalance = "19000.98";
   const isNeg = false;
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+
+  const schema = z
+    .object({
+      closeType: z.enum(["fullClose", "partialClose"]).default("partialClose"),
+      quantity: z.string().optional(),
+    })
+    .refine(
+      (data) => {
+        if (data.closeType === "partialClose") {
+          return data.quantity !== "";
+        }
+        return true;
+      },
+      {
+        message: "Required",
+        path: ["quantity"],
+      }
+    );
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    setValue,
     watch,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      buyPrice: withdrawBalance || "",
+      closeType: "partialClose",
       quantity: "",
-      brokerFee: "",
     },
   });
 
   const values = watch();
-  const isFormValid = Object.values(values).every((val) => val.trim() !== "");
+  const isFormValid =
+    watch("closeType") === "partialClose"
+      ? Object.values(values).every((val) => val.trim() !== "")
+      : true;
 
   const onSubmit = async (data: any) => {
-    const sound = new Audio.Sound();
-    try {
-      // Load the MP3 file
-      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
-      await sound.playAsync();
-
-      // Wait for playback to finish
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync(); // Clean up
-          router.push({
-            pathname: "/main/setting/buy-stock/confirm/[id]",
-            params: {
-              id: params?.id.toString(),
-            },
-          });
-        }
-      });
-    } catch (error) {
-      console.error("Error playing sound:", error);
-    }
     console.log("Form submitted:", data);
+    if (isFormValid) {
+      router.push({
+        pathname: "/main/setting/sell-stock/placedOrder/[id]",
+        params: {
+          id: params?.id.toString(),
+          isRisk: params?.isRisk.toString(),
+        },
+      });
+    }
   };
 
+  const options = [
+    {
+      label: isBn ? "সম্পূর্ণ বিক্রয়" : "Full Close",
+      value: "fullClose",
+    },
+    {
+      label: isBn ? "আংশিক বিক্রয়" : "Partial Close",
+      value: "partialClose",
+    },
+  ];
   return (
-    <SafeAreaView
+    <KeyboardAvoidingView
       style={{
         flex: 1,
       }}>
-      <KeyboardAvoidingView
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+          setIsFocused(false);
+        }}
         style={{
           flex: 1,
         }}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-            setIsFocused(false);
-          }}
+        <SafeAreaView
           style={{
             flex: 1,
           }}>
@@ -140,7 +141,7 @@ export default function BuyStockForm() {
                 }}>
                 <LinearGradient
                   colors={
-                    isDark ? ["#1A1A1A", "#1C1C1C"] : ["#FFFFFF", "#F8F9FA"]
+                    isDark ? ["#111111", "#1C1E36"] : ["#FFFFFF", "#F8F9FA"]
                   }
                   style={{
                     paddingVertical: 24,
@@ -158,7 +159,7 @@ export default function BuyStockForm() {
                         ? require("@/assets/images/PortfolioGraphNeg.png")
                         : require("@/assets/images/PortfolioGraph.png")
                     }
-                    resizeMode="stretch"
+                    resizeMode="cover"
                     style={{
                       position: "absolute",
                       width: "100%",
@@ -252,7 +253,7 @@ export default function BuyStockForm() {
                       <Text
                         style={{
                           textAlign: "center",
-                          color: isDark ? "#FFFFFF" : "#000",
+                          color: isDark ? "#FFFFFF" : "#1E88E5",
                           fontWeight: "bold",
                           fontSize: 28,
                         }}>
@@ -262,156 +263,158 @@ export default function BuyStockForm() {
 
                     <View
                       style={{
-                        marginTop: 38,
-                        gap: 32,
+                        gap: 40,
                         width: "100%",
                         paddingHorizontal: 14,
                       }}>
-                      <Controller
-                        control={control}
-                        name="buyPrice"
-                        render={({
-                          field: { onChange, onBlur, value },
-                          fieldState: { error },
-                        }) => (
-                          <AnimatedInput
-                            inputMode="numeric"
-                            label={isBn ? "ক্রয় মূল্য" : "Buy Price"}
-                            placeholder="00.00"
-                            isDark={isDark} // Set to false for light mode
-                            onChange={onChange} // Update value
-                            value={value} // Pass current value
-                            onBlur={onBlur} // Validation logic
-                            error={error} // Optional error message
-                            inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
-                            inputColor={
-                              isDark
-                                ? ["#1C1C1C", "#1C1C1C"]
-                                : ["#FFFFFF", "#F7F7F7"]
-                            }
-                            inputShadow={{
-                              shadowColor: isDark ? "#333333" : "#FFFFFF",
-                              shadowOffset: {
-                                width: 4,
-                                height: 4,
-                              },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 4,
-                              elevation: 4,
-                            }}
-                            startColorOutRange={
-                              isDark
-                                ? ["transparent", "#1A1A1A"]
-                                : ["#FCFCFC", "#FCFCFD"]
-                            }
-                            endColorOutRange={
-                              isDark
-                                ? ["transparent", "#1C1C1C"]
-                                : ["#FCFCFC", "#FFFFFF"]
-                            }
-                          />
-                        )}
-                      />
-                      <Controller
-                        control={control}
-                        name="quantity"
-                        render={({
-                          field: { onChange, onBlur, value },
-                          fieldState: { error },
-                        }) => (
-                          <AnimatedInput
-                            inputMode="numeric"
-                            label={isBn ? "পরিমাণ" : "Quantity"}
-                            placeholder="00.00"
-                            isDark={isDark} // Set to false for light mode
-                            onChange={onChange} // Update value
-                            value={value} // Pass current value
-                            onBlur={onBlur} // Validation logic
-                            error={error} // Optional error message
-                            inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
-                            inputColor={
-                              isDark
-                                ? ["#1C1C1C", "#1C1C1C"]
-                                : ["#FFFFFF", "#F7F7F7"]
-                            }
-                            inputShadow={{
-                              shadowColor: isDark ? "#333333" : "#FFFFFF",
-                              shadowOffset: {
-                                width: 4,
-                                height: 4,
-                              },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 4,
-                              elevation: 4,
-                            }}
-                            startColorOutRange={
-                              isDark
-                                ? ["transparent", "#1A1A1A"]
-                                : ["#FCFCFC", "#FCFCFD"]
-                            }
-                            endColorOutRange={
-                              isDark
-                                ? ["transparent", "#1C1C1C"]
-                                : ["#FCFCFC", "#FFFFFF"]
-                            }
-                          />
-                        )}
-                      />
-                      <Controller
-                        control={control}
-                        name="brokerFee"
-                        render={({
-                          field: { onChange, onBlur, value },
-                          fieldState: { error },
-                        }) => (
-                          <AnimatedInput
-                            inputMode="numeric"
-                            label={isBn ? "ব্রোকার ফি" : "Broker fee"}
-                            placeholder="00.00"
-                            isDark={isDark} // Set to false for light mode
-                            onChange={onChange} // Update value
-                            value={value} // Pass current value
-                            onBlur={onBlur} // Validation logic
-                            error={error} // Optional error message
-                            inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
-                            inputColor={
-                              isDark
-                                ? ["#1C1C1C", "#1C1C1C"]
-                                : ["#FFFFFF", "#F7F7F7"]
-                            }
-                            inputShadow={{
-                              shadowColor: isDark ? "#333333" : "#FFFFFF",
-                              shadowOffset: {
-                                width: 4,
-                                height: 4,
-                              },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 4,
-                              elevation: 4,
-                            }}
-                            startColorOutRange={
-                              isDark
-                                ? ["transparent", "#1A1A1A"]
-                                : ["#FCFCFC", "#FCFCFD"]
-                            }
-                            endColorOutRange={
-                              isDark
-                                ? ["transparent", "#1C1C1C"]
-                                : ["#FCFCFC", "#FFFFFF"]
-                            }
-                          />
-                        )}
-                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 40,
+                          justifyContent: "center",
+                        }}>
+                        <Controller
+                          control={control}
+                          name="closeType"
+                          render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                          }) => (
+                            <>
+                              {options.map((option, i) => {
+                                const active = selectedOption === option.value;
+                                return (
+                                  <TouchableOpacity
+                                    key={i}
+                                    onPress={() => {
+                                      setValue("closeType", option.value);
+                                      setSelectedOption(option.value);
+                                    }}
+                                    style={{
+                                      flexDirection: "row",
+                                      gap: 8,
+                                    }}>
+                                    <View
+                                      style={{
+                                        width: 20,
+                                        height: 20,
+                                        position: "relative",
+                                        alignItems: "center",
+                                        shadowColor: !active
+                                          ? isDark
+                                            ? "transparent"
+                                            : "#E0E0E0"
+                                          : "transparent",
+                                        shadowOffset: {
+                                          width: 0,
+                                          height: 4,
+                                        },
+                                        shadowOpacity: 1,
+                                        shadowRadius: 4,
+                                        elevation: 4,
+                                      }}>
+                                      <SvgXml
+                                        style={{
+                                          position: "absolute",
+                                          left: 0,
+                                          top: 0,
+                                          width: "100%",
+                                          height: "100%",
+                                        }}
+                                        pointerEvents="none"
+                                        xml={
+                                          isDark
+                                            ? active
+                                              ? activeRadioSvg
+                                              : radioSvg
+                                            : active
+                                            ? activeRadioSvgLight
+                                            : radioSvgLight
+                                        }
+                                      />
+                                    </View>
+                                    <View>
+                                      <Text
+                                        style={{
+                                          color: active
+                                            ? isDark
+                                              ? "#00E676"
+                                              : "#004D40"
+                                            : isDark
+                                            ? "#876"
+                                            : "#757575",
+                                          fontSize: 16,
+                                          fontWeight: "medium",
+                                        }}>
+                                        {option.label}
+                                      </Text>
+                                    </View>
+                                  </TouchableOpacity>
+                                );
+                              })}
+                            </>
+                          )}
+                        />
+                      </View>
+
+                      {watch("closeType") === "partialClose" && (
+                        <Controller
+                          control={control}
+                          name="quantity"
+                          render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                          }) => (
+                            <AnimatedInput
+                              label={isBn ? "পরিমাণ" : "Enter Quantity"}
+                              placeholder="00.00"
+                              isDark={isDark} // Set to false for light mode
+                              onChange={onChange} // Update value
+                              value={value} // Pass current value
+                              onBlur={onBlur} // Validation logic
+                              error={error} // Optional error message
+                              inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
+                              inputColor={
+                                isDark
+                                  ? ["#1C1C1C", "#1C1C1C"]
+                                  : ["#FFFFFF", "#F7F7F7"]
+                              }
+                              inputShadow={{
+                                shadowColor: isDark ? "#333333" : "#FFFFFF",
+                                shadowOffset: {
+                                  width: 4,
+                                  height: 4,
+                                },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 4,
+                                elevation: 4,
+                              }}
+                              startColorOutRange={
+                                isDark
+                                  ? ["transparent", "#171723"]
+                                  : ["#FFFFFF", "#FFFFFF"]
+                              }
+                              endColorOutRange={
+                                isDark
+                                  ? ["transparent", "#1C1C1C"]
+                                  : ["#F7F7F7", "#FFFFFF"]
+                              }
+                            />
+                          )}
+                        />
+                      )}
                     </View>
 
                     <View
-                      style={{
-                        shadowColor: isDark ? "transparent" : "#E0E0E0",
-                        shadowOffset: { width: 0, height: isDark ? 0 : 4 },
-                        shadowOpacity: isDark ? 0 : 1,
-                        shadowRadius: isDark ? 0 : 12,
-                        elevation: isDark ? 0 : 4,
-                      }}>
+                      style={
+                        {
+                          // shadowColor: "#E0E0E0",
+                          // shadowOffset: { width: 0, height: 4 },
+                          // shadowOpacity: 0.1,
+                          // shadowRadius: 12,
+                          // elevation: 4,
+                        }
+                      }>
                       <LinearGradient
                         colors={
                           isDark
@@ -440,7 +443,7 @@ export default function BuyStockForm() {
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
                                 }}>
-                                {isBn ? "কেনার মূল্য" : "Buy at price"}
+                                {isBn ? "কেনার মূল্য" : "Buy Price"}
                               </Text>
                             </View>
                             <View>
@@ -450,7 +453,7 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{watch("buyPrice") ? watch("buyPrice") : 0}
+                                ৳60.42
                               </Text>
                             </View>
                           </View>
@@ -465,7 +468,7 @@ export default function BuyStockForm() {
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
                                 }}>
-                                {isBn ? "কেনার পরিমাণ" : "Quantity"}
+                                {isBn ? "বিক্রির মূল্য" : "Sell at Price"}
                               </Text>
                             </View>
                             <View>
@@ -475,7 +478,7 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                {watch("quantity") ? watch("quantity") : 0}
+                                ৳50.42
                               </Text>
                             </View>
                           </View>
@@ -490,7 +493,7 @@ export default function BuyStockForm() {
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
                                 }}>
-                                {isBn ? "ব্রোকার ফি" : "Broker fee"}
+                                {isBn ? "কেনার পরিমাণ" : "Sell Quantity"}
                               </Text>
                             </View>
                             <View>
@@ -500,7 +503,34 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{watch("brokerFee") ? watch("brokerFee") : 0}%
+                                100
+                              </Text>
+                            </View>
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}>
+                            <View>
+                              <Text
+                                style={{
+                                  color: isDark ? "#A1A1A1" : "#909090",
+                                  fontSize: 14,
+                                }}>
+                                {isBn
+                                  ? "মোট বিক্রয় পরিমাণ"
+                                  : "Total Sell Amount"}
+                              </Text>
+                            </View>
+                            <View>
+                              <Text
+                                style={{
+                                  color: isDark ? "#ffff" : "#2D3748",
+                                  fontWeight: "medium",
+                                  fontSize: 20,
+                                }}>
+                                ৳50000
                               </Text>
                             </View>
                           </View>
@@ -513,18 +543,18 @@ export default function BuyStockForm() {
                             }}>
                             <TouchableOpacity
                               onPress={() => {
-                                router.back();
+                                router.dismissAll();
                               }}
                               style={{
                                 flex: 1,
-                                shadowColor: "#FF4500",
+                                shadowColor: "#FF8A80",
                                 shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: 0.4,
+                                shadowOpacity: isDark ? 0.4 : 1,
                                 shadowRadius: 4,
                                 elevation: 4,
                               }}>
                               <LinearGradient
-                                colors={["#FF3C3C", "#FF5757"]}
+                                colors={["#D32F2F", "#FF6F61"]}
                                 start={{
                                   x: 0,
                                   y: 0,
@@ -550,17 +580,18 @@ export default function BuyStockForm() {
                               </LinearGradient>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              onPress={() => handleSubmit(onSubmit)()}
+                              // disabled={!isFormValid}
+                              onPress={handleSubmit(onSubmit)}
                               style={{
                                 flex: 1,
-                                shadowColor: "#1E90FF",
+                                shadowColor: isDark ? "#00B8D4" : "#81D4FA",
                                 shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: 0.4,
+                                shadowOpacity: isDark ? 0.4 : 1,
                                 shadowRadius: 4,
                                 elevation: 4,
                               }}>
                               <LinearGradient
-                                colors={["#357AE8", "#1D4EDD"]}
+                                colors={["#00E5FF", "#2979FF"]}
                                 start={{
                                   x: 0,
                                   y: 0,
@@ -575,14 +606,14 @@ export default function BuyStockForm() {
                                   alignItems: "center",
                                   paddingHorizontal: 8,
                                   paddingVertical: 12,
-                                  opacity: !isFormValid ? 0.2 : 1,
+                                  opacity: isFormValid ? 1 : 0.2,
                                 }}>
                                 <Text
                                   style={{
                                     fontSize: 14,
                                     color: "#FFFFFF",
                                   }}>
-                                  {isBn ? "কিনুন" : "Buy"}
+                                  {isBn ? "কিনুন" : "Sell Now"}
                                 </Text>
                               </LinearGradient>
                             </TouchableOpacity>
@@ -595,8 +626,8 @@ export default function BuyStockForm() {
               </View>
             </View>
           </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

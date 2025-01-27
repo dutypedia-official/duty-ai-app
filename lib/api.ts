@@ -18,7 +18,7 @@ export const BACKUP_SERVER_URL = "https://api-backup.dutyai.app";
 export const apiClient = () => {
   const isRunningInExpoGo = Constants.appOwnership === "expo";
   const BASE_URL = isRunningInExpoGo
-    ? "http://192.168.236.44:8000"
+    ? "http://192.168.0.102:8000"
     : `https://api.dutyai.app`;
   const addBaseUrl = (url: string, mainServer: boolean) => {
     console.log("API-------", url);

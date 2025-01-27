@@ -1,11 +1,13 @@
 import { useThemeColor } from "@/components/Themed";
-import { SplashScreen, Stack, useRouter } from "expo-router";
+import usePortfolio from "@/lib/hooks/usePortfolio";
+import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
 export default function Layout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
+  const { isPortfolio } = usePortfolio();
 
   return (
     <Stack
@@ -15,6 +17,24 @@ export default function Layout() {
         },
       }}>
       <Stack.Screen name="index" options={{ title: "Setting" }} />
+
+      {/* {isPortfolio ? (
+        <Stack.Screen
+          name="portfolio"
+          options={{
+            title: "Portfolio",
+            headerShown: false,
+          }}
+        />
+      ) : (
+        <Stack.Screen
+          name="welcome-portfolio"
+          options={{
+            title: "Welcome Portfolio",
+            headerShown: false,
+          }}
+        />
+      )} */}
 
       <Stack.Screen
         name="delete-account"
@@ -44,16 +64,7 @@ export default function Layout() {
           },
         }}
       />
-      <Stack.Screen
-        name="terms"
-        options={{
-          title: "Change Market Terms",
-          headerShown: false,
-          headerTitleStyle: {
-            color: isDark ? "#FFFFFF" : "#1E1E1E",
-          },
-        }}
-      />
+
       <Stack.Screen
         name="update-setting"
         options={{
@@ -75,24 +86,68 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
-        name="portfolio"
-        options={{
-          title: "Portfolio",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="transaction-history"
+        name="transaction-history/index"
         options={{
           title: "All transaction history",
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="buy-stock"
+        name="transaction-history/[id]"
+        options={{
+          title: "Transaction Details",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="buy-stock/index"
+        options={{
+          title: "Buy Stock List",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="buy-stock/[id]"
         options={{
           title: "Buy Stock",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="buy-stock/confirm/[id]"
+        options={{
+          title: "Sell Stock",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="buy-stock/placedOrder/[id]"
+        options={{
+          title: "Placed Order",
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="sell-stock/[id]"
+        options={{
+          title: "Sell Stock",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="sell-stock/sell-stock-form/[id]"
+        options={{
+          title: "Sell Stock Form",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="sell-stock/placedOrder/[id]"
+        options={{
+          title: "Placed Order",
           headerShown: false,
         }}
       />
