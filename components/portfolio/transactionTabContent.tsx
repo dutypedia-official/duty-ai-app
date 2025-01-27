@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import { format } from "date-fns";
+import { router } from "expo-router";
 
 export default function TransactionTabContent({
   activeTab,
@@ -22,6 +23,15 @@ export default function TransactionTabContent({
     <Fragment>
       {activeTab === "profit" && (
         <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: "/main/setting/transaction-history/[id]",
+              params: {
+                id: item?.symbol,
+                isRisk: "false",
+              },
+            });
+          }}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -48,11 +58,11 @@ export default function TransactionTabContent({
                   overflow: "hidden",
                   backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
                   position: "relative",
-                  shadowColor: "#000000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 4,
+                  // shadowColor: "#000000",
+                  // shadowOffset: { width: 0, height: 2 },
+                  // shadowOpacity: 0.1,
+                  // shadowRadius: 4,
+                  // elevation: 4,
                 }}>
                 <View
                   style={{
@@ -136,6 +146,15 @@ export default function TransactionTabContent({
       )}
       {activeTab === "losses" && (
         <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: "/main/setting/transaction-history/[id]",
+              params: {
+                id: item?.symbol,
+                isRisk: "true",
+              },
+            });
+          }}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -162,11 +181,11 @@ export default function TransactionTabContent({
                   overflow: "hidden",
                   backgroundColor: isDark ? "#1E1E1E" : "#F5F5F5",
                   position: "relative",
-                  shadowColor: "#000000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 4,
+                  // shadowColor: "#000000",
+                  // shadowOffset: { width: 0, height: 2 },
+                  // shadowOpacity: 0.1,
+                  // shadowRadius: 4,
+                  // elevation: 4,
                 }}>
                 <View
                   style={{

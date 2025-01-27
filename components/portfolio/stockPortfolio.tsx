@@ -1,22 +1,24 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  Image,
-} from "react-native";
-import React, { Fragment } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { SvgUri } from "react-native-svg";
-import { FlashList } from "@shopify/flash-list";
+import React, { Fragment } from "react";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import PortfolioList from "./portfolioList";
-import { FlatList } from "react-native-gesture-handler";
 import { router } from "expo-router";
+import { SvgXml } from "react-native-svg";
+import {
+  notfoundPortfolio,
+  notfoundPortfolioLight,
+} from "../svgs/notfound-portfolio";
+import useLang from "@/lib/hooks/useLang";
 
-export default function StockPortfolio() {
+export default function StockPortfolio({
+  withdrawBalance,
+}: {
+  withdrawBalance: string;
+}) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
 
   const portfolioData = [
     {
@@ -75,32 +77,83 @@ export default function StockPortfolio() {
             style={{
               color: isDark ? "#FFFFFF" : "#1A202C",
             }}>
-            Stock Portfolio
+            {isBn ? "স্টক পোর্টফোলিও" : "Stock Portfolio"}
           </Text>
         </View>
         <View
           style={{
             gap: 24,
           }}>
-          <View
-            style={{
-              backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
-              padding: 12,
-              borderWidth: 1,
-              borderRadius: 16,
-              borderColor: isDark ? "#262626" : "#E0E0E0",
-            }}>
-            {portfolioData?.map((item, i) => {
-              return (
-                <Fragment key={i}>
-                  <PortfolioList
-                    isLast={portfolioData?.length - 1 === i}
-                    item={item}
-                  />
-                </Fragment>
-              );
-            })}
-          </View>
+          {portfolioData?.length === 0 ? (
+            <View
+              style={{
+                backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
+                paddingHorizontal: 12,
+                paddingVertical: 24,
+                borderWidth: 1,
+                borderRadius: 16,
+                borderColor: isDark ? "#262626" : "#E0E0E0",
+                gap: 26,
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+              <SvgXml
+                width={"100%"}
+                xml={isDark ? notfoundPortfolio : notfoundPortfolioLight}
+              />
+              <View
+                style={{
+                  width: 240,
+                  paddingHorizontal: 6,
+                }}>
+                <Text
+                  style={{
+                    color: isDark ? "#FFFFFF" : "#34343F",
+                    fontSize: 18,
+                    fontWeight: "medium",
+                    textAlign: "center",
+                  }}>
+                  {isBn ? "কোনো স্টক পাওয়া যায়নি।" : "No stock found"}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: 240,
+                  paddingHorizontal: 6,
+                }}>
+                <Text
+                  style={{
+                    color: isDark ? "#B0B0B0" : "#464665",
+                    textAlign: "center",
+                    fontSize: 14,
+                  }}>
+                  {isBn
+                    ? "আপনি এখনো কোনো স্টক লেনদেন করেননি, নিচের বোতামে ক্লিক করে একটি স্টক কিনুন এবং আপনার যাত্রা শুরু করুন।"
+                    : "You haven't made any stock transactions yet. Click the button below to buy a stock and start your journey."}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
+                padding: 12,
+                borderWidth: 1,
+                borderRadius: 16,
+                borderColor: isDark ? "#262626" : "#E0E0E0",
+              }}>
+              {portfolioData?.map((item, i) => {
+                return (
+                  <Fragment key={i}>
+                    <PortfolioList
+                      isLast={portfolioData?.length - 1 === i}
+                      item={item}
+                    />
+                  </Fragment>
+                );
+              })}
+            </View>
+          )}
 
           <TouchableOpacity
             onPress={() => {
@@ -115,7 +168,13 @@ export default function StockPortfolio() {
               elevation: 8,
             }}>
             <LinearGradient
-              colors={["#1E90FF", "#007BFF"]}
+              colors={
+                withdrawBalance === "0"
+                  ? isDark
+                    ? ["#3C3C47", "#3C3C47"]
+                    : ["#E0E0E0", "#E0E0E0"]
+                  : ["#1E90FF", "#007BFF"]
+              }
               start={{
                 x: 0,
                 y: 0,
@@ -134,9 +193,15 @@ export default function StockPortfolio() {
               <Text
                 style={{
                   fontSize: 14,
-                  color: "#FFFFFF",
+                  color:
+                    withdrawBalance === "0"
+                      ? isDark
+                        ? "#A0A0A0"
+                        : "#666666"
+                      : "#FFFFFF",
+                  fontWeight: "bold",
                 }}>
-                Buy Stock
+                {isBn ? "স্টক কিনুন" : "Buy Stock"}
               </Text>
             </LinearGradient>
           </TouchableOpacity>

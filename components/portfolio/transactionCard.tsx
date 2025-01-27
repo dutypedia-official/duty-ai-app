@@ -14,10 +14,16 @@ import Animated, {
 } from "react-native-reanimated";
 import TransactionTabContent from "./transactionTabContent";
 import { router } from "expo-router";
+import { SvgXml } from "react-native-svg";
+import { notfoundTransaction } from "../svgs/notfoundTransaction";
+import useLang from "@/lib/hooks/useLang";
+import TransactionEmpty from "./transactionEmpty";
 
 export default function TransactionCard() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const translateX = useSharedValue(0);
 
@@ -34,7 +40,7 @@ export default function TransactionCard() {
 
   const tabs = [
     {
-      tabName: "Profit",
+      tabName: isBn ? "লাভ" : "Profit",
       value: "profit",
       data: [
         {
@@ -55,7 +61,7 @@ export default function TransactionCard() {
       ],
     },
     {
-      tabName: "Losses",
+      tabName: isBn ? "লোকসান" : "Losses",
       value: "losses",
       data: [
         {
@@ -76,7 +82,7 @@ export default function TransactionCard() {
       ],
     },
     {
-      tabName: "Withdraw",
+      tabName: isBn ? "উত্তোলন" : "Withdraw",
       value: "withdraw",
       data: [
         {
@@ -97,7 +103,7 @@ export default function TransactionCard() {
       ],
     },
     {
-      tabName: "Deposit",
+      tabName: isBn ? "জমা" : "Deposit",
       value: "deposit",
       data: [
         {
@@ -136,8 +142,9 @@ export default function TransactionCard() {
             style={{
               color: isDark ? "#FFFFFF" : "#1A202C",
             }}>
-            All transaction history
+            {isBn ? "সকল লেনদেন" : "All transaction history"}
           </Text>
+
           <TouchableOpacity
             onPress={() => router.push("/main/setting/transaction-history")}
             style={{
@@ -149,7 +156,7 @@ export default function TransactionCard() {
               style={{
                 color: isDark ? "#FFFFFF" : "#1A202C",
               }}>
-              See all
+              {isBn ? "সব দেখুন" : "See all"}
             </Text>
             <FontAwesome name="angle-right" size={14} color={"#4A5568"} />
           </TouchableOpacity>
@@ -234,17 +241,78 @@ export default function TransactionCard() {
                       style={{
                         justifyContent: "space-between",
                       }}>
-                      {tabData?.data?.map((item, id) => {
-                        return (
-                          <View key={id}>
-                            <TransactionTabContent
-                              activeTab={activeTab}
-                              isLast={tabData?.data.length - 1 === id}
-                              item={item}
+                      {tabData?.data.length === 0 ? (
+                        <>
+                          {activeTab === "profit" && (
+                            <TransactionEmpty
+                              title={
+                                isBn
+                                  ? "এখনো কোনো লাভের রেকর্ড নেই।"
+                                  : "No profits recorded yet"
+                              }
+                              subTitle={
+                                isBn
+                                  ? "বুদ্ধিমানের সাথে বিনিয়োগ করুন এবং এখানে আপনার লাভ দেখুন"
+                                  : "Invest smartly to see your profits grow here."
+                              }
                             />
-                          </View>
-                        );
-                      })}
+                          )}
+                          {activeTab === "losses" && (
+                            <TransactionEmpty
+                              title={
+                                isBn
+                                  ? "এখনো কোনো ক্ষতির রেকর্ড নেই।"
+                                  : "No losses recorded yet"
+                              }
+                              subTitle={
+                                isBn
+                                  ? "Monitor your investments to minimize risks"
+                                  : "আপনার বিনিয়োগ মনিটর করুন এবং ঝুঁকি কমানোর চেষ্টা করুন"
+                              }
+                            />
+                          )}
+                          {activeTab === "withdraw" && (
+                            <TransactionEmpty
+                              title={
+                                isBn
+                                  ? "এখনো কোনো উত্তোলন করা হয়নি।"
+                                  : "No withdrawals made yet"
+                              }
+                              subTitle={
+                                isBn
+                                  ? "ট্রেডিং শুরু করতে আপনার অ্যাকাউন্টে টাকা যোগ করুন।"
+                                  : "Add funds to your account to start trading"
+                              }
+                            />
+                          )}
+                          {activeTab === "deposit" && (
+                            <TransactionEmpty
+                              title={
+                                isBn
+                                  ? "কোনো জমা পাওয়া যায়নি।"
+                                  : "No deposits found"
+                              }
+                              subTitle={
+                                isBn
+                                  ? " আপনার অ্যাকাউন্টে টাকা জমা দিন এবং বিনিয়োগ শুরু করুন।"
+                                  : "Deposit funds to your account and start investing"
+                              }
+                            />
+                          )}
+                        </>
+                      ) : (
+                        tabData?.data?.map((item, id) => {
+                          return (
+                            <View key={id}>
+                              <TransactionTabContent
+                                activeTab={activeTab}
+                                isLast={tabData?.data.length - 1 === id}
+                                item={item}
+                              />
+                            </View>
+                          );
+                        })
+                      )}
                     </View>
                   </View>
                 );

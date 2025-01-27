@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
@@ -17,13 +17,16 @@ import { SvgXml } from "react-native-svg";
 import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
+import { Audio } from "expo-av";
+import { formattedBalance } from "@/lib/utils";
+import useLang from "@/lib/hooks/useLang";
 
 const schema = z.object({
   amount: z
     .string({
       required_error: "Required",
     })
-    .min(2, {
+    .min(1, {
       message: "Required",
     }),
 });
@@ -31,14 +34,19 @@ const schema = z.object({
 export default function DepositCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
 
+  const withdrawBalance = "0";
+  const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: {},
     watch,
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -51,7 +59,32 @@ export default function DepositCard({ open, setOpen }: any) {
 
   const onSubmit = async (data: any) => {
     console.log("Form submitted:", data);
+
+    const sound = new Audio.Sound();
+    try {
+      setIsLoading(true);
+      // Load the MP3 file
+      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
+      await sound.playAsync();
+
+      // Wait for playback to finish
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync(); // Clean up
+          setOpen(false);
+          setIsLoading(false);
+          Keyboard.dismiss();
+        }
+      });
+    } catch (error) {
+      console.error("Error playing sound:", error);
+    }
   };
+
+  useEffect(() => {
+    reset();
+  }, [open]);
+
   return (
     <Modal
       visible={open}
@@ -121,16 +154,21 @@ export default function DepositCard({ open, setOpen }: any) {
                       fontSize: 16,
                       textAlign: "center",
                     }}>
-                    Current Balance
+                    {isBn ? "বর্তমান ব্যালেন্স" : "Current Balance"}
                   </Text>
                   <Text
                     style={{
-                      color: isDark ? "#FDD835" : "#1E88E5",
+                      color:
+                        Number(withdrawBalance) === 0
+                          ? "#EC2700"
+                          : isDark
+                          ? "#FDD835"
+                          : "#1E88E5",
                       fontSize: 28,
                       fontWeight: "bold",
                       textAlign: "center",
                     }}>
-                    ৳19000.98
+                    ৳{formattedBalance(withdrawBalance)}
                   </Text>
                 </View>
                 <View
@@ -146,13 +184,41 @@ export default function DepositCard({ open, setOpen }: any) {
                       fieldState: { error },
                     }) => (
                       <AnimatedInput
-                        label="Enter Deposit Amount"
+                        inputMode="numeric"
+                        label={
+                          isBn ? "জমার পরিমাণ লিখুন" : "Enter Deposit Amount"
+                        }
                         placeholder="00.00"
                         isDark={isDark} // Set to false for light mode
                         onChange={onChange} // Update value
                         value={value} // Pass current value
                         onBlur={onBlur} // Validation logic
                         error={error} // Optional error message
+                        inputColor={
+                          isDark
+                            ? ["#292A36", "#292A36"]
+                            : ["#FFFFFF", "#F7F7F7"]
+                        }
+                        inputShadow={{
+                          shadowColor: isDark ? "#333333" : "#42A5F5",
+                          shadowOffset: {
+                            width: 0,
+                            height: 4,
+                          },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                          elevation: 4,
+                        }}
+                        startColorOutRange={
+                          isDark
+                            ? ["#292A36", "#252531"]
+                            : ["#FCFCFC", "#EDEDED"]
+                        }
+                        endColorOutRange={
+                          isDark
+                            ? ["#292A36", "#292A36"]
+                            : ["#FCFCFC", "#FCFCFC"]
+                        }
                       />
                     )}
                   />
@@ -208,7 +274,7 @@ export default function DepositCard({ open, setOpen }: any) {
                             fontSize: 14,
                             color: isDark ? "#FFFFFF" : "#FFFFFF",
                           }}>
-                          Cancel
+                          {isBn ? "বাতিল করুন" : "Cancel"}
                         </Text>
                       </LinearGradient>
                     </View>
@@ -248,6 +314,8 @@ export default function DepositCard({ open, setOpen }: any) {
                         style={{
                           paddingVertical: 12,
                           paddingHorizontal: 8,
+                          borderWidth: isLoading ? 2 : 0,
+                          borderColor: "#FFD700",
                           borderRadius: 8,
                           alignItems: "center",
                         }}>
@@ -262,7 +330,7 @@ export default function DepositCard({ open, setOpen }: any) {
                               ? "#FFFFFF"
                               : "#FFFFFF",
                           }}>
-                          Deposit
+                          {isBn ? "জমা করুন" : "Deposit"}
                         </Text>
                       </LinearGradient>
                     </View>

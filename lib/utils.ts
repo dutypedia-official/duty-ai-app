@@ -126,3 +126,6 @@ export const slugify = (title: string): string => {
     .replace(/\s+/g, "-") // Replace spaces with hyphens
     .replace(/-+/g, "-"); // Replace multiple hyphens with a single hyphen
 };
+
+export const formattedBalance = (withdrawBalance: string) =>
+  parseFloat(withdrawBalance).toFixed(2).padStart(5, "0");

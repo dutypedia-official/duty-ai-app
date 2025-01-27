@@ -10,15 +10,25 @@ import {
 } from "react-native";
 import DepositCard from "./depositCard";
 import WithdrawCard from "./withdrawCard";
+import { formattedBalance } from "@/lib/utils";
+import useLang from "@/lib/hooks/useLang";
+import { Portal } from "react-native-paper";
 
-export default function AssetsBalCard() {
+export default function AssetsBalCard({
+  withdrawBalance,
+}: {
+  withdrawBalance: string;
+}) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { language } = useLang();
+  const isBn = language === "bn";
   const [isDeposit, setIsDeposit] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
 
   const logoUrl = `https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg`;
-  const isNeg = true;
+  const isNeg = false;
+
   return (
     <SafeAreaView>
       <View
@@ -104,7 +114,7 @@ export default function AssetsBalCard() {
                           textAlign: "center",
                           textAlignVertical: "center",
                         }}>
-                        A
+                        S
                       </Text>
                     )}
                     {logoUrl && (
@@ -160,7 +170,7 @@ export default function AssetsBalCard() {
                   color: isDark ? "#718096" : "#718096",
                   fontSize: 14,
                 }}>
-                Total Equity
+                {isBn ? "মোট সম্পদ" : "Total Equity"}
               </Text>
               <Text
                 style={{
@@ -169,7 +179,7 @@ export default function AssetsBalCard() {
                   fontWeight: "bold",
                   fontSize: 28,
                 }}>
-                ৳19000.98
+                ৳{formattedBalance(withdrawBalance)}
               </Text>
               <Text
                 style={{
@@ -183,11 +193,20 @@ export default function AssetsBalCard() {
             </View>
             <View
               style={{
-                backgroundColor: isDark ? "#131313" : "#F5F5F5",
+                backgroundColor: isDark ? "#131313" : "#F3F2F2",
                 paddingHorizontal: 12,
                 paddingVertical: 16,
                 borderRadius: 12,
                 gap: 16,
+                borderWidth: isDark ? 1 : 0,
+                borderColor: "#262626",
+                shadowColor: isDark ? "transparent" : "#E0E0E0",
+                shadowOffset: {
+                  width: 0,
+                  height: isDark ? 0 : 4,
+                },
+                shadowRadius: isDark ? 0 : 12,
+                shadowOpacity: isDark ? 0 : 0.1,
               }}>
               <View
                 style={{
@@ -201,7 +220,7 @@ export default function AssetsBalCard() {
                       color: isDark ? "#fff" : "#4A5568",
                       fontSize: 14,
                     }}>
-                    Trading Balance
+                    {isBn ? "লেনদেনের ব্যালেন্স" : "Trading Balance"}
                   </Text>
                 </View>
                 <View>
@@ -256,7 +275,7 @@ export default function AssetsBalCard() {
                         fontSize: 14,
                         color: "#FFFFFF",
                       }}>
-                      Deposit
+                      {isBn ? "জমা করুন" : "Deposit"}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -266,14 +285,21 @@ export default function AssetsBalCard() {
                   }}
                   style={{
                     flex: 1,
-                    shadowColor: "#FF4500",
+                    shadowColor:
+                      withdrawBalance === "0" ? "transparent" : "#FF4500",
                     shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.4,
+                    shadowOpacity: withdrawBalance === "0" ? 0 : 0.4,
                     shadowRadius: 4,
                     elevation: 4,
                   }}>
                   <LinearGradient
-                    colors={["#FF6347", "#FF4500"]}
+                    colors={
+                      withdrawBalance === "0"
+                        ? isDark
+                          ? ["#3C3C47", "#3C3C47"]
+                          : ["#E0E0E0", "#E0E0E0"]
+                        : ["#FF6347", "#FF4500"]
+                    }
                     start={{
                       x: 0,
                       y: 0,
@@ -292,9 +318,9 @@ export default function AssetsBalCard() {
                     <Text
                       style={{
                         fontSize: 14,
-                        color: "#FFFFFF",
+                        color: withdrawBalance === "0" ? "#A0A0A0" : "#FFFFFF",
                       }}>
-                      Withdraw
+                      {isBn ? "উত্তোলন করুন" : "Withdraw"}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -303,8 +329,10 @@ export default function AssetsBalCard() {
           </View>
         </LinearGradient>
       </View>
-      {isDeposit && <DepositCard open={isDeposit} setOpen={setIsDeposit} />}
-      {isWithdraw && <WithdrawCard open={isWithdraw} setOpen={setIsWithdraw} />}
+      <Portal>
+        <DepositCard open={isDeposit} setOpen={setIsDeposit} />
+        <WithdrawCard open={isWithdraw} setOpen={setIsWithdraw} />
+      </Portal>
     </SafeAreaView>
   );
 }

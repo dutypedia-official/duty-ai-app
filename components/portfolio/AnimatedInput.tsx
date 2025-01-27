@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, TextInput, Text, Animated, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  Animated,
+  StyleSheet,
+  InputModeOptions,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Animated LinearGradient wrapper
@@ -14,7 +21,30 @@ const AnimatedInput = ({
   keyboardType,
   placeholder,
   label,
-}: any) => {
+  errorInputColor,
+  inputColor,
+  startColorOutRange,
+  endColorOutRange,
+  inputBorderColor,
+  inputShadow,
+  inputMode,
+}: {
+  isDark: boolean;
+  onChange: () => void;
+  value: any;
+  onBlur: () => void;
+  error: any;
+  keyboardType?: any;
+  placeholder: string;
+  label: string;
+  errorInputColor?: any;
+  inputColor: any;
+  startColorOutRange: any;
+  endColorOutRange: any;
+  inputBorderColor?: any;
+  inputShadow: any;
+  inputMode?: InputModeOptions;
+}) => {
   const [isFocused, setIsFocused] = useState(false);
   const labelPosition = useRef(new Animated.Value(value ? 1 : 0)).current;
 
@@ -29,12 +59,12 @@ const AnimatedInput = ({
   // Interpolating colors for the LinearGradient
   const startColor = labelPosition.interpolate({
     inputRange: [0, 1],
-    outputRange: isDark ? ["#292A36", "#252531"] : ["#FCFCFC", "#EDEDED"],
+    outputRange: startColorOutRange,
   });
 
   const endColor = labelPosition.interpolate({
     inputRange: [0, 1],
-    outputRange: isDark ? ["#292A36", "#292A36"] : ["#FCFCFC", "#FCFCFC"],
+    outputRange: endColorOutRange,
   });
 
   return (
@@ -63,26 +93,43 @@ const AnimatedInput = ({
             </Text>
           </AnimatedLinearGradient>
         </Animated.View>
-        <LinearGradient
-          colors={isDark ? ["#292A36", "#292A36"] : ["#FFFFFF", "#F7F7F7"]}
-          style={[
-            styles.gradient,
-            { borderColor: isDark ? "#3C3C47" : "#CCCCCC" },
-            error && { borderColor: "#EC2700" },
-          ]}>
-          <TextInput
-            style={[styles.input, { color: isDark ? "#fff" : "#000" }]}
-            placeholder={!isFocused ? "" : placeholder}
-            keyboardType={keyboardType}
-            onBlur={() => {
-              onBlur?.();
-              setIsFocused(false);
-            }}
-            onFocus={() => setIsFocused(true)}
-            onChangeText={onChange}
-            value={value}
-          />
-        </LinearGradient>
+        <View style={inputShadow}>
+          <LinearGradient
+            colors={inputColor}
+            style={[
+              styles.gradient,
+              {
+                borderColor: inputBorderColor
+                  ? inputBorderColor
+                  : isDark
+                  ? "#3C3C47"
+                  : "#CCCCCC",
+              },
+              error && { borderColor: "#EC2700" },
+            ]}>
+            <TextInput
+              style={[
+                styles.input,
+                error && errorInputColor
+                  ? { color: errorInputColor }
+                  : {
+                      color: isDark ? "#fff" : "#000",
+                    },
+              ]}
+              placeholder={!isFocused ? "" : placeholder}
+              placeholderTextColor={isDark ? "#3C3C47" : "#CCCCCC"}
+              keyboardType={keyboardType}
+              onBlur={() => {
+                onBlur?.();
+                setIsFocused(false);
+              }}
+              onFocus={() => setIsFocused(true)}
+              onChangeText={onChange}
+              value={value}
+              inputMode={inputMode}
+            />
+          </LinearGradient>
+        </View>
         {error && <Text style={styles.errorText}>{error?.message}</Text>}
       </View>
     </View>
