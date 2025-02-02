@@ -1,4 +1,5 @@
 import Toast from "react-native-toast-message";
+import useLang from "./hooks/useLang";
 
 export async function fetchWithTimeout(url: string, options: any = {}) {
   const { timeout = 5000 } = options;
@@ -127,5 +128,59 @@ export const slugify = (title: string): string => {
     .replace(/-+/g, "-"); // Replace multiple hyphens with a single hyphen
 };
 
-export const formattedBalance = (withdrawBalance: string) =>
-  parseFloat(withdrawBalance).toFixed(2).padStart(5, "0");
+export const formattedBalance = (withdrawBalance: number) =>
+  withdrawBalance?.toFixed(2)?.padStart(5, "0");
+
+export const calcBroFeeAmount = (
+  brokerFeePercentage: string | number,
+  total: string | number
+): string => {
+  const percentage = parseFloat(brokerFeePercentage.toString());
+  const totalAmount = parseFloat(total.toString());
+
+  if (isNaN(percentage) || isNaN(totalAmount)) return "0"; // Handle invalid inputs
+
+  const feeAmount = (percentage / 100) * totalAmount;
+  return feeAmount.toFixed(2); // Format to 2 decimal places
+};
+
+export const formatFloat = (
+  num: number,
+  decimalPlaces: number = 2,
+  locale: string = "en-US"
+): string => {
+  if (isNaN(num)) return "0.00";
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: decimalPlaces,
+    maximumFractionDigits: decimalPlaces,
+  }).format(num);
+};
+
+export const getRiskLevel = (risk: string): string => {
+  const riskValue = parseFloat(risk);
+
+  if (isNaN(riskValue)) return "invalid"; // Handle non-numeric values
+
+  if (riskValue >= 20) return "⚠️⚠️ super high";
+  if (riskValue >= 10) return "⚠️ high";
+  if (riskValue >= 5) return "🟡Medium";
+  return "🟢 Good";
+};
+
+export const getProfitOrLoss = (total: string | number): string => {
+  const { language } = useLang();
+  const isBn = language === "bn";
+
+  const totalStr = total?.toString(); // Ensure it's a string
+  return totalStr?.startsWith("-")
+    ? isBn
+      ? "লস"
+      : "Loss"
+    : isBn
+    ? "লাভ"
+    : "Profit";
+};
+
+export const isLossItem = (total: string | number): boolean => {
+  return total?.toString().startsWith("-");
+};

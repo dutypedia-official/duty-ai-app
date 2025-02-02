@@ -124,7 +124,10 @@ const SignalList = ({
               onPress={() => {
                 router.push({
                   pathname: "/main/setting/buy-stock/[id]",
-                  params: { id: item?.symbol },
+                  params: {
+                    id: item?.id,
+                    stockItem: JSON.stringify(item),
+                  },
                 });
               }}
               style={{
@@ -180,7 +183,7 @@ export const BuyStockList = () => {
     try {
       setLoadingData(true);
       const { data: mData } = await client.get(
-        "/tools/get-stock-market",
+        "/tools/get-stock-market-bd/1",
         null,
         {},
         mainServerAvailable

@@ -8,6 +8,7 @@ import {
   Keyboard,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "../Themed";
@@ -25,20 +26,27 @@ import {
   radioSvgLight,
 } from "../svgs/radio";
 import useLang from "@/lib/hooks/useLang";
+import { Audio } from "expo-av";
+import { useAuth } from "@clerk/clerk-expo";
+import { apiClientPortfolio } from "@/lib/api";
+import { formatFloat } from "@/lib/utils";
 
 export default function SellStockForm() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-
+  const { getToken } = useAuth();
+  const clientPortfolio = apiClientPortfolio();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const params = useLocalSearchParams();
   const [selectedOption, setSelectedOption] = useState<string>("partialClose");
+  const stockDetail = JSON.parse(params?.stockDetail as string);
+  const currentPrice = parseFloat(stockDetail?.stock?.close.toString());
 
-  const withdrawBalance = "19000.98";
   const isNeg = false;
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   const schema = z
     .object({
@@ -79,15 +87,45 @@ export default function SellStockForm() {
       : true;
 
   const onSubmit = async (data: any) => {
-    console.log("Form submitted:", data);
     if (isFormValid) {
-      router.push({
-        pathname: "/main/setting/sell-stock/placedOrder/[id]",
-        params: {
-          id: params?.id.toString(),
-          isRisk: params?.isRisk.toString(),
-        },
-      });
+      const sound = new Audio.Sound();
+      try {
+        setIsSubmitting(true);
+        const token = await getToken();
+        await clientPortfolio.post(
+          "/portfolio/sell",
+          {
+            holdingId: stockDetail?.id.toString(),
+            quantity:
+              watch("closeType") === "fullClose"
+                ? stockDetail?.quantity
+                : data?.quantity,
+          },
+          token
+        );
+        setIsSubmitting(false);
+        router.push({
+          pathname: "/main/setting/sell-stock/placedOrder/[id]",
+          params: {
+            id: stockDetail?.id,
+            stockDetail: JSON.stringify(stockDetail),
+            soldDetails: JSON.stringify(data),
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        // Load the MP3 file
+        await sound.loadAsync(require("../../assets/error.mp3")); // Replace with your MP3 path
+        await sound.playAsync();
+        // Wait for playback to finish
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.didJustFinish) {
+            sound.unloadAsync(); // Clean up
+          }
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -210,7 +248,7 @@ export default function SellStockForm() {
                               fontSize: 12,
                               color: "#1E1E1E",
                             }}>
-                            {params?.id[0]}
+                            {stockDetail?.stock?.symbol[0]}
                           </Text>
                         </View>
                         {logoUrl && (
@@ -232,7 +270,7 @@ export default function SellStockForm() {
                             fontWeight: "bold",
                             color: isDark ? "#AAAAAA" : "#004662",
                           }}>
-                          {params?.id}
+                          {stockDetail?.stock?.symbol}
                         </Text>
                       </View>
                     </View>
@@ -257,7 +295,7 @@ export default function SellStockForm() {
                           fontWeight: "bold",
                           fontSize: 28,
                         }}>
-                        ৳{withdrawBalance}
+                        ৳{currentPrice}
                       </Text>
                     </View>
 
@@ -453,7 +491,7 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳60.42
+                                ৳{stockDetail?.avgCost}
                               </Text>
                             </View>
                           </View>
@@ -478,7 +516,7 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳50.42
+                                ৳{stockDetail?.stock?.close}
                               </Text>
                             </View>
                           </View>
@@ -503,7 +541,7 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                100
+                                {stockDetail?.quantity}
                               </Text>
                             </View>
                           </View>
@@ -530,7 +568,14 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳50000
+                                ৳
+                                {formatFloat(
+                                  watch("closeType") === "fullClose"
+                                    ? stockDetail?.stock?.close *
+                                        stockDetail?.quantity
+                                    : stockDetail?.stock?.close *
+                                        Number(watch("quantity"))
+                                )}
                               </Text>
                             </View>
                           </View>
@@ -584,14 +629,26 @@ export default function SellStockForm() {
                               onPress={handleSubmit(onSubmit)}
                               style={{
                                 flex: 1,
-                                shadowColor: isDark ? "#00B8D4" : "#81D4FA",
+                                shadowColor: isSubmitting
+                                  ? "transparent"
+                                  : isDark
+                                  ? "#00B8D4"
+                                  : "#81D4FA",
                                 shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: isDark ? 0.4 : 1,
+                                shadowOpacity: isSubmitting
+                                  ? 0
+                                  : isDark
+                                  ? 0.4
+                                  : 1,
                                 shadowRadius: 4,
                                 elevation: 4,
                               }}>
                               <LinearGradient
-                                colors={["#00E5FF", "#2979FF"]}
+                                colors={
+                                  isSubmitting
+                                    ? ["#E0E0E0", "#E0E0E0"]
+                                    : ["#00E5FF", "#2979FF"]
+                                }
                                 start={{
                                   x: 0,
                                   y: 0,
@@ -606,15 +663,20 @@ export default function SellStockForm() {
                                   alignItems: "center",
                                   paddingHorizontal: 8,
                                   paddingVertical: 12,
-                                  opacity: isFormValid ? 1 : 0.2,
+                                  opacity:
+                                    isFormValid || !isSubmitting ? 1 : 0.2,
                                 }}>
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    color: "#FFFFFF",
-                                  }}>
-                                  {isBn ? "কিনুন" : "Sell Now"}
-                                </Text>
+                                {isSubmitting ? (
+                                  <ActivityIndicator size={"small"} />
+                                ) : (
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      color: "#FFFFFF",
+                                    }}>
+                                    {isBn ? "বিক্রি করুন" : "Sell Now"}
+                                  </Text>
+                                )}
                               </LinearGradient>
                             </TouchableOpacity>
                           </View>

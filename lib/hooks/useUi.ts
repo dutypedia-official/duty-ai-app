@@ -16,6 +16,16 @@ interface Store {
   setHideTabNav: (hideTabNav: boolean) => void;
   aiAlermPrompt: string;
   setAiAlermPrompt: (aiAlermPrompt: string) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  totalInvestment: string;
+  setTotalInvestment: (totalInvestment: string) => void;
+  balance: string;
+  setBalance: (balance: string) => void;
+  freeBalance: string;
+  setFreeBalance: (freeBalance: string) => void;
+  holdings: any;
+  setHoldings: (holdings: any) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -36,6 +46,16 @@ const useUi = create<Store>((set, get) => ({
   setHideTabNav: (hideTabNav: boolean) => set({ hideTabNav }),
   aiAlermPrompt: "",
   setAiAlermPrompt: (aiAlermPrompt: string) => set({ aiAlermPrompt }),
+  isLoading: false,
+  setIsLoading: (isLoading: boolean) => set({ isLoading }),
+  totalInvestment: "0",
+  setTotalInvestment: (totalInvestment: string) => set({ totalInvestment }),
+  balance: "0",
+  setBalance: (balance: string) => set({ balance }),
+  freeBalance: "0",
+  setFreeBalance: (freeBalance: string) => set({ freeBalance }),
+  holdings: [],
+  setHoldings: (holdings: any) => set({ holdings }),
 }));
 
 export default useUi;

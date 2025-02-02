@@ -1,10 +1,19 @@
 import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import useLang from "@/lib/hooks/useLang";
+import { format } from "date-fns";
+import {
+  calcBroFeeAmount,
+  formatFloat,
+  getRiskLevel,
+  isLossItem,
+} from "@/lib/utils";
+import { Audio } from "expo-av";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function PlacedOrderSell() {
   const params = useLocalSearchParams();
@@ -12,44 +21,67 @@ export default function PlacedOrderSell() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const isFocused = useIsFocused();
+  const stockDetail = JSON.parse(params?.stockDetail as string);
+  const soldDetails = JSON.parse(params?.soldDetails as string);
+
+  const playSound = async () => {
+    const sound = new Audio.Sound();
+    // Load the MP3 file
+    await sound.loadAsync(require("../../assets/confirm.mp3")); // Replace with your MP3 path
+    await sound.playAsync();
+    // Wait for playback to finish
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded && status.didJustFinish) {
+        sound.unloadAsync(); // Clean up
+      }
+    });
+  };
+  useEffect(() => {
+    playSound();
+  }, [isFocused]);
+
+  const totalSell = stockDetail?.stock?.close * soldDetails?.quantity;
 
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.avgCost)}`,
     },
     {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
-      value: "৳120",
+      value: `৳${stockDetail?.stock?.close}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: "100",
+      value: `${soldDetails?.quantity}`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.total)}`,
     },
     {
       name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
-      value: "৳100",
+      value: `৳${totalSell}`,
     },
     {
       name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: "1200",
+      value: soldDetails?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: "৳100 (5%)",
+      value: `-${calcBroFeeAmount(stockDetail?.brokerFee, totalSell)} (${
+        stockDetail?.brokerFee
+      }%)`,
     },
     {
       name: isBn ? "বন্ধের তারিখ" : "Close Date",
-      value: "jan 01, 2025",
+      value: format(new Date(), "MMM dd, yyyy"),
     },
   ];
 
-  const isRisk = params?.isRisk === "true";
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+  const isRisk = isLossItem(stockDetail?.total);
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   return (
     <View
@@ -111,7 +143,7 @@ export default function PlacedOrderSell() {
                     fontSize: 12,
                     color: "#1E1E1E",
                   }}>
-                  G
+                  {stockDetail?.stock?.symbol[0]}
                 </Text>
               </View>
               {logoUrl && (
@@ -130,7 +162,7 @@ export default function PlacedOrderSell() {
                   color: isDark ? "#fff" : "#004662",
                   textAlign: "center",
                 }}>
-                {params?.id}
+                {stockDetail?.stock?.symbol}
               </Text>
               <Text
                 style={{
@@ -138,7 +170,8 @@ export default function PlacedOrderSell() {
                   color: isDark ? "#B0B0B0" : "#7D8C8D",
                   textAlign: "center",
                 }}>
-                Trade Date Jan 15, 2025
+                Trade Date{" "}
+                {format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")}
               </Text>
             </View>
           </View>
@@ -248,12 +281,14 @@ export default function PlacedOrderSell() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  5%
+                  {formatFloat(stockDetail?.risk)}%
                 </Text>
               </View>
             </View>
             <View
               style={{
+                borderBottomEndRadius: 16,
+                borderBottomStartRadius: 16,
                 flexDirection: "row",
                 justifyContent: "space-between",
                 borderTopWidth: 1,
@@ -300,7 +335,7 @@ export default function PlacedOrderSell() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? "⚠️ High Risk" : "🟢 Good"}
+                  {getRiskLevel(stockDetail?.risk)}
                 </Text>
               </View>
             </View>

@@ -1,49 +1,58 @@
-import {
-  View,
-  Text,
-  Image,
-  useColorScheme,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { SafeAreaView } from "../Themed";
-import { LinearGradient } from "expo-linear-gradient";
-import { SvgUri } from "react-native-svg";
-import AnimatedInput from "./AnimatedInput";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { router, useLocalSearchParams } from "expo-router";
-import { Audio } from "expo-av";
+import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
+import { useAuth } from "@clerk/clerk-expo";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Audio } from "expo-av";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  ActivityIndicator,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  useColorScheme,
+  View,
+} from "react-native";
+import { SvgUri } from "react-native-svg";
+import { z } from "zod";
+import { SafeAreaView } from "../Themed";
+import AnimatedInput from "./AnimatedInput";
 
-const schema = z.object({
-  buyPrice: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-  quantity: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-  brokerFee: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
+const buySchema = z.object({
+  symbolId: z.string().min(1),
+  quantity: z.coerce.number().min(1),
+  brokerFee: z.coerce.number().min(0).max(100).default(0),
 });
+
+// const schema = z.object({
+//   buyPrice: z
+//     .string({
+//       required_error: "Required",
+//     })
+//     .min(1, {
+//       message: "Required",
+//     }),
+//   quantity: z
+//     .string({
+//       required_error: "Required",
+//     })
+//     .min(1, {
+//       message: "Required",
+//     }),
+//   brokerFee: z
+//     .string({
+//       required_error: "Required",
+//     })
+//     .min(1, {
+//       message: "Required",
+//     }),
+// });
 
 export default function BuyStockForm() {
   const colorScheme = useColorScheme();
@@ -51,22 +60,25 @@ export default function BuyStockForm() {
   const { language } = useLang();
   const isBn = language === "bn";
   const params = useLocalSearchParams();
-
+  const { getToken } = useAuth();
+  const clientPortfolio = apiClientPortfolio();
   const [isFocused, setIsFocused] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const withdrawBalance = "19000.98";
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const stockItem = JSON.parse(params?.stockItem as string);
+  const currentPrice = stockItem?.close;
   const isNeg = false;
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockItem?.symbol}.svg`;
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
     watch,
+    reset,
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(buySchema),
     defaultValues: {
-      buyPrice: withdrawBalance || "",
+      symbolId: stockItem?.id.toString(),
       quantity: "",
       brokerFee: "",
     },
@@ -76,29 +88,49 @@ export default function BuyStockForm() {
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
   const onSubmit = async (data: any) => {
-    const sound = new Audio.Sound();
-    try {
-      // Load the MP3 file
-      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
-      await sound.playAsync();
+    if (isFormValid) {
+      const sound = new Audio.Sound();
+      try {
+        setIsSubmitting(true);
+        console.log("Form submitted:", data);
+        const token = await getToken();
+        await clientPortfolio.post(
+          "/portfolio/buy",
+          {
+            symbolId: stockItem?.id.toString(),
+            quantity: data?.quantity,
+            brokerFee: data?.brokerFee,
+          },
+          token
+        );
 
-      // Wait for playback to finish
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync(); // Clean up
-          router.push({
-            pathname: "/main/setting/buy-stock/confirm/[id]",
-            params: {
-              id: params?.id.toString(),
-            },
-          });
-        }
-      });
-    } catch (error) {
-      console.error("Error playing sound:", error);
+        // Load the MP3 file
+        await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
+        await sound.playAsync();
+
+        // Wait for playback to finish
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.didJustFinish) {
+            sound.unloadAsync(); // Clean up
+            setIsSubmitting(false);
+            router.push({
+              pathname: "/main/setting/buy-stock/confirm/[id]",
+              params: {
+                id: stockItem?.id.toString(),
+              },
+            });
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
-    console.log("Form submitted:", data);
   };
+
+  useEffect(() => {
+    reset();
+    setIsSubmitting(false);
+  }, []);
 
   return (
     <SafeAreaView
@@ -209,7 +241,7 @@ export default function BuyStockForm() {
                               fontSize: 12,
                               color: "#1E1E1E",
                             }}>
-                            {params?.id[0]}
+                            {stockItem?.symbol[0]}
                           </Text>
                         </View>
                         {logoUrl && (
@@ -231,7 +263,7 @@ export default function BuyStockForm() {
                             fontWeight: "bold",
                             color: isDark ? "#AAAAAA" : "#004662",
                           }}>
-                          {params?.id}
+                          {stockItem?.symbol}
                         </Text>
                       </View>
                     </View>
@@ -256,7 +288,7 @@ export default function BuyStockForm() {
                           fontWeight: "bold",
                           fontSize: 28,
                         }}>
-                        ৳{withdrawBalance}
+                        ৳{currentPrice}
                       </Text>
                     </View>
 
@@ -267,50 +299,41 @@ export default function BuyStockForm() {
                         width: "100%",
                         paddingHorizontal: 14,
                       }}>
-                      <Controller
-                        control={control}
-                        name="buyPrice"
-                        render={({
-                          field: { onChange, onBlur, value },
-                          fieldState: { error },
-                        }) => (
-                          <AnimatedInput
-                            inputMode="numeric"
-                            label={isBn ? "ক্রয় মূল্য" : "Buy Price"}
-                            placeholder="00.00"
-                            isDark={isDark} // Set to false for light mode
-                            onChange={onChange} // Update value
-                            value={value} // Pass current value
-                            onBlur={onBlur} // Validation logic
-                            error={error} // Optional error message
-                            inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
-                            inputColor={
-                              isDark
-                                ? ["#1C1C1C", "#1C1C1C"]
-                                : ["#FFFFFF", "#F7F7F7"]
-                            }
-                            inputShadow={{
-                              shadowColor: isDark ? "#333333" : "#FFFFFF",
-                              shadowOffset: {
-                                width: 4,
-                                height: 4,
-                              },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 4,
-                              elevation: 4,
-                            }}
-                            startColorOutRange={
-                              isDark
-                                ? ["transparent", "#1A1A1A"]
-                                : ["#FCFCFC", "#FCFCFD"]
-                            }
-                            endColorOutRange={
-                              isDark
-                                ? ["transparent", "#1C1C1C"]
-                                : ["#FCFCFC", "#FFFFFF"]
-                            }
-                          />
-                        )}
+                      <AnimatedInput
+                        inputMode="numeric"
+                        label={isBn ? "ক্রয় মূল্য" : "Buy Price"}
+                        placeholder="00.00"
+                        isDark={isDark} // Set to false for light mode
+                        onChange={() => {}} // Update value
+                        value={currentPrice} // Pass current value
+                        onBlur={() => {}} // Validation logic
+                        error={false} // Optional error message
+                        inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
+                        inputColor={
+                          isDark
+                            ? ["#1C1C1C", "#1C1C1C"]
+                            : ["#FFFFFF", "#F7F7F7"]
+                        }
+                        inputShadow={{
+                          shadowColor: isDark ? "#333333" : "#FFFFFF",
+                          shadowOffset: {
+                            width: 4,
+                            height: 4,
+                          },
+                          shadowOpacity: 0.1,
+                          shadowRadius: 4,
+                          elevation: 4,
+                        }}
+                        startColorOutRange={
+                          isDark
+                            ? ["transparent", "#1A1A1A"]
+                            : ["#FCFCFC", "#FCFCFD"]
+                        }
+                        endColorOutRange={
+                          isDark
+                            ? ["transparent", "#1C1C1C"]
+                            : ["#FCFCFC", "#FFFFFF"]
+                        }
                       />
                       <Controller
                         control={control}
@@ -365,8 +388,8 @@ export default function BuyStockForm() {
                           fieldState: { error },
                         }) => (
                           <AnimatedInput
-                            inputMode="numeric"
-                            label={isBn ? "ব্রোকার ফি" : "Broker fee"}
+                            inputMode="text"
+                            label={isBn ? "ব্রোকার কমিশন" : "Broker commission"}
                             placeholder="00.00"
                             isDark={isDark} // Set to false for light mode
                             onChange={onChange} // Update value
@@ -450,7 +473,7 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{watch("buyPrice") ? watch("buyPrice") : 0}
+                                ৳{currentPrice ? currentPrice : 0}
                               </Text>
                             </View>
                           </View>
@@ -490,7 +513,7 @@ export default function BuyStockForm() {
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
                                 }}>
-                                {isBn ? "ব্রোকার ফি" : "Broker fee"}
+                                {isBn ? "ব্রোকার কমিশন" : "Broker commission"}
                               </Text>
                             </View>
                             <View>
@@ -577,13 +600,17 @@ export default function BuyStockForm() {
                                   paddingVertical: 12,
                                   opacity: !isFormValid ? 0.2 : 1,
                                 }}>
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    color: "#FFFFFF",
-                                  }}>
-                                  {isBn ? "কিনুন" : "Buy"}
-                                </Text>
+                                {isSubmitting ? (
+                                  <ActivityIndicator size={"small"} />
+                                ) : (
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      color: "#FFFFFF",
+                                    }}>
+                                    {isBn ? "কিনুন" : "Buy"}
+                                  </Text>
+                                )}
                               </LinearGradient>
                             </TouchableOpacity>
                           </View>

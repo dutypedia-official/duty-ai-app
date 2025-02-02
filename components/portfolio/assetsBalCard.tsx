@@ -2,6 +2,7 @@ import { SafeAreaView } from "@/components/Themed";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Text,
   TouchableOpacity,
@@ -13,16 +14,16 @@ import WithdrawCard from "./withdrawCard";
 import { formattedBalance } from "@/lib/utils";
 import useLang from "@/lib/hooks/useLang";
 import { Portal } from "react-native-paper";
+import useUi from "@/lib/hooks/useUi";
+import { useUser } from "@clerk/clerk-expo";
 
-export default function AssetsBalCard({
-  withdrawBalance,
-}: {
-  withdrawBalance: string;
-}) {
+export default function AssetsBalCard() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { user } = useUser();
+  const { totalInvestment, freeBalance, balance } = useUi();
   const [isDeposit, setIsDeposit] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
 
@@ -154,10 +155,20 @@ export default function AssetsBalCard({
                     color: isDark ? "#FFFFFF" : "#2C3E50",
                   }}
                   numberOfLines={1}>
-                  Salma Akater salma ...
+                  {user?.firstName} {user?.lastName}
                 </Text>
               </View>
             </View>
+            {/* {isLoading ? (
+              <View
+                style={{
+                  height: 142,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <ActivityIndicator />
+              </View>
+            ) : ( */}
             <View
               style={{
                 margin: "auto",
@@ -170,7 +181,7 @@ export default function AssetsBalCard({
                   color: isDark ? "#718096" : "#718096",
                   fontSize: 14,
                 }}>
-                {isBn ? "মোট সম্পদ" : "Total Equity"}
+                {isBn ? "মোট বিনিয়োগ" : "Total Investment"}
               </Text>
               <Text
                 style={{
@@ -179,7 +190,7 @@ export default function AssetsBalCard({
                   fontWeight: "bold",
                   fontSize: 28,
                 }}>
-                ৳{formattedBalance(withdrawBalance)}
+                ৳{formattedBalance(parseFloat(totalInvestment))}
               </Text>
               <Text
                 style={{
@@ -191,6 +202,7 @@ export default function AssetsBalCard({
                 +৳3465.23
               </Text>
             </View>
+            {/* )} */}
             <View
               style={{
                 backgroundColor: isDark ? "#131313" : "#F3F2F2",
@@ -210,28 +222,58 @@ export default function AssetsBalCard({
               }}>
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  gap: 12,
                 }}>
-                <View>
-                  <Text
-                    style={{
-                      color: isDark ? "#fff" : "#4A5568",
-                      fontSize: 14,
-                    }}>
-                    {isBn ? "লেনদেনের ব্যালেন্স" : "Trading Balance"}
-                  </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}>
+                  <View>
+                    <Text
+                      style={{
+                        color: isDark ? "#fff" : "#4A5568",
+                        fontSize: 14,
+                      }}>
+                      {isBn ? "লেনদেনের ব্যালেন্স" : "Trading Balance"}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        color: isDark ? "#fff" : "#2D3748",
+                        fontSize: 20,
+                        fontWeight: "medium",
+                      }}>
+                      ৳{parseFloat(balance)}
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      color: isDark ? "#fff" : "#2D3748",
-                      fontSize: 20,
-                      fontWeight: "medium",
-                    }}>
-                    ৳3435345890.99
-                  </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}>
+                  <View>
+                    <Text
+                      style={{
+                        color: isDark ? "#D4AF37" : "#2E7582",
+                        fontSize: 14,
+                      }}>
+                      {isBn ? "ফ্রি ক্যাশ" : "Free cash"}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        color: isDark ? "#D4AF37" : "#2E7582",
+                        fontSize: 14,
+                      }}>
+                      ৳{freeBalance}
+                    </Text>
+                  </View>
                 </View>
               </View>
               <View
@@ -286,15 +328,15 @@ export default function AssetsBalCard({
                   style={{
                     flex: 1,
                     shadowColor:
-                      withdrawBalance === "0" ? "transparent" : "#FF4500",
+                      totalInvestment === "0" ? "transparent" : "#FF4500",
                     shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: withdrawBalance === "0" ? 0 : 0.4,
+                    shadowOpacity: totalInvestment === "0" ? 0 : 0.4,
                     shadowRadius: 4,
                     elevation: 4,
                   }}>
                   <LinearGradient
                     colors={
-                      withdrawBalance === "0"
+                      totalInvestment === "0"
                         ? isDark
                           ? ["#3C3C47", "#3C3C47"]
                           : ["#E0E0E0", "#E0E0E0"]
@@ -318,7 +360,7 @@ export default function AssetsBalCard({
                     <Text
                       style={{
                         fontSize: 14,
-                        color: withdrawBalance === "0" ? "#A0A0A0" : "#FFFFFF",
+                        color: totalInvestment === "0" ? "#A0A0A0" : "#FFFFFF",
                       }}>
                       {isBn ? "উত্তোলন করুন" : "Withdraw"}
                     </Text>

@@ -16,9 +16,9 @@ export default function Layout() {
           backgroundColor: bgColor,
         },
       }}>
-      <Stack.Screen name="index" options={{ title: "Setting" }} />
+      {/* <Stack.Screen name="index" options={{ title: "Setting" }} /> */}
 
-      {/* {isPortfolio ? (
+      {isPortfolio ? (
         <Stack.Screen
           name="portfolio"
           options={{
@@ -34,7 +34,7 @@ export default function Layout() {
             headerShown: false,
           }}
         />
-      )} */}
+      )}
 
       <Stack.Screen
         name="delete-account"

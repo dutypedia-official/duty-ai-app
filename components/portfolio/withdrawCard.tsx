@@ -1,13 +1,19 @@
+import { apiClientPortfolio } from "@/lib/api";
+import useLang from "@/lib/hooks/useLang";
+import useUi from "@/lib/hooks/useUi";
+import { formattedBalance } from "@/lib/utils";
+import { useAuth } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
@@ -17,18 +23,19 @@ import { SvgXml } from "react-native-svg";
 import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
-import { Audio } from "expo-av";
-import { formattedBalance } from "@/lib/utils";
-import useLang from "@/lib/hooks/useLang";
 
 export default function WithdrawCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const clientPortfolio = apiClientPortfolio();
+  const { getToken } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { freeBalance } = useUi();
+  const hasPositiveBalance = parseFloat(freeBalance) > 0;
 
   const [isFocused, setIsFocused] = useState(false);
-  const withdrawBalance = "59868";
 
   const schema = z.object({
     amount: z
@@ -41,8 +48,10 @@ export default function WithdrawCard({ open, setOpen }: any) {
       .refine(
         (value) => {
           const amount = parseFloat(value);
-          const balance = parseFloat(withdrawBalance);
-          return !isNaN(amount) && amount <= balance;
+
+          return (
+            !isNaN(amount) && amount > 0 && amount <= parseFloat(freeBalance)
+          );
         },
         {
           message: `Your Fund is Low`,
@@ -67,28 +76,41 @@ export default function WithdrawCard({ open, setOpen }: any) {
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
   const onSubmit = async (data: any) => {
+    Keyboard.dismiss();
     const sound = new Audio.Sound();
     try {
+      setIsSubmitting(true);
+      console.log("Form submitted:", data);
+      const token = await getToken();
+      await clientPortfolio.post(
+        "/portfolio/withdraw",
+        {
+          amount: data.amount,
+        },
+        token
+      );
+
       // Load the MP3 file
       await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
       await sound.playAsync();
-
       // Wait for playback to finish
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.isLoaded && status.didJustFinish) {
           sound.unloadAsync(); // Clean up
+          setIsSubmitting(false);
           setOpen(false);
-          Keyboard.dismiss();
         }
       });
     } catch (error) {
-      console.error("Error playing sound:", error);
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
-    console.log("Form submitted:", data);
   };
 
   useEffect(() => {
     reset();
+    setIsSubmitting(false);
   }, [open]);
 
   return (
@@ -165,7 +187,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                   <Text
                     style={{
                       color:
-                        errors.amount || Number(withdrawBalance) === 0
+                        errors.amount || parseFloat(freeBalance) === 0
                           ? "#EC2700"
                           : isDark
                           ? "#FDD835"
@@ -174,7 +196,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       fontWeight: "bold",
                       textAlign: "center",
                     }}>
-                    ৳{formattedBalance(withdrawBalance)}
+                    ৳{formattedBalance(parseFloat(freeBalance))}
                   </Text>
                 </View>
                 <View
@@ -242,102 +264,116 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     paddingVertical: 16,
                     paddingHorizontal: 12,
                     borderRadius: 20,
-                    width: "100%",
                   }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setOpen(false);
-                    }}
+                  <View
                     style={{
-                      flexGrow: 1,
-                      borderRadius: 12,
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 12,
                     }}>
-                    <View
+                    <TouchableOpacity
+                      onPress={() => {
+                        setOpen(false);
+                      }}
                       style={{
-                        shadowColor: "#FF4500",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.4,
-                        shadowRadius: 6,
-                        elevation: 4,
+                        flex: 1,
+                        borderRadius: 12,
                       }}>
-                      <LinearGradient
-                        colors={
-                          isDark
-                            ? ["#FF3A3A", "#FF5C5C"]
-                            : ["#D84315", "#FF8A65"]
-                        }
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
+                      <View
                         style={{
-                          paddingVertical: 12,
-                          paddingHorizontal: 8,
-                          borderRadius: 8,
-                          alignItems: "center",
+                          shadowColor: "#FF4500",
+                          shadowOffset: { width: 0, height: 4 },
+                          shadowOpacity: 0.4,
+                          shadowRadius: 6,
+                          elevation: 4,
                         }}>
-                        <Text
+                        <LinearGradient
+                          colors={
+                            isDark
+                              ? ["#FF3A3A", "#FF5C5C"]
+                              : ["#D84315", "#FF8A65"]
+                          }
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
                           style={{
-                            fontSize: 14,
-                            color: isDark ? "#FFFFFF" : "#FFFFFF",
+                            paddingVertical: 12,
+                            paddingHorizontal: 8,
+                            borderRadius: 8,
+                            alignItems: "center",
                           }}>
-                          {isBn ? "বাতিল করুন" : "Cancel"}
-                        </Text>
-                      </LinearGradient>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    // disabled={!isFormValid}
-                    onPress={() => {
-                      handleSubmit(onSubmit)();
-                    }}
-                    style={{
-                      flexGrow: 1,
-                      borderRadius: 12,
-                    }}>
-                    <View
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: isDark ? "#FFFFFF" : "#FFFFFF",
+                            }}>
+                            {isBn ? "বাতিল করুন" : "Cancel"}
+                          </Text>
+                        </LinearGradient>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleSubmit(onSubmit)();
+                      }}
                       style={{
-                        shadowColor: !isFormValid ? "transparent" : "#42A5F5",
-                        shadowOffset: {
-                          width: 0,
-                          height: !isFormValid ? 0 : 4,
-                        },
-                        shadowOpacity: !isFormValid ? 0 : 0.7,
-                        shadowRadius: !isFormValid ? 0 : 6,
-                        elevation: !isFormValid ? 0 : 4,
+                        flex: 1,
+                        borderRadius: 12,
                       }}>
-                      <LinearGradient
-                        colors={
-                          !isFormValid
-                            ? isDark
-                              ? ["#3C3C47", "#3C3C47"]
-                              : ["#E0E0E0", "#E0E0E0"]
-                            : isDark
-                            ? ["#007BFF", "#1E90FF"]
-                            : ["#1E88E5", "#42A5F5"]
-                        }
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
+                      <View
                         style={{
-                          paddingVertical: 12,
-                          paddingHorizontal: 8,
-                          borderRadius: 8,
-                          alignItems: "center",
+                          shadowColor:
+                            !isFormValid || isSubmitting
+                              ? "transparent"
+                              : "#42A5F5",
+                          shadowOffset: {
+                            width: 0,
+                            height: !isFormValid ? 0 : 4,
+                          },
+                          shadowOpacity: !isFormValid ? 0 : 0.7,
+                          shadowRadius: !isFormValid ? 0 : 6,
+                          elevation: !isFormValid ? 0 : 4,
                         }}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: !isFormValid
+                        <LinearGradient
+                          colors={
+                            !isFormValid || isSubmitting
                               ? isDark
-                                ? "#666666"
-                                : "#A0A0A0"
+                                ? ["#3C3C47", "#3C3C47"]
+                                : ["#E0E0E0", "#E0E0E0"]
                               : isDark
-                              ? "#FFFFFF"
-                              : "#FFFFFF",
+                              ? ["#007BFF", "#1E90FF"]
+                              : ["#1E88E5", "#42A5F5"]
+                          }
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={{
+                            paddingVertical: 12,
+                            paddingHorizontal: 8,
+                            borderRadius: 8,
+                            alignItems: "center",
                           }}>
-                          {isBn ? "উত্তোলন করুন" : "Withdraw"}
-                        </Text>
-                      </LinearGradient>
-                    </View>
-                  </TouchableOpacity>
+                          {isSubmitting ? (
+                            <ActivityIndicator size={"small"} />
+                          ) : (
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: !isFormValid
+                                  ? isDark
+                                    ? "#666666"
+                                    : "#A0A0A0"
+                                  : isDark
+                                  ? "#FFFFFF"
+                                  : "#FFFFFF",
+                              }}>
+                              {isBn ? "উত্তোলন করুন" : "Withdraw"}
+                            </Text>
+                          )}
+                        </LinearGradient>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </LinearGradient>
               </LinearGradient>
             </View>

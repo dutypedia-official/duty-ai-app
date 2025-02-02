@@ -17,7 +17,7 @@ export default function TransactionTabContent({
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.symbol}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.stock?.symbol}.svg`;
 
   return (
     <Fragment>
@@ -81,7 +81,7 @@ export default function TransactionTabContent({
                       fontSize: 12,
                       color: "#1E1E1E",
                     }}>
-                    {item?.symbol[0]}
+                    {item?.stock?.symbol[0]}
                   </Text>
                 </View>
                 {logoUrl && <SvgUri uri={logoUrl} width={20} height={20} />}
@@ -97,7 +97,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#87CEEB" : "#004662",
                   }}>
-                  {item?.symbol}
+                  {item?.stock?.symbol}
                 </Text>
               </View>
             </View>
@@ -130,7 +130,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#28A745" : "#28A745",
                   }}>
-                  +৳{Math.abs(item?.amount).toFixed(2)}
+                  +৳{Math.abs(item?.profit).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -204,7 +204,7 @@ export default function TransactionTabContent({
                       fontSize: 12,
                       color: "#1E1E1E",
                     }}>
-                    {item?.symbol[0]}
+                    {item?.stock?.symbol[0]}
                   </Text>
                 </View>
                 {logoUrl && <SvgUri uri={logoUrl} width={20} height={20} />}
@@ -220,7 +220,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#87CEEB" : "#004662",
                   }}>
-                  {item?.symbol}
+                  {item?.stock?.symbol}
                 </Text>
               </View>
             </View>
@@ -253,7 +253,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#FF6347" : "#FF4500",
                   }}>
-                  -৳{Math.abs(item?.amount).toFixed(2)}
+                  -৳{Math.abs(item?.loss).toFixed(2)}
                 </Text>
               </View>
             </View>

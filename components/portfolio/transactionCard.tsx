@@ -1,31 +1,86 @@
-import {
-  View,
-  Text,
-  useColorScheme,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
+import useLang from "@/lib/hooks/useLang";
 import { FontAwesome } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import TransactionTabContent from "./transactionTabContent";
-import { router } from "expo-router";
-import { SvgXml } from "react-native-svg";
-import { notfoundTransaction } from "../svgs/notfoundTransaction";
-import useLang from "@/lib/hooks/useLang";
 import TransactionEmpty from "./transactionEmpty";
+import TransactionTabContent from "./transactionTabContent";
+import { useAuth } from "@clerk/clerk-expo";
+import { apiClientPortfolio } from "@/lib/api";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function TransactionCard() {
+  const { getToken } = useAuth();
+  const clientPortfolio = apiClientPortfolio();
+  const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const translateX = useSharedValue(0);
+  const [transactionsProfit, setTransactionsProfit] = useState<any>(null);
+  const [transactionsLoss, setTransactionsLoss] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  // const params = useLocalSearchParams<{
+  //   q?: string;
+  //   page?: string;
+  //   perPage?: string;
+  //   type?: string;
+  // }>();
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/transactions/profit`,
+        token
+      );
+      setTransactionsProfit(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchLossData = async () => {
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/transactions/loss/1`,
+        token
+      );
+      setTransactionsLoss(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchLossData();
+  }, []);
 
   const handleTabPress = (index: number) => {
     setActiveTabIndex(index);
@@ -42,86 +97,22 @@ export default function TransactionCard() {
     {
       tabName: isBn ? "লাভ" : "Profit",
       value: "profit",
-      data: [
-        {
-          id: "lk7yu34y74re",
-          symbol: "GP",
-          amount: "966542",
-        },
-        {
-          id: "lk7yu34y74re",
-          symbol: "ROBI",
-          amount: "966542",
-        },
-        {
-          id: "34yu34y74re",
-          symbol: "IFIC",
-          amount: "966542",
-        },
-      ],
+      data: transactionsProfit?.transactions,
     },
     {
       tabName: isBn ? "লোকসান" : "Losses",
       value: "losses",
-      data: [
-        {
-          id: "lk7yu34y74re",
-          symbol: "GP",
-          amount: "786542",
-        },
-        {
-          id: "lk7yu34y74re",
-          symbol: "DFAK",
-          amount: "786542",
-        },
-        {
-          id: "89k7yu34y74re",
-          symbol: "THDTU",
-          amount: "786542",
-        },
-      ],
+      data: [],
     },
     {
       tabName: isBn ? "উত্তোলন" : "Withdraw",
       value: "withdraw",
-      data: [
-        {
-          id: "lk7yu34y74re",
-          amount: "78656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-        {
-          id: "lk7yu34y74re",
-          amount: "78656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-        {
-          id: "6k7yu34y74re",
-          amount: "78656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-      ],
+      data: [],
     },
     {
       tabName: isBn ? "জমা" : "Deposit",
       value: "deposit",
-      data: [
-        {
-          id: "lk7yu34y74re",
-          amount: "78656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-        {
-          id: "l9i7yu34y74re",
-          amount: "988656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-        {
-          id: "lk7yu34y74re",
-          amount: "78656",
-          createdAt: "2024-08-08T11:21:11.053000Z",
-        },
-      ],
+      data: [],
     },
   ];
 
@@ -229,6 +220,10 @@ export default function TransactionCard() {
               {tabs?.map((tabData, i) => {
                 const activeTab = tabData?.value;
 
+                console.log(
+                  "tabData-------------------",
+                  JSON.stringify(tabData)
+                );
                 return (
                   <View
                     key={i}
@@ -241,7 +236,7 @@ export default function TransactionCard() {
                       style={{
                         justifyContent: "space-between",
                       }}>
-                      {tabData?.data.length === 0 ? (
+                      {tabData?.data?.length === 0 ? (
                         <>
                           {activeTab === "profit" && (
                             <TransactionEmpty
@@ -301,7 +296,7 @@ export default function TransactionCard() {
                           )}
                         </>
                       ) : (
-                        tabData?.data?.map((item, id) => {
+                        tabData?.data?.map((item: any, id: number) => {
                           return (
                             <View key={id}>
                               <TransactionTabContent

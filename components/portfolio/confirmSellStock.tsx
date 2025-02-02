@@ -12,6 +12,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import * as WebBrowser from "expo-web-browser";
 import useLang from "@/lib/hooks/useLang";
+import { format } from "date-fns";
 
 export default function ConfirmSellStock() {
   const params = useLocalSearchParams();
@@ -133,6 +134,7 @@ export default function ConfirmSellStock() {
                     fontStyle: "italic",
                   }}>
                   Trade Date Jan 15, 2025
+                  {/* {format(new Date(stockItem?.createdAt), "MMM dd, yyyy")} */}
                 </Text>
                 <Text
                   style={{
