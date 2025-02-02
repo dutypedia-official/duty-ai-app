@@ -1,4 +1,4 @@
-import { useThemeColor } from "@/components/Themed";
+import { SafeAreaView, useThemeColor, View } from "@/components/Themed";
 import { apiClient } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
 import useFeedData from "@/lib/hooks/useFeedData";
@@ -11,12 +11,27 @@ import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useIsFocused } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
-import { Tabs, usePathname, useRouter, useSegments } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, useColorScheme } from "react-native";
+import { Link, Tabs, usePathname, useRouter, useSegments } from "expo-router";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Platform,
+  StyleSheet,
+  useColorScheme,
+  Text,
+  Animated,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { SvgXml } from "react-native-svg";
 import Colors from "../../constants/Colors";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import PagerView from "react-native-pager-view";
+import Feed from "./feed";
+import DiscoverScreen from "./discover";
+import SettingScreen from "./setting";
+import ChatScreen from "./home";
+import Noti from "./notification";
+import ChangeMarket from "./setting/change-market";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -72,7 +87,7 @@ export default function TabLayout() {
         "scanner",
         "change-market",
         "terms",
-        "portfolioEmpty1",
+        "welcome-portfolio",
       ].includes(segment)
     );
     setHideTabBar(shouldHide);
@@ -185,93 +200,176 @@ export default function TabLayout() {
     console.log("fetching data fev");
   }, []);
 
+  // const pagerRef = useRef<PagerView>(null);
+  // const [currentPage, setCurrentPage] = useState(2);
+
+  // // // Function to update PagerView and URL
+  // const goToPage = (index: number, route: string) => {
+  //   pagerRef.current?.setPage(index);
+  //   setCurrentPage(index);
+  //   //@ts-ignore
+  //   router.push(route); // Sync the URL with the tab
+  // };
+
+  // const insets = useSafeAreaInsets();
   return (
-    <Tabs
-      screenOptions={({ route }) => ({
-        animation: "shift",
-        headerStyle: {
-          backgroundColor: bgColor,
-        },
-        tabBarStyle: {
-          display: hideTabBar || hideTabNav ? "none" : "flex",
-          backgroundColor: colorScheme === "dark" ? "#121212" : "white",
-        },
-        height: hideTabBar ? 0 : undefined,
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
-        tabBarHideOnKeyboard: Platform.OS === "ios" ? false : true,
-        tabBarBackground: () => (
-          <BlurView
-            intensity={100}
-            tint={colorScheme === "dark" ? "dark" : "light"}
-            style={StyleSheet.absoluteFill}
-          />
-        ),
-      })}>
-      <Tabs.Screen
-        name="feed"
-        options={{
-          title: isBn ? "ফিড" : "Feed",
-          headerShown: false,
-          // unmountOnBlur: true,
-          tabBarIcon: ({ color }) => (
-            <TabBarIconLine name="feed" color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="discover"
-        options={{
-          title: isBn ? "অনুসন্ধান" : "Discover",
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="compass-outline" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: isBn ? "চ্যাট" : "Stock Analysis",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              colorScheme === "dark" ? (
-                <SvgXml xml={svgActiveDark} width={22} height={22} />
-              ) : (
-                <SvgXml xml={svgActive} width={22} height={22} />
-              )
-            ) : (
-              <SvgXml xml={svg} width={22} height={22} />
-            ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="notification"
-        options={{
-          title: isBn ? "নোটিফিকেশান" : "Notification",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="notifications-outline" color={color} />
-          ),
-          tabBarBadge: count > 10 ? "10+" : count > 0 ? count : undefined,
+    <Fragment>
+      {/* <PagerView
+        ref={pagerRef}
+        initialPage={2}
+        onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
+        style={{ flex: 1, marginBottom: insets.bottom }}>
+        <Feed />
+        <DiscoverScreen />
+        <ChatScreen />
+        <Noti />
+        <SettingScreen />
+      </PagerView>
+      <View
+        style={{
+          flexDirection: "row",
+          position: "relative",
+          bottom: insets.bottom,
+          justifyContent: "center",
+        }}>
+        <TouchableOpacity
+          style={{
+            padding: 20,
+            backgroundColor: "blue",
+            flex: 1,
+            justifyContent: "center",
+            position: "relative",
+          }}
+          onPress={() => goToPage(0, "/main/feed")}>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#fff",
+            }}>
+            Go
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            padding: 20,
+            backgroundColor: "blue",
+            flex: 1,
+            justifyContent: "center",
+            position: "relative",
+          }}
+          onPress={() => goToPage(1, "/main/discover")}>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#fff",
+            }}>
+            Go
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            padding: 20,
+            backgroundColor: "blue",
+            flex: 1,
+            justifyContent: "center",
+            position: "relative",
+          }}
+          onPress={() => goToPage(4, "/main/setting")}>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#fff",
+            }}>
+            Go
+          </Text>
+        </TouchableOpacity>
+      </View> */}
+      <Tabs
+        screenOptions={({ route }) => ({
+          animation: "shift",
           headerStyle: {
             backgroundColor: bgColor,
-            borderBottomWidth: 0.7,
           },
-          headerShown: false,
-        }}
-      />
+          tabBarStyle: {
+            display: hideTabBar || hideTabNav ? "none" : "flex",
+            backgroundColor: colorScheme === "dark" ? "#121212" : "white",
+          },
+          height: hideTabBar ? 0 : undefined,
+          tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
+          tabBarHideOnKeyboard: Platform.OS === "ios" ? false : true,
+          tabBarBackground: () => (
+            <BlurView
+              intensity={100}
+              tint={colorScheme === "dark" ? "dark" : "light"}
+              style={StyleSheet.absoluteFill}
+            />
+          ),
+        })}>
+        <Tabs.Screen
+          name="feed"
+          options={{
+            title: isBn ? "ফিড" : "Feed",
+            headerShown: false,
+            tabBarIcon: ({ color }) => (
+              <TabBarIconLine name="feed" color={color} />
+            ),
+          }}
+        />
 
-      <Tabs.Screen
-        name="setting"
-        options={{
-          title: isBn ? "সেটিং" : "Setting",
-          headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
-        }}
-      />
-    </Tabs>
+        <Tabs.Screen
+          name="discover"
+          options={{
+            title: isBn ? "অনুসন্ধান" : "Discover",
+            headerShown: false,
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="compass-outline" color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: isBn ? "চ্যাট" : "Stock Analysis",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                colorScheme === "dark" ? (
+                  <SvgXml xml={svgActiveDark} width={22} height={22} />
+                ) : (
+                  <SvgXml xml={svgActive} width={22} height={22} />
+                )
+              ) : (
+                <SvgXml xml={svg} width={22} height={22} />
+              ),
+          }}
+        />
+
+        <Tabs.Screen
+          name="notification"
+          options={{
+            title: isBn ? "নোটিফিকেশান" : "Notification",
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="notifications-outline" color={color} />
+            ),
+            tabBarBadge: count > 10 ? "10+" : count > 0 ? count : undefined,
+            headerStyle: {
+              backgroundColor: bgColor,
+              borderBottomWidth: 0.7,
+            },
+            headerShown: false,
+          }}
+        />
+
+        <Tabs.Screen
+          name="setting"
+          options={{
+            title: isBn ? "সেটিং" : "Setting",
+            headerShown: false,
+            tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          }}
+        />
+      </Tabs>
+    </Fragment>
   );
 }
 

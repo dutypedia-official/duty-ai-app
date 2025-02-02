@@ -1,6 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { Fragment } from "react";
-import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import React, { Fragment, useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import PortfolioList from "./portfolioList";
 import { router } from "expo-router";
 import { SvgXml } from "react-native-svg";
@@ -9,61 +15,17 @@ import {
   notfoundPortfolioLight,
 } from "../svgs/notfound-portfolio";
 import useLang from "@/lib/hooks/useLang";
+import useUi from "@/lib/hooks/useUi";
+import { useAuth } from "@clerk/clerk-expo";
+import { useIsFocused } from "@react-navigation/native";
+import { apiClientPortfolio } from "@/lib/api";
 
-export default function StockPortfolio({
-  withdrawBalance,
-}: {
-  withdrawBalance: string;
-}) {
+export default function StockPortfolio() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-
-  const portfolioData = [
-    {
-      id: "387yueyre",
-      symbol: "JMISMDL",
-      buyPrice: "3893843",
-      currentPrice: "889343",
-      change: "-8.8764",
-    },
-    {
-      id: "idufyueyre",
-      symbol: "WY",
-      buyPrice: "3893843",
-      currentPrice: "8893843",
-      change: "-8.8764",
-    },
-    {
-      id: "lk7yuey74re",
-      symbol: "JMISMDL",
-      buyPrice: "3893843",
-      currentPrice: "8393843",
-      change: "-8.8764",
-    },
-    {
-      id: "idueir343ufyueyre",
-      symbol: "AY",
-      buyPrice: "3893843",
-      currentPrice: "8893847",
-      change: "-8.8764",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      buyPrice: "3893843",
-      currentPrice: "56843",
-      change: "-8.8764",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "ROBI",
-      buyPrice: "93843",
-      currentPrice: "83830",
-      change: "-8.8764",
-    },
-  ];
+  const { freeBalance, holdings, isLoading } = useUi();
 
   return (
     <View>
@@ -84,7 +46,7 @@ export default function StockPortfolio({
           style={{
             gap: 24,
           }}>
-          {portfolioData?.length === 0 ? (
+          {holdings?.length === 0 ? (
             <View
               style={{
                 backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
@@ -142,16 +104,27 @@ export default function StockPortfolio({
                 borderRadius: 16,
                 borderColor: isDark ? "#262626" : "#E0E0E0",
               }}>
-              {portfolioData?.map((item, i) => {
-                return (
-                  <Fragment key={i}>
-                    <PortfolioList
-                      isLast={portfolioData?.length - 1 === i}
-                      item={item}
-                    />
-                  </Fragment>
-                );
-              })}
+              {isLoading ? (
+                <View
+                  style={{
+                    height: 280,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                  <ActivityIndicator />
+                </View>
+              ) : (
+                holdings?.map((item: any, i: number) => {
+                  return (
+                    <Fragment key={i}>
+                      <PortfolioList
+                        isLast={holdings?.length - 1 === i}
+                        item={item}
+                      />
+                    </Fragment>
+                  );
+                })
+              )}
             </View>
           )}
 
@@ -169,7 +142,7 @@ export default function StockPortfolio({
             }}>
             <LinearGradient
               colors={
-                withdrawBalance === "0"
+                freeBalance === "0"
                   ? isDark
                     ? ["#3C3C47", "#3C3C47"]
                     : ["#E0E0E0", "#E0E0E0"]
@@ -194,7 +167,7 @@ export default function StockPortfolio({
                 style={{
                   fontSize: 14,
                   color:
-                    withdrawBalance === "0"
+                    freeBalance === "0"
                       ? isDark
                         ? "#A0A0A0"
                         : "#666666"

@@ -19,7 +19,6 @@ export default function Layout() {
         options={{
           title: "Select 3 stock",
           headerShown: false,
-          headerBackTitleVisible: false,
           headerTitleStyle: {
             color: isDark ? "#FFD700" : "#366000",
           },

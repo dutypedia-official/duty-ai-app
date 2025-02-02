@@ -22,7 +22,7 @@ import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/Colors";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { ActivityIndicator, Platform, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Platform, Text, View } from "react-native";
 import useSocket from "@/lib/hooks/useSocket";
 import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
@@ -30,6 +30,7 @@ import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
+import * as Network from "expo-network";
 
 const CURRENT_IOS_VERSION = 11;
 const CURRENT_ANDROID_VERSION = 11;
@@ -110,6 +111,14 @@ function handleRegistrationError(errorMessage: string) {
 }
 
 async function registerForPushNotificationsAsync() {
+  // const networkState = await Network.getNetworkStateAsync();
+  // if (!networkState.isConnected) {
+  //   Alert.alert(
+  //     "Network Error",
+  //     "You are offline. Please check your internet connection."
+  //   );
+  // }
+
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
@@ -326,6 +335,7 @@ function RootLayoutNav() {
     }
   }, [language, setLanguage]);
 
+  const feedback = !true;
   useEffect(() => {
     if (isLoaded && !isLoading) {
       // Step 1: Check if the app needs to be updated
@@ -351,7 +361,11 @@ function RootLayoutNav() {
         if (isSignedIn && selectMarket === "Japan") {
           router.dismissTo("/main-jp/home");
         } else {
-          router.dismissTo("/main/home");
+          if (feedback) {
+            router.dismissTo("/feedback");
+          } else {
+            router.dismissTo("/main/home");
+          }
         }
       }
     }
@@ -380,7 +394,14 @@ function RootLayoutNav() {
             <Stack.Screen name="(start-jp)" options={{ headerShown: false }} />
             <Stack.Screen name="main" options={{ headerShown: false }} />
             <Stack.Screen name="main-jp" options={{ headerShown: false }} />
-            <Stack.Screen name="maintenance" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="feedback"
+              options={{ title: "feedback", headerShown: false }}
+            />
+            <Stack.Screen
+              name="thanks"
+              options={{ title: "thanks", headerShown: false }}
+            />
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           </Stack>
           <Toast />

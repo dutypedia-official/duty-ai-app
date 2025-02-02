@@ -17,7 +17,7 @@ export default function Layout() {
         },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Setting" }} />
+      {/* <Stack.Screen name="index" options={{ title: "Setting" }} /> */}
 
       {isPortfolio ? (
         <Stack.Screen

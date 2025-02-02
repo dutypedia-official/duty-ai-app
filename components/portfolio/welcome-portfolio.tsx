@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 import { portfolioEmptySvg } from "../svgs/portfolioEmptySvg";
 import useLang from "@/lib/hooks/useLang";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function WelcomePortfolio() {
   const colorScheme = useColorScheme();
@@ -23,6 +24,7 @@ export default function WelcomePortfolio() {
   const isBn = language === "bn";
   const insets = useSafeAreaInsets();
   const { setIsPortfolio } = usePortfolio();
+  const { user } = useUser();
 
   const users = [
     {
@@ -112,7 +114,7 @@ export default function WelcomePortfolio() {
                           fontWeight: "bold",
                           fontSize: 24,
                         }}>
-                        Easin arafat
+                        {`${user?.firstName} ${user?.lastName}`}
                       </Text>
                     </View>
                     <View>

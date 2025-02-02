@@ -17,10 +17,15 @@ export default function PortfolioList({
   const { language } = useLang();
   const isBn = language === "bn";
 
-  const sellPrice = item.buyPrice - item.currentPrice;
+  const sellPrice = item?.avgCost - item?.stock?.close;
   const isRisk = sellPrice < 0;
 
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.symbol}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.stock?.symbol}.svg`;
+
+  const formatPercentage = (value: number) => {
+    const formatted = (value * 100).toFixed(2); // Convert to percentage and fix to 2 decimal places
+    return `${formatted.startsWith("-") ? "" : "+"}${formatted}%`;
+  };
 
   return (
     <TouchableOpacity
@@ -28,8 +33,8 @@ export default function PortfolioList({
         router.push({
           pathname: "/main/setting/sell-stock/[id]",
           params: {
-            id: item?.symbol,
-            isRisk: isRisk.toString(),
+            id: item?.id,
+            stock: JSON.stringify(item),
           },
         });
       }}
@@ -50,6 +55,7 @@ export default function PortfolioList({
           style={{
             flexDirection: "row",
             gap: 4,
+            alignItems: "center",
           }}>
           <View
             style={{
@@ -82,7 +88,7 @@ export default function PortfolioList({
                   fontSize: 12,
                   color: "#1E1E1E",
                 }}>
-                {item?.symbol[0]}
+                {item?.stock?.name[0]}
               </Text>
             </View>
             {logoUrl && <SvgUri uri={logoUrl} width={28} height={28} />}
@@ -98,7 +104,7 @@ export default function PortfolioList({
                 fontWeight: "bold",
                 color: isDark ? "#87CEEB" : "#004662",
               }}>
-              {item?.symbol}
+              {item?.stock?.name}
             </Text>
             <Text
               numberOfLines={1}
@@ -107,7 +113,7 @@ export default function PortfolioList({
                 fontSize: 12,
                 fontWeight: "medium",
               }}>
-              {isBn ? "ক্রয় মূল্য" : "Buy price"} ৳{item?.buyPrice}
+              {isBn ? "ক্রয় মূল্য" : "Buy price"} ৳{item?.avgCost}
             </Text>
           </View>
         </View>
@@ -133,7 +139,7 @@ export default function PortfolioList({
               fontWeight: "medium",
               textAlign: "right",
             }}>
-            ৳{item?.currentPrice} ({item?.change}%)
+            ৳{item?.stock?.close} ({formatPercentage(item?.stock?.change)})
           </Text>
           <View
             style={{

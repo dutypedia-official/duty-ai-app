@@ -1,18 +1,27 @@
+import { apiClientPortfolio } from "@/lib/api";
+import useLang from "@/lib/hooks/useLang";
 import {
-  View,
+  formatFloat,
+  getProfitOrLoss,
+  getRiskLevel,
+  isLossItem,
+} from "@/lib/utils";
+import { useAuth } from "@clerk/clerk-expo";
+import { FontAwesome } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+import { format } from "date-fns";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
   Text,
   TouchableOpacity,
   useColorScheme,
-  Dimensions,
-  ScrollView,
+  View,
 } from "react-native";
-import React from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
-import * as WebBrowser from "expo-web-browser";
-import useLang from "@/lib/hooks/useLang";
 
 export default function SellStock() {
   const params = useLocalSearchParams();
@@ -20,28 +29,52 @@ export default function SellStock() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { getToken } = useAuth();
+  const isFocused = useIsFocused();
+  const clientPortfolio = apiClientPortfolio();
+  const stockItem = JSON.parse(params?.stock as string);
+  const [stockDetail, setStockDetail] = useState<any>();
+
+  const fetchDataFeed = async (init: boolean = true) => {
+    try {
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/holding/${params?.id}`,
+        token
+      );
+      setStockDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFeed();
+  }, [isFocused]);
 
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: "৳100",
+      value: `৳${stockDetail?.avgCost}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: "100",
+      value: `${stockDetail?.quantity}`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.avgCost * stockDetail?.quantity)}`,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: "৳100 (5%)",
+      value: `${stockDetail?.brokerFee}%`,
     },
   ];
 
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
+
   const isRisk = params?.isRisk === "true";
+  const isLoss = isLossItem(stockDetail?.total);
 
   return (
     <View
@@ -107,7 +140,7 @@ export default function SellStock() {
                       fontSize: 12,
                       color: "#1E1E1E",
                     }}>
-                    {params?.id[0]}
+                    {stockItem?.stock?.symbol[0]}
                   </Text>
                 </View>
                 {logoUrl && (
@@ -126,7 +159,7 @@ export default function SellStock() {
                     color: isDark ? "#fff" : "#004662",
                     textAlign: "center",
                   }}>
-                  {params?.id}
+                  {stockItem?.stock?.symbol}
                 </Text>
                 <Text
                   style={{
@@ -135,7 +168,8 @@ export default function SellStock() {
                     textAlign: "center",
                     fontStyle: "italic",
                   }}>
-                  Trade Date Jan 15, 2025
+                  Trade Date{" "}
+                  {format(new Date(stockItem?.createdAt), "MMM dd, yyyy")}
                 </Text>
               </View>
             </View>
@@ -248,7 +282,7 @@ export default function SellStock() {
                       textAlign: "right",
                       fontWeight: "bold",
                     }}>
-                    5%
+                    {formatFloat(stockDetail?.risk)}%
                   </Text>
                 </View>
               </View>
@@ -296,7 +330,7 @@ export default function SellStock() {
                   }}>
                   <Text
                     style={{
-                      color: isRisk
+                      color: isLoss
                         ? "#FF6E6E"
                         : isDark
                         ? "#00FF88"
@@ -304,12 +338,14 @@ export default function SellStock() {
                       textAlign: "right",
                       fontWeight: "bold",
                     }}>
-                    {isRisk ? "⚠️ High Risk" : "🟢 Good"}
+                    {getRiskLevel(stockItem?.risk)}
                   </Text>
                 </View>
               </View>
               <View
                 style={{
+                  borderBottomEndRadius: 16,
+                  borderBottomStartRadius: 16,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   borderTopWidth: 1,
@@ -335,7 +371,7 @@ export default function SellStock() {
                       fontStyle: "italic",
                       fontSize: 16,
                     }}>
-                    {isBn ? "লস" : "Loss"}
+                    {getProfitOrLoss(stockDetail?.total)}
                   </Text>
                 </View>
                 <View
@@ -352,7 +388,7 @@ export default function SellStock() {
                   }}>
                   <Text
                     style={{
-                      color: isRisk
+                      color: isLoss
                         ? "#FF6E6E"
                         : isDark
                         ? "#00FF88"
@@ -360,7 +396,7 @@ export default function SellStock() {
                       textAlign: "right",
                       fontWeight: "bold",
                     }}>
-                    {isRisk ? "-৳1200" : "+৳12000"}
+                    {isLoss ? "-" : "+" + formatFloat(stockDetail?.total)}
                   </Text>
                 </View>
               </View>
@@ -396,8 +432,8 @@ export default function SellStock() {
                         pathname:
                           "/main/setting/sell-stock/sell-stock-form/[id]",
                         params: {
-                          id: params?.id.toString(),
-                          isRisk: params?.isRisk.toString(),
+                          id: stockItem?.id,
+                          stockDetail: JSON.stringify(stockDetail),
                         },
                       });
                     }}
@@ -438,7 +474,7 @@ export default function SellStock() {
                   <TouchableOpacity
                     onPress={() => {
                       WebBrowser.openBrowserAsync(
-                        `https://www.tradingview.com/chart/?symbol=DSEBD:${params?.id}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=DSEBD:${params?.id}&theme=${colorScheme}`,
+                        `https://www.tradingview.com/chart/?symbol=DSEBD:${stockItem?.stock?.symbol}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=DSEBD:${stockItem?.stock?.symbol}&theme=${colorScheme}`,
                         {
                           showTitle: false,
                           enableBarCollapsing: false,
