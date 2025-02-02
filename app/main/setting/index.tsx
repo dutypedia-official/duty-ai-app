@@ -149,7 +149,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/support");
+        router.push("/main/setting/welcome-portfolio");
       },
     },
     {
@@ -175,7 +175,8 @@ export default function SettingScreen() {
             backgroundColor: "transparent",
             paddingVertical: 40,
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -183,7 +184,8 @@ export default function SettingScreen() {
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "transparent",
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -191,7 +193,8 @@ export default function SettingScreen() {
               alignItems: "center",
               flex: 1,
               backgroundColor: "transparent",
-            }}>
+            }}
+          >
             <Avatar.Image
               size={48}
               source={{ uri: user?.imageUrl }}
@@ -221,7 +224,8 @@ export default function SettingScreen() {
                   alignItems: "center",
                   paddingVertical: 12,
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
@@ -229,7 +233,8 @@ export default function SettingScreen() {
                     alignItems: "center",
                     flex: 1,
                     backgroundColor: "transparent",
-                  }}>
+                  }}
+                >
                   {setting.leftIcon}
 
                   <Text numberOfLines={1}>{setting.title}</Text>
@@ -248,7 +253,8 @@ export default function SettingScreen() {
           style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
           labelStyle={{ fontWeight: "bold" }}
           contentStyle={{ paddingVertical: 4 }}
-          mode="outlined">
+          mode="outlined"
+        >
           {isLoading ? <ActivityIndicator /> : isBn ? "লগউট" : "Logout"}
         </Button>
       </View>
