@@ -22,7 +22,7 @@ export const apiClient = () => {
     : `https://api.dutyai.app`;
   const addBaseUrl = (url: string, mainServer: boolean) => {
     console.log("API-------", url);
-    return `${BACKUP_SERVER_URL}${url}`;
+    return mainServer ? `${BASE_URL}${url}` : `${BACKUP_SERVER_URL}${url}`;
   };
 
   return {
