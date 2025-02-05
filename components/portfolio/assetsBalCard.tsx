@@ -23,10 +23,12 @@ export default function AssetsBalCard() {
   const { language } = useLang();
   const isBn = language === "bn";
   const { user } = useUser();
-  const { totalInvestment, freeBalance, balance } = useUi();
+  const { totalInvestment, freeBalance, balance, totalCurrentMarketValue } =
+    useUi();
   const [isDeposit, setIsDeposit] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
-
+  const currentProfit =
+    Number(totalCurrentMarketValue) - Number(totalInvestment);
   const logoUrl = user?.imageUrl;
   const isNeg = false;
 
@@ -195,11 +197,13 @@ export default function AssetsBalCard() {
               <Text
                 style={{
                   textAlign: "center",
-                  color: "#28A745",
+                  color: currentProfit >= 0 ? "#28A745" : "#CE1300",
                   fontWeight: "medium",
                   fontSize: 16,
                 }}>
-                +৳{parseFloat("3465.23").toFixed(2)}
+                {currentProfit >= 0
+                  ? `+৳${currentProfit.toFixed(2)}`
+                  : `-৳${currentProfit.toFixed(2)}`}
               </Text>
             </View>
             {/* )} */}

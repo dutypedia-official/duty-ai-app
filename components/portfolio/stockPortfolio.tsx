@@ -27,7 +27,7 @@ export default function StockPortfolio() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { freeBalance, refreash } = useUi();
+  const { freeBalance, refreshHold } = useUi();
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
   const clientPortfolio = apiClientPortfolio();
@@ -55,7 +55,7 @@ export default function StockPortfolio() {
 
   useEffect(() => {
     fetchData();
-  }, [refreash]);
+  }, [refreshHold]);
 
   return (
     <View>

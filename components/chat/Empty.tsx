@@ -184,10 +184,43 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           flex: 1,
           justifyContent: "center",
           alignContent: "center",
-          height: Dimensions.get("window").height - 200,
+          height: Dimensions.get("window").height - insets.bottom - 200,
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
         }}>
+        {/* {template === "finance" && (
+          <TouchableOpacity
+            onPress={() => router.push("/main/setting/portfolio")}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              zIndex: 1,
+              padding: 8,
+            }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                backgroundColor: "transparent",
+                gap: 8,
+              }}>
+              <Text
+                style={{
+                  color: isDark ? "#fff" : "#666666",
+                  fontWeight: "semibold",
+                }}>
+                Setting
+              </Text>
+              <AntDesign
+                name="setting"
+                size={20}
+                color={isDark ? "#fff" : "#666666"}
+              />
+            </View>
+          </TouchableOpacity>
+        )} */}
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text

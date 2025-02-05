@@ -433,8 +433,7 @@ export default function ChatPro({ fromPath }: any) {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}
-      >
+        onPress={stopEventSource}>
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -495,16 +494,14 @@ export default function ChatPro({ fromPath }: any) {
       style={{
         flex: 1,
         marginTop: fromPath ? -50 : 0,
-      }}
-    >
+      }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 15 : 0}
         style={{
           flex: 1,
           justifyContent: "flex-end",
-        }}
-      >
+        }}>
         <GiftedChat
           renderChatFooter={() => (
             <>
@@ -512,8 +509,7 @@ export default function ChatPro({ fromPath }: any) {
                 <View
                   style={{
                     paddingVertical: 20,
-                  }}
-                >
+                  }}>
                   <Button
                     onPress={() => {
                       onSend([
@@ -533,8 +529,7 @@ export default function ChatPro({ fromPath }: any) {
                     mode="outlined"
                     style={{
                       alignSelf: "center",
-                    }}
-                  >
+                    }}>
                     {isBn ? "পুনরায় চেষ্টা করুন" : "Retry"}
                   </Button>
                 </View>

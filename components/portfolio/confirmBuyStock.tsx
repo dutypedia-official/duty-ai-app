@@ -33,13 +33,11 @@ export default function ConfirmBuyStock() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { refreash, setRefreash } = useUi();
+  const { refreash, setRefreash, refreshHold, setRefreshHold } = useUi();
   const { getToken } = useAuth();
   const clientPortfolio = apiClientPortfolio();
-  const [aiSummary, setAiSummary] = useState<any>(
-    "Ai Guidline : যদি আপনার ব্যালেন্স 100,000 BDT হয় এবং আপনি 10 BDT মূল্যে 1,000 শেয়ার কিনতে চান, তাহলে স্টপ-লস 8 BDT Ai Guidline : যদি আপনার ব্যালেন্স 100,000 BDT হয় এবং আপনি 10 BDT মূল্যে 1,000 শেয়ার কিনতে চান, তাহলে স্টপ-লস 8 BDT Ai Guidline : যদি আপনার ব্যালেন্স 100,000 BDT হয় এবং আপনি 10 BDT মূল্যে 1,000 শেয়ার কিনতে চান, তাহলে স্টপ-লস 8 BDT5677"
-  );
-  const [aiRisk, setAiRisk] = useState<any>("8");
+  const [aiSummary, setAiSummary] = useState<any>("");
+  const [aiRisk, setAiRisk] = useState<any>("");
   const [isAiLoading, setIsAiLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,15 +50,14 @@ export default function ConfirmBuyStock() {
     try {
       const token = await getToken();
       const { data } = await clientPortfolio.get(
-        `/portfolio/get/ai-summary?holdingId=${params?.id}&currentPrice=${stockDetail?.close}&symbol=${stockDetail?.symbol}&buyPrice=${stockDetail?.buyPrice}&totalBuyPrice=${totalBuy}`,
+        `/portfolio/get/ai-summary?symbolId=${stockDetail?.id}&quantity=${stockDetail?.quantity}&buyPrice=${stockDetail?.buyPrice}&brokerFee=${stockDetail?.brokerFee}`,
         token
       );
 
-      console.log("data------------------", JSON.stringify(data));
+      // console.log("data------------------", JSON.stringify(data));
 
-      // setAiSummary(data);
-      // setAiRisk
-
+      setAiSummary(data?.summary);
+      setAiRisk(data?.risk);
       setIsAiLoading(false);
     } catch (error) {
       console.log(error);
@@ -114,6 +111,7 @@ export default function ConfirmBuyStock() {
         },
         token
       );
+      setRefreshHold(!refreshHold);
       setRefreash(!refreash);
       setIsSubmitting(false);
       router.dismissTo({
@@ -246,6 +244,7 @@ export default function ConfirmBuyStock() {
                       setExpanded(!expanded);
                     }}
                     style={{
+                      textAlign: "left",
                       marginTop: 16, //20
                       fontSize: 14,
                       color: isDark ? "#B0B0B0" : "#004662",
@@ -253,12 +252,16 @@ export default function ConfirmBuyStock() {
                     {expanded || !aiSummary
                       ? aiSummary
                       : aiSummary.substring(0, 186)}{" "}
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                      }}>
-                      {expanded || !aiSummary ? "...Read Less" : "Read More..."}
-                    </Text>
+                    {aiSummary?.length > 186 && (
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                        }}>
+                        {expanded || !aiSummary
+                          ? "...Read Less"
+                          : "Read More..."}
+                      </Text>
+                    )}
                   </Text>
                 )}
               </View>

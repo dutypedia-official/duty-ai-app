@@ -1,5 +1,6 @@
 import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
+import useUi from "@/lib/hooks/useUi";
 import {
   calcBroFeeAmount,
   formatFloat,
@@ -31,11 +32,11 @@ export default function SellStock() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { refreshHold, setRefreshHold } = useUi();
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
   const clientPortfolio = apiClientPortfolio();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [stockDetail, setStockDetail] = useState<any>();
 
   const fetchData = async (init: boolean = true) => {
@@ -47,6 +48,7 @@ export default function SellStock() {
         token
       );
       setStockDetail(data);
+      setRefreshHold(!refreshHold);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -61,6 +63,7 @@ export default function SellStock() {
 
   // console.log("stockDetail--------------", JSON.stringify(stockDetail));
 
+  const totalBuy = stockDetail?.avgCost * stockDetail?.quantity;
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
@@ -72,10 +75,9 @@ export default function SellStock() {
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: `৳${calcBroFeeAmount(
-        stockDetail?.brokerFee,
-        stockDetail?.currentStockTotal
-      )} (${stockDetail?.brokerFee}%)`,
+      value: `৳${calcBroFeeAmount(stockDetail?.brokerFee, totalBuy)} (${
+        stockDetail?.brokerFee
+      }%)`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",

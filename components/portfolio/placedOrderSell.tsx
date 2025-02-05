@@ -29,8 +29,6 @@ export default function PlacedOrderSell() {
   const stockDetail = JSON.parse(params?.stockDetail as string);
   const soldDetails = JSON.parse(params?.soldDetails as string);
 
-  console.log("stockDetail--------------", JSON.stringify(stockDetail));
-
   const playSound = async () => {
     const sound = new Audio.Sound();
     // Load the MP3 file
@@ -48,56 +46,54 @@ export default function PlacedOrderSell() {
     playSound();
   }, [isFocused]);
 
-  // console.log("placed-----------------", JSON.stringify(stockDetail));
-
-  const totalSell =
-    stockDetail?.closeType === "fullClose"
-      ? stockDetail?.stock?.close * stockDetail?.quantity
-      : stockDetail?.stock?.close * soldDetails?.quantity;
+  console.log("soldDetails-----------------", JSON.stringify(soldDetails));
 
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: `৳${formatFloat(stockDetail?.avgCost)}`,
+      value: `৳${formatFloat(soldDetails?.transaction?.buyPrice)}`,
     },
     {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
-      value: `৳${stockDetail?.stock?.close}`,
+      value: `৳${formatFloat(soldDetails?.transaction?.sellPrice)}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: `${stockDetail?.quantity}`,
-    },
-    {
-      name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: `৳${formatFloat(stockDetail?.total)}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
-      value: `৳${totalSell}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value:
-        stockDetail?.closeType === "fullClose"
-          ? stockDetail?.quantity
-          : soldDetails?.quantity,
+      value: `${soldDetails?.transaction?.totalQuantity}`,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: `৳${calcBroFeeAmount(stockDetail?.brokerFee, totalSell)} (${
-        stockDetail?.brokerFee
-      }%)`,
+      value: `৳${calcBroFeeAmount(
+        soldDetails?.transaction?.brokerFee,
+        soldDetails?.transaction?.totalSellPrice
+      )} (${soldDetails?.transaction?.brokerFee}%)`,
     },
     {
+      name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
+      value: `৳${formatFloat(soldDetails?.transaction?.totalBuyPrice)}`,
+    },
+    {
+      name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
+      value: `৳${formatFloat(soldDetails?.transaction?.totalSellPrice)}`,
+    },
+    {
+      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
+      value: soldDetails?.transaction?.quantity,
+    },
+
+    {
       name: isBn ? "বন্ধের তারিখ" : "Close Date",
-      value: format(new Date(stockDetail?.createdAt), "MMM dd, yyyy"),
+      value: format(
+        new Date(soldDetails?.transaction?.createdAt),
+        "MMM dd, yyyy"
+      ),
     },
   ];
 
-  const isRisk = isHighRisk(stockDetail?.risk) === "true" ? true : false;
+  const isRisk =
+    isHighRisk(soldDetails?.updatedHolding?.risk) === "true" ? true : false;
 
-  const isLoss = isLossItem(stockDetail?.profit);
+  const isLoss = soldDetails?.transaction?.loss > 0;
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
@@ -189,7 +185,10 @@ export default function PlacedOrderSell() {
                   textAlign: "center",
                 }}>
                 Trade Date{" "}
-                {format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")}
+                {format(
+                  new Date(soldDetails?.transaction?.createdAt),
+                  "MMM dd, yyyy"
+                )}
               </Text>
             </View>
           </View>
@@ -299,7 +298,7 @@ export default function PlacedOrderSell() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {formatFloat(stockDetail?.risk)}%
+                  {formatFloat(soldDetails?.updatedHolding?.risk)}%
                 </Text>
               </View>
             </View>
@@ -353,7 +352,7 @@ export default function PlacedOrderSell() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {getRiskLevel(stockDetail?.risk)}
+                  {getRiskLevel(soldDetails?.updatedHolding?.risk)}
                 </Text>
               </View>
             </View>
@@ -392,7 +391,7 @@ export default function PlacedOrderSell() {
                     textAlign: "left",
                     fontWeight: "bold",
                   }}>
-                  {getProfitOrLoss(stockDetail?.profit)}
+                  {soldDetails?.transaction?.loss > 0 ? "Loss" : "Profit"}
                 </Text>
               </View>
 
@@ -408,10 +407,9 @@ export default function PlacedOrderSell() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isLoss ? "-" : "✅ +"}৳
-                  {formatFloat(
-                    stockDetail?.profit.toString().replace(/[-+]/g, "")
-                  )}
+                  {soldDetails?.transaction?.loss > 0
+                    ? `-৳${soldDetails?.transaction?.loss}`
+                    : `✅ +৳${soldDetails?.transaction?.profit}`}
                 </Text>
               </View>
             </View>

@@ -122,6 +122,24 @@ export default function WithdrawCard({ open, setOpen }: any) {
     setIsSubmitting(false);
   }, [open]);
 
+  // const [play, setPlay] = useState(false);
+  // const valid = values.amount;
+
+  // console.log("valid---------", valid, "play------", play);
+
+  // const playSound = async () => {
+  //   const sound = new Audio.Sound();
+  //   // Load the MP3 file
+  //   await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
+  //   await sound.playAsync();
+  //   // Wait for playback to finish
+  //   sound.setOnPlaybackStatusUpdate((status) => {
+  //     if (status.isLoaded && status.didJustFinish) {
+  //       sound.unloadAsync(); // Clean up
+  //     }
+  //   });
+  // };
+
   return (
     <Modal
       visible={open}

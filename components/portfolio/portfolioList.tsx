@@ -1,10 +1,10 @@
-import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
-import React from "react";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { SvgUri } from "react-native-svg";
-import { router } from "expo-router";
 import useLang from "@/lib/hooks/useLang";
-import { calcBroFeeAmount } from "@/lib/utils";
+import { formatFloat, isLossItem } from "@/lib/utils";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React from "react";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { SvgUri } from "react-native-svg";
 
 export default function PortfolioList({
   isLast,
@@ -18,12 +18,7 @@ export default function PortfolioList({
   const { language } = useLang();
   const isBn = language === "bn";
 
-  const feeAmount = calcBroFeeAmount(item?.avgCost, item?.brokerFee);
-
-  const profitOrLossAmount =
-    parseFloat(item?.stock?.close) - (parseFloat(feeAmount) + item?.avgCost);
-
-  const isRisk = profitOrLossAmount < 0;
+  const isRisk = isLossItem(item?.profit);
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.stock?.symbol}.svg`;
 
@@ -177,8 +172,7 @@ export default function PortfolioList({
                   : "#28A745",
               }}>
               {isRisk ? (isBn ? "লস" : "Loss") : isBn ? "লাভ" : "Profit"}{" "}
-              {isRisk ? "-" : "+"}৳
-              {calcBroFeeAmount(item?.avgCost, item?.brokerFee)}
+              {isRisk ? "-" : "+"}৳{formatFloat(Math.abs(item?.profit))}
             </Text>
           </View>
         </View>

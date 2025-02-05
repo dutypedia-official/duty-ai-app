@@ -37,7 +37,7 @@ export default function SellStockForm() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { refreash, setRefreash } = useUi();
+  const { refreash, setRefreash, refreshHold, setRefreshHold } = useUi();
   const { getToken } = useAuth();
   const clientPortfolio = apiClientPortfolio();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,7 +94,7 @@ export default function SellStockForm() {
       try {
         setIsSubmitting(true);
         const token = await getToken();
-        await clientPortfolio.post(
+        const { data: sellData } = await clientPortfolio.post(
           "/portfolio/sell",
           {
             holdingId: stockDetail?.id.toString(),
@@ -105,7 +105,9 @@ export default function SellStockForm() {
           },
           token
         );
+        console.log("sellData----------------------", sellData);
         setRefreash(!refreash);
+        setRefreshHold(!refreshHold);
         setIsSubmitting(false);
         router.push({
           pathname: "/main/setting/sell-stock/placedOrder/[id]",
@@ -115,7 +117,7 @@ export default function SellStockForm() {
               ...stockDetail,
               closeType: watch("closeType"),
             }),
-            soldDetails: JSON.stringify(data),
+            soldDetails: JSON.stringify(sellData),
           },
         });
       } catch (error) {

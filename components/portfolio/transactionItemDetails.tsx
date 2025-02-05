@@ -16,6 +16,7 @@ import {
   calcBroFeeAmount,
   formatFloat,
   getRiskLevel,
+  isHighRisk,
   isLossItem,
 } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
@@ -34,8 +35,7 @@ export default function TransactionItemDetails() {
   const [stockDetail, setStockDetail] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
 
-  // const stockDetail = JSON.parse(params?.stockDetail as string);
-  const isRisk = false;
+  const isRisk = isHighRisk(stockDetail?.risk) === "true" ? true : false;
 
   const fetchData = async (init: boolean = true) => {
     try {
@@ -70,23 +70,11 @@ export default function TransactionItemDetails() {
     },
     {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
-      value: `৳${stockDetail?.sellPrice}`,
+      value: `৳${formatFloat(stockDetail?.sellPrice)}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
       value: `${stockDetail?.totalQuantity}`,
-    },
-    {
-      name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: `৳${formatFloat(stockDetail?.totalBuyPrice)}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
-      value: `৳${stockDetail?.totalSellPrice}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: stockDetail?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
@@ -96,12 +84,27 @@ export default function TransactionItemDetails() {
       )} (${stockDetail?.brokerFee}%)`,
     },
     {
+      name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
+      value: `৳${formatFloat(stockDetail?.totalBuyPrice)}`,
+    },
+    {
+      name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
+      value: `৳${formatFloat(stockDetail?.totalSellPrice)}`,
+    },
+    {
+      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
+      value: stockDetail?.quantity,
+    },
+
+    {
       name: isBn ? "বন্ধের তারিখ" : "Close Date",
       value: stockDetail
         ? format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")
         : "",
     },
   ];
+
+  const isLoss = stockDetail?.loss > 0;
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
@@ -387,7 +390,7 @@ export default function TransactionItemDetails() {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                backgroundColor: isRisk
+                backgroundColor: isLoss
                   ? isDark
                     ? "#4D0D0D"
                     : "#FFEBEE"
@@ -406,11 +409,11 @@ export default function TransactionItemDetails() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isLoss ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
                     textAlign: "left",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? (isBn ? "লস" : "Losses") : isBn ? "লাভ" : "Profit"}
+                  {stockDetail?.loss > 0 ? "Loss" : "Profit"}
                 </Text>
               </View>
 
@@ -422,18 +425,13 @@ export default function TransactionItemDetails() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isLoss ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? "-" : "✅ +"}৳
-                  {isRisk
-                    ? formatFloat(
-                        stockDetail?.loss?.toString().replace(/[-+]/g, "")
-                      )
-                    : formatFloat(
-                        stockDetail?.profit?.toString().replace(/[-+]/g, "")
-                      )}
+                  {stockDetail?.loss > 0
+                    ? `-৳${stockDetail?.loss}`
+                    : `✅ +৳${stockDetail?.profit}`}
                 </Text>
               </View>
             </View>
