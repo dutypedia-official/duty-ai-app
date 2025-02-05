@@ -135,36 +135,66 @@ export const calcBroFeeAmount = (
   brokerFeePercentage: string | number,
   total: string | number
 ): string => {
-  const percentage = parseFloat(brokerFeePercentage.toString());
-  const totalAmount = parseFloat(total.toString());
+  const percentage = parseFloat(brokerFeePercentage?.toString());
+  const totalAmount = parseFloat(total?.toString());
 
   if (isNaN(percentage) || isNaN(totalAmount)) return "0"; // Handle invalid inputs
 
-  const feeAmount = (percentage / 100) * totalAmount;
-  return feeAmount.toFixed(2); // Format to 2 decimal places
+  const feeAmount = totalAmount * (percentage / 100);
+  return feeAmount?.toFixed(2); // Format to 2 decimal places
+};
+
+export const calcTotalWithFee = (
+  buyAmount: string | number,
+  brokerFeePercentage: string | number
+): string => {
+  const amount = parseFloat(buyAmount?.toString());
+  const percentage = parseFloat(brokerFeePercentage?.toString());
+
+  if (isNaN(amount) || isNaN(percentage)) return "0.00"; // Handle invalid inputs
+
+  const feeAmount = amount * (percentage / 100); // Calculate fee
+  const totalWithFee = amount + feeAmount; // Total cost including fee
+
+  return totalWithFee.toFixed(2); // Return formatted value
 };
 
 export const formatFloat = (
-  num: number,
+  num: string | number,
   decimalPlaces: number = 2,
   locale: string = "en-US"
 ): string => {
-  if (isNaN(num)) return "0.00";
+  const parsedNum = typeof num === "string" ? parseFloat(num) : num;
+  if (isNaN(parsedNum)) return "0.00";
+
   return new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
-  }).format(num);
+  }).format(parsedNum);
 };
 
 export const getRiskLevel = (risk: string): string => {
   const riskValue = parseFloat(risk);
 
-  if (isNaN(riskValue)) return "invalid"; // Handle non-numeric values
+  if (isNaN(riskValue)) return "NAN"; // Handle non-numeric values
 
   if (riskValue >= 20) return "⚠️⚠️ super high";
   if (riskValue >= 10) return "⚠️ high";
   if (riskValue >= 5) return "🟡Medium";
   return "🟢 Good";
+};
+export const isHighRisk = (risk: string): string => {
+  const riskValue = parseFloat(risk);
+
+  if (isNaN(riskValue)) return "false"; // Handle non-numeric values
+
+  switch (true) {
+    case riskValue >= 20:
+    case riskValue >= 10:
+      return "true";
+    default:
+      return "false";
+  }
 };
 
 export const getProfitOrLoss = (total: string | number): string => {
@@ -182,5 +212,22 @@ export const getProfitOrLoss = (total: string | number): string => {
 };
 
 export const isLossItem = (total: string | number): boolean => {
-  return total?.toString().startsWith("-");
+  const totalStr = total?.toString();
+  return totalStr?.startsWith("-") ? true : false;
+};
+
+export const isLossFn = (stockDetail?: {
+  profit?: string;
+  loss?: string;
+}): string => {
+  if (!stockDetail) return "Invalid"; // Handle undefined or null stockDetail
+
+  const profit = parseFloat(stockDetail.profit || "0");
+  const loss = parseFloat(stockDetail.loss || "0");
+
+  if (profit === 0 && loss === 0) return "profit";
+  if (profit > 0) return "profit";
+  if (loss > 0) return "loss";
+
+  return "Unknown"; // Default case
 };

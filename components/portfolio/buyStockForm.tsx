@@ -1,8 +1,6 @@
-import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
-import { useAuth } from "@clerk/clerk-expo";
+import { formatFloat } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -23,12 +21,6 @@ import { SvgUri } from "react-native-svg";
 import { z } from "zod";
 import { SafeAreaView } from "../Themed";
 import AnimatedInput from "./AnimatedInput";
-
-const buySchema = z.object({
-  symbolId: z.string().min(1),
-  quantity: z.coerce.number().min(1),
-  brokerFee: z.coerce.number().min(0).max(100).default(0),
-});
 
 // const schema = z.object({
 //   buyPrice: z
@@ -60,14 +52,19 @@ export default function BuyStockForm() {
   const { language } = useLang();
   const isBn = language === "bn";
   const params = useLocalSearchParams();
-  const { getToken } = useAuth();
-  const clientPortfolio = apiClientPortfolio();
   const [isFocused, setIsFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const stockItem = JSON.parse(params?.stockItem as string);
-  const currentPrice = stockItem?.close;
+  const currentPrice = formatFloat(stockItem?.close);
   const isNeg = false;
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockItem?.symbol}.svg`;
+
+  const buySchema = z.object({
+    symbolId: z.string().min(1),
+    buyPrice: z.coerce.number().min(1).default(stockItem?.close),
+    quantity: z.coerce.number().min(1),
+    brokerFee: z.coerce.number().min(0).max(100).default(0),
+  });
 
   const {
     control,
@@ -79,6 +76,7 @@ export default function BuyStockForm() {
     resolver: zodResolver(buySchema),
     defaultValues: {
       symbolId: stockItem?.id.toString(),
+      buyPrice: Number(stockItem?.close).toFixed(2) ?? "",
       quantity: "",
       brokerFee: "",
     },
@@ -89,37 +87,21 @@ export default function BuyStockForm() {
 
   const onSubmit = async (data: any) => {
     if (isFormValid) {
-      const sound = new Audio.Sound();
       try {
         setIsSubmitting(true);
         console.log("Form submitted:", data);
-        const token = await getToken();
-        await clientPortfolio.post(
-          "/portfolio/buy",
-          {
-            symbolId: stockItem?.id.toString(),
-            quantity: data?.quantity,
-            brokerFee: data?.brokerFee,
+        setIsSubmitting(false);
+        router.push({
+          pathname: "/main/setting/buy-stock/confirm/[id]",
+          params: {
+            id: stockItem?.id.toString(),
+            stockDetail: JSON.stringify({
+              ...stockItem,
+              buyPrice: data?.buyPrice,
+              quantity: data?.quantity,
+              brokerFee: data?.brokerFee,
+            }),
           },
-          token
-        );
-
-        // Load the MP3 file
-        await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
-        await sound.playAsync();
-
-        // Wait for playback to finish
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded && status.didJustFinish) {
-            sound.unloadAsync(); // Clean up
-            setIsSubmitting(false);
-            router.push({
-              pathname: "/main/setting/buy-stock/confirm/[id]",
-              params: {
-                id: stockItem?.id.toString(),
-              },
-            });
-          }
         });
       } catch (error) {
         console.log(error);
@@ -299,41 +281,52 @@ export default function BuyStockForm() {
                         width: "100%",
                         paddingHorizontal: 14,
                       }}>
-                      <AnimatedInput
-                        inputMode="numeric"
-                        label={isBn ? "ক্রয় মূল্য" : "Buy Price"}
-                        placeholder="00.00"
-                        isDark={isDark} // Set to false for light mode
-                        onChange={() => {}} // Update value
-                        value={currentPrice} // Pass current value
-                        onBlur={() => {}} // Validation logic
-                        error={false} // Optional error message
-                        inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
-                        inputColor={
-                          isDark
-                            ? ["#1C1C1C", "#1C1C1C"]
-                            : ["#FFFFFF", "#F7F7F7"]
-                        }
-                        inputShadow={{
-                          shadowColor: isDark ? "#333333" : "#FFFFFF",
-                          shadowOffset: {
-                            width: 4,
-                            height: 4,
-                          },
-                          shadowOpacity: 0.1,
-                          shadowRadius: 4,
-                          elevation: 4,
+                      <Controller
+                        control={control}
+                        name="buyPrice"
+                        render={({
+                          field: { onChange, onBlur, value },
+                          fieldState: { error },
+                        }) => {
+                          return (
+                            <AnimatedInput
+                              inputMode="numeric"
+                              label={isBn ? "ক্রয় মূল্য" : "Buy Price"}
+                              placeholder="00.00"
+                              isDark={isDark} // Set to false for light mode
+                              onChange={onChange} // Update value
+                              value={value} // Pass current value
+                              onBlur={onBlur} // Validation logic
+                              error={error} // Optional error message
+                              inputBorderColor={isDark ? "#E8E8E8" : "#C0C0C0"}
+                              inputColor={
+                                isDark
+                                  ? ["#1C1C1C", "#1C1C1C"]
+                                  : ["#FFFFFF", "#F7F7F7"]
+                              }
+                              inputShadow={{
+                                shadowColor: isDark ? "#333333" : "#FFFFFF",
+                                shadowOffset: {
+                                  width: 4,
+                                  height: 4,
+                                },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 4,
+                                elevation: 4,
+                              }}
+                              startColorOutRange={
+                                isDark
+                                  ? ["transparent", "#1A1A1A"]
+                                  : ["#FCFCFC", "#FCFCFD"]
+                              }
+                              endColorOutRange={
+                                isDark
+                                  ? ["transparent", "#1C1C1C"]
+                                  : ["#FCFCFC", "#FFFFFF"]
+                              }
+                            />
+                          );
                         }}
-                        startColorOutRange={
-                          isDark
-                            ? ["transparent", "#1A1A1A"]
-                            : ["#FCFCFC", "#FCFCFD"]
-                        }
-                        endColorOutRange={
-                          isDark
-                            ? ["transparent", "#1C1C1C"]
-                            : ["#FCFCFC", "#FFFFFF"]
-                        }
                       />
                       <Controller
                         control={control}
@@ -389,8 +382,10 @@ export default function BuyStockForm() {
                         }) => (
                           <AnimatedInput
                             inputMode="text"
-                            label={isBn ? "ব্রোকার কমিশন" : "Broker commission"}
-                            placeholder="00.00"
+                            label={
+                              isBn ? "ব্রোকার কমিশন %" : "Broker commission %"
+                            }
+                            placeholder="5%"
                             isDark={isDark} // Set to false for light mode
                             onChange={onChange} // Update value
                             value={value} // Pass current value
@@ -473,7 +468,7 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{currentPrice ? currentPrice : 0}
+                                ৳{watch("buyPrice") || 0}
                               </Text>
                             </View>
                           </View>
@@ -523,7 +518,7 @@ export default function BuyStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{watch("brokerFee") ? watch("brokerFee") : 0}%
+                                {watch("brokerFee") ? watch("brokerFee") : 0}%
                               </Text>
                             </View>
                           </View>
@@ -573,17 +568,29 @@ export default function BuyStockForm() {
                               </LinearGradient>
                             </TouchableOpacity>
                             <TouchableOpacity
+                              // disabled={
+                              //   !isFormValid || isSubmitting ? true : false
+                              // }
                               onPress={() => handleSubmit(onSubmit)()}
                               style={{
                                 flex: 1,
-                                shadowColor: "#1E90FF",
+                                shadowColor:
+                                  !isFormValid || isSubmitting
+                                    ? "transparent"
+                                    : "#1E90FF",
                                 shadowOffset: { width: 0, height: 2 },
                                 shadowOpacity: 0.4,
                                 shadowRadius: 4,
                                 elevation: 4,
                               }}>
                               <LinearGradient
-                                colors={["#357AE8", "#1D4EDD"]}
+                                colors={
+                                  !isFormValid || isSubmitting
+                                    ? isDark
+                                      ? ["#3C3C47", "#3C3C47"]
+                                      : ["#E0E0E0", "#E0E0E0"]
+                                    : ["#357AE8", "#1D4EDD"]
+                                }
                                 start={{
                                   x: 0,
                                   y: 0,
@@ -606,7 +613,13 @@ export default function BuyStockForm() {
                                   <Text
                                     style={{
                                       fontSize: 14,
-                                      color: "#FFFFFF",
+                                      color: !isFormValid
+                                        ? isDark
+                                          ? "#666666"
+                                          : "#A0A0A0"
+                                        : isDark
+                                        ? "#FFFFFF"
+                                        : "#FFFFFF",
                                     }}>
                                     {isBn ? "কিনুন" : "Buy"}
                                   </Text>

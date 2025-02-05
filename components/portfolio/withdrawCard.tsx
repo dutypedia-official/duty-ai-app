@@ -32,7 +32,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
   const clientPortfolio = apiClientPortfolio();
   const { getToken } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { freeBalance } = useUi();
+  const { freeBalance, setRefreash, refreash } = useUi();
   const hasPositiveBalance = parseFloat(freeBalance) > 0;
 
   const [isFocused, setIsFocused] = useState(false);
@@ -97,14 +97,23 @@ export default function WithdrawCard({ open, setOpen }: any) {
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.isLoaded && status.didJustFinish) {
           sound.unloadAsync(); // Clean up
+          setRefreash(!refreash);
           setIsSubmitting(false);
           setOpen(false);
         }
       });
     } catch (error) {
+      // Load the MP3 file
+      await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
+      await sound.playAsync();
+      // Wait for playback to finish
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync(); // Clean up
+          setIsSubmitting(false);
+        }
+      });
       console.log(error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

@@ -1,21 +1,23 @@
+import useLang from "@/lib/hooks/useLang";
+import useUi from "@/lib/hooks/useUi";
 import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { Fragment, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Image,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
-import PortfolioList from "./portfolioList";
-import { router } from "expo-router";
 import { SvgXml } from "react-native-svg";
 import {
   notfoundPortfolio,
   notfoundPortfolioLight,
 } from "../svgs/notfound-portfolio";
-import useLang from "@/lib/hooks/useLang";
-import useUi from "@/lib/hooks/useUi";
+import PortfolioList from "./portfolioList";
+import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
 import { apiClientPortfolio } from "@/lib/api";
@@ -25,7 +27,35 @@ export default function StockPortfolio() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { freeBalance, holdings, isLoading } = useUi();
+  const { freeBalance, refreash } = useUi();
+  const { getToken } = useAuth();
+  const isFocused = useIsFocused();
+  const clientPortfolio = apiClientPortfolio();
+  const [holdings, setHoldings] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+
+  const fetchData = async (init: boolean = true) => {
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/holdings?page=${page}&perPage=${perPage}`,
+        token
+      );
+      setHoldings(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [refreash]);
 
   return (
     <View>
@@ -34,19 +64,39 @@ export default function StockPortfolio() {
           marginHorizontal: 12,
           gap: 16,
         }}>
-        <View style={{}}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
           <Text
             style={{
               color: isDark ? "#FFFFFF" : "#1A202C",
             }}>
             {isBn ? "স্টক পোর্টফোলিও" : "Stock Portfolio"}
           </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/main/setting/stock-portfolio")}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}>
+            <Text
+              style={{
+                color: isDark ? "#FFFFFF" : "#1A202C",
+              }}>
+              {isBn ? "সব দেখুন" : "See all"}
+            </Text>
+            <FontAwesome name="angle-right" size={14} color={"#4A5568"} />
+          </TouchableOpacity>
         </View>
         <View
           style={{
             gap: 24,
           }}>
-          {holdings?.length === 0 ? (
+          {(holdings?.length || holdings?.items?.length) === 0 ? (
             <View
               style={{
                 backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
@@ -59,9 +109,14 @@ export default function StockPortfolio() {
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-              <SvgXml
+              {/* <SvgXml
                 width={"100%"}
                 xml={isDark ? notfoundPortfolio : notfoundPortfolioLight}
+              /> */}
+              <Image
+                style={{ width: 100, height: 68 }}
+                source={require("../../assets/images/notfoundPortfolio.png")}
+                resizeMode="contain"
               />
               <View
                 style={{
@@ -103,22 +158,23 @@ export default function StockPortfolio() {
                 borderWidth: 1,
                 borderRadius: 16,
                 borderColor: isDark ? "#262626" : "#E0E0E0",
+                height: isLoading ? 355 : "auto",
               }}>
               {isLoading ? (
                 <View
                   style={{
-                    height: 280,
+                    flex: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}>
                   <ActivityIndicator />
                 </View>
               ) : (
-                holdings?.map((item: any, i: number) => {
+                holdings?.items?.map((item: any, i: number) => {
                   return (
                     <Fragment key={i}>
                       <PortfolioList
-                        isLast={holdings?.length - 1 === i}
+                        isLast={holdings?.items?.length - 1 === i}
                         item={item}
                       />
                     </Fragment>
@@ -129,6 +185,7 @@ export default function StockPortfolio() {
           )}
 
           <TouchableOpacity
+            disabled={parseFloat(freeBalance) === 0}
             onPress={() => {
               router.push("/main/setting/buy-stock");
             }}
@@ -142,7 +199,7 @@ export default function StockPortfolio() {
             }}>
             <LinearGradient
               colors={
-                freeBalance === "0"
+                parseFloat(freeBalance) === 0
                   ? isDark
                     ? ["#3C3C47", "#3C3C47"]
                     : ["#E0E0E0", "#E0E0E0"]
@@ -167,7 +224,7 @@ export default function StockPortfolio() {
                 style={{
                   fontSize: 14,
                   color:
-                    freeBalance === "0"
+                    parseFloat(freeBalance) === 0
                       ? isDark
                         ? "#A0A0A0"
                         : "#666666"

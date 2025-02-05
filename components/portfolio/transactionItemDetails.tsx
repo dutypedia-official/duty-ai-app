@@ -1,56 +1,122 @@
-import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import useLang from "@/lib/hooks/useLang";
+import { format } from "date-fns";
+import {
+  calcBroFeeAmount,
+  formatFloat,
+  getRiskLevel,
+  isLossItem,
+} from "@/lib/utils";
+import { useAuth } from "@clerk/clerk-expo";
+import { useIsFocused } from "@react-navigation/native";
+import { apiClientPortfolio } from "@/lib/api";
 
 export default function TransactionItemDetails() {
+  const { getToken } = useAuth();
+  const isFocused = useIsFocused();
+  const clientPortfolio = apiClientPortfolio();
   const params = useLocalSearchParams();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const [stockDetail, setStockDetail] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
+
+  // const stockDetail = JSON.parse(params?.stockDetail as string);
+  const isRisk = false;
+
+  const fetchData = async (init: boolean = true) => {
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/transaction/${params?.id}`,
+        token
+      );
+      console.log("data------------------", JSON.stringify(data));
+
+      setStockDetail(data);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // console.log("stockDetail------------------", stockDetail);
 
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.buyPrice)}`,
     },
     {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
-      value: "৳120",
+      value: `৳${stockDetail?.sellPrice}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: "100",
+      value: `${stockDetail?.totalQuantity}`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.totalBuyPrice)}`,
     },
     {
       name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
-      value: "৳100",
+      value: `৳${stockDetail?.totalSellPrice}`,
     },
     {
       name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: "1200",
+      value: stockDetail?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: "৳100 (5%)",
+      value: `৳${calcBroFeeAmount(
+        stockDetail?.brokerFee,
+        stockDetail?.totalSellPrice
+      )} (${stockDetail?.brokerFee}%)`,
     },
     {
       name: isBn ? "বন্ধের তারিখ" : "Close Date",
-      value: "jan 01, 2025",
+      value: stockDetail
+        ? format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")
+        : "",
     },
   ];
 
-  const isRisk = params?.isRisk === "true";
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${params?.id}.svg`;
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
   return (
     <View
       style={{
@@ -111,7 +177,7 @@ export default function TransactionItemDetails() {
                     fontSize: 12,
                     color: "#1E1E1E",
                   }}>
-                  {params?.id[0]}
+                  {stockDetail?.stock?.symbol[0]}
                 </Text>
               </View>
               {logoUrl && (
@@ -130,7 +196,7 @@ export default function TransactionItemDetails() {
                   color: isDark ? "#fff" : "#004662",
                   textAlign: "center",
                 }}>
-                {params?.id}
+                {stockDetail?.stock?.symbol}
               </Text>
               <Text
                 style={{
@@ -138,7 +204,10 @@ export default function TransactionItemDetails() {
                   color: isDark ? "#B0B0B0" : "#7D8C8D",
                   textAlign: "center",
                 }}>
-                Trade Date Jan 15, 2025
+                Trade Date{" "}
+                {stockDetail
+                  ? format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")
+                  : ""}
               </Text>
             </View>
           </View>
@@ -248,12 +317,14 @@ export default function TransactionItemDetails() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  5%
+                  {formatFloat(stockDetail?.risk)}%
                 </Text>
               </View>
             </View>
             <View
               style={{
+                borderBottomEndRadius: 16,
+                borderBottomStartRadius: 16,
                 flexDirection: "row",
                 justifyContent: "space-between",
                 borderTopWidth: 1,
@@ -300,7 +371,7 @@ export default function TransactionItemDetails() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? "⚠️ High Risk" : "🟢 Good"}
+                  {getRiskLevel(stockDetail?.risk)}
                 </Text>
               </View>
             </View>
@@ -355,7 +426,14 @@ export default function TransactionItemDetails() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? "-" : "✅ +"}৳70000
+                  {isRisk ? "-" : "✅ +"}৳
+                  {isRisk
+                    ? formatFloat(
+                        stockDetail?.loss?.toString().replace(/[-+]/g, "")
+                      )
+                    : formatFloat(
+                        stockDetail?.profit?.toString().replace(/[-+]/g, "")
+                      )}
                 </Text>
               </View>
             </View>

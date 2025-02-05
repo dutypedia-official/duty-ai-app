@@ -72,6 +72,7 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
         name="recharge"
         options={{
@@ -148,6 +149,13 @@ export default function Layout() {
         name="sell-stock/placedOrder/[id]"
         options={{
           title: "Placed Order",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="stock-portfolio"
+        options={{
+          title: "Stock Portfolio",
           headerShown: false,
         }}
       />

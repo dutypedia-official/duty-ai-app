@@ -30,12 +30,14 @@ import { Audio } from "expo-av";
 import { useAuth } from "@clerk/clerk-expo";
 import { apiClientPortfolio } from "@/lib/api";
 import { formatFloat } from "@/lib/utils";
+import useUi from "@/lib/hooks/useUi";
 
 export default function SellStockForm() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { refreash, setRefreash } = useUi();
   const { getToken } = useAuth();
   const clientPortfolio = apiClientPortfolio();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,12 +105,16 @@ export default function SellStockForm() {
           },
           token
         );
+        setRefreash(!refreash);
         setIsSubmitting(false);
         router.push({
           pathname: "/main/setting/sell-stock/placedOrder/[id]",
           params: {
             id: stockDetail?.id,
-            stockDetail: JSON.stringify(stockDetail),
+            stockDetail: JSON.stringify({
+              ...stockDetail,
+              closeType: watch("closeType"),
+            }),
             soldDetails: JSON.stringify(data),
           },
         });
@@ -491,7 +497,7 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{stockDetail?.avgCost}
+                                ৳{formatFloat(stockDetail?.avgCost)}
                               </Text>
                             </View>
                           </View>
@@ -516,7 +522,7 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                ৳{stockDetail?.stock?.close}
+                                ৳{formatFloat(stockDetail?.stock?.close)}
                               </Text>
                             </View>
                           </View>
@@ -541,7 +547,11 @@ export default function SellStockForm() {
                                   fontWeight: "medium",
                                   fontSize: 20,
                                 }}>
-                                {stockDetail?.quantity}
+                                {watch("closeType") === "fullClose"
+                                  ? stockDetail?.quantity
+                                  : watch("quantity")
+                                  ? watch("quantity")
+                                  : stockDetail?.quantity}
                               </Text>
                             </View>
                           </View>
@@ -646,7 +656,9 @@ export default function SellStockForm() {
                               <LinearGradient
                                 colors={
                                   isSubmitting
-                                    ? ["#E0E0E0", "#E0E0E0"]
+                                    ? isDark
+                                      ? ["#3C3C47", "#3C3C47"]
+                                      : ["#E0E0E0", "#E0E0E0"]
                                     : ["#00E5FF", "#2979FF"]
                                 }
                                 start={{

@@ -29,8 +29,9 @@ export default function Portfolio() {
       const { data } = await clientPortfolio.get(`/portfolio/get`, token);
       setTotalInvestment(data?.totalInvestment);
       setBalance(data?.portfolio?.balance);
-      setHoldings(data?.portfolio?.holdings);
+      // setHoldings(data?.portfolio?.holdings);
       setFreeBalance(data?.portfolio?.free);
+
       setIsLoading(false);
     } catch (error) {
       console.log(error);

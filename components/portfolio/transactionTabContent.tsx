@@ -17,6 +17,8 @@ export default function TransactionTabContent({
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
+  // console.log("item--------------", item);
+
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.stock?.symbol}.svg`;
 
   return (
@@ -27,8 +29,7 @@ export default function TransactionTabContent({
             router.push({
               pathname: "/main/setting/transaction-history/[id]",
               params: {
-                id: item?.symbol,
-                isRisk: "false",
+                id: item?.id.toString(),
               },
             });
           }}
@@ -150,7 +151,8 @@ export default function TransactionTabContent({
             router.push({
               pathname: "/main/setting/transaction-history/[id]",
               params: {
-                id: item?.symbol,
+                id: item?.id,
+                stockDetail: JSON.stringify(item),
                 isRisk: "true",
               },
             });

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import DepositCard from "./depositCard";
 import WithdrawCard from "./withdrawCard";
-import { formattedBalance } from "@/lib/utils";
+import { formatFloat, formattedBalance } from "@/lib/utils";
 import useLang from "@/lib/hooks/useLang";
 import { Portal } from "react-native-paper";
 import useUi from "@/lib/hooks/useUi";
@@ -27,7 +27,7 @@ export default function AssetsBalCard() {
   const [isDeposit, setIsDeposit] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
 
-  const logoUrl = `https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg`;
+  const logoUrl = user?.imageUrl;
   const isNeg = false;
 
   return (
@@ -115,7 +115,7 @@ export default function AssetsBalCard() {
                           textAlign: "center",
                           textAlignVertical: "center",
                         }}>
-                        S
+                        {user?.firstName![0]}
                       </Text>
                     )}
                     {logoUrl && (
@@ -199,7 +199,7 @@ export default function AssetsBalCard() {
                   fontWeight: "medium",
                   fontSize: 16,
                 }}>
-                +৳3465.23
+                +৳{parseFloat("3465.23").toFixed(2)}
               </Text>
             </View>
             {/* )} */}
@@ -246,7 +246,7 @@ export default function AssetsBalCard() {
                         fontSize: 20,
                         fontWeight: "medium",
                       }}>
-                      ৳{parseFloat(balance)}
+                      ৳{parseFloat(balance).toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -271,7 +271,7 @@ export default function AssetsBalCard() {
                         color: isDark ? "#D4AF37" : "#2E7582",
                         fontSize: 14,
                       }}>
-                      ৳{freeBalance}
+                      ৳{parseFloat(freeBalance).toFixed(2)}
                     </Text>
                   </View>
                 </View>

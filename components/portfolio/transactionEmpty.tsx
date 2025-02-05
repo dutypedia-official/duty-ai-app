@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, useColorScheme, View } from "react-native";
+import { Image, Text, useColorScheme, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { notfoundTransaction } from "../svgs/notfoundTransaction";
 
@@ -19,8 +19,17 @@ export default function TransactionEmpty({
         gap: 14,
         paddingVertical: 24,
       }}>
-      <View>
-        <SvgXml xml={notfoundTransaction} width={"100%"} />
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        {/* <SvgXml xml={notfoundTransaction} width={"100%"} /> */}
+        <Image
+          style={{ width: 100, height: 108 }}
+          source={require("../../assets/images/notfoundTransaction.png")}
+          resizeMode="contain"
+        />
       </View>
       <View
         style={{

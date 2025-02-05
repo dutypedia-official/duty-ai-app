@@ -26,6 +26,8 @@ interface Store {
   setFreeBalance: (freeBalance: string) => void;
   holdings: any;
   setHoldings: (holdings: any) => void;
+  refreshHold: boolean;
+  setRefreshHold: (refreshHold: boolean) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -56,6 +58,8 @@ const useUi = create<Store>((set, get) => ({
   setFreeBalance: (freeBalance: string) => set({ freeBalance }),
   holdings: [],
   setHoldings: (holdings: any) => set({ holdings }),
+  refreshHold: false,
+  setRefreshHold: (refreshHold: boolean) => set({ refreshHold }),
 }));
 
 export default useUi;

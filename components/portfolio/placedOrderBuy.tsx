@@ -5,13 +5,25 @@ import {
   useColorScheme,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import * as WebBrowser from "expo-web-browser";
 import useLang from "@/lib/hooks/useLang";
+import {
+  calcBroFeeAmount,
+  calcTotalWithFee,
+  formatFloat,
+  getRiskLevel,
+  isHighRisk,
+  isLossItem,
+} from "@/lib/utils";
+import useUi from "@/lib/hooks/useUi";
+import { Audio } from "expo-av";
+import { useIsFocused } from "@react-navigation/native";
+import { format } from "date-fns";
 
 export default function PlacedOrderBuy() {
   const params = useLocalSearchParams();
@@ -19,29 +31,56 @@ export default function PlacedOrderBuy() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { setRefreash, refreash } = useUi();
+  const isFocused = useIsFocused();
+
+  const playSound = async () => {
+    const sound = new Audio.Sound();
+    // Load the MP3 file
+    await sound.loadAsync(require("@/assets/confirm.mp3")); // Replace with your MP3 path
+    await sound.playAsync();
+    // Wait for playback to finish
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded && status.didJustFinish) {
+        sound.unloadAsync(); // Clean up
+      }
+    });
+  };
+  useEffect(() => {
+    playSound();
+    setRefreash(!refreash);
+  }, [isFocused]);
+
+  const stockDetail = JSON.parse(params?.stockDetail as string);
+
+  const totalBuy = stockDetail?.buyPrice * stockDetail?.quantity;
 
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: "৳100",
+      value: `৳${formatFloat(stockDetail?.buyPrice)}`,
     },
 
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: "100",
+      value: stockDetail?.quantity,
+    },
+
+    {
+      name: isBn ? "ব্রোকার ফি" : "Broker Fee",
+      value: `৳${calcBroFeeAmount(stockDetail?.brokerFee, totalBuy)} (${
+        stockDetail?.brokerFee
+      }%)`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
-      value: "৳100",
-    },
-    {
-      name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: "৳100 (5%)",
+      value: `৳${calcTotalWithFee(totalBuy, stockDetail?.brokerFee)}`,
     },
   ];
 
-  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/GP.svg`;
-  const isRisk = false;
+  const isRisk = isHighRisk(stockDetail?.aiRisk) === "true" ? true : false;
+
+  const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.symbol}.svg`;
 
   return (
     <View
@@ -107,7 +146,7 @@ export default function PlacedOrderBuy() {
                       fontSize: 12,
                       color: "#1E1E1E",
                     }}>
-                    G
+                    {stockDetail?.symbol[0]}
                   </Text>
                 </View>
                 {logoUrl && (
@@ -126,7 +165,7 @@ export default function PlacedOrderBuy() {
                     color: isDark ? "#fff" : "#004662",
                     textAlign: "center",
                   }}>
-                  AGRICULTURAL bangldesh dhaka capital city
+                  {stockDetail?.symbol}
                 </Text>
                 <Text
                   style={{
@@ -135,7 +174,8 @@ export default function PlacedOrderBuy() {
                     textAlign: "center",
                     // fontStyle: "italic",
                   }}>
-                  Trade Date Jan 15, 2025
+                  Trade Date{" "}
+                  {format(new Date(stockDetail?.createdAt), "MMM dd, yyyy")}
                 </Text>
               </View>
             </View>
@@ -247,7 +287,7 @@ export default function PlacedOrderBuy() {
                       textAlign: "right",
                       fontWeight: "bold",
                     }}>
-                    5%
+                    {formatFloat(stockDetail?.aiRisk)}%
                   </Text>
                 </View>
               </View>
@@ -303,7 +343,7 @@ export default function PlacedOrderBuy() {
                       textAlign: "right",
                       fontWeight: "bold",
                     }}>
-                    {isRisk ? "⚠️ High Risk" : "🟢 Good"}
+                    {getRiskLevel(stockDetail?.aiRisk)}
                   </Text>
                 </View>
               </View>

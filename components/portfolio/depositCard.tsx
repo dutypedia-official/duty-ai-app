@@ -45,7 +45,7 @@ export default function DepositCard({ open, setOpen }: any) {
   const isFocus = useIsFocused();
   const clientPortfolio = apiClientPortfolio();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { freeBalance, setRefreash } = useUi();
+  const { balance, setRefreash, refreash } = useUi();
   const [isFocused, setIsFocused] = useState(false);
 
   const {
@@ -73,13 +73,13 @@ export default function DepositCard({ open, setOpen }: any) {
       await clientPortfolio.post(
         "/portfolio/deposit",
         {
-          amount: data.amount,
+          amount: data?.amount,
         },
         token
       );
 
       // Load the MP3 file
-      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
+      await sound.loadAsync(require("@/assets/banknote.mp3")); // Replace with your MP3 path
       await sound.playAsync();
 
       // Wait for playback to finish
@@ -88,10 +88,20 @@ export default function DepositCard({ open, setOpen }: any) {
           sound.unloadAsync(); // Clean up
           setIsSubmitting(false);
           setOpen(false);
-          setRefreash(true);
+          setRefreash(!refreash);
         }
       });
     } catch (error) {
+      // Load the MP3 file
+      await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
+      await sound.playAsync();
+      // Wait for playback to finish
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync(); // Clean up
+          setIsSubmitting(false);
+        }
+      });
       console.log(error);
     }
   };
@@ -175,7 +185,7 @@ export default function DepositCard({ open, setOpen }: any) {
                   <Text
                     style={{
                       color:
-                        parseFloat(freeBalance) === 0
+                        parseFloat(balance) === 0
                           ? "#EC2700"
                           : isDark
                           ? "#FDD835"
@@ -184,7 +194,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       fontWeight: "bold",
                       textAlign: "center",
                     }}>
-                    ৳{formattedBalance(parseFloat(freeBalance))}
+                    ৳{formattedBalance(parseFloat(balance))}
                   </Text>
                 </View>
                 <View
@@ -263,6 +273,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       gap: 12,
                     }}>
                     <TouchableOpacity
+                      disabled={isSubmitting}
                       onPress={() => {
                         setOpen(false);
                       }}

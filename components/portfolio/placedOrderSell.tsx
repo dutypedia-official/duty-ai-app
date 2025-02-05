@@ -9,11 +9,14 @@ import { format } from "date-fns";
 import {
   calcBroFeeAmount,
   formatFloat,
+  getProfitOrLoss,
   getRiskLevel,
+  isHighRisk,
   isLossItem,
 } from "@/lib/utils";
 import { Audio } from "expo-av";
 import { useIsFocused } from "@react-navigation/native";
+import useUi from "@/lib/hooks/useUi";
 
 export default function PlacedOrderSell() {
   const params = useLocalSearchParams();
@@ -21,19 +24,23 @@ export default function PlacedOrderSell() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
+  const { setRefreash, refreash } = useUi();
   const isFocused = useIsFocused();
   const stockDetail = JSON.parse(params?.stockDetail as string);
   const soldDetails = JSON.parse(params?.soldDetails as string);
 
+  console.log("stockDetail--------------", JSON.stringify(stockDetail));
+
   const playSound = async () => {
     const sound = new Audio.Sound();
     // Load the MP3 file
-    await sound.loadAsync(require("../../assets/confirm.mp3")); // Replace with your MP3 path
+    await sound.loadAsync(require("@/assets/confirm.mp3")); // Replace with your MP3 path
     await sound.playAsync();
     // Wait for playback to finish
     sound.setOnPlaybackStatusUpdate((status) => {
       if (status.isLoaded && status.didJustFinish) {
         sound.unloadAsync(); // Clean up
+        setRefreash(!refreash);
       }
     });
   };
@@ -41,7 +48,12 @@ export default function PlacedOrderSell() {
     playSound();
   }, [isFocused]);
 
-  const totalSell = stockDetail?.stock?.close * soldDetails?.quantity;
+  // console.log("placed-----------------", JSON.stringify(stockDetail));
+
+  const totalSell =
+    stockDetail?.closeType === "fullClose"
+      ? stockDetail?.stock?.close * stockDetail?.quantity
+      : stockDetail?.stock?.close * soldDetails?.quantity;
 
   const data = [
     {
@@ -54,7 +66,7 @@ export default function PlacedOrderSell() {
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
-      value: `${soldDetails?.quantity}`,
+      value: `${stockDetail?.quantity}`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
@@ -66,21 +78,27 @@ export default function PlacedOrderSell() {
     },
     {
       name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: soldDetails?.quantity,
+      value:
+        stockDetail?.closeType === "fullClose"
+          ? stockDetail?.quantity
+          : soldDetails?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
-      value: `-${calcBroFeeAmount(stockDetail?.brokerFee, totalSell)} (${
+      value: `৳${calcBroFeeAmount(stockDetail?.brokerFee, totalSell)} (${
         stockDetail?.brokerFee
       }%)`,
     },
     {
       name: isBn ? "বন্ধের তারিখ" : "Close Date",
-      value: format(new Date(), "MMM dd, yyyy"),
+      value: format(new Date(stockDetail?.createdAt), "MMM dd, yyyy"),
     },
   ];
 
-  const isRisk = isLossItem(stockDetail?.total);
+  const isRisk = isHighRisk(stockDetail?.risk) === "true" ? true : false;
+
+  const isLoss = isLossItem(stockDetail?.profit);
+
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   return (
@@ -351,7 +369,7 @@ export default function PlacedOrderSell() {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                backgroundColor: isRisk
+                backgroundColor: isLoss
                   ? isDark
                     ? "#4D0D0D"
                     : "#FFEBEE"
@@ -370,11 +388,11 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isLoss ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
                     textAlign: "left",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? (isBn ? "লস" : "Losses") : isBn ? "লাভ" : "Profit"}
+                  {getProfitOrLoss(stockDetail?.profit)}
                 </Text>
               </View>
 
@@ -386,11 +404,14 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isLoss ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {isRisk ? "-" : "✅ +"}৳70000
+                  {isLoss ? "-" : "✅ +"}৳
+                  {formatFloat(
+                    stockDetail?.profit.toString().replace(/[-+]/g, "")
+                  )}
                 </Text>
               </View>
             </View>

@@ -4,14 +4,18 @@ import {
   notfoundPortfolioLight,
 } from "@/components/svgs/notfound-portfolio";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
+import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -27,16 +31,157 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 
 export default function TransactionHistory() {
+  const { getToken } = useAuth();
+  const clientPortfolio = apiClientPortfolio();
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
   const insets = useSafeAreaInsets();
   const bgColor = useThemeColor({}, "background");
-
   const [activeTab, setActiveTab] = useState("profit");
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const translateX = useSharedValue(0);
+  const [transactionsProfit, setTransactionsProfit] = useState<any>([]);
+  const [transactionsLoss, setTransactionsLoss] = useState<any>([]);
+  const [transactionsWithdraw, setTransactionsWithdraw] = useState<any>([]);
+  const [transactionsDeposit, setTransactionsDeposit] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageProfit, setPageProfit] = useState(1);
+  const [hasMoreProfit, setHasMoreProfit] = useState(true);
+  const [pageLosses, setPageLosses] = useState(1);
+  const [hasMoreLosses, setHasMoreLosses] = useState(true);
+  const [pageWithdraw, setPageWithdraw] = useState(1);
+  const [hasMoreWithdraw, setHasMoreWithdraw] = useState(true);
+  const [pageDeposit, setPageDeposit] = useState(1);
+  const [hasMoreDeposit, setHasMoreDeposit] = useState(true);
+
+  const params = useLocalSearchParams<{
+    perPage?: string;
+  }>();
+  const perPage = Number(params?.perPage) || 50;
+
+  const fetchData = async () => {
+    if (!hasMoreProfit) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/transactions/profit?page=${pageProfit}&perPage=${perPage}`,
+        token
+      );
+      if (data?.transactions?.length > 0) {
+        setPageProfit((prev) => prev + 1);
+        setTransactionsProfit([...transactionsProfit, ...data?.transactions]);
+      } else {
+        setHasMoreProfit(false);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchLossData = async () => {
+    if (!hasMoreLosses) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/transactions/loss?page=${pageLosses}&perPage=${perPage}`,
+        token
+      );
+
+      if (data?.transactions?.length > 0) {
+        setPageLosses((prev) => prev + 1);
+
+        setTransactionsLoss([...transactionsLoss, ...data.transactions]);
+      } else {
+        setHasMoreLosses(false);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchWithdrawData = async () => {
+    if (!hasMoreWithdraw) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/withdraw?page=${pageWithdraw}&perPage=${perPage}`,
+        token
+      );
+      if (data?.transactions?.length > 0) {
+        setPageWithdraw((prev) => prev + 1);
+        setTransactionsWithdraw([
+          ...transactionsWithdraw,
+          ...data?.transactions,
+        ]);
+      } else {
+        setHasMoreWithdraw(false);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchDepositData = async () => {
+    if (!hasMoreDeposit) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/deposit?page=${pageDeposit}&perPage=${perPage}`,
+        token
+      );
+      if (data?.transactions?.length > 0) {
+        setPageDeposit((prev) => prev + 1);
+        setTransactionsDeposit([...transactionsDeposit, ...data?.transactions]);
+      } else {
+        setHasMoreDeposit(false);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchLossData();
+  }, []);
+
+  useEffect(() => {
+    fetchWithdrawData();
+  }, []);
+
+  useEffect(() => {
+    fetchDepositData();
+  }, []);
 
   const handleTabPress = (index: number) => {
     setActiveTabIndex(index);
@@ -68,183 +213,6 @@ export default function TransactionHistory() {
     },
   ];
 
-  const profit: any = [
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "GP",
-      amount: "966542",
-    },
-    {
-      id: "lwk7yu34y74re",
-      symbol: "ROBI",
-      amount: "966542",
-    },
-    {
-      id: "34yu34y74re",
-      symbol: "IFIC",
-      amount: "966542",
-    },
-  ];
-
-  const losses = [
-    {
-      id: "lk7yu34y7l4re",
-      symbol: "GP",
-      amount: "786542",
-    },
-    {
-      id: "lk7yu34y74re",
-      symbol: "DFAK",
-      amount: "786542",
-    },
-    {
-      id: "89k7yu34y74re",
-      symbol: "THDTU",
-      amount: "786542",
-    },
-  ];
-
-  const withdraw: any = [
-    {
-      id: "lk7yu34y74re",
-      amount: "78656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-    {
-      id: "lk7yu34yk74re",
-      amount: "78656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-    {
-      id: "6k7yu34y74re",
-      amount: "78656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-  ];
-
-  const deposit = [
-    {
-      id: "lk7yu34y74re",
-      amount: "78656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-    {
-      id: "l9i7yu34y74re",
-      amount: "988656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-    {
-      id: "lk7yu34y74re",
-      amount: "78656",
-      createdAt: "2024-08-08T11:21:11.053000Z",
-    },
-  ];
-
   let data: {
     id: string;
     symbol?: string;
@@ -252,12 +220,18 @@ export default function TransactionHistory() {
     createdAt?: string;
   }[] = [];
 
-  if (activeTab === "profit") data = profit;
-  else if (activeTab === "losses") data = losses;
+  if (activeTab === "profit") data = transactionsProfit;
+  else if (activeTab === "losses") data = transactionsLoss;
   else if (activeTab === "withdraw")
-    data = withdraw.map((item: any) => ({ ...item, symbol: undefined }));
+    data = transactionsWithdraw.map((item: any) => ({
+      ...item,
+      symbol: undefined,
+    }));
   else if (activeTab === "deposit")
-    data = deposit.map((item: any) => ({ ...item, symbol: undefined }));
+    data = transactionsDeposit.map((item: any) => ({
+      ...item,
+      symbol: undefined,
+    }));
 
   return (
     <View
@@ -265,7 +239,7 @@ export default function TransactionHistory() {
         flex: 1,
         backgroundColor: isDark ? bgColor : "#fff",
       }}>
-      <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
+      <StatusBar backgroundColor={isDark ? bgColor : "#FFFFFF"} />
       <View
         style={{
           position: "absolute",
@@ -335,6 +309,18 @@ export default function TransactionHistory() {
             flexGrow: 1,
           }}>
           <FlatList
+            onEndReachedThreshold={0.5}
+            onEndReached={() => {
+              if (activeTab === "profit") {
+                fetchData();
+              } else if (activeTab === "losses") {
+                fetchLossData();
+              } else if (activeTab === "withdraw") {
+                fetchWithdrawData();
+              } else if (activeTab === "deposit") {
+                fetchDepositData();
+              }
+            }}
             contentContainerStyle={{
               paddingHorizontal: 12,
               paddingTop: 12,
@@ -406,7 +392,21 @@ export default function TransactionHistory() {
               );
             }}
             ListEmptyComponent={() => {
-              return (
+              return isLoading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height:
+                      Dimensions.get("screen").height -
+                      insets.top -
+                      insets.bottom -
+                      200,
+                  }}>
+                  <ActivityIndicator />
+                </View>
+              ) : (
                 <>
                   {activeTab === "profit" && (
                     <ListEmpty
@@ -465,6 +465,9 @@ export default function TransactionHistory() {
                 </>
               );
             }}
+            // ListFooterComponent={() => {
+            //   return isLoading && <ActivityIndicator />;
+            // }}
           />
         </View>
       </SafeAreaView>
@@ -499,9 +502,15 @@ export const ListEmpty = ({
           alignItems: "center",
           justifyContent: "center",
         }}>
-        <SvgXml
+        {/* <SvgXml
           width={"100%"}
           xml={isDark ? notfoundPortfolio : notfoundPortfolioLight}
+        /> */}
+
+        <Image
+          style={{ width: 100, height: 68 }}
+          source={require("../../../../assets/images/notfoundPortfolio.png")}
+          resizeMode="contain"
         />
         <View
           style={{
