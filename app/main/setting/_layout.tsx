@@ -15,7 +15,8 @@ export default function Layout() {
         headerStyle: {
           backgroundColor: bgColor,
         },
-      }}>
+      }}
+    >
       {/* <Stack.Screen name="index" options={{ title: "Setting" }} /> */}
 
       {isPortfolio ? (
