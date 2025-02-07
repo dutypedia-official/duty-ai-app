@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   GestureResponderEvent,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -13,7 +14,7 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { usePathname, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Avatar } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
+import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import useLang from "@/lib/hooks/useLang";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -24,6 +25,7 @@ import useMarket from "@/lib/hooks/useMarket";
 import { SvgXml } from "react-native-svg";
 import { globe_change_dark } from "@/components/svgs/globe_change_dark";
 import { globe_change } from "@/components/svgs/globe_change";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingScreen() {
   const { signOut, isSignedIn, getToken } = useAuth();
@@ -42,6 +44,7 @@ export default function SettingScreen() {
   const client = apiClient();
   const path = usePathname();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const insets = useSafeAreaInsets();
 
   // Helper function to create a delay using a Promise
   const delay = (ms: number): Promise<void> =>
@@ -81,7 +84,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/select-language");
+        router.push("/main/home/setting/select-language");
       },
     },
     {
@@ -97,7 +100,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/change-market");
+        router.push("/main/home/setting/change-market");
       },
     },
 
@@ -108,7 +111,7 @@ export default function SettingScreen() {
     //     <Ionicons name="chevron-forward" size={24} color={textColor} />
     //   ),
     //   action: () => {
-    //     router.push("/main/setting/language");
+    //     router.push("/main/home/setting/language");
     //   },
     // },
     {
@@ -149,7 +152,7 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/welcome-portfolio");
+        router.push("/main/home/setting/support");
       },
     },
     {
@@ -161,104 +164,160 @@ export default function SettingScreen() {
         <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        router.push("/main/setting/delete-account");
+        router.push("/main/home/setting/delete-account");
       },
     },
   ];
 
   return (
-    <ScrollView style={{ backgroundColor: bgColor }}>
+    <View
+      style={{
+        backgroundColor: isDark ? bgColor : "#fff",
+        paddingTop: insets.top,
+        flex: 1,
+      }}>
       <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: "transparent",
-            paddingVertical: 40,
-          },
-        ]}
-      >
-        <View
+        style={{
+          flexDirection: "row",
+          paddingVertical: 12,
+          paddingHorizontal: 12,
+          backgroundColor: isDark ? bgColor : "#fff",
+          borderBottomWidth: 1,
+          borderColor: isDark ? "#1D1E1D" : "rgba(64, 73, 67,0.12)",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+        <TouchableOpacity
+          onPress={() => router.back()}
           style={{
             flexDirection: "row",
-            gap: 8,
-            justifyContent: "space-between",
-            alignItems: "center",
             backgroundColor: "transparent",
-          }}
-        >
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: 80,
+          }}>
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            style={{ color: isDark ? "#0B84FF" : "#007AFF" }}
+          />
+          <Text
+            style={{
+              textAlign: "left",
+              fontSize: 18,
+              fontWeight: "600",
+              color: isDark ? "#0B84FF" : "#007AFF",
+            }}>
+            Chat
+          </Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            backgroundColor: "transparent",
+          }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "semibold",
+              color: isDark ? "#fff" : "#000",
+            }}>
+            Setting
+          </Text>
+        </View>
+        <View
+          style={{
+            width: 80,
+            backgroundColor: "transparent",
+          }}></View>
+      </View>
+      <ScrollView style={{ backgroundColor: bgColor }}>
+        <View
+          style={[
+            styles.container,
+            {
+              backgroundColor: "transparent",
+              paddingVertical: 40,
+            },
+          ]}>
           <View
             style={{
               flexDirection: "row",
               gap: 8,
+              justifyContent: "space-between",
               alignItems: "center",
-              flex: 1,
               backgroundColor: "transparent",
-            }}
-          >
-            <Avatar.Image
-              size={48}
-              source={{ uri: user?.imageUrl }}
-              style={{ backgroundColor: "transparent" }}
-            />
-            <View style={{ backgroundColor: "transparent" }}>
-              <Text numberOfLines={1} variant="titleMedium">
-                {firstName} {lastName}
-              </Text>
-              <Text numberOfLines={1}>{email}</Text>
+            }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 8,
+                alignItems: "center",
+                flex: 1,
+                backgroundColor: "transparent",
+              }}>
+              <Avatar.Image
+                size={48}
+                source={{ uri: user?.imageUrl }}
+                style={{ backgroundColor: "transparent" }}
+              />
+              <View style={{ backgroundColor: "transparent" }}>
+                <Text numberOfLines={1} variant="titleMedium">
+                  {firstName} {lastName}
+                </Text>
+                <Text numberOfLines={1}>{email}</Text>
+              </View>
             </View>
+            {/* <AntDesign name="edit" size={24} color={textColor} /> */}
           </View>
-          {/* <AntDesign name="edit" size={24} color={textColor} /> */}
-        </View>
 
-        <View style={{ backgroundColor: "transparent" }}>
-          <Text variant="titleSmall" style={{ marginBottom: 8 }}>
-            {isBn ? "সাধারণ" : "General"}
-          </Text>
-          {generalSettings.map((setting, i) => (
-            <TouchableOpacity onPress={setting.action} key={i}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 8,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingVertical: 12,
-                  backgroundColor: "transparent",
-                }}
-              >
+          <View style={{ backgroundColor: "transparent" }}>
+            <Text variant="titleSmall" style={{ marginBottom: 8 }}>
+              {isBn ? "সাধারণ" : "General"}
+            </Text>
+            {generalSettings.map((setting, i) => (
+              <TouchableOpacity onPress={setting.action} key={i}>
                 <View
                   style={{
                     flexDirection: "row",
                     gap: 8,
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    flex: 1,
+                    paddingVertical: 12,
                     backgroundColor: "transparent",
-                  }}
-                >
-                  {setting.leftIcon}
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                      flex: 1,
+                      backgroundColor: "transparent",
+                    }}>
+                    {setting.leftIcon}
 
-                  <Text numberOfLines={1}>{setting.title}</Text>
+                    <Text numberOfLines={1}>{setting.title}</Text>
+                  </View>
+                  {setting.rightIcon}
                 </View>
-                {setting.rightIcon}
-              </View>
-              <Divider />
-            </TouchableOpacity>
-          ))}
-        </View>
+                <Divider />
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        <Button
-          onPress={handlePress}
-          icon={isLoading ? "" : "logout"}
-          textColor="red"
-          style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
-          labelStyle={{ fontWeight: "bold" }}
-          contentStyle={{ paddingVertical: 4 }}
-          mode="outlined"
-        >
-          {isLoading ? <ActivityIndicator /> : isBn ? "লগউট" : "Logout"}
-        </Button>
-      </View>
-    </ScrollView>
+          <Button
+            onPress={handlePress}
+            icon={isLoading ? "" : "logout"}
+            textColor="red"
+            style={{ borderRadius: 4, marginTop: 12, borderColor: "red" }}
+            labelStyle={{ fontWeight: "bold" }}
+            contentStyle={{ paddingVertical: 4 }}
+            mode="outlined">
+            {isLoading ? <ActivityIndicator /> : isBn ? "লগউট" : "Logout"}
+          </Button>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

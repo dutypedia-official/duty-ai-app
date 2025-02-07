@@ -92,7 +92,7 @@ export default function BuyStockForm() {
         console.log("Form submitted:", data);
         setIsSubmitting(false);
         router.push({
-          pathname: "/main/setting/buy-stock/confirm/[id]",
+          pathname: "/main/portfolio/buy-stock/confirm/[id]",
           params: {
             id: stockItem?.id.toString(),
             stockDetail: JSON.stringify({

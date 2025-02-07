@@ -45,7 +45,7 @@ export default function TransactionItemDetails() {
         `/portfolio/get/transaction/${params?.id}`,
         token
       );
-      console.log("data------------------", JSON.stringify(data));
+      // console.log("data------------------", JSON.stringify(data));
 
       setStockDetail(data);
 
@@ -430,8 +430,8 @@ export default function TransactionItemDetails() {
                     fontWeight: "bold",
                   }}>
                   {stockDetail?.loss > 0
-                    ? `-৳${stockDetail?.loss}`
-                    : `✅ +৳${stockDetail?.profit}`}
+                    ? `-৳${formatFloat(stockDetail?.loss)}`
+                    : `✅ +৳${formatFloat(stockDetail?.profit)}`}
                 </Text>
               </View>
             </View>

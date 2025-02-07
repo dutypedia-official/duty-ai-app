@@ -1,10 +1,11 @@
 import { apiClientPortfolio } from "@/lib/api";
+import useChat from "@/lib/hooks/useChat";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
 import {
   calcBroFeeAmount,
   formatFloat,
-  getProfitOrLoss,
+  // getProfitOrLoss,
   getRiskLevel,
   isHighRisk,
 } from "@/lib/utils";
@@ -32,7 +33,9 @@ export default function SellStock() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { refreshHold, setRefreshHold } = useUi();
+  const { refreshHold, setRefreshHold, totalInvestment, balance, freeBalance } =
+    useUi();
+  const { setTemplate, setActiveConversationId, setPrompt } = useChat();
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
   const clientPortfolio = apiClientPortfolio();
@@ -59,15 +62,13 @@ export default function SellStock() {
 
   useEffect(() => {
     fetchData();
-  }, [isFocused]);
-
-  // console.log("stockDetail--------------", JSON.stringify(stockDetail));
+  }, []);
 
   const totalBuy = stockDetail?.avgCost * stockDetail?.quantity;
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
-      value: `৳${stockDetail?.avgCost}`,
+      value: `৳${formatFloat(stockDetail?.avgCost)}`,
     },
     {
       name: isBn ? "পরিমাণ" : "Quantity ",
@@ -85,14 +86,24 @@ export default function SellStock() {
     },
   ];
 
-  console.log("stockDetail---------", stockDetail);
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   const isRisk = isHighRisk(stockDetail?.risk) === "true" ? true : false;
 
-  const isLoss =
-    getProfitOrLoss(stockDetail?.profit) === "Profit" ? false : true;
+  const isLoss = stockDetail?.profit?.toString().startsWith("-") ? true : false;
 
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
   return (
     <View
       style={{
@@ -390,7 +401,13 @@ export default function SellStock() {
                       fontStyle: "italic",
                       fontSize: 16,
                     }}>
-                    {getProfitOrLoss(stockDetail?.profit)}
+                    {stockDetail?.profit?.toString().startsWith("-")
+                      ? isBn
+                        ? "লস"
+                        : "Loss"
+                      : isBn
+                      ? "লাভ"
+                      : "Profit"}
                   </Text>
                 </View>
                 <View
@@ -449,7 +466,7 @@ export default function SellStock() {
                     onPress={() => {
                       router.push({
                         pathname:
-                          "/main/setting/sell-stock/sell-stock-form/[id]",
+                          "/main/portfolio/sell-stock/sell-stock-form/[id]",
                         params: {
                           id: stockDetail?.id,
                           stockDetail: JSON.stringify(stockDetail),
@@ -535,7 +552,27 @@ export default function SellStock() {
                     </LinearGradient>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      setTemplate("finance");
+                      setActiveConversationId(null);
+                      setPrompt(
+                        `I have some stock in DSEBD: ${
+                          stockDetail?.stock?.symbol
+                        } company. My stock details: Buy Price: ${formatFloat(
+                          stockDetail?.avgCost
+                        )}৳ Quantity: ${stockDetail?.quantity} Broker Fee: ${
+                          stockDetail?.brokerFee
+                        }% Total Buy Amount: ${formatFloat(
+                          stockDetail?.total
+                        )}৳ and current stock price is ${
+                          stockDetail?.stock?.close
+                        }৳. Should I sell this stock at this price?`
+                      );
+                      router.push({
+                        pathname: "/main/portfolio/chat",
+                        params: { fromPath: "list" },
+                      });
+                    }}
                     style={{
                       flex: 1,
                       shadowColor: "#1E90FF",

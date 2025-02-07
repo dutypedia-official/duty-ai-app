@@ -110,7 +110,7 @@ export default function SellStockForm() {
         setRefreshHold(!refreshHold);
         setIsSubmitting(false);
         router.push({
-          pathname: "/main/setting/sell-stock/placedOrder/[id]",
+          pathname: "/main/portfolio/sell-stock/placedOrder/[id]",
           params: {
             id: stockDetail?.id,
             stockDetail: JSON.stringify({

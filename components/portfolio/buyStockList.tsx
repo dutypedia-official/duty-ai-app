@@ -123,7 +123,7 @@ const SignalList = ({
             <TouchableOpacity
               onPress={() => {
                 router.push({
-                  pathname: "/main/setting/buy-stock/[id]",
+                  pathname: "/main/portfolio/buy-stock/[id]",
                   params: {
                     id: item?.id,
                     stockItem: JSON.stringify(item),

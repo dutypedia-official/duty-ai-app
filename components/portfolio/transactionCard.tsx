@@ -186,7 +186,7 @@ export default function TransactionCard() {
           </Text>
 
           <TouchableOpacity
-            onPress={() => router.push("/main/setting/transaction-history")}
+            onPress={() => router.push("/main/portfolio/transaction-history")}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -307,8 +307,8 @@ export default function TransactionCard() {
                             }
                             subTitle={
                               isBn
-                                ? "Monitor your investments to minimize risks"
-                                : "আপনার বিনিয়োগ মনিটর করুন এবং ঝুঁকি কমানোর চেষ্টা করুন"
+                                ? "আপনার বিনিয়োগ মনিটর করুন এবং ঝুঁকি কমানোর চেষ্টা করুন"
+                                : "Monitor your investments to minimize risks"
                             }
                           />
                         )}

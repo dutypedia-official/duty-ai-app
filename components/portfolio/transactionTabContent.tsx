@@ -27,7 +27,7 @@ export default function TransactionTabContent({
         <TouchableOpacity
           onPress={() => {
             router.push({
-              pathname: "/main/setting/transaction-history/[id]",
+              pathname: "/main/portfolio/transaction-history/[id]",
               params: {
                 id: item?.id.toString(),
               },
@@ -149,7 +149,7 @@ export default function TransactionTabContent({
         <TouchableOpacity
           onPress={() => {
             router.push({
-              pathname: "/main/setting/transaction-history/[id]",
+              pathname: "/main/portfolio/transaction-history/[id]",
               params: {
                 id: item?.id,
                 stockDetail: JSON.stringify(item),

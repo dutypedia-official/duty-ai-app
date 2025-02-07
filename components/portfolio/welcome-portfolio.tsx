@@ -1,4 +1,5 @@
-import usePortfolio from "@/lib/hooks/usePortfolio";
+import useLang from "@/lib/hooks/useLang";
+import { useUser } from "@clerk/clerk-expo";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -14,8 +15,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 import { portfolioEmptySvg } from "../svgs/portfolioEmptySvg";
-import useLang from "@/lib/hooks/useLang";
-import { useUser } from "@clerk/clerk-expo";
 
 export default function WelcomePortfolio() {
   const colorScheme = useColorScheme();
@@ -23,7 +22,6 @@ export default function WelcomePortfolio() {
   const { language } = useLang();
   const isBn = language === "bn";
   const insets = useSafeAreaInsets();
-  const { setIsPortfolio } = usePortfolio();
   const { user } = useUser();
 
   const users = [
@@ -190,8 +188,7 @@ export default function WelcomePortfolio() {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      setIsPortfolio(true);
-                      router.dismissTo("/main/setting/portfolio");
+                      router.dismissTo("/main/portfolio");
                     }}
                     style={{
                       flex: 1,

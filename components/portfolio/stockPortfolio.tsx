@@ -44,7 +44,7 @@ export default function StockPortfolio() {
         `/portfolio/get/holdings?page=${page}&perPage=${perPage}`,
         token
       );
-      setHoldings(data);
+      setHoldings(data?.items);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -77,7 +77,7 @@ export default function StockPortfolio() {
             {isBn ? "স্টক পোর্টফোলিও" : "Stock Portfolio"}
           </Text>
           <TouchableOpacity
-            onPress={() => router.push("/main/setting/stock-portfolio")}
+            onPress={() => router.push("/main/portfolio/stock-portfolio")}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -96,7 +96,7 @@ export default function StockPortfolio() {
           style={{
             gap: 24,
           }}>
-          {(holdings?.length || holdings?.items?.length) === 0 ? (
+          {holdings?.length === 0 ? (
             <View
               style={{
                 backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
@@ -170,11 +170,11 @@ export default function StockPortfolio() {
                   <ActivityIndicator />
                 </View>
               ) : (
-                holdings?.items?.map((item: any, i: number) => {
+                holdings?.map((item: any, i: number) => {
                   return (
                     <Fragment key={i}>
                       <PortfolioList
-                        isLast={holdings?.items?.length - 1 === i}
+                        isLast={holdings?.length - 1 === i}
                         item={item}
                       />
                     </Fragment>
@@ -187,7 +187,7 @@ export default function StockPortfolio() {
           <TouchableOpacity
             disabled={parseFloat(freeBalance) === 0}
             onPress={() => {
-              router.push("/main/setting/buy-stock");
+              router.push("/main/portfolio/buy-stock");
             }}
             style={{
               width: "100%",

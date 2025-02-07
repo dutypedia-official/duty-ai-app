@@ -16,16 +16,19 @@ export default function Portfolio() {
     setFreeBalance,
     setTotalInvestment,
     setTotalCurrentMarketValue,
+    setTotalBrokerFee,
     setIsLoading,
     refreash,
   } = useUi();
 
-  const fetchDataFeed = async (init: boolean = true) => {
+  const fetchData = async (init: boolean = true) => {
     try {
       setIsLoading(true);
       const token = await getToken();
       const { data } = await clientPortfolio.get(`/portfolio/get`, token);
+      console.log("data-portfolio-------------", JSON.stringify(data));
       setTotalInvestment(data?.totalInvestment);
+      setTotalBrokerFee(data?.totalBrokerFee);
       setBalance(data?.portfolio?.balance);
       setFreeBalance(data?.portfolio?.free);
       setTotalCurrentMarketValue(data?.totalCurrentMarketValue);
@@ -38,7 +41,7 @@ export default function Portfolio() {
   };
 
   useEffect(() => {
-    fetchDataFeed();
+    fetchData();
   }, [refreash]);
 
   return (

@@ -26,16 +26,6 @@ import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
 import { apiClientPortfolio } from "@/lib/api";
 
-const schema = z.object({
-  amount: z
-    .string({
-      required_error: "Required",
-    })
-    .min(1, {
-      message: "Required",
-    }),
-});
-
 export default function DepositCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
   const isDark = colorscheme === "dark";
@@ -47,11 +37,27 @@ export default function DepositCard({ open, setOpen }: any) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { balance, setRefreash, refreash } = useUi();
   const [isFocused, setIsFocused] = useState(false);
+  const [esPlay, setEsPlay] = useState(false);
+  const [newBalance, setNewBalance] = useState(false);
+  const [customErr, setCustomErr] = useState<any>(null);
+
+  console.log("balance--------", balance);
+  const schema = z.object({
+    amount: z.coerce
+      .number()
+      .min(1, { message: "Minimum ৳1 required!" })
+      .max(1000000000, {
+        message: `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
+      })
+      .refine((value) => balance + value < "1000000000", {
+        message: `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
+      }),
+  });
 
   const {
     control,
     handleSubmit,
-    formState: {},
+    formState: { errors },
     watch,
     reset,
   } = useForm({
@@ -61,6 +67,30 @@ export default function DepositCard({ open, setOpen }: any) {
     },
   });
 
+  // Function to play a Err sound
+  const playSoundErr = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setEsPlay(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setEsPlay(false);
+    }
+  };
+
+  // Play error sound when validation errors occur
+  useEffect(() => {
+    if (errors.amount?.message && esPlay) {
+      playSoundErr(require("@/assets/error.mp3")); // Play error sound
+    }
+  }, [errors.amount]);
+
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
@@ -68,6 +98,7 @@ export default function DepositCard({ open, setOpen }: any) {
     Keyboard.dismiss();
     const sound = new Audio.Sound();
     try {
+      setCustomErr(null);
       setIsSubmitting(true);
       const token = await getToken();
       await clientPortfolio.post(
@@ -89,9 +120,11 @@ export default function DepositCard({ open, setOpen }: any) {
           setIsSubmitting(false);
           setOpen(false);
           setRefreash(!refreash);
+          setNewBalance(true);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
+      setCustomErr("Something went wrong");
       // Load the MP3 file
       await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
       await sound.playAsync();
@@ -100,6 +133,7 @@ export default function DepositCard({ open, setOpen }: any) {
         if (status.isLoaded && status.didJustFinish) {
           sound.unloadAsync(); // Clean up
           setIsSubmitting(false);
+          setNewBalance(false);
         }
       });
       console.log(error);
@@ -109,7 +143,33 @@ export default function DepositCard({ open, setOpen }: any) {
   useEffect(() => {
     reset();
     setIsSubmitting(false);
+    setEsPlay(false);
+    setNewBalance(false);
   }, [open]);
+
+  // Function to play a sound
+  const playSound = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setNewBalance(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setNewBalance(false);
+    }
+  };
+
+  // Play Ring sound when new balance add
+  useEffect(() => {
+    if (newBalance) {
+      playSound(require("@/assets/ring.mp3")); // Play Ring sound
+    }
+  }, [newBalance]);
 
   return (
     <Modal
@@ -248,6 +308,11 @@ export default function DepositCard({ open, setOpen }: any) {
                       />
                     )}
                   />
+                  {customErr && (
+                    <Text style={{ marginTop: -4, color: "#EC2700" }}>
+                      {customErr}
+                    </Text>
+                  )}
                 </View>
                 <LinearGradient
                   colors={
@@ -317,6 +382,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       // disabled={!isFormValid}
                       onPress={() => {
                         handleSubmit(onSubmit)();
+                        setEsPlay(true);
                       }}
                       style={{
                         flex: 1,

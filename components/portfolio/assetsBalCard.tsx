@@ -23,15 +23,23 @@ export default function AssetsBalCard() {
   const { language } = useLang();
   const isBn = language === "bn";
   const { user } = useUser();
-  const { totalInvestment, freeBalance, balance, totalCurrentMarketValue } =
-    useUi();
+  const {
+    totalInvestment,
+    freeBalance,
+    balance,
+    totalCurrentMarketValue,
+    totalBrokerFee,
+  } = useUi();
   const [isDeposit, setIsDeposit] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
   const currentProfit =
-    Number(totalCurrentMarketValue) - Number(totalInvestment);
-  const logoUrl = user?.imageUrl;
-  const isNeg = false;
+    Number(totalCurrentMarketValue) -
+    (Number(totalInvestment) + Number(totalBrokerFee));
 
+  const logoUrl = user?.imageUrl;
+  const isNeg = currentProfit >= 0 ? false : true;
+
+  const depositDisable = parseFloat(balance) >= 1000000000;
   return (
     <SafeAreaView>
       <View
@@ -202,8 +210,8 @@ export default function AssetsBalCard() {
                   fontSize: 16,
                 }}>
                 {currentProfit >= 0
-                  ? `+৳${currentProfit.toFixed(2)}`
-                  : `-৳${currentProfit.toFixed(2)}`}
+                  ? `+৳${Math.abs(currentProfit).toFixed(2)}`
+                  : `-৳${Math.abs(currentProfit).toFixed(2)}`}
               </Text>
             </View>
             {/* )} */}
@@ -288,19 +296,29 @@ export default function AssetsBalCard() {
                   gap: 12,
                 }}>
                 <TouchableOpacity
+                  disabled={depositDisable}
                   onPress={() => {
                     setIsDeposit(true);
                   }}
                   style={{
                     flex: 1,
-                    shadowColor: "#1E90FF",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.4,
-                    shadowRadius: 4,
-                    elevation: 4,
+                    shadowColor: depositDisable ? "transparent" : "#1E90FF",
+                    shadowOffset: {
+                      width: 0,
+                      height: depositDisable ? 0 : 2,
+                    },
+                    shadowOpacity: depositDisable ? 1 : 0.4,
+                    shadowRadius: depositDisable ? 0 : 4,
+                    elevation: depositDisable ? 0 : 4,
                   }}>
                   <LinearGradient
-                    colors={["#1E90FF", "#007BFF"]}
+                    colors={
+                      depositDisable
+                        ? isDark
+                          ? ["#3C3C47", "#3C3C47"]
+                          : ["#E0E0E0", "#E0E0E0"]
+                        : ["#1E90FF", "#007BFF"]
+                    }
                     start={{
                       x: 0,
                       y: 0,
@@ -326,21 +344,22 @@ export default function AssetsBalCard() {
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  disabled={parseFloat(freeBalance) === 0 ? true : false}
                   onPress={() => {
                     setIsWithdraw(true);
                   }}
                   style={{
                     flex: 1,
                     shadowColor:
-                      totalInvestment === "0" ? "transparent" : "#FF4500",
+                      parseFloat(freeBalance) === 0 ? "transparent" : "#FF4500",
                     shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: totalInvestment === "0" ? 0 : 0.4,
+                    shadowOpacity: parseFloat(freeBalance) === 0 ? 0 : 0.4,
                     shadowRadius: 4,
                     elevation: 4,
                   }}>
                   <LinearGradient
                     colors={
-                      totalInvestment === "0"
+                      parseFloat(freeBalance) === 0
                         ? isDark
                           ? ["#3C3C47", "#3C3C47"]
                           : ["#E0E0E0", "#E0E0E0"]
@@ -364,7 +383,8 @@ export default function AssetsBalCard() {
                     <Text
                       style={{
                         fontSize: 14,
-                        color: totalInvestment === "0" ? "#A0A0A0" : "#FFFFFF",
+                        color:
+                          parseFloat(freeBalance) === 0 ? "#A0A0A0" : "#FFFFFF",
                       }}>
                       {isBn ? "উত্তোলন করুন" : "Withdraw"}
                     </Text>
