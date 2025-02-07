@@ -30,7 +30,6 @@ import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
-import * as Network from "expo-network";
 
 const CURRENT_IOS_VERSION = 11;
 const CURRENT_ANDROID_VERSION = 11;
@@ -194,7 +193,8 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}>
+      tokenCache={tokenCache}
+    >
       <RootLayoutNav />
     </ClerkProvider>
   );
