@@ -408,8 +408,8 @@ export default function PlacedOrderSell() {
                     fontWeight: "bold",
                   }}>
                   {soldDetails?.transaction?.loss > 0
-                    ? `-৳${soldDetails?.transaction?.loss}`
-                    : `✅ +৳${soldDetails?.transaction?.profit}`}
+                    ? `-৳${formatFloat(soldDetails?.transaction?.loss)}`
+                    : `✅ +৳${formatFloat(soldDetails?.transaction?.profit)}`}
                 </Text>
               </View>
             </View>

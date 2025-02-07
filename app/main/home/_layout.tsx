@@ -25,6 +25,14 @@ export default function Layout() {
           headerTintColor: isDark ? "#FFFFFF" : "#000306",
         }}
       />
+      <Stack.Screen
+        name="setting"
+        options={{
+          title: "Setting",
+          headerShown: false,
+          headerBackTitle: "Back",
+        }}
+      />
     </Stack>
   );
 }

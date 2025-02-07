@@ -417,7 +417,7 @@ export default function UpdateSetting() {
               </View>
               <View style={{ gap: 16 }}>
                 <TouchableOpacity
-                  onPress={() => router.push("/main/setting/recharge")}>
+                  onPress={() => router.push("/main/home/setting/recharge")}>
                   <LinearGradient
                     colors={["#2ECC71", "#3498DB"]}
                     style={{

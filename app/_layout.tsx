@@ -24,7 +24,12 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { ActivityIndicator, Alert, Platform, Text, View } from "react-native";
 import useSocket from "@/lib/hooks/useSocket";
-import { apiClient, isServerAvailable, MAIN_SERVER_URL } from "@/lib/api";
+import {
+  apiClient,
+  apiClientPortfolio,
+  isServerAvailable,
+  MAIN_SERVER_URL,
+} from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
@@ -208,14 +213,20 @@ function RootLayoutNav() {
   const [isLoading, setIsLoading] = useState(true);
   const { socket } = useSocket();
   const client = apiClient();
+  const clientPortfolio = apiClientPortfolio();
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
-  const { setRefreash, refreash, mainServerAvailable, setMainServerAvailable } =
-    useUi();
+  const {
+    setRefreash,
+    refreash,
+    mainServerAvailable,
+    setMainServerAvailable,
+    setPortfolioStatus,
+  } = useUi();
   const [expoPushToken, setExpoPushToken] = useState("");
   const { user } = useUser();
   const { getToken } = useAuth();
@@ -334,6 +345,28 @@ function RootLayoutNav() {
       setLanguage(defaultLanguage);
     }
   }, [language, setLanguage]);
+
+  const fetchDataPortfolio = async (init: boolean = true) => {
+    try {
+      setIsLoading(true);
+      const token = await getToken();
+      const { data } = await clientPortfolio.get(
+        `/portfolio/get/portfolio/status`,
+        token
+      );
+
+      setPortfolioStatus(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataPortfolio();
+  }, []);
 
   const feedback = !true;
   useEffect(() => {

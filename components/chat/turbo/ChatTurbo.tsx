@@ -245,6 +245,8 @@ const ChatTurbo = ({ fromPath }: any) => {
           ? `${baseUrl}/chat/forex`
           : template == "scanner"
           ? `${baseUrl}/chat/screener`
+          : template == "portfolio"
+          ? `${baseUrl}/chat/finance`
           : `${baseUrl}/chat/pro`;
 
       const urlLocal =
@@ -254,7 +256,10 @@ const ChatTurbo = ({ fromPath }: any) => {
           ? `http://192.168.0.102:8000/chat/forex`
           : template == "scanner"
           ? `http://192.168.0.102:8000/chat/screener`
+          : template == "portfolio"
+          ? `http://192.168.0.102:8000/chat/finance`
           : `http://192.168.0.102:8000/chat/pro`;
+
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,
@@ -415,6 +420,7 @@ const ChatTurbo = ({ fromPath }: any) => {
           backgroundColor: "transparent",
         }}>
         <Pressable
+          key={item?.createdAt.toString()}
           onLongPress={async () => {
             await Clipboard.setStringAsync(item.text);
             Toast.show({
@@ -803,6 +809,10 @@ const ChatTurbo = ({ fromPath }: any) => {
       return "Enter currency pair name";
     }
   };
+
+  useEffect(() => {
+    console.log("relatedPrompts---------", relatedPrompts);
+  }, [relatedPrompts]);
 
   return (
     <SafeAreaView

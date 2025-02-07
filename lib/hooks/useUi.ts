@@ -26,8 +26,12 @@ interface Store {
   setFreeBalance: (freeBalance: string) => void;
   totalCurrentMarketValue: any;
   setTotalCurrentMarketValue: (totalCurrentMarketValue: any) => void;
+  totalBrokerFee: any;
+  setTotalBrokerFee: (totalBrokerFee: any) => void;
   refreshHold: boolean;
   setRefreshHold: (refreshHold: boolean) => void;
+  portfolioStatus: any;
+  setPortfolioStatus: (portfolioStatus: any) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -52,6 +56,8 @@ const useUi = create<Store>((set, get) => ({
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   totalInvestment: "0",
   setTotalInvestment: (totalInvestment: string) => set({ totalInvestment }),
+  totalBrokerFee: "0",
+  setTotalBrokerFee: (totalBrokerFee: string) => set({ totalBrokerFee }),
   balance: "0",
   setBalance: (balance: string) => set({ balance }),
   freeBalance: "0",
@@ -61,6 +67,8 @@ const useUi = create<Store>((set, get) => ({
     set({ totalCurrentMarketValue }),
   refreshHold: false,
   setRefreshHold: (refreshHold: boolean) => set({ refreshHold }),
+  portfolioStatus: null,
+  setPortfolioStatus: (portfolioStatus: any) => set({ portfolioStatus }),
 }));
 
 export default useUi;

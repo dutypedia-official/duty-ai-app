@@ -431,8 +431,8 @@ export default function TransactionHistory() {
                       }
                       subTitle={
                         isBn
-                          ? "Monitor your investments to minimize risks"
-                          : "আপনার বিনিয়োগ মনিটর করুন এবং ঝুঁকি কমানোর চেষ্টা করুন"
+                          ? "আপনার বিনিয়োগ মনিটর করুন এবং ঝুঁকি কমানোর চেষ্টা করুন"
+                          : "Monitor your investments to minimize risks"
                       }
                     />
                   )}

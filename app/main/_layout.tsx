@@ -1,11 +1,11 @@
 import { SafeAreaView, useThemeColor, View } from "@/components/Themed";
-import { apiClient } from "@/lib/api";
+import { apiClient, apiClientPortfolio } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
 import useFeedData from "@/lib/hooks/useFeedData";
 import useLang from "@/lib/hooks/useLang";
 import useStockData from "@/lib/hooks/useStockData";
 import useUi from "@/lib/hooks/useUi";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import IonIcon from "@expo/vector-icons/Ionicons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -18,6 +18,7 @@ import {
   StyleSheet,
   useColorScheme,
   Text,
+  Image,
   Animated,
   TouchableOpacity,
   Pressable,
@@ -27,11 +28,12 @@ import Colors from "../../constants/Colors";
 import PagerView from "react-native-pager-view";
 import Feed from "./feed";
 import DiscoverScreen from "./discover";
-import SettingScreen from "./setting";
+import SettingScreen from "./home/setting";
 import ChatScreen from "./home";
 import Noti from "./notification";
-import ChangeMarket from "./setting/change-market";
+import ChangeMarket from "./home/setting/change-market";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -52,6 +54,8 @@ function TabBarIconLine(props: {
 
 export default function TabLayout() {
   const { getToken } = useAuth();
+  const { user } = useUser();
+  const clientPortfolio = apiClientPortfolio();
   const [count, setCount] = useState(0);
   const colorScheme = useColorScheme();
   const langStore = useLang();
@@ -62,6 +66,7 @@ export default function TabLayout() {
     mainServerAvailable,
     hideTabNav,
     setHideTabNav,
+    portfolioStatus,
   } = useUi();
   const isBn = language === "bn";
   const segments: any = useSegments();
@@ -200,6 +205,12 @@ export default function TabLayout() {
     console.log("fetching data fev");
   }, []);
 
+  const logoUrl = user?.imageUrl;
+
+  console.log(
+    "portfolio initial route",
+    !portfolioStatus ? "welcome-portfolio" : "index"
+  );
   // const pagerRef = useRef<PagerView>(null);
   // const [currentPage, setCurrentPage] = useState(2);
 
@@ -361,11 +372,120 @@ export default function TabLayout() {
         />
 
         <Tabs.Screen
-          name="setting"
+          name="portfolio"
+          // listeners={() => {
+          //   return {
+          //     tabPress: (e) => {
+          //       e.preventDefault();
+          //       portfolioStatus === null
+          //         ? router.push("/main/portfolio/welcome-portfolio")
+          //         : router.push("/main/portfolio/portfolio");
+          //     },
+          //   };
+          // }}
           options={{
-            title: isBn ? "সেটিং" : "Setting",
+            title: isBn ? "পোর্টফলিও" : "Portfolio",
             headerShown: false,
-            tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <LinearGradient
+                  colors={
+                    isDark ? ["#C2FF58", "#C2FF58"] : ["#C2FF58", "#C2FF58"]
+                  }
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 999,
+                    overflow: "hidden",
+                    position: "relative",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 1,
+                  }}>
+                  <View
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#FFFFFF",
+                      borderRadius: 999,
+                      alignContent: "center",
+                      justifyContent: "center",
+                    }}>
+                    {!logoUrl && (
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12,
+                          color: "#1E1E1E",
+                          textAlign: "center",
+                          textAlignVertical: "center",
+                        }}>
+                        {user?.firstName![0]}
+                      </Text>
+                    )}
+                    {logoUrl && (
+                      <Image
+                        source={{ uri: logoUrl }}
+                        style={{
+                          borderRadius: 999,
+                          width: "100%",
+                          height: "100%",
+                          resizeMode: "cover",
+                        }}
+                      />
+                    )}
+                  </View>
+                </LinearGradient>
+              ) : (
+                <LinearGradient
+                  colors={
+                    isDark ? ["#808080", "#808080"] : ["#808080", "#808080"]
+                  }
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 999,
+                    overflow: "hidden",
+                    position: "relative",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 1,
+                  }}>
+                  <View
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#FFFFFF",
+                      borderRadius: 999,
+                      alignContent: "center",
+                      justifyContent: "center",
+                    }}>
+                    {!logoUrl && (
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12,
+                          color: "#1E1E1E",
+                          textAlign: "center",
+                          textAlignVertical: "center",
+                        }}>
+                        {user?.firstName![0]}
+                      </Text>
+                    )}
+                    {logoUrl && (
+                      <Image
+                        source={{ uri: logoUrl }}
+                        style={{
+                          borderRadius: 999,
+                          width: "100%",
+                          height: "100%",
+                          resizeMode: "cover",
+                        }}
+                      />
+                    )}
+                  </View>
+                </LinearGradient>
+              ),
           }}
         />
       </Tabs>

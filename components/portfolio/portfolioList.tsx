@@ -31,7 +31,7 @@ export default function PortfolioList({
     <TouchableOpacity
       onPress={() => {
         router.push({
-          pathname: "/main/setting/sell-stock/[id]",
+          pathname: "/main/portfolio/sell-stock/[id]",
           params: {
             id: item?.id,
             stock: JSON.stringify(item),

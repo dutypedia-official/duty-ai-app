@@ -188,9 +188,9 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
           backgroundColor: "transparent",
           marginTop: template === "scanner" ? insets.top + 28 : 0,
         }}>
-        {/* {template === "finance" && (
+        {template === "finance" && (
           <TouchableOpacity
-            onPress={() => router.push("/main/setting/portfolio")}
+            onPress={() => router.push("/main/home/setting")}
             style={{
               position: "absolute",
               top: 0,
@@ -220,7 +220,7 @@ const RenderChatEmpty = ({ onPressRelated }: any) => {
               />
             </View>
           </TouchableOpacity>
-        )} */}
+        )}
         <View style={{ marginBottom: 40, backgroundColor: "transparent" }}>
           {template !== "scanner" ? (
             <Text

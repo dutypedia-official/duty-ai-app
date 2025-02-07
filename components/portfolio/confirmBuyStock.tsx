@@ -1,31 +1,27 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  Dimensions,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons";
-import { SvgUri } from "react-native-svg";
-import * as WebBrowser from "expo-web-browser";
+import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
-import { format } from "date-fns";
+import useUi from "@/lib/hooks/useUi";
 import {
   calcBroFeeAmount,
   calcTotalWithFee,
   formatFloat,
   getRiskLevel,
   isHighRisk,
-  isLossItem,
 } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
-import { apiClientPortfolio } from "@/lib/api";
+import { format } from "date-fns";
 import { Audio } from "expo-av";
-import useUi from "@/lib/hooks/useUi";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+import { SvgUri } from "react-native-svg";
 
 export default function ConfirmBuyStock() {
   const params = useLocalSearchParams();
@@ -115,7 +111,7 @@ export default function ConfirmBuyStock() {
       setRefreash(!refreash);
       setIsSubmitting(false);
       router.dismissTo({
-        pathname: "/main/setting/buy-stock/placedOrder/[id]",
+        pathname: "/main/portfolio/buy-stock/placedOrder/[id]",
         params: {
           id: stockDetail.id.toString(),
           stockDetail: JSON.stringify({ ...stockDetail, aiRisk }),
@@ -151,6 +147,7 @@ export default function ConfirmBuyStock() {
         <View
           style={{
             gap: 24,
+            marginTop: 40,
           }}>
           <LinearGradient
             colors={isDark ? ["#1A1A1A", "#1A1A1A"] : ["#F6F6F6", "#F6F6F6"]}
@@ -239,30 +236,35 @@ export default function ConfirmBuyStock() {
                     <ActivityIndicator />
                   </View>
                 ) : (
-                  <Text
-                    onPress={() => {
-                      setExpanded(!expanded);
-                    }}
+                  <View
                     style={{
-                      textAlign: "left",
-                      marginTop: 16, //20
-                      fontSize: 14,
-                      color: isDark ? "#B0B0B0" : "#004662",
+                      width: "100%",
                     }}>
-                    {expanded || !aiSummary
-                      ? aiSummary
-                      : aiSummary.substring(0, 186)}{" "}
-                    {aiSummary?.length > 186 && (
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                        }}>
-                        {expanded || !aiSummary
-                          ? "...Read Less"
-                          : "Read More..."}
-                      </Text>
-                    )}
-                  </Text>
+                    <Text
+                      onPress={() => {
+                        setExpanded(!expanded);
+                      }}
+                      style={{
+                        textAlign: "left",
+                        marginTop: 16, //20
+                        fontSize: 14,
+                        color: isDark ? "#B0B0B0" : "#004662",
+                      }}>
+                      {expanded || !aiSummary
+                        ? aiSummary
+                        : aiSummary.substring(0, 186)}{" "}
+                      {aiSummary?.length > 186 && (
+                        <Text
+                          style={{
+                            fontWeight: "bold",
+                          }}>
+                          {expanded || !aiSummary
+                            ? "...Read Less"
+                            : "Read More..."}
+                        </Text>
+                      )}
+                    </Text>
+                  </View>
                 )}
               </View>
             </View>
@@ -462,6 +464,7 @@ export default function ConfirmBuyStock() {
             marginTop: 24,
           }}>
           <TouchableOpacity
+            disabled={isAiLoading}
             onPress={onSubmit}
             style={{
               width: "100%",
@@ -475,7 +478,7 @@ export default function ConfirmBuyStock() {
             }}>
             <LinearGradient
               colors={
-                isSubmitting
+                isSubmitting || isAiLoading
                   ? isDark
                     ? ["#3C3C47", "#3C3C47"]
                     : ["#E0E0E0", "#E0E0E0"]
@@ -508,7 +511,11 @@ export default function ConfirmBuyStock() {
                   <Text
                     style={{
                       fontSize: 14,
-                      color: "#FFFFFF",
+                      color: isAiLoading
+                        ? isDark
+                          ? "#666666"
+                          : "#A0A0A0"
+                        : "#FFFFFF",
                       fontWeight: "bold",
                     }}>
                     {isBn ? "নিশ্চিত করুন" : "Confirm"}

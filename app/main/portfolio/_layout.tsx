@@ -1,5 +1,5 @@
 import { useThemeColor } from "@/components/Themed";
-import usePortfolio from "@/lib/hooks/usePortfolio";
+import useUi from "@/lib/hooks/useUi";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
@@ -7,8 +7,9 @@ export default function Layout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
-  const { isPortfolio } = usePortfolio();
+  const { portfolioStatus } = useUi();
 
+  console.log("portfolio status--------", portfolioStatus);
   return (
     <Stack
       screenOptions={{
@@ -16,75 +17,18 @@ export default function Layout() {
           backgroundColor: bgColor,
         },
       }}
-    >
-      {/* <Stack.Screen name="index" options={{ title: "Setting" }} /> */}
-
-      {isPortfolio ? (
-        <Stack.Screen
-          name="portfolio"
-          options={{
-            title: "Portfolio",
-            headerShown: false,
-          }}
-        />
-      ) : (
-        <Stack.Screen
-          name="welcome-portfolio"
-          options={{
-            title: "Welcome Portfolio",
-            headerShown: false,
-          }}
-        />
-      )}
-
+      initialRouteName={!portfolioStatus ? "welcome-portfolio" : "index"}>
       <Stack.Screen
-        name="delete-account"
-        options={{ title: "Delete Account" }}
-      />
-      <Stack.Screen name="support" options={{ title: "Support" }} />
-      <Stack.Screen
-        name="language"
-        options={{ title: "Language & Translator" }}
-      />
-      <Stack.Screen name="translator" options={{ title: "Translator" }} />
-      <Stack.Screen
-        name="translate-to"
-        options={{ title: "Select Language" }}
-      />
-      <Stack.Screen
-        name="select-language"
-        options={{ title: "Select Language" }}
-      />
-      <Stack.Screen
-        name="change-market"
+        name="welcome-portfolio"
         options={{
-          title: "Change Market",
-          headerShown: false,
-          headerTitleStyle: {
-            color: isDark ? "#FFFFFF" : "#1E1E1E",
-          },
-        }}
-      />
-
-      <Stack.Screen
-        name="update-setting"
-        options={{
-          title: "",
-          headerShown: false,
-        }}
-      />
-
-      <Stack.Screen
-        name="recharge"
-        options={{
-          title: "Recharge",
+          title: "Welcome Portfolio",
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="recharge-history"
+        name="index"
         options={{
-          title: "Recharge History",
+          title: "Portfolio",
           headerShown: false,
         }}
       />
@@ -157,6 +101,13 @@ export default function Layout() {
         name="stock-portfolio"
         options={{
           title: "Stock Portfolio",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="chat"
+        options={{
+          title: "chat",
           headerShown: false,
         }}
       />

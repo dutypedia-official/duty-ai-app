@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -33,9 +33,9 @@ export default function WithdrawCard({ open, setOpen }: any) {
   const { getToken } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { freeBalance, setRefreash, refreash } = useUi();
-  const hasPositiveBalance = parseFloat(freeBalance) > 0;
-
+  const [esPlay, setEsPlay] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [afterWithdraw, setAfterWithdraw] = useState(false);
 
   const schema = z.object({
     amount: z
@@ -44,6 +44,9 @@ export default function WithdrawCard({ open, setOpen }: any) {
       })
       .min(1, {
         message: "Amount is required", // Error message for minimum length
+      })
+      .max(1000000000, {
+        message: `Maximum allowed amount is 1 Billion`,
       })
       .refine(
         (value) => {
@@ -72,6 +75,58 @@ export default function WithdrawCard({ open, setOpen }: any) {
     },
   });
 
+  // Function to play a sound
+  const playSound = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setEsPlay(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setEsPlay(false);
+    }
+  };
+
+  // Play error sound when validation errors occur
+  useEffect(() => {
+    if (errors.amount?.message && esPlay) {
+      playSound(require("@/assets/error.mp3")); // Play error sound
+    }
+  }, [errors.amount]);
+
+  // Function to play a sound
+  const playSoundAfterWithdraw = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setAfterWithdraw(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setAfterWithdraw(false);
+    }
+  };
+
+  const afterWithdrawRef = useRef(false);
+
+  useEffect(() => {
+    if (afterWithdraw && !afterWithdrawRef.current) {
+      afterWithdrawRef.current = true; // Mark it as played
+      setTimeout(() => {
+        playSoundAfterWithdraw(require("@/assets/coin-add.mp3"));
+      }, 1800);
+    }
+  }, [afterWithdraw]);
+
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
 
@@ -91,7 +146,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
       );
 
       // Load the MP3 file
-      await sound.loadAsync(require("../../assets/banknote.mp3")); // Replace with your MP3 path
+      await sound.loadAsync(require("@/assets/banknote.mp3")); // Replace with your MP3 path
       await sound.playAsync();
       // Wait for playback to finish
       sound.setOnPlaybackStatusUpdate((status) => {
@@ -100,6 +155,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
           setRefreash(!refreash);
           setIsSubmitting(false);
           setOpen(false);
+          setAfterWithdraw(true);
         }
       });
     } catch (error) {
@@ -111,6 +167,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
         if (status.isLoaded && status.didJustFinish) {
           sound.unloadAsync(); // Clean up
           setIsSubmitting(false);
+          setAfterWithdraw(false);
         }
       });
       console.log(error);
@@ -120,25 +177,9 @@ export default function WithdrawCard({ open, setOpen }: any) {
   useEffect(() => {
     reset();
     setIsSubmitting(false);
+    setEsPlay(false);
+    setAfterWithdraw(false);
   }, [open]);
-
-  // const [play, setPlay] = useState(false);
-  // const valid = values.amount;
-
-  // console.log("valid---------", valid, "play------", play);
-
-  // const playSound = async () => {
-  //   const sound = new Audio.Sound();
-  //   // Load the MP3 file
-  //   await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
-  //   await sound.playAsync();
-  //   // Wait for playback to finish
-  //   sound.setOnPlaybackStatusUpdate((status) => {
-  //     if (status.isLoaded && status.didJustFinish) {
-  //       sound.unloadAsync(); // Clean up
-  //     }
-  //   });
-  // };
 
   return (
     <Modal
@@ -343,6 +384,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     <TouchableOpacity
                       onPress={() => {
                         handleSubmit(onSubmit)();
+                        setEsPlay(true);
                       }}
                       style={{
                         flex: 1,

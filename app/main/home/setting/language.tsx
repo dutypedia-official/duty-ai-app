@@ -12,9 +12,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as WebBrowser from "expo-web-browser";
-import { Switch } from "react-native-paper";
 
-export default function TranslateToScreen() {
+export default function LanguageScreen() {
   const { signOut, isSignedIn, getToken } = useAuth();
   const { user } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName);
@@ -23,8 +22,13 @@ export default function TranslateToScreen() {
   const router = useRouter();
   const textColor = useThemeColor({}, "text");
   const langStore = useLang();
-  const { language, autoTranslateTo, isTranslate, setIsTranslate } = langStore;
+  const { language, setLanguage, setAutoTranslateTo } = langStore;
   const isBn = language === "bn";
+
+  const test = async () => {
+    const token = await getToken();
+    console.log(token);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -38,31 +42,21 @@ export default function TranslateToScreen() {
 
   const generalSettings = [
     {
-      title: isBn ? "অনুবাদ করুন" : "Translate to",
+      title: isBn ? "ভাষা" : "App Language",
       leftIcon: <Ionicons name="language" size={24} color={textColor} />,
-      rightIcon: (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ textTransform: "capitalize" }}>
-            {autoTranslateTo ? autoTranslateTo : ""}{" "}
-          </Text>
-          <Ionicons name="chevron-forward" size={24} color={textColor} />
-        </View>
-      ),
+      rightIcon: <Text>{!isBn ? "বাংলা" : "English"}</Text>,
       action: () => {
-        router.push("/main/setting/translate-to");
+        setLanguage(language == "bn" ? "en" : "bn");
       },
     },
     {
       title: isBn ? "অনুবাদক" : "Translator",
       leftIcon: <Ionicons name="help-buoy" size={24} color={textColor} />,
       rightIcon: (
-        <Switch
-          value={isTranslate}
-          onValueChange={() => setIsTranslate(!isTranslate)}
-        />
+        <Ionicons name="chevron-forward" size={24} color={textColor} />
       ),
       action: () => {
-        setIsTranslate(!isTranslate);
+        router.push("/main/home/setting/translator");
       },
     },
   ];
