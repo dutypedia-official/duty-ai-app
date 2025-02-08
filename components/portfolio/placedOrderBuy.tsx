@@ -19,6 +19,7 @@ import {
   getRiskLevel,
   isHighRisk,
   isLossItem,
+  playButtonSound,
 } from "@/lib/utils";
 import useUi from "@/lib/hooks/useUi";
 import { Audio } from "expo-av";
@@ -293,6 +294,8 @@ export default function PlacedOrderBuy() {
               </View>
               <View
                 style={{
+                  borderBottomLeftRadius: 16,
+                  borderBottomRightRadius: 16,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   borderTopWidth: 1,
@@ -371,6 +374,7 @@ export default function PlacedOrderBuy() {
           }}>
           <TouchableOpacity
             onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
               router.dismissAll();
             }}
             style={{

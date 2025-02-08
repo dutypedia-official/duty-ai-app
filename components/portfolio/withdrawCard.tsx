@@ -1,7 +1,7 @@
 import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
-import { formattedBalance } from "@/lib/utils";
+import { formattedBalance, playButtonSound } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Audio } from "expo-av";
@@ -123,7 +123,9 @@ export default function WithdrawCard({ open, setOpen }: any) {
       afterWithdrawRef.current = true; // Mark it as played
       setTimeout(() => {
         playSoundAfterWithdraw(require("@/assets/coin-add.mp3"));
-      }, 1800);
+        // Reset ref after sound plays, allowing re-trigger
+        afterWithdrawRef.current = false;
+      }, 2000);
     }
   }, [afterWithdraw]);
 
@@ -343,6 +345,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     }}>
                     <TouchableOpacity
                       onPress={() => {
+                        playButtonSound(require("@/assets/ipad_click.mp3"));
                         setOpen(false);
                       }}
                       style={{
@@ -383,6 +386,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
+                        playButtonSound(require("@/assets/ipad_click.mp3"));
                         handleSubmit(onSubmit)();
                         setEsPlay(true);
                       }}

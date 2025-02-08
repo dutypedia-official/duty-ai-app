@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import DepositCard from "./depositCard";
 import WithdrawCard from "./withdrawCard";
-import { formatFloat, formattedBalance } from "@/lib/utils";
+import { formatFloat, formattedBalance, playButtonSound } from "@/lib/utils";
 import useLang from "@/lib/hooks/useLang";
 import { Portal } from "react-native-paper";
 import useUi from "@/lib/hooks/useUi";
 import { useUser } from "@clerk/clerk-expo";
+import { Audio } from "expo-av";
 
 export default function AssetsBalCard() {
   const colorScheme = useColorScheme();
@@ -36,10 +37,13 @@ export default function AssetsBalCard() {
     Number(totalCurrentMarketValue) -
     (Number(totalInvestment) + Number(totalBrokerFee));
 
+  console.log("currentProfit----------", currentProfit);
+
   const logoUrl = user?.imageUrl;
   const isNeg = currentProfit >= 0 ? false : true;
 
   const depositDisable = parseFloat(balance) >= 1000000000;
+
   return (
     <SafeAreaView>
       <View
@@ -298,6 +302,7 @@ export default function AssetsBalCard() {
                 <TouchableOpacity
                   disabled={depositDisable}
                   onPress={() => {
+                    playButtonSound(require("@/assets/ipad_click.mp3"));
                     setIsDeposit(true);
                   }}
                   style={{
@@ -346,6 +351,7 @@ export default function AssetsBalCard() {
                 <TouchableOpacity
                   disabled={parseFloat(freeBalance) === 0 ? true : false}
                   onPress={() => {
+                    playButtonSound(require("@/assets/ipad_click.mp3"));
                     setIsWithdraw(true);
                   }}
                   style={{

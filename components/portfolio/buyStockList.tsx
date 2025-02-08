@@ -222,6 +222,7 @@ export const BuyStockList = () => {
       )}
       <View
         style={{
+          position: "relative",
           backgroundColor: "transparent",
           flexDirection: "row",
           alignItems: "center",

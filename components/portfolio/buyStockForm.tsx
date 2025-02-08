@@ -499,26 +499,42 @@ export default function BuyStockForm() {
                           </View>
                           <View
                             style={{
-                              flexDirection: "row",
-                              justifyContent: "space-between",
+                              gap: 8,
                             }}>
-                            <View>
-                              <Text
-                                style={{
-                                  color: isDark ? "#A1A1A1" : "#909090",
-                                  fontSize: 14,
-                                }}>
-                                {isBn ? "ব্রোকার কমিশন" : "Broker commission"}
-                              </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}>
+                              <View>
+                                <Text
+                                  style={{
+                                    color: isDark ? "#A1A1A1" : "#909090",
+                                    fontSize: 14,
+                                  }}>
+                                  {isBn ? "ব্রোকার কমিশন" : "Broker commission"}
+                                </Text>
+                              </View>
+                              <View>
+                                <Text
+                                  style={{
+                                    color: isDark ? "#ffff" : "#2D3748",
+                                    fontWeight: "medium",
+                                    fontSize: 20,
+                                  }}>
+                                  {watch("brokerFee") ? watch("brokerFee") : 0}%
+                                </Text>
+                              </View>
                             </View>
                             <View>
                               <Text
                                 style={{
-                                  color: isDark ? "#ffff" : "#2D3748",
-                                  fontWeight: "medium",
-                                  fontSize: 20,
+                                  color: "#CE1300",
+                                  fontSize: 12,
                                 }}>
-                                {watch("brokerFee") ? watch("brokerFee") : 0}%
+                                {isBn
+                                  ? "শেয়ার কেনার সময়ই শুধু ব্রোকার কমিশন দিতে হবে—বিক্রি করার সময় কোনো ফি নেই।"
+                                  : `You’ll pay a broker commission only when buying—no fee on selling.`}
                               </Text>
                             </View>
                           </View>

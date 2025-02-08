@@ -1,5 +1,5 @@
 import useLang from "@/lib/hooks/useLang";
-import { formatFloat, isLossItem } from "@/lib/utils";
+import { formatFloat, isLossItem, playButtonSound } from "@/lib/utils";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -30,6 +30,7 @@ export default function PortfolioList({
   return (
     <TouchableOpacity
       onPress={() => {
+        playButtonSound(require("@/assets/ipad_click.mp3"));
         router.push({
           pathname: "/main/portfolio/sell-stock/[id]",
           params: {
@@ -139,7 +140,9 @@ export default function PortfolioList({
               fontWeight: "medium",
               textAlign: "right",
             }}>
-            ৳{item?.stock?.close} ({formatPercentage(item?.stock?.change)})
+            ৳{item?.stock?.close} (
+            {item?.stock?.change?.startsWith("-") ? "" : "+"}
+            {formatFloat(item?.stock?.change)}%)
           </Text>
           <View
             style={{

@@ -21,6 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
 import { apiClientPortfolio } from "@/lib/api";
+import { playButtonSound } from "@/lib/utils";
 
 export default function StockPortfolio() {
   const colorScheme = useColorScheme();
@@ -77,7 +78,10 @@ export default function StockPortfolio() {
             {isBn ? "স্টক পোর্টফোলিও" : "Stock Portfolio"}
           </Text>
           <TouchableOpacity
-            onPress={() => router.push("/main/portfolio/stock-portfolio")}
+            onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
+              router.push("/main/portfolio/stock-portfolio");
+            }}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -187,6 +191,7 @@ export default function StockPortfolio() {
           <TouchableOpacity
             disabled={parseFloat(freeBalance) === 0}
             onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
               router.push("/main/portfolio/buy-stock");
             }}
             style={{

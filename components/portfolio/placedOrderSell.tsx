@@ -13,6 +13,7 @@ import {
   getRiskLevel,
   isHighRisk,
   isLossItem,
+  playButtonSound,
 } from "@/lib/utils";
 import { Audio } from "expo-av";
 import { useIsFocused } from "@react-navigation/native";
@@ -48,6 +49,9 @@ export default function PlacedOrderSell() {
 
   console.log("soldDetails-----------------", JSON.stringify(soldDetails));
 
+  const totalBuy =
+    soldDetails?.transaction?.buyPrice * soldDetails?.transaction?.quantity;
+
   const data = [
     {
       name: isBn ? "ক্রয় মূল্য" : "Buy Price",
@@ -57,28 +61,29 @@ export default function PlacedOrderSell() {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
       value: `৳${formatFloat(soldDetails?.transaction?.sellPrice)}`,
     },
+    // {
+    //   name: isBn ? "পরিমাণ" : "Quantity ",
+    //   value: `${soldDetails?.transaction?.totalQuantity}`,
+    // },
     {
-      name: isBn ? "পরিমাণ" : "Quantity ",
-      value: `${soldDetails?.transaction?.totalQuantity}`,
+      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
+      value: soldDetails?.transaction?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
       value: `৳${calcBroFeeAmount(
         soldDetails?.transaction?.brokerFee,
-        soldDetails?.transaction?.totalSellPrice
+        totalBuy
       )} (${soldDetails?.transaction?.brokerFee}%)`,
     },
     {
       name: isBn ? "মোট ক্রয় পরিমাণ" : "Total Buy Amount",
       value: `৳${formatFloat(soldDetails?.transaction?.totalBuyPrice)}`,
     },
+
     {
       name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
       value: `৳${formatFloat(soldDetails?.transaction?.totalSellPrice)}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: soldDetails?.transaction?.quantity,
     },
 
     {
@@ -90,8 +95,8 @@ export default function PlacedOrderSell() {
     },
   ];
 
-  const isRisk =
-    isHighRisk(soldDetails?.updatedHolding?.risk) === "true" ? true : false;
+  const isInitialRisk =
+    isHighRisk(soldDetails?.transaction?.initialRisk) === "true" ? true : false;
 
   const isLoss = soldDetails?.transaction?.loss > 0;
 
@@ -257,7 +262,7 @@ export default function PlacedOrderSell() {
                 justifyContent: "space-between",
                 borderTopWidth: 1,
                 borderColor: isDark ? "#333333" : "#E0E0E0",
-                backgroundColor: isRisk
+                backgroundColor: isInitialRisk
                   ? isDark
                     ? "#4D0D0D"
                     : "#FFEBEE"
@@ -273,11 +278,15 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isInitialRisk
+                      ? "#FF6E6E"
+                      : isDark
+                      ? "#00FF88"
+                      : "#388E3C",
                     textAlign: "left",
                     fontWeight: "bold",
                   }}>
-                  {isBn ? "ঝুঁকি" : "Risk"}
+                  {isBn ? "প্রাথমিক ঝুঁকি" : "Initial Risk"}
                 </Text>
               </View>
               <View
@@ -294,11 +303,15 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isInitialRisk
+                      ? "#FF6E6E"
+                      : isDark
+                      ? "#00FF88"
+                      : "#388E3C",
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {formatFloat(soldDetails?.updatedHolding?.risk)}%
+                  {formatFloat(soldDetails?.transaction?.initialRisk)}%
                 </Text>
               </View>
             </View>
@@ -310,7 +323,7 @@ export default function PlacedOrderSell() {
                 justifyContent: "space-between",
                 borderTopWidth: 1,
                 borderColor: isDark ? "#333333" : "#E0E0E0",
-                backgroundColor: isRisk
+                backgroundColor: isInitialRisk
                   ? isDark
                     ? "#4D0D0D"
                     : "#FFEBEE"
@@ -326,7 +339,11 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#B0B0B0" : "#388E3C",
+                    color: isInitialRisk
+                      ? "#FF6E6E"
+                      : isDark
+                      ? "#B0B0B0"
+                      : "#388E3C",
                     textAlign: "left",
                     fontStyle: "italic",
                     fontSize: 16,
@@ -348,11 +365,15 @@ export default function PlacedOrderSell() {
                 }}>
                 <Text
                   style={{
-                    color: isRisk ? "#FF6E6E" : isDark ? "#00FF88" : "#388E3C",
+                    color: isInitialRisk
+                      ? "#FF6E6E"
+                      : isDark
+                      ? "#00FF88"
+                      : "#388E3C",
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {getRiskLevel(soldDetails?.updatedHolding?.risk)}
+                  {getRiskLevel(soldDetails?.transaction?.initialRisk)}
                 </Text>
               </View>
             </View>
@@ -416,6 +437,7 @@ export default function PlacedOrderSell() {
           </View>
           <TouchableOpacity
             onPress={() => {
+              // playButtonSound(require("@/assets/ipad_click.mp3"));
               router.dismissAll();
             }}
             style={{

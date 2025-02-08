@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "../Themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { SvgUri, SvgXml } from "react-native-svg";
@@ -29,7 +29,7 @@ import useLang from "@/lib/hooks/useLang";
 import { Audio } from "expo-av";
 import { useAuth } from "@clerk/clerk-expo";
 import { apiClientPortfolio } from "@/lib/api";
-import { formatFloat } from "@/lib/utils";
+import { formatFloat, playButtonSound } from "@/lib/utils";
 import useUi from "@/lib/hooks/useUi";
 
 export default function SellStockForm() {
@@ -47,18 +47,29 @@ export default function SellStockForm() {
   const stockDetail = JSON.parse(params?.stockDetail as string);
   const currentPrice = parseFloat(stockDetail?.stock?.close.toString());
 
-  const isNeg = false;
+  const isNeg = (stockDetail?.stock?.close - stockDetail?.avgCost)
+    .toString()
+    .startsWith("-")
+    ? true
+    : false;
+
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   const schema = z
     .object({
       closeType: z.enum(["fullClose", "partialClose"]).default("partialClose"),
-      quantity: z.string().optional(),
+      quantity: z.coerce
+        .number()
+        .optional()
+        .refine((val) => Number(val) <= stockDetail?.quantity, {
+          message: `Maximum quantity is ${stockDetail?.quantity}`,
+          path: ["quantity"],
+        }),
     })
     .refine(
       (data) => {
         if (data.closeType === "partialClose") {
-          return data.quantity !== "";
+          return data.quantity !== 0;
         }
         return true;
       },
@@ -81,6 +92,10 @@ export default function SellStockForm() {
       quantity: "",
     },
   });
+
+  // useEffect(() => {
+  //   console.log("errors-----------", errors?.quantity);
+  // }, [watch("quantity")]);
 
   const values = watch();
   const isFormValid =
@@ -412,6 +427,7 @@ export default function SellStockForm() {
                             fieldState: { error },
                           }) => (
                             <AnimatedInput
+                              inputMode="numeric"
                               label={isBn ? "পরিমাণ" : "Enter Quantity"}
                               placeholder="00.00"
                               isDark={isDark} // Set to false for light mode
@@ -474,6 +490,12 @@ export default function SellStockForm() {
                           borderColor: "rgba(255,255,255,0.10)",
                           borderRadius: 12,
                         }}>
+                        <Text
+                          style={{
+                            color: "white",
+                          }}>
+                          {isNeg}
+                        </Text>
                         <View
                           style={{
                             gap: 20,
@@ -600,6 +622,9 @@ export default function SellStockForm() {
                             }}>
                             <TouchableOpacity
                               onPress={() => {
+                                playButtonSound(
+                                  require("@/assets/ipad_click.mp3")
+                                );
                                 router.dismissAll();
                               }}
                               style={{
@@ -638,26 +663,39 @@ export default function SellStockForm() {
                             </TouchableOpacity>
                             <TouchableOpacity
                               // disabled={!isFormValid}
-                              onPress={handleSubmit(onSubmit)}
+                              onPress={() => {
+                                playButtonSound(
+                                  require("@/assets/ipad_click.mp3")
+                                );
+                                handleSubmit(onSubmit)();
+                              }}
                               style={{
                                 flex: 1,
-                                shadowColor: isSubmitting
-                                  ? "transparent"
-                                  : isDark
-                                  ? "#00B8D4"
-                                  : "#81D4FA",
+                                shadowColor:
+                                  isSubmitting ||
+                                  (watch("closeType") !== "fullClose" &&
+                                    watch("quantity") === "")
+                                    ? "transparent"
+                                    : isDark
+                                    ? "#00B8D4"
+                                    : "#81D4FA",
                                 shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: isSubmitting
-                                  ? 0
-                                  : isDark
-                                  ? 0.4
-                                  : 1,
+                                shadowOpacity:
+                                  isSubmitting ||
+                                  (watch("closeType") !== "fullClose" &&
+                                    watch("quantity") === "")
+                                    ? 0
+                                    : isDark
+                                    ? 0.4
+                                    : 1,
                                 shadowRadius: 4,
                                 elevation: 4,
                               }}>
                               <LinearGradient
                                 colors={
-                                  isSubmitting
+                                  isSubmitting ||
+                                  (watch("closeType") !== "fullClose" &&
+                                    watch("quantity") === "")
                                     ? isDark
                                       ? ["#3C3C47", "#3C3C47"]
                                       : ["#E0E0E0", "#E0E0E0"]
@@ -687,6 +725,7 @@ export default function SellStockForm() {
                                     style={{
                                       fontSize: 14,
                                       color: "#FFFFFF",
+                                      opacity: isFormValid ? 1 : 0.2,
                                     }}>
                                     {isBn ? "বিক্রি করুন" : "Sell Now"}
                                   </Text>
