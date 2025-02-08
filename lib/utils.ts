@@ -1,5 +1,6 @@
 import Toast from "react-native-toast-message";
 import useLang from "./hooks/useLang";
+import { Audio } from "expo-av";
 
 export async function fetchWithTimeout(url: string, options: any = {}) {
   const { timeout = 5000 } = options;
@@ -230,4 +231,18 @@ export const isLossFn = (stockDetail?: {
   if (loss > 0) return "loss";
 
   return "Unknown"; // Default case
+};
+
+export const playButtonSound = async (soundFile: any) => {
+  try {
+    const { sound } = await Audio.Sound.createAsync(soundFile);
+    await sound.playAsync();
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded && status.didJustFinish) {
+        sound.unloadAsync();
+      }
+    });
+  } catch (error) {
+    console.log("Error playing sound:", error);
+  }
 };

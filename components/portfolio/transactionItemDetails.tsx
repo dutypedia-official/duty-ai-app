@@ -45,7 +45,7 @@ export default function TransactionItemDetails() {
         `/portfolio/get/transaction/${params?.id}`,
         token
       );
-      // console.log("data------------------", JSON.stringify(data));
+      console.log("data------------------", JSON.stringify(data));
 
       setStockDetail(data);
 
@@ -299,7 +299,7 @@ export default function TransactionItemDetails() {
                     textAlign: "left",
                     fontWeight: "bold",
                   }}>
-                  {isBn ? "ঝুঁকি" : "Risk"}
+                  {isBn ? "প্রাথমিক ঝুঁকি" : "Initial Risk"}
                 </Text>
               </View>
               <View
@@ -320,7 +320,7 @@ export default function TransactionItemDetails() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {formatFloat(stockDetail?.risk)}%
+                  {formatFloat(stockDetail?.initialRisk)}%
                 </Text>
               </View>
             </View>
@@ -374,7 +374,7 @@ export default function TransactionItemDetails() {
                     textAlign: "right",
                     fontWeight: "bold",
                   }}>
-                  {getRiskLevel(stockDetail?.risk)}
+                  {getRiskLevel(stockDetail?.initialRisk)}
                 </Text>
               </View>
             </View>

@@ -8,6 +8,7 @@ import {
   // getProfitOrLoss,
   getRiskLevel,
   isHighRisk,
+  playButtonSound,
 } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { FontAwesome } from "@expo/vector-icons";
@@ -89,6 +90,9 @@ export default function SellStock() {
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
   const isRisk = isHighRisk(stockDetail?.risk) === "true" ? true : false;
+
+  const isInitialRisk =
+    isHighRisk(stockDetail?.initialRisk) === "true" ? true : false;
 
   const isLoss = stockDetail?.profit?.toString().startsWith("-") ? true : false;
 
@@ -279,6 +283,59 @@ export default function SellStock() {
                   }}>
                   <Text
                     style={{
+                      color: isInitialRisk
+                        ? "#FF6E6E"
+                        : isDark
+                        ? "#00FF88"
+                        : "#388E3C",
+                      textAlign: "left",
+                      fontWeight: "bold",
+                    }}>
+                    {isBn ? "প্রাথমিক ঝুঁকি" : "Initial Risk"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: 1,
+                    height: "100%",
+                    backgroundColor: isDark ? "#333333" : "#E0E0E0",
+                  }}></View>
+                <View
+                  style={{
+                    paddingVertical: 12,
+                    paddingRight: 12,
+                    flex: 1,
+                  }}>
+                  <Text
+                    style={{
+                      color: isInitialRisk
+                        ? "#FF6E6E"
+                        : isDark
+                        ? "#00FF88"
+                        : "#388E3C",
+                      textAlign: "right",
+                      fontWeight: "bold",
+                    }}>
+                    {formatFloat(stockDetail?.initialRisk)}%
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  borderTopWidth: 1,
+                  borderColor: isDark ? "#333333" : "#E0E0E0",
+                  backgroundColor: isDark ? "#1A1A1A" : "#F6F6F6",
+                }}>
+                <View
+                  style={{
+                    paddingVertical: 12,
+                    paddingLeft: 12,
+                    flex: 1,
+                  }}>
+                  <Text
+                    style={{
                       color: isRisk
                         ? "#FF6E6E"
                         : isDark
@@ -287,7 +344,7 @@ export default function SellStock() {
                       textAlign: "left",
                       fontWeight: "bold",
                     }}>
-                    {isBn ? "ঝুঁকি" : "Risk"}
+                    {isBn ? "বর্তমান ঝুঁকি" : "Current Risk"}
                   </Text>
                 </View>
                 <View
@@ -464,6 +521,7 @@ export default function SellStock() {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
+                      playButtonSound(require("@/assets/ipad_click.mp3"));
                       router.push({
                         pathname:
                           "/main/portfolio/sell-stock/sell-stock-form/[id]",
@@ -509,6 +567,7 @@ export default function SellStock() {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
+                      playButtonSound(require("@/assets/ipad_click.mp3"));
                       WebBrowser.openBrowserAsync(
                         `https://www.tradingview.com/chart/?symbol=DSEBD:${stockDetail?.stock?.symbol}&utm_source=www.tradingview.com&utm_medium=widget&utm_campaign=chart&utm_term=DSEBD:${stockDetail?.stock?.symbol}&theme=${colorScheme}`,
                         {
@@ -553,6 +612,7 @@ export default function SellStock() {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
+                      playButtonSound(require("@/assets/ipad_click.mp3"));
                       setTemplate("finance");
                       setActiveConversationId(null);
                       setPrompt(
@@ -612,6 +672,7 @@ export default function SellStock() {
             </View>
             <TouchableOpacity
               onPress={() => {
+                playButtonSound(require("@/assets/ipad_click.mp3"));
                 router.dismissAll();
               }}
               style={{

@@ -7,6 +7,7 @@ import {
   formatFloat,
   getRiskLevel,
   isHighRisk,
+  playButtonSound,
 } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { format } from "date-fns";
@@ -364,7 +365,7 @@ export default function ConfirmBuyStock() {
                           textAlign: "left",
                           fontWeight: "bold",
                         }}>
-                        {isBn ? "ঝুঁকি" : "Risk"}
+                        {isBn ? "বর্তমান ঝুঁকি" : "Current Risk"}
                       </Text>
                     </View>
                     <View
@@ -465,7 +466,10 @@ export default function ConfirmBuyStock() {
           }}>
           <TouchableOpacity
             disabled={isAiLoading}
-            onPress={onSubmit}
+            onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
+              onSubmit();
+            }}
             style={{
               width: "100%",
               shadowColor: isSubmitting ? "transparent" : "#000000",

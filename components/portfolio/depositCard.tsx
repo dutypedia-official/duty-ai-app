@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -19,7 +19,7 @@ import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
 import { Audio } from "expo-av";
-import { formattedBalance } from "@/lib/utils";
+import { formattedBalance, playButtonSound } from "@/lib/utils";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
@@ -164,10 +164,18 @@ export default function DepositCard({ open, setOpen }: any) {
     }
   };
 
-  // Play Ring sound when new balance add
+  const newBalanceRef = useRef(false);
+
   useEffect(() => {
-    if (newBalance) {
-      playSound(require("@/assets/ring.mp3")); // Play Ring sound
+    if (newBalance && !newBalanceRef.current) {
+      newBalanceRef.current = true; // Mark it as played
+
+      setTimeout(() => {
+        playSound(require("@/assets/ring.mp3"));
+
+        // Reset ref after sound plays, allowing re-trigger
+        newBalanceRef.current = false;
+      }, 2000);
     }
   }, [newBalance]);
 
@@ -340,6 +348,7 @@ export default function DepositCard({ open, setOpen }: any) {
                     <TouchableOpacity
                       disabled={isSubmitting}
                       onPress={() => {
+                        playButtonSound(require("@/assets/ipad_click.mp3"));
                         setOpen(false);
                       }}
                       style={{
@@ -381,6 +390,7 @@ export default function DepositCard({ open, setOpen }: any) {
                     <TouchableOpacity
                       // disabled={!isFormValid}
                       onPress={() => {
+                        playButtonSound(require("@/assets/ipad_click.mp3"));
                         handleSubmit(onSubmit)();
                         setEsPlay(true);
                       }}
