@@ -42,8 +42,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
       .string({
         required_error: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!", // Error message when the field is empty
       })
-      .min(1, {
-        message: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!", // Error message for minimum length
+      .min(0.01, {
+        message: isBn ? "ন্যূনতম ৳০.০৫ প্রয়োজন!" : "Minimum ৳0.05 required!", // Error message for minimum length
       })
       .max(1000000000, {
         message: isBn

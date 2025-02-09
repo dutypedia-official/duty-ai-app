@@ -68,7 +68,7 @@ export default function SellStockForm() {
         if (
           data.quantity === null ||
           data.quantity === undefined ||
-          data.quantity === 0
+          data.quantity <= 1
         ) {
           ctx.addIssue({
             path: ["quantity"],

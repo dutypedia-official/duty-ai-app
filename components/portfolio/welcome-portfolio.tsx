@@ -34,16 +34,16 @@ export default function WelcomePortfolio() {
 
   const users = [
     {
-      uri: "https://framerusercontent.com/images/p7nex9hTU5r6GNzkQDXGCGXcQ.png",
+      uri: "../.././assets/images/user-1.jpg",
     },
     {
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa-_K4hD1SEFv5wiZ6mD4-gHurxZ3E-1hRSGuuJJumAqQFeWDR",
+      uri: "../.././assets/images/user-2.jpg",
     },
     {
-      uri: "https://framerusercontent.com/images/p7nex9hTU5r6GNzkQDXGCGXcQ.png",
+      uri: "../.././assets/images/user-1.jpg",
     },
     {
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa-_K4hD1SEFv5wiZ6mD4-gHurxZ3E-1hRSGuuJJumAqQFeWDR",
+      uri: "../.././assets/images/user-2.jpg",
     },
   ];
   return (
@@ -160,9 +160,7 @@ export default function WelcomePortfolio() {
                                 marginRight: isLast ? 0 : -10,
                               }}>
                               <Image
-                                source={{
-                                  uri: item?.uri,
-                                }}
+                                source={{ uri: item?.uri }}
                                 resizeMode="cover"
                                 style={{
                                   width: "100%",
