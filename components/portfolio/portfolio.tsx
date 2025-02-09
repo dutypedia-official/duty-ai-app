@@ -7,9 +7,11 @@ import { ScrollView, View } from "react-native";
 import AssetsBalCard from "./assetsBalCard";
 import StockPortfolio from "./stockPortfolio";
 import TransactionCard from "./transactionCard";
+import useSocket from "@/lib/hooks/useSocket";
 
 export default function Portfolio() {
   const { getToken } = useAuth();
+  const { socket } = useSocket();
   const clientPortfolio = apiClientPortfolio();
   const {
     setBalance,
@@ -19,6 +21,7 @@ export default function Portfolio() {
     setTotalBrokerFee,
     setIsLoading,
     refreash,
+    setRefreash,
   } = useUi();
 
   const fetchData = async (init: boolean = true) => {
@@ -44,6 +47,20 @@ export default function Portfolio() {
     fetchData();
   }, [refreash]);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on(`portfolio-update`, () => {
+        console.log("New portfolio update...");
+        setRefreash(!refreash);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off(`portfolio-update`);
+      }
+    };
+  }, [socket]);
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -51,7 +68,8 @@ export default function Portfolio() {
           style={{
             gap: 20,
             paddingBottom: 24,
-          }}>
+          }}
+        >
           <AssetsBalCard />
           <StockPortfolio />
           <TransactionCard />

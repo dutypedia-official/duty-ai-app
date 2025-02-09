@@ -249,21 +249,12 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-<<<<<<< HEAD
           ? `http://192.168.0.103:8000/chat/finance/jp`
           : template == "forex"
           ? `http://192.168.0.103:8000/chat/forex`
           : template == "scanner"
           ? `http://192.168.0.103:8000/chat/screener/jp`
           : `http://192.168.0.103:8000/chat/pro`;
-=======
-          ? `http://192.168.225.188:8000/chat/finance/jp`
-          : template == "forex"
-          ? `http://192.168.225.188:8000/chat/forex`
-          : template == "scanner"
-          ? `http://192.168.225.188:8000/chat/screener/jp`
-          : `http://192.168.225.188:8000/chat/pro`;
->>>>>>> 47645c6b42949044d7591b460dbc667a9f3c4d5a
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
         pollingInterval: 0,

@@ -2,6 +2,7 @@ import PortfolioList from "@/components/portfolio/portfolioList";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
+import useSocket from "@/lib/hooks/useSocket";
 import useUi from "@/lib/hooks/useUi";
 import { playButtonSound } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
@@ -37,6 +38,8 @@ export default function StockPortfolio() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
   const [hasMore, setHasMore] = useState(true);
+  const [refreash, setRefreash] = useState(false);
+  const { socket } = useSocket();
 
   const fetchData = async () => {
     if (!hasMore || isLoading) return; // Prevent unnecessary API calls
@@ -67,12 +70,27 @@ export default function StockPortfolio() {
     fetchData(); // Initial fetch
   }, []);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on(`portfolio-update`, () => {
+        console.log("New portfolio update...");
+        setRefreash(!refreash);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off(`portfolio-update`);
+      }
+    };
+  }, [socket]);
+
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: isDark ? bgColor : "#fff",
-      }}>
+      }}
+    >
       <StatusBar backgroundColor={isDark ? bgColor : "#FFFFFF"} />
       <View
         style={{
@@ -86,7 +104,8 @@ export default function StockPortfolio() {
           justifyContent: "space-between",
           paddingHorizontal: 12,
           gap: 25,
-        }}>
+        }}
+      >
         <TouchableOpacity
           onPress={() => {
             playButtonSound(require("@/assets/ipad_click.mp3"));
@@ -105,7 +124,8 @@ export default function StockPortfolio() {
             elevation: 5,
             width: 32,
             height: 32,
-          }}>
+          }}
+        >
           <Text>
             <Ionicons
               name="chevron-back"
@@ -123,7 +143,8 @@ export default function StockPortfolio() {
             fontWeight: "bold",
             textAlign: "center",
             color: !isDark ? "#000" : "#fff",
-          }}>
+          }}
+        >
           Stock Portfolio
         </Text>
         <View style={{ backgroundColor: "transparent", width: 32 }}></View>
@@ -133,7 +154,8 @@ export default function StockPortfolio() {
         style={{
           flex: 1,
           backgroundColor: isDark ? bgColor : "#fff",
-        }}>
+        }}
+      >
         <View
           style={{
             marginTop: 84,
@@ -142,7 +164,8 @@ export default function StockPortfolio() {
             backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
             borderRadius: 16,
             flexGrow: 1,
-          }}>
+          }}
+        >
           <FlatList
             onEndReachedThreshold={0.5}
             onEndReached={() => {
@@ -174,7 +197,8 @@ export default function StockPortfolio() {
                       insets.top -
                       insets.bottom -
                       200,
-                  }}>
+                  }}
+                >
                   <ActivityIndicator />
                 </View>
               ) : (
@@ -214,7 +238,8 @@ export const ListEmpty = ({
         backgroundColor: isDark ? "#1A1A1A" : "#F8F9FA",
         height:
           Dimensions.get("screen").height - insets.top - insets.bottom - 200,
-      }}>
+      }}
+    >
       <View
         style={{
           flex: 1,
@@ -224,7 +249,8 @@ export const ListEmpty = ({
           gap: 26,
           alignItems: "center",
           justifyContent: "center",
-        }}>
+        }}
+      >
         <Image
           style={{ width: 100, height: 68 }}
           source={require("../../../assets//images/notfoundPortfolio.png")}
@@ -235,14 +261,16 @@ export const ListEmpty = ({
             width: 240,
             marginHorizontal: "auto",
             gap: 26,
-          }}>
+          }}
+        >
           <Text
             style={{
               color: isDark ? "#FFFFFF" : "#34343F",
               fontSize: 18,
               fontWeight: "medium",
               textAlign: "center",
-            }}>
+            }}
+          >
             {title}
           </Text>
 
@@ -251,7 +279,8 @@ export const ListEmpty = ({
               color: isDark ? "#B0B0B0" : "#464665",
               textAlign: "center",
               fontSize: 14,
-            }}>
+            }}
+          >
             {subTitle}
           </Text>
         </View>
