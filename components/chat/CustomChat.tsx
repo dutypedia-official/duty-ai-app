@@ -244,10 +244,10 @@ export default function CustomChat({ fromPath }: any) {
 
         const urlLocal =
           template == "finance"
-            ? `http://192.168.0.103:8000/chat/finance`
+            ? `http://192.168.225.188:8000/chat/finance`
             : template == "forex"
-            ? `http://192.168.0.103:8000/chat/forex`
-            : `http://192.168.0.103:8000/chat/pro`;
+            ? `http://192.168.225.188:8000/chat/forex`
+            : `http://192.168.225.188:8000/chat/pro`;
         es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
           ...options,
           pollingInterval: 0,

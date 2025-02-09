@@ -437,7 +437,7 @@ export default function PlacedOrderSell() {
           </View>
           <TouchableOpacity
             onPress={() => {
-              // playButtonSound(require("@/assets/ipad_click.mp3"));
+              playButtonSound(require("@/assets/ipad_click.mp3"));
               router.dismissAll();
             }}
             style={{

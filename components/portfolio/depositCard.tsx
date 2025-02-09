@@ -45,12 +45,18 @@ export default function DepositCard({ open, setOpen }: any) {
   const schema = z.object({
     amount: z.coerce
       .number()
-      .min(1, { message: "Minimum ৳1 required!" })
+      .min(1, {
+        message: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!",
+      })
       .max(1000000000, {
-        message: `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
+        message: isBn
+          ? "সীমা ৳১,০০০,০০০,০০০ অতিক্রম হয়েছে! পরিমাণ কমান।"
+          : `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
       })
       .refine((value) => balance + value < "1000000000", {
-        message: `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
+        message: isBn
+          ? "সীমা ৳১,০০০,০০০,০০০ অতিক্রম হয়েছে! পরিমাণ কমান।"
+          : `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
       }),
   });
 
@@ -124,7 +130,7 @@ export default function DepositCard({ open, setOpen }: any) {
         }
       });
     } catch (error: any) {
-      setCustomErr("Something went wrong");
+      setCustomErr(isBn ? "কিছু ভুল হয়েছে" : "Something went wrong");
       // Load the MP3 file
       await sound.loadAsync(require("@/assets/error.mp3")); // Replace with your MP3 path
       await sound.playAsync();

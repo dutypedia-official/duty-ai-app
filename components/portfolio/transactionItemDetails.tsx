@@ -18,6 +18,7 @@ import {
   getRiskLevel,
   isHighRisk,
   isLossItem,
+  playButtonSound,
 } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
@@ -438,6 +439,7 @@ export default function TransactionItemDetails() {
           </View>
           <TouchableOpacity
             onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
               router.dismissAll();
             }}
             style={{

@@ -34,14 +34,25 @@ export default function SellStock() {
   const isDark = colorScheme === "dark";
   const { language } = useLang();
   const isBn = language === "bn";
-  const { refreshHold, setRefreshHold, totalInvestment, balance, freeBalance } =
-    useUi();
+  const {
+    refreshHold,
+    setRefreshHold,
+    totalInvestment,
+    balance,
+    freeBalance,
+    totalCurrentMarketValue,
+    totalBrokerFee,
+  } = useUi();
   const { setTemplate, setActiveConversationId, setPrompt } = useChat();
   const { getToken } = useAuth();
   const isFocused = useIsFocused();
   const clientPortfolio = apiClientPortfolio();
   const [isLoading, setIsLoading] = useState(true);
   const [stockDetail, setStockDetail] = useState<any>();
+
+  const currentProfit =
+    Number(totalCurrentMarketValue) -
+    (Number(totalInvestment) + Number(totalBrokerFee));
 
   const fetchData = async (init: boolean = true) => {
     try {
@@ -613,21 +624,31 @@ export default function SellStock() {
                   <TouchableOpacity
                     onPress={() => {
                       playButtonSound(require("@/assets/ipad_click.mp3"));
-                      setTemplate("finance");
+                      setTemplate("portfolio");
                       setActiveConversationId(null);
                       setPrompt(
-                        `I have some stock in DSEBD: ${
+                        `My current portfolio Trading Balance: ৳${balance} Free Cash: ৳${freeBalance} and Current Profit: ৳${currentProfit}. I have some stocks in DSEBD: ${
                           stockDetail?.stock?.symbol
-                        } company. My stock details: Buy Price: ${formatFloat(
+                        } company. My stock details: Buy Price: ৳${formatFloat(
                           stockDetail?.avgCost
-                        )}৳ Quantity: ${stockDetail?.quantity} Broker Fee: ${
+                        )} Quantity: ${
+                          stockDetail?.quantity
+                        } Broker Fee: ৳${calcBroFeeAmount(
+                          stockDetail?.brokerFee,
+                          totalBuy
+                        )} (${
                           stockDetail?.brokerFee
-                        }% Total Buy Amount: ${formatFloat(
+                        }%) Total Buy Amount: ৳${formatFloat(
                           stockDetail?.total
-                        )}৳ and current stock price is ${
+                        )} Initial Risk: ${formatFloat(
+                          stockDetail?.initialRisk
+                        )}% Current Risk: ${formatFloat(
+                          stockDetail?.risk
+                        )}% and current stock price is ৳${
                           stockDetail?.stock?.close
-                        }৳. Should I sell this stock at this price?`
+                        }`
                       );
+
                       router.push({
                         pathname: "/main/portfolio/chat",
                         params: { fromPath: "list" },
