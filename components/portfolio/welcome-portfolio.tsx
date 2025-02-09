@@ -2,7 +2,7 @@ import useLang from "@/lib/hooks/useLang";
 import { useUser } from "@clerk/clerk-expo";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 import { portfolioEmptySvg } from "../svgs/portfolioEmptySvg";
+import { playButtonSound } from "@/lib/utils";
 
 export default function WelcomePortfolio() {
   const colorScheme = useColorScheme();
@@ -23,6 +24,13 @@ export default function WelcomePortfolio() {
   const isBn = language === "bn";
   const insets = useSafeAreaInsets();
   const { user } = useUser();
+  const [firstName, setFirstName] = useState<string | null | undefined>("");
+  const [lastName, setLastName] = useState<string | null | undefined>("");
+
+  useEffect(() => {
+    setFirstName(user?.firstName);
+    setLastName(user?.lastName);
+  }, [user]);
 
   const users = [
     {
@@ -112,7 +120,7 @@ export default function WelcomePortfolio() {
                           fontWeight: "bold",
                           fontSize: 24,
                         }}>
-                        {`${user?.firstName} ${user?.lastName}`}
+                        {`${firstName} ${!lastName ? "" : lastName}`}
                       </Text>
                     </View>
                     <View>
@@ -188,6 +196,7 @@ export default function WelcomePortfolio() {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
+                      playButtonSound(require("@/assets/ipad_click.mp3"));
                       router.dismissTo("/main/portfolio");
                     }}
                     style={{

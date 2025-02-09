@@ -8,6 +8,7 @@ import {
   InputModeOptions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { playButtonSound } from "@/lib/utils";
 
 // Animated LinearGradient wrapper
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
@@ -122,8 +123,12 @@ const AnimatedInput = ({
               onBlur={() => {
                 onBlur?.();
                 setIsFocused(false);
+                // playButtonSound(require("@/assets/ipad_click.mp3"));
               }}
-              onFocus={() => setIsFocused(true)}
+              onFocus={() => {
+                playButtonSound(require("@/assets/ipad_click.mp3"));
+                setIsFocused(true);
+              }}
               onChangeText={onChange}
               value={value}
               inputMode={inputMode}

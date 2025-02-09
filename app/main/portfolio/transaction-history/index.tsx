@@ -1,11 +1,8 @@
 import TransactionTabContent from "@/components/portfolio/transactionTabContent";
-import {
-  notfoundPortfolio,
-  notfoundPortfolioLight,
-} from "@/components/svgs/notfound-portfolio";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
+import { playButtonSound } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,7 +13,6 @@ import {
   Dimensions,
   FlatList,
   Image,
-  ScrollView,
   Text,
   TouchableOpacity,
   useColorScheme,
@@ -28,7 +24,6 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SvgXml } from "react-native-svg";
 
 export default function TransactionHistory() {
   const { getToken } = useAuth();
@@ -255,6 +250,7 @@ export default function TransactionHistory() {
         }}>
         <TouchableOpacity
           onPress={() => {
+            playButtonSound(require("@/assets/ipad_click.mp3"));
             router.back();
           }}
           style={{
@@ -345,6 +341,7 @@ export default function TransactionHistory() {
                       <TouchableOpacity
                         key={i}
                         onPress={() => {
+                          playButtonSound(require("@/assets/ipad_click.mp3"));
                           handleTabPress(i);
                           setActiveTab(item?.value);
                         }}

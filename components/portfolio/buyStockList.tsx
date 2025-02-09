@@ -2,6 +2,7 @@ import { SafeAreaView } from "@/components/Themed";
 import { apiClient } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
+import { playButtonSound } from "@/lib/utils";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useIsFocused } from "@react-navigation/native";
@@ -122,6 +123,7 @@ const SignalList = ({
           <View>
             <TouchableOpacity
               onPress={() => {
+                playButtonSound(require("@/assets/ipad_click.mp3"));
                 router.push({
                   pathname: "/main/portfolio/buy-stock/[id]",
                   params: {
@@ -233,6 +235,7 @@ export const BuyStockList = () => {
         }}>
         <TouchableOpacity
           onPress={() => {
+            playButtonSound(require("@/assets/ipad_click.mp3"));
             router.back();
           }}
           style={{

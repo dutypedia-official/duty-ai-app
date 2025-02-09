@@ -20,6 +20,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { apiClientPortfolio } from "@/lib/api";
 import { useIsFocused } from "@react-navigation/native";
 import useUi from "@/lib/hooks/useUi";
+import { playButtonSound } from "@/lib/utils";
 
 export default function TransactionCard() {
   const { getToken } = useAuth();
@@ -186,7 +187,10 @@ export default function TransactionCard() {
           </Text>
 
           <TouchableOpacity
-            onPress={() => router.push("/main/portfolio/transaction-history")}
+            onPress={() => {
+              playButtonSound(require("@/assets/ipad_click.mp3"));
+              router.push("/main/portfolio/transaction-history");
+            }}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -222,7 +226,10 @@ export default function TransactionCard() {
               return (
                 <TouchableOpacity
                   key={i}
-                  onPress={() => handleTabPress(i)}
+                  onPress={() => {
+                    playButtonSound(require("@/assets/ipad_click.mp3"));
+                    handleTabPress(i);
+                  }}
                   style={{
                     backgroundColor: active
                       ? isDark

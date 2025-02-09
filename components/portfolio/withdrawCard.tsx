@@ -40,13 +40,15 @@ export default function WithdrawCard({ open, setOpen }: any) {
   const schema = z.object({
     amount: z
       .string({
-        required_error: "Amount is required", // Error message when the field is empty
+        required_error: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!", // Error message when the field is empty
       })
       .min(1, {
-        message: "Amount is required", // Error message for minimum length
+        message: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!", // Error message for minimum length
       })
       .max(1000000000, {
-        message: `Maximum allowed amount is 1 Billion`,
+        message: isBn
+          ? "সীমা ৳১,০০০,০০০,০০০ অতিক্রম হয়েছে! পরিমাণ কমান।"
+          : `Limit ৳1,000,000,000 exceeded! Reduce amount.`,
       })
       .refine(
         (value) => {
@@ -57,7 +59,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
           );
         },
         {
-          message: `Your Fund is Low`,
+          message: isBn ? "আপনার তহবিল কম" : `Your Fund is Low`,
         }
       ),
   });

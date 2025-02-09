@@ -17,12 +17,14 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Pressable,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 import { SvgUri } from "react-native-svg";
+import MdxContent from "./mdx-content";
 
 export default function ConfirmBuyStock() {
   const params = useLocalSearchParams();
@@ -47,13 +49,17 @@ export default function ConfirmBuyStock() {
     try {
       const token = await getToken();
       const { data } = await clientPortfolio.get(
-        `/portfolio/get/ai-summary?symbolId=${stockDetail?.id}&quantity=${stockDetail?.quantity}&buyPrice=${stockDetail?.buyPrice}&brokerFee=${stockDetail?.brokerFee}`,
+        `/portfolio/get/ai-summary?symbolId=${stockDetail?.id}&buyPrice=${
+          stockDetail?.buyPrice
+        }&quantity=${stockDetail?.quantity}&brokerFee=${
+          stockDetail?.brokerFee
+        }&totalBuyAmount=${calcTotalWithFee(totalBuy, stockDetail?.brokerFee)}`,
         token
       );
 
       // console.log("data------------------", JSON.stringify(data));
 
-      setAiSummary(data?.summary);
+      setAiSummary(data);
       setAiRisk(data?.risk);
       setIsAiLoading(false);
     } catch (error) {
@@ -241,30 +247,15 @@ export default function ConfirmBuyStock() {
                     style={{
                       width: "100%",
                     }}>
-                    <Text
+                    <Pressable
+                      style={{
+                        position: "relative",
+                      }}
                       onPress={() => {
                         setExpanded(!expanded);
-                      }}
-                      style={{
-                        textAlign: "left",
-                        marginTop: 16, //20
-                        fontSize: 14,
-                        color: isDark ? "#B0B0B0" : "#004662",
                       }}>
-                      {expanded || !aiSummary
-                        ? aiSummary
-                        : aiSummary.substring(0, 186)}{" "}
-                      {aiSummary?.length > 186 && (
-                        <Text
-                          style={{
-                            fontWeight: "bold",
-                          }}>
-                          {expanded || !aiSummary
-                            ? "...Read Less"
-                            : "Read More..."}
-                        </Text>
-                      )}
-                    </Text>
+                      <MdxContent expanded={expanded} data={aiSummary} />
+                    </Pressable>
                   </View>
                 )}
               </View>

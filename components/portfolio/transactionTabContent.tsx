@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import { format } from "date-fns";
 import { router } from "expo-router";
+import { playButtonSound } from "@/lib/utils";
 
 export default function TransactionTabContent({
   activeTab,
@@ -26,6 +27,7 @@ export default function TransactionTabContent({
       {activeTab === "profit" && (
         <TouchableOpacity
           onPress={() => {
+            playButtonSound(require("@/assets/ipad_click.mp3"));
             router.push({
               pathname: "/main/portfolio/transaction-history/[id]",
               params: {
@@ -148,6 +150,7 @@ export default function TransactionTabContent({
       {activeTab === "losses" && (
         <TouchableOpacity
           onPress={() => {
+            playButtonSound(require("@/assets/ipad_click.mp3"));
             router.push({
               pathname: "/main/portfolio/transaction-history/[id]",
               params: {

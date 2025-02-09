@@ -3,6 +3,7 @@ import { SafeAreaView, useThemeColor } from "@/components/Themed";
 import { apiClientPortfolio } from "@/lib/api";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
+import { playButtonSound } from "@/lib/utils";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
@@ -88,6 +89,7 @@ export default function StockPortfolio() {
         }}>
         <TouchableOpacity
           onPress={() => {
+            playButtonSound(require("@/assets/ipad_click.mp3"));
             router.back();
           }}
           style={{

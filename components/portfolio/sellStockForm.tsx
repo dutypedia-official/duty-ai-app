@@ -44,6 +44,7 @@ export default function SellStockForm() {
   const [isFocused, setIsFocused] = useState(false);
   const params = useLocalSearchParams();
   const [selectedOption, setSelectedOption] = useState<string>("partialClose");
+  const [esPlay, setEsPlay] = useState(false);
   const stockDetail = JSON.parse(params?.stockDetail as string);
   const currentPrice = parseFloat(stockDetail?.stock?.close.toString());
 
@@ -55,29 +56,45 @@ export default function SellStockForm() {
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockDetail?.stock?.symbol}.svg`;
 
+  const maxQuantity = stockDetail?.quantity;
   const schema = z
     .object({
       closeType: z.enum(["fullClose", "partialClose"]).default("partialClose"),
-      quantity: z.coerce
-        .number()
-        .optional()
-        .refine((val) => Number(val) <= stockDetail?.quantity, {
-          message: `Maximum quantity is ${stockDetail?.quantity}`,
-          path: ["quantity"],
-        }),
+      quantity: z.coerce.number().nullable().optional(),
     })
-    .refine(
-      (data) => {
-        if (data.closeType === "partialClose") {
-          return data.quantity !== 0;
+    .superRefine((data, ctx) => {
+      if (data.closeType === "partialClose") {
+        // Ensure quantity is not null, undefined, or 0
+        if (
+          data.quantity === null ||
+          data.quantity === undefined ||
+          data.quantity === 0
+        ) {
+          ctx.addIssue({
+            path: ["quantity"],
+            message: isBn
+              ? "ন্যূনতম ১ পরিমাণ প্রয়োজন!"
+              : "Minimum 1 quantity required!",
+            code: z.ZodIssueCode.custom,
+          });
         }
-        return true;
-      },
-      {
-        message: "Required",
-        path: ["quantity"],
+
+        // Ensure quantity does not exceed maxQuantity
+        if (
+          maxQuantity !== undefined &&
+          data.quantity !== null &&
+          Number(data.quantity) > maxQuantity
+        ) {
+          ctx.addIssue({
+            path: ["quantity"],
+            message: isBn
+              ? `সীমা অতিক্রম হয়েছে! সর্বোচ্চ পরিমাণ ${maxQuantity}।`
+              : `Limit is over! Maximum quantity is ${maxQuantity}`,
+            code: z.ZodIssueCode.custom,
+          });
+        }
       }
-    );
+    });
 
   const {
     control,
@@ -93,9 +110,33 @@ export default function SellStockForm() {
     },
   });
 
-  // useEffect(() => {
-  //   console.log("errors-----------", errors?.quantity);
-  // }, [watch("quantity")]);
+  // Function to play a Err sound
+  const playSoundErr = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setEsPlay(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setEsPlay(false);
+    }
+  };
+
+  // Play error sound when validation errors occur
+  useEffect(() => {
+    if (errors.quantity?.message && esPlay) {
+      playSoundErr(require("@/assets/error.mp3")); // Play error sound
+    }
+  }, [errors.quantity]);
+
+  useEffect(() => {
+    console.log("errors-----------", errors?.quantity?.message);
+  }, [watch("quantity")]);
 
   const values = watch();
   const isFormValid =
@@ -188,6 +229,7 @@ export default function SellStockForm() {
               style={{
                 gap: 24,
                 paddingHorizontal: 12,
+                paddingVertical: 12,
               }}>
               <View
                 style={{
@@ -348,6 +390,9 @@ export default function SellStockForm() {
                                   <TouchableOpacity
                                     key={i}
                                     onPress={() => {
+                                      playButtonSound(
+                                        require("@/assets/ipad_click.mp3")
+                                      );
                                       setValue("closeType", option.value);
                                       setSelectedOption(option.value);
                                     }}
@@ -668,6 +713,7 @@ export default function SellStockForm() {
                                   require("@/assets/ipad_click.mp3")
                                 );
                                 handleSubmit(onSubmit)();
+                                setEsPlay(true);
                               }}
                               style={{
                                 flex: 1,

@@ -1,5 +1,5 @@
 import useLang from "@/lib/hooks/useLang";
-import { formatFloat } from "@/lib/utils";
+import { formatFloat, playButtonSound } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -21,30 +21,7 @@ import { SvgUri } from "react-native-svg";
 import { z } from "zod";
 import { SafeAreaView } from "../Themed";
 import AnimatedInput from "./AnimatedInput";
-
-// const schema = z.object({
-//   buyPrice: z
-//     .string({
-//       required_error: "Required",
-//     })
-//     .min(1, {
-//       message: "Required",
-//     }),
-//   quantity: z
-//     .string({
-//       required_error: "Required",
-//     })
-//     .min(1, {
-//       message: "Required",
-//     }),
-//   brokerFee: z
-//     .string({
-//       required_error: "Required",
-//     })
-//     .min(1, {
-//       message: "Required",
-//     }),
-// });
+import { Audio } from "expo-av";
 
 export default function BuyStockForm() {
   const colorScheme = useColorScheme();
@@ -56,14 +33,24 @@ export default function BuyStockForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const stockItem = JSON.parse(params?.stockItem as string);
   const currentPrice = formatFloat(stockItem?.close);
+  const [esPlay, setEsPlay] = useState(false);
   const isNeg = false;
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${stockItem?.symbol}.svg`;
 
   const buySchema = z.object({
     symbolId: z.string().min(1),
     buyPrice: z.coerce.number().min(1).default(stockItem?.close),
-    quantity: z.coerce.number().min(1),
-    brokerFee: z.coerce.number().min(0).max(100).default(0),
+    quantity: z.coerce.number().min(1, {
+      message: isBn
+        ? "ন্যূনতম ১ পরিমাণ প্রয়োজন!"
+        : "Minimum 1 quantity required!",
+    }),
+    brokerFee: z.coerce
+      .number()
+      .min(0.05, {
+        message: isBn ? "ন্যূনতম ০.০৫% প্রয়োজন!" : "Minimum 0.05% required!",
+      })
+      .max(100),
   });
 
   const {
@@ -81,6 +68,30 @@ export default function BuyStockForm() {
       brokerFee: "",
     },
   });
+
+  // Function to play a Err sound
+  const playSoundErr = async (soundFile: any) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile);
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+          setEsPlay(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound:", error);
+      setEsPlay(false);
+    }
+  };
+
+  // Play error sound when validation errors occur
+  useEffect(() => {
+    if (errors.quantity?.message && esPlay) {
+      playSoundErr(require("@/assets/error.mp3")); // Play error sound
+    }
+  }, [errors.quantity]);
 
   const values = watch();
   const isFormValid = Object.values(values).every((val) => val.trim() !== "");
@@ -140,6 +151,7 @@ export default function BuyStockForm() {
               style={{
                 gap: 24,
                 paddingHorizontal: 12,
+                paddingVertical: 12,
               }}>
               <View
                 style={{
@@ -381,7 +393,7 @@ export default function BuyStockForm() {
                           fieldState: { error },
                         }) => (
                           <AnimatedInput
-                            inputMode="text"
+                            inputMode="numeric"
                             label={
                               isBn ? "ব্রোকার কমিশন %" : "Broker commission %"
                             }
@@ -547,6 +559,9 @@ export default function BuyStockForm() {
                             }}>
                             <TouchableOpacity
                               onPress={() => {
+                                playButtonSound(
+                                  require("@/assets/ipad_click.mp3")
+                                );
                                 router.back();
                               }}
                               style={{
@@ -587,7 +602,13 @@ export default function BuyStockForm() {
                               // disabled={
                               //   !isFormValid || isSubmitting ? true : false
                               // }
-                              onPress={() => handleSubmit(onSubmit)()}
+                              onPress={() => {
+                                playButtonSound(
+                                  require("@/assets/ipad_click.mp3")
+                                );
+                                handleSubmit(onSubmit)();
+                                setEsPlay(true);
+                              }}
                               style={{
                                 flex: 1,
                                 shadowColor:
