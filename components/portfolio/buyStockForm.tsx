@@ -65,7 +65,7 @@ export default function BuyStockForm() {
       symbolId: stockItem?.id.toString(),
       buyPrice: Number(stockItem?.close).toFixed(2) ?? "",
       quantity: "",
-      brokerFee: "",
+      brokerFee: "0.05",
     },
   });
 
@@ -129,11 +129,13 @@ export default function BuyStockForm() {
     <SafeAreaView
       style={{
         flex: 1,
-      }}>
+      }}
+    >
       <KeyboardAvoidingView
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <TouchableWithoutFeedback
           onPress={() => {
             Keyboard.dismiss();
@@ -141,18 +143,21 @@ export default function BuyStockForm() {
           }}
           style={{
             flex: 1,
-          }}>
+          }}
+        >
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
               justifyContent: "center",
-            }}>
+            }}
+          >
             <View
               style={{
                 gap: 24,
                 paddingHorizontal: 12,
                 paddingVertical: 12,
-              }}>
+              }}
+            >
               <View
                 style={{
                   shadowColor: isDark ? "transparent" : "#000000",
@@ -163,7 +168,8 @@ export default function BuyStockForm() {
                   shadowOpacity: isDark ? 0 : 0.1,
                   shadowRadius: 4,
                   elevation: isDark ? 0 : 4,
-                }}>
+                }}
+              >
                 <LinearGradient
                   colors={
                     isDark ? ["#1A1A1A", "#1C1C1C"] : ["#FFFFFF", "#F8F9FA"]
@@ -173,7 +179,8 @@ export default function BuyStockForm() {
                     borderWidth: 1,
                     borderColor: isDark ? "#262626" : "#E0E0E0",
                     borderRadius: 20,
-                  }}>
+                  }}
+                >
                   <Image
                     source={
                       isDark
@@ -195,13 +202,15 @@ export default function BuyStockForm() {
                     style={{
                       gap: 40,
                       paddingHorizontal: 12,
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         flexDirection: "row",
                         gap: 8,
                         alignItems: "center",
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           width: 40,
@@ -217,7 +226,8 @@ export default function BuyStockForm() {
                           elevation: 4,
                           borderWidth: 2,
                           borderColor: "#E0E0E0",
-                        }}>
+                        }}
+                      >
                         <View
                           style={{
                             width: "100%",
@@ -228,13 +238,15 @@ export default function BuyStockForm() {
                             position: "absolute",
                             left: 0,
                             top: 0,
-                          }}>
+                          }}
+                        >
                           <Text
                             style={{
                               fontWeight: "700",
                               fontSize: 12,
                               color: "#1E1E1E",
-                            }}>
+                            }}
+                          >
                             {stockItem?.symbol[0]}
                           </Text>
                         </View>
@@ -249,14 +261,16 @@ export default function BuyStockForm() {
                       <View
                         style={{
                           flex: 1,
-                        }}>
+                        }}
+                      >
                         <Text
                           numberOfLines={2}
                           style={{
                             fontSize: 18,
                             fontWeight: "bold",
                             color: isDark ? "#AAAAAA" : "#004662",
-                          }}>
+                          }}
+                        >
                           {stockItem?.symbol}
                         </Text>
                       </View>
@@ -266,13 +280,15 @@ export default function BuyStockForm() {
                       style={{
                         margin: "auto",
                         gap: 8,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           textAlign: "center",
                           color: isDark ? "#718096" : "#718096",
                           fontSize: 14,
-                        }}>
+                        }}
+                      >
                         {isBn ? "বর্তমান মূল্য" : "Current Price"}
                       </Text>
                       <Text
@@ -281,7 +297,8 @@ export default function BuyStockForm() {
                           color: isDark ? "#FFFFFF" : "#000",
                           fontWeight: "bold",
                           fontSize: 28,
-                        }}>
+                        }}
+                      >
                         ৳{currentPrice}
                       </Text>
                     </View>
@@ -292,7 +309,8 @@ export default function BuyStockForm() {
                         gap: 32,
                         width: "100%",
                         paddingHorizontal: 14,
-                      }}>
+                      }}
+                    >
                       <Controller
                         control={control}
                         name="buyPrice"
@@ -441,7 +459,8 @@ export default function BuyStockForm() {
                         shadowOpacity: isDark ? 0 : 1,
                         shadowRadius: isDark ? 0 : 12,
                         elevation: isDark ? 0 : 4,
-                      }}>
+                      }}
+                    >
                       <LinearGradient
                         colors={
                           isDark
@@ -454,22 +473,26 @@ export default function BuyStockForm() {
                           borderWidth: 1,
                           borderColor: "rgba(255,255,255,0.10)",
                           borderRadius: 12,
-                        }}>
+                        }}
+                      >
                         <View
                           style={{
                             gap: 20,
-                          }}>
+                          }}
+                        >
                           <View
                             style={{
                               flexDirection: "row",
                               justifyContent: "space-between",
-                            }}>
+                            }}
+                          >
                             <View>
                               <Text
                                 style={{
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
-                                }}>
+                                }}
+                              >
                                 {isBn ? "কেনার মূল্য" : "Buy at price"}
                               </Text>
                             </View>
@@ -479,7 +502,8 @@ export default function BuyStockForm() {
                                   color: isDark ? "#ffff" : "#2D3748",
                                   fontWeight: "medium",
                                   fontSize: 20,
-                                }}>
+                                }}
+                              >
                                 ৳{watch("buyPrice") || 0}
                               </Text>
                             </View>
@@ -488,13 +512,15 @@ export default function BuyStockForm() {
                             style={{
                               flexDirection: "row",
                               justifyContent: "space-between",
-                            }}>
+                            }}
+                          >
                             <View>
                               <Text
                                 style={{
                                   color: isDark ? "#A1A1A1" : "#909090",
                                   fontSize: 14,
-                                }}>
+                                }}
+                              >
                                 {isBn ? "কেনার পরিমাণ" : "Quantity"}
                               </Text>
                             </View>
@@ -504,7 +530,8 @@ export default function BuyStockForm() {
                                   color: isDark ? "#ffff" : "#2D3748",
                                   fontWeight: "medium",
                                   fontSize: 20,
-                                }}>
+                                }}
+                              >
                                 {watch("quantity") ? watch("quantity") : 0}
                               </Text>
                             </View>
@@ -512,18 +539,21 @@ export default function BuyStockForm() {
                           <View
                             style={{
                               gap: 8,
-                            }}>
+                            }}
+                          >
                             <View
                               style={{
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                              }}>
+                              }}
+                            >
                               <View>
                                 <Text
                                   style={{
                                     color: isDark ? "#A1A1A1" : "#909090",
                                     fontSize: 14,
-                                  }}>
+                                  }}
+                                >
                                   {isBn ? "ব্রোকার কমিশন" : "Broker commission"}
                                 </Text>
                               </View>
@@ -533,7 +563,8 @@ export default function BuyStockForm() {
                                     color: isDark ? "#ffff" : "#2D3748",
                                     fontWeight: "medium",
                                     fontSize: 20,
-                                  }}>
+                                  }}
+                                >
                                   {watch("brokerFee") ? watch("brokerFee") : 0}%
                                 </Text>
                               </View>
@@ -543,7 +574,8 @@ export default function BuyStockForm() {
                                 style={{
                                   color: "#CE1300",
                                   fontSize: 12,
-                                }}>
+                                }}
+                              >
                                 {isBn
                                   ? "শেয়ার কেনার সময়ই শুধু ব্রোকার কমিশন দিতে হবে—বিক্রি করার সময় কোনো ফি নেই।"
                                   : `You’ll pay a broker commission only when buying—no fee on selling.`}
@@ -556,7 +588,8 @@ export default function BuyStockForm() {
                               justifyContent: "space-between",
                               alignItems: "center",
                               gap: 12,
-                            }}>
+                            }}
+                          >
                             <TouchableOpacity
                               onPress={() => {
                                 playButtonSound(
@@ -571,7 +604,8 @@ export default function BuyStockForm() {
                                 shadowOpacity: 0.4,
                                 shadowRadius: 4,
                                 elevation: 4,
-                              }}>
+                              }}
+                            >
                               <LinearGradient
                                 colors={["#FF3C3C", "#FF5757"]}
                                 start={{
@@ -588,12 +622,14 @@ export default function BuyStockForm() {
                                   alignItems: "center",
                                   paddingHorizontal: 8,
                                   paddingVertical: 12,
-                                }}>
+                                }}
+                              >
                                 <Text
                                   style={{
                                     fontSize: 14,
                                     color: "#FFFFFF",
-                                  }}>
+                                  }}
+                                >
                                   {isBn ? "বাতিল করুন" : "Cancel"}
                                 </Text>
                               </LinearGradient>
@@ -619,7 +655,8 @@ export default function BuyStockForm() {
                                 shadowOpacity: 0.4,
                                 shadowRadius: 4,
                                 elevation: 4,
-                              }}>
+                              }}
+                            >
                               <LinearGradient
                                 colors={
                                   !isFormValid || isSubmitting
@@ -643,7 +680,8 @@ export default function BuyStockForm() {
                                   paddingHorizontal: 8,
                                   paddingVertical: 12,
                                   opacity: !isFormValid ? 0.2 : 1,
-                                }}>
+                                }}
+                              >
                                 {isSubmitting ? (
                                   <ActivityIndicator size={"small"} />
                                 ) : (
@@ -657,7 +695,8 @@ export default function BuyStockForm() {
                                         : isDark
                                         ? "#FFFFFF"
                                         : "#FFFFFF",
-                                    }}>
+                                    }}
+                                  >
                                     {isBn ? "কিনুন" : "Buy"}
                                   </Text>
                                 )}

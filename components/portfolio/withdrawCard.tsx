@@ -23,6 +23,7 @@ import { SvgXml } from "react-native-svg";
 import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
+import { formattedBalanceNew } from "./assetsBalCard";
 
 export default function WithdrawCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
@@ -42,7 +43,7 @@ export default function WithdrawCard({ open, setOpen }: any) {
       .string({
         required_error: isBn ? "ন্যূনতম ৳১ প্রয়োজন!" : "Minimum ৳1 required!", // Error message when the field is empty
       })
-      .min(0.01, {
+      .min(0.05, {
         message: isBn ? "ন্যূনতম ৳০.০৫ প্রয়োজন!" : "Minimum ৳0.05 required!", // Error message for minimum length
       })
       .max(1000000000, {
@@ -190,23 +191,27 @@ export default function WithdrawCard({ open, setOpen }: any) {
       visible={open}
       animationType="fade"
       transparent={true}
-      statusBarTranslucent={true}>
+      statusBarTranslucent={true}
+    >
       <KeyboardAvoidingView
         style={{
           flex: 1,
-        }}>
+        }}
+      >
         <TouchableWithoutFeedback
           onPress={() => {
             Keyboard.dismiss();
             setIsFocused(false);
-          }}>
+          }}
+        >
           <View
             style={{
               flex: 1,
               justifyContent: "center",
               alignContent: "center",
               backgroundColor: "rgba(26,26,26,0.2)",
-            }}>
+            }}
+          >
             <SvgXml
               xml={radialBg}
               width="100%"
@@ -233,7 +238,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                 margin: 12,
                 borderRadius: 24,
                 overflow: "hidden",
-              }}>
+              }}
+            >
               <LinearGradient
                 colors={
                   isDark ? ["#2A2B36", "#1C1C28"] : ["#E6E6E6", "#F9F9F9"]
@@ -243,17 +249,20 @@ export default function WithdrawCard({ open, setOpen }: any) {
                   paddingHorizontal: 12,
                   alignItems: "center",
                   gap: 40,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     gap: 16,
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       color: isDark ? "#B0B0C3" : "#6B6B6B",
                       fontSize: 16,
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     {isBn ? "উত্তোলনের জন্য আছে" : "Available for withdraw"}
                   </Text>
                   <Text
@@ -267,15 +276,17 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       fontSize: 28,
                       fontWeight: "bold",
                       textAlign: "center",
-                    }}>
-                    ৳{formattedBalance(parseFloat(freeBalance))}
+                    }}
+                  >
+                    ৳{formattedBalanceNew(freeBalance)}
                   </Text>
                 </View>
                 <View
                   style={{
                     gap: 13,
                     width: "100%",
-                  }}>
+                  }}
+                >
                   <Controller
                     control={control}
                     name="amount"
@@ -336,7 +347,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                     paddingVertical: 16,
                     paddingHorizontal: 12,
                     borderRadius: 20,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flex: 1,
@@ -344,7 +356,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       justifyContent: "space-between",
                       alignItems: "center",
                       gap: 12,
-                    }}>
+                    }}
+                  >
                     <TouchableOpacity
                       onPress={() => {
                         playButtonSound(require("@/assets/ipad_click.mp3"));
@@ -353,7 +366,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       style={{
                         flex: 1,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           shadowColor: "#FF4500",
@@ -361,7 +375,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                           shadowOpacity: 0.4,
                           shadowRadius: 6,
                           elevation: 4,
-                        }}>
+                        }}
+                      >
                         <LinearGradient
                           colors={
                             isDark
@@ -375,12 +390,14 @@ export default function WithdrawCard({ open, setOpen }: any) {
                             paddingHorizontal: 8,
                             borderRadius: 8,
                             alignItems: "center",
-                          }}>
+                          }}
+                        >
                           <Text
                             style={{
                               fontSize: 14,
                               color: isDark ? "#FFFFFF" : "#FFFFFF",
-                            }}>
+                            }}
+                          >
                             {isBn ? "বাতিল করুন" : "Cancel"}
                           </Text>
                         </LinearGradient>
@@ -395,7 +412,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                       style={{
                         flex: 1,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           shadowColor:
@@ -409,7 +427,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                           shadowOpacity: !isFormValid ? 0 : 0.7,
                           shadowRadius: !isFormValid ? 0 : 6,
                           elevation: !isFormValid ? 0 : 4,
-                        }}>
+                        }}
+                      >
                         <LinearGradient
                           colors={
                             !isFormValid || isSubmitting
@@ -427,7 +446,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                             paddingHorizontal: 8,
                             borderRadius: 8,
                             alignItems: "center",
-                          }}>
+                          }}
+                        >
                           {isSubmitting ? (
                             <ActivityIndicator size={"small"} />
                           ) : (
@@ -441,7 +461,8 @@ export default function WithdrawCard({ open, setOpen }: any) {
                                   : isDark
                                   ? "#FFFFFF"
                                   : "#FFFFFF",
-                              }}>
+                              }}
+                            >
                               {isBn ? "উত্তোলন করুন" : "Withdraw"}
                             </Text>
                           )}

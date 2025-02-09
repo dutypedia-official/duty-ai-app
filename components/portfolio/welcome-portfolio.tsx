@@ -52,30 +52,35 @@ export default function WelcomePortfolio() {
         flex: 1,
         backgroundColor: "#FFFFFF",
         paddingTop: insets.top,
-      }}>
+      }}
+    >
       <StatusBar barStyle={"dark-content"} />
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
             backgroundColor: "#FFFFFF",
             paddingTop: 60,
-          }}>
+          }}
+        >
           <View
             style={{
               flex: 1,
               justifyContent: "space-between",
-            }}>
+            }}
+          >
             <View
               style={{
                 position: "relative",
                 width: "100%",
                 backgroundColor: "#fff",
                 paddingHorizontal: 12,
-              }}>
+              }}
+            >
               <SvgXml
                 // preserveAspectRatio="xMidYMid slice"
                 xml={portfolioEmptySvg}
@@ -88,30 +93,36 @@ export default function WelcomePortfolio() {
                 flex: 1,
                 paddingHorizontal: 12,
                 paddingTop: 60,
-              }}>
+              }}
+            >
               <View
                 style={{
                   flex: 1,
                   justifyContent: "space-between",
                   paddingHorizontal: 16,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flex: 1,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       gap: 16,
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         gap: 8,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           fontSize: 20,
                           color: isDark ? "#A3A3A3" : "#333333",
-                        }}>
+                        }}
+                      >
                         Hello
                       </Text>
                       <Text
@@ -119,7 +130,8 @@ export default function WelcomePortfolio() {
                           color: isDark ? "#FFFFFF" : "#000000",
                           fontWeight: "bold",
                           fontSize: 24,
-                        }}>
+                        }}
+                      >
                         {`${firstName} ${!lastName ? "" : lastName}`}
                       </Text>
                     </View>
@@ -127,7 +139,8 @@ export default function WelcomePortfolio() {
                       <Text
                         style={{
                           color: isDark ? "#D0D0D0" : "#666666",
-                        }}>
+                        }}
+                      >
                         {isBn
                           ? `🌟 বড় স্বপ্ন দেখুন, স্মার্ট ট্রেড করুন!পুরনো স্টাইলকে বিদায় জানান, ডিউটি এআই-এর সাথে স্মার্ট লেনদেন শুরু করুন।\n\n🔥 আজই আপনার পোর্টফোলিও তৈরি করে সফলতার নতুন অধ্যায় রচনা করুন।`
                           : `🌟 Dream big, trade smart!Say goodbye to old trading styles and start smart trading with Duty AI.\n\n🔥 Create your portfolio today and write a new chapter of success.`}
@@ -138,38 +151,101 @@ export default function WelcomePortfolio() {
                         flexDirection: "row",
                         alignItems: "center",
                         gap: 5,
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           flexDirection: "row",
-                        }}>
-                        {users?.map((item, i) => {
-                          const isLast = users?.length - 1 === i;
-                          return (
-                            <View
-                              key={i}
-                              style={{
-                                width: 28.57,
-                                height: 28.57,
-                                borderRadius: 999,
-                                borderWidth: 0.89,
-                                borderColor: "#E0E0E0",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                overflow: "hidden",
-                                marginRight: isLast ? 0 : -10,
-                              }}>
-                              <Image
-                                source={{ uri: item?.uri }}
-                                resizeMode="cover"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                }}
-                              />
-                            </View>
-                          );
-                        })}
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}
+                        >
+                          <Image
+                            source={require("../.././assets/images/user-1.jpg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}
+                        >
+                          <Image
+                            source={require("../.././assets/images/user-2.jpg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}
+                        >
+                          <Image
+                            source={require("../.././assets/images/user-3.jpeg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: 0,
+                          }}
+                        >
+                          <Image
+                            source={require("../.././assets/images/user-4.jpeg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
                       </View>
                       <View>
                         <Text
@@ -177,7 +253,8 @@ export default function WelcomePortfolio() {
                             color: isDark ? "#666666" : "#666666",
                             fontSize: 14,
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           {isBn
                             ? "১০k+ মানুষ এটি ব্যবহার করছে"
                             : "10k+ people use this"}
@@ -191,7 +268,8 @@ export default function WelcomePortfolio() {
                     alignContent: "flex-end",
                     paddingVertical: insets.bottom + 24,
                     gap: 24,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       playButtonSound(require("@/assets/ipad_click.mp3"));
@@ -205,7 +283,8 @@ export default function WelcomePortfolio() {
                       shadowRadius: 23.12,
                       elevation: 23.12,
                       position: "relative",
-                    }}>
+                    }}
+                  >
                     <LinearGradient
                       colors={["#0D47A1", "#1976D2"]}
                       start={{
@@ -222,13 +301,15 @@ export default function WelcomePortfolio() {
                         alignItems: "center",
                         paddingHorizontal: 23,
                         paddingVertical: 16,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           fontSize: 20,
                           fontWeight: "bold",
                           color: "#FFFFFF",
-                        }}>
+                        }}
+                      >
                         {isBn ? "এখনই শুরু করুন" : "Start now"}
                       </Text>
                     </LinearGradient>
@@ -238,21 +319,24 @@ export default function WelcomePortfolio() {
                       flexDirection: "row",
                       gap: 10,
                       justifyContent: "center",
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         backgroundColor: "#667CE9",
                         height: 6,
                         width: 32,
                         borderRadius: 6.32,
-                      }}></View>
+                      }}
+                    ></View>
                     <View
                       style={{
                         backgroundColor: "#9A9A9A",
                         height: 6,
                         width: 32,
                         borderRadius: 6.32,
-                      }}></View>
+                      }}
+                    ></View>
                   </View>
                 </View>
               </View>

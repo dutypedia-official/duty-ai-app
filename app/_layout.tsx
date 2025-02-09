@@ -36,8 +36,8 @@ import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
 
-const CURRENT_IOS_VERSION = 11;
-const CURRENT_ANDROID_VERSION = 11;
+const CURRENT_IOS_VERSION = 12;
+const CURRENT_ANDROID_VERSION = 12;
 
 // const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
