@@ -36,6 +36,7 @@ export default function Portfolio() {
       setFreeBalance(data?.portfolio?.free);
       setTotalCurrentMarketValue(data?.totalCurrentMarketValue);
       setIsLoading(false);
+      console.log(data?.portfolio?.free, "-----fffuck");
     } catch (error) {
       console.log(error);
     } finally {

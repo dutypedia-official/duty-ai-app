@@ -68,7 +68,7 @@ export default function StockPortfolio() {
 
   useEffect(() => {
     fetchData(); // Initial fetch
-  }, []);
+  }, [refreash]);
 
   useEffect(() => {
     if (socket) {

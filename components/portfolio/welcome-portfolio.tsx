@@ -143,33 +143,90 @@ export default function WelcomePortfolio() {
                         style={{
                           flexDirection: "row",
                         }}>
-                        {users?.map((item, i) => {
-                          const isLast = users?.length - 1 === i;
-                          return (
-                            <View
-                              key={i}
-                              style={{
-                                width: 28.57,
-                                height: 28.57,
-                                borderRadius: 999,
-                                borderWidth: 0.89,
-                                borderColor: "#E0E0E0",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                overflow: "hidden",
-                                marginRight: isLast ? 0 : -10,
-                              }}>
-                              <Image
-                                source={require("../../assets/images/user-1.jpg")}
-                                resizeMode="cover"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                }}
-                              />
-                            </View>
-                          );
-                        })}
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}>
+                          <Image
+                            source={require("../.././assets/images/user-1.jpg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}>
+                          <Image
+                            source={require("../.././assets/images/user-2.jpg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: -10,
+                          }}>
+                          <Image
+                            source={require("../.././assets/images/user-3.jpeg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            width: 28.57,
+                            height: 28.57,
+                            borderRadius: 999,
+                            borderWidth: 0.89,
+                            borderColor: "#E0E0E0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            marginRight: 0,
+                          }}>
+                          <Image
+                            source={require("../.././assets/images/user-4.jpeg")}
+                            resizeMode="cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </View>
                       </View>
                       <View>
                         <Text
