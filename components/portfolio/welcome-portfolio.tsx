@@ -160,7 +160,7 @@ export default function WelcomePortfolio() {
                                 marginRight: isLast ? 0 : -10,
                               }}>
                               <Image
-                                source={{ uri: item?.uri }}
+                                source={require("../../assets/images/user-1.jpg")}
                                 resizeMode="cover"
                                 style={{
                                   width: "100%",
