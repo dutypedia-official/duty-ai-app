@@ -101,6 +101,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     prevId,
   } = useChat();
   const [showButton, setShowButton] = useState(false);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
 
   const prepareHistory = (msgs: any) => {
     const h: any = [];
@@ -119,7 +120,7 @@ const ChatTurbo = ({ fromPath }: any) => {
   };
 
   const scrollToBottom = () => {
-    if (flashListRef.current) {
+    if (!isUserScrolling && flashListRef.current) {
       flashListRef.current.scrollToOffset({ offset: 1000000, animated: true });
     }
   };
@@ -131,8 +132,10 @@ const ChatTurbo = ({ fromPath }: any) => {
 
     if (isAtBottom) {
       setShowButton(false);
+      // setIsUserScrolling(false);
     } else {
       setShowButton(true);
+      // setIsUserScrolling(true);
     }
   };
 
