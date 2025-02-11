@@ -627,7 +627,17 @@ export default function SellStock() {
                       setTemplate("portfolio");
                       setActiveConversationId(null);
                       setPrompt(
-                        `My current portfolio Trading Balance: ৳${balance} Free Cash: ৳${freeBalance} and Current Profit: ৳${currentProfit}. I have some stocks in DSEBD: ${
+                        `My current portfolio Trading Balance: ৳${formatFloat(
+                          balance
+                        )} Free Cash: ৳${formatFloat(
+                          freeBalance
+                        )} and Current Total ${
+                          currentProfit >= 0 ? "Profit" : "Loss"
+                        }: ${
+                          currentProfit >= 0
+                            ? `+৳${formatFloat(Math.abs(currentProfit))}`
+                            : `-৳${formatFloat(Math.abs(currentProfit))}`
+                        }. I have some stocks in DSEBD: ${
                           stockDetail?.stock?.symbol
                         } company. My stock details: Buy Price: ৳${formatFloat(
                           stockDetail?.avgCost
@@ -644,9 +654,9 @@ export default function SellStock() {
                           stockDetail?.initialRisk
                         )}% Current Risk: ${formatFloat(
                           stockDetail?.risk
-                        )}% and current stock price is ৳${
+                        )}% and current stock price is ৳${formatFloat(
                           stockDetail?.stock?.close
-                        }`
+                        )}`
                       );
 
                       router.push({

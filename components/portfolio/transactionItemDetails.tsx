@@ -73,9 +73,13 @@ export default function TransactionItemDetails() {
       name: isBn ? "বিক্রয় মূল্য" : "Sell Price",
       value: `৳${formatFloat(stockDetail?.sellPrice)}`,
     },
+    // {
+    //   name: isBn ? "পরিমাণ" : "Quantity ",
+    //   value: `${stockDetail?.totalQuantity}`,
+    // },
     {
-      name: isBn ? "পরিমাণ" : "Quantity ",
-      value: `${stockDetail?.totalQuantity}`,
+      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
+      value: stockDetail?.quantity,
     },
     {
       name: isBn ? "ব্রোকার ফি" : "Broker Fee",
@@ -91,10 +95,6 @@ export default function TransactionItemDetails() {
     {
       name: isBn ? "মোট বিক্রয় পরিমাণ" : "Total Sell Amount",
       value: `৳${formatFloat(stockDetail?.totalSellPrice)}`,
-    },
-    {
-      name: isBn ? "মোট বিক্রয়কৃত পরিমাণ" : "Total Quantity Sold",
-      value: stockDetail?.quantity,
     },
 
     {

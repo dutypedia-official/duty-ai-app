@@ -35,6 +35,7 @@ import useLang from "@/lib/hooks/useLang";
 import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
+import * as Network from "expo-network";
 
 const CURRENT_IOS_VERSION = 12;
 const CURRENT_ANDROID_VERSION = 12;
@@ -115,14 +116,6 @@ function handleRegistrationError(errorMessage: string) {
 }
 
 async function registerForPushNotificationsAsync() {
-  // const networkState = await Network.getNetworkStateAsync();
-  // if (!networkState.isConnected) {
-  //   Alert.alert(
-  //     "Network Error",
-  //     "You are offline. Please check your internet connection."
-  //   );
-  // }
-
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
@@ -198,8 +191,7 @@ export default function RootLayout() {
           ? "pk_test_cHJvdmVuLWJsdWVnaWxsLTU0LmNsZXJrLmFjY291bnRzLmRldiQ"
           : "pk_live_Y2xlcmsuZHV0eWFpLmFwcCQ"
       }
-      tokenCache={tokenCache}
-    >
+      tokenCache={tokenCache}>
       <RootLayoutNav />
     </ClerkProvider>
   );
@@ -315,6 +307,72 @@ function RootLayoutNav() {
       saveToken();
     }
   }, [expoPushToken, user]);
+
+  // const [isOffline, setIsOffline] = useState(false);
+
+  // const getNetwork = async () => {
+  //   const networkState = await Network.getNetworkStateAsync();
+  //   console.log("networkState---------", JSON.stringify(networkState));
+  //   if (!networkState.isConnected) {
+  //     Alert.alert(
+  //       "Network Error",
+  //       "You are offline. Please check your internet connection."
+  //     );
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getNetwork();
+  // }, [isOffline]);
+
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on(`connect`, () => {
+  //       console.log("You are offline...");
+  //       setIsOffline(!isOffline);
+  //     });
+  //   }
+  //   return () => {
+  //     if (socket) {
+  //       socket.off(`connect`);
+  //     }
+  //   };
+  // }, [socket]);
+
+  const [isOffline, setIsOffline] = useState(false);
+  const [hasAlerted, setHasAlerted] = useState(false);
+
+  useEffect(() => {
+    const checkNetwork = async () => {
+      const networkState = await Network.getNetworkStateAsync();
+      const offlineStatus = !networkState.isConnected;
+
+      if (offlineStatus && !hasAlerted) {
+        Alert.alert(
+          "Network Error",
+          "You are offline. Please check your internet connection."
+        );
+        setHasAlerted(true); // Mark alert as shown
+      }
+
+      if (!offlineStatus && isOffline) {
+        setHasAlerted(false); // Reset alert flag when back online
+      }
+
+      // Update state only if there's a change
+      if (offlineStatus !== isOffline) {
+        setIsOffline(offlineStatus);
+      }
+    };
+
+    // Initial check
+    checkNetwork();
+
+    // Listen for network changes every 5 seconds
+    const interval = setInterval(checkNetwork, 5000);
+
+    return () => clearInterval(interval);
+  }, [isOffline, hasAlerted]);
 
   useEffect(() => {
     if (socket && user) {

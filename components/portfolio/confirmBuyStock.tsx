@@ -49,11 +49,14 @@ export default function ConfirmBuyStock() {
     try {
       const token = await getToken();
       const { data } = await clientPortfolio.get(
-        `/portfolio/get/ai-summary?symbolId=${stockDetail?.id}&buyPrice=${
-          stockDetail?.buyPrice
-        }&quantity=${stockDetail?.quantity}&brokerFee=${
+        `/portfolio/get/ai-summary?symbolId=${
+          stockDetail?.id
+        }&buyPrice=${formatFloat(stockDetail?.buyPrice)}&quantity=${
+          stockDetail?.quantity
+        }&brokerFee=${stockDetail?.brokerFee}&totalBuyAmount=${calcTotalWithFee(
+          totalBuy,
           stockDetail?.brokerFee
-        }&totalBuyAmount=${calcTotalWithFee(totalBuy, stockDetail?.brokerFee)}`,
+        )}`,
         token
       );
 
@@ -108,7 +111,7 @@ export default function ConfirmBuyStock() {
         "/portfolio/buy",
         {
           symbolId: stockDetail?.id.toString(),
-          buyPrice: stockDetail?.buyPrice,
+          buyPrice: formatFloat(stockDetail?.buyPrice),
           quantity: stockDetail?.quantity,
           brokerFee: stockDetail?.brokerFee,
         },

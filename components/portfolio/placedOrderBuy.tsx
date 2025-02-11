@@ -263,7 +263,7 @@ export default function PlacedOrderBuy() {
                       textAlign: "left",
                       fontWeight: "bold",
                     }}>
-                    {isBn ? "ঝুঁকি" : "Risk"}
+                    {isBn ? "বর্তমান ঝুঁকি" : "Current Risk"}
                   </Text>
                 </View>
                 <View

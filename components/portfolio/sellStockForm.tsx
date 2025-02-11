@@ -60,7 +60,15 @@ export default function SellStockForm() {
   const schema = z
     .object({
       closeType: z.enum(["fullClose", "partialClose"]).default("partialClose"),
-      quantity: z.coerce.number().nullable().optional(),
+      quantity: z.coerce
+        .number()
+        .int({
+          message: isBn
+            ? "পরিমাণ অবশ্যই পূর্ণসংখ্যা হতে হবে!"
+            : "Quantity must be an integer!",
+        })
+        .nullable()
+        .optional(),
     })
     .superRefine((data, ctx) => {
       if (data.closeType === "partialClose") {
@@ -133,10 +141,6 @@ export default function SellStockForm() {
       playSoundErr(require("@/assets/error.mp3")); // Play error sound
     }
   }, [errors.quantity]);
-
-  useEffect(() => {
-    console.log("errors-----------", errors?.quantity?.message);
-  }, [watch("quantity")]);
 
   const values = watch();
   const isFormValid =
@@ -472,7 +476,7 @@ export default function SellStockForm() {
                             fieldState: { error },
                           }) => (
                             <AnimatedInput
-                              inputMode="numeric"
+                              inputMode="decimal"
                               label={isBn ? "পরিমাণ" : "Enter Quantity"}
                               placeholder="00.00"
                               isDark={isDark} // Set to false for light mode
@@ -666,6 +670,7 @@ export default function SellStockForm() {
                               gap: 12,
                             }}>
                             <TouchableOpacity
+                              disabled={isSubmitting}
                               onPress={() => {
                                 playButtonSound(
                                   require("@/assets/ipad_click.mp3")
@@ -720,7 +725,7 @@ export default function SellStockForm() {
                                 shadowColor:
                                   isSubmitting ||
                                   (watch("closeType") !== "fullClose" &&
-                                    watch("quantity") === "")
+                                    watch("quantity").trim() === "")
                                     ? "transparent"
                                     : isDark
                                     ? "#00B8D4"
@@ -729,7 +734,7 @@ export default function SellStockForm() {
                                 shadowOpacity:
                                   isSubmitting ||
                                   (watch("closeType") !== "fullClose" &&
-                                    watch("quantity") === "")
+                                    watch("quantity").trim() === "")
                                     ? 0
                                     : isDark
                                     ? 0.4
@@ -741,7 +746,7 @@ export default function SellStockForm() {
                                 colors={
                                   isSubmitting ||
                                   (watch("closeType") !== "fullClose" &&
-                                    watch("quantity") === "")
+                                    watch("quantity").trim() === "")
                                     ? isDark
                                       ? ["#3C3C47", "#3C3C47"]
                                       : ["#E0E0E0", "#E0E0E0"]

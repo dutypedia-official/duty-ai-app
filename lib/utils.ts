@@ -129,9 +129,6 @@ export const slugify = (title: string): string => {
     .replace(/-+/g, "-"); // Replace multiple hyphens with a single hyphen
 };
 
-export const formattedBalance = (withdrawBalance: number) =>
-  withdrawBalance?.toFixed(2)?.padStart(5, "0");
-
 export const calcBroFeeAmount = (
   brokerFeePercentage: string | number,
   total: string | number
@@ -139,10 +136,12 @@ export const calcBroFeeAmount = (
   const percentage = parseFloat(brokerFeePercentage?.toString());
   const totalAmount = parseFloat(total?.toString());
 
-  if (isNaN(percentage) || isNaN(totalAmount)) return "0"; // Handle invalid inputs
+  if (isNaN(percentage) || isNaN(totalAmount)) return "0.00"; // Handle invalid inputs
 
   const feeAmount = totalAmount * (percentage / 100);
-  return feeAmount?.toFixed(2); // Format to 2 decimal places
+  const truncatedNum = Math.floor(feeAmount * 100) / 100;
+
+  return truncatedNum?.toFixed(2); // Format to 2 decimal places
 };
 
 export const calcTotalWithFee = (
@@ -156,8 +155,9 @@ export const calcTotalWithFee = (
 
   const feeAmount = amount * (percentage / 100); // Calculate fee
   const totalWithFee = amount + feeAmount; // Total cost including fee
+  const truncatedNum = Math.floor(totalWithFee * 100) / 100;
 
-  return totalWithFee.toFixed(2); // Return formatted value
+  return truncatedNum.toFixed(2); // Return formatted value
 };
 
 export const formatFloat = (
@@ -167,11 +167,12 @@ export const formatFloat = (
 ): string => {
   const parsedNum = typeof num === "string" ? parseFloat(num) : num;
   if (isNaN(parsedNum)) return "0.00";
+  const truncatedNum = Math.floor(parsedNum * 100) / 100;
 
   return new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
-  }).format(parsedNum);
+  }).format(truncatedNum);
 };
 
 export const getRiskLevel = (risk: string): string => {

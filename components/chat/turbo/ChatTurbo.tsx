@@ -6,7 +6,7 @@ import { apiClient, BACKUP_SERVER_URL, MAIN_SERVER_URL } from "@/lib/api";
 import useChat from "@/lib/hooks/useChat";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import axios from "axios";
@@ -16,9 +16,10 @@ import { usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { throttle } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Crypto from "expo-crypto";
 import {
+  Animated,
   Dimensions,
   KeyboardAvoidingView,
   Pressable,
@@ -99,6 +100,7 @@ const ChatTurbo = ({ fromPath }: any) => {
     setPrevId,
     prevId,
   } = useChat();
+  const [showButton, setShowButton] = useState(false);
 
   const prepareHistory = (msgs: any) => {
     const h: any = [];
@@ -119,6 +121,18 @@ const ChatTurbo = ({ fromPath }: any) => {
   const scrollToBottom = () => {
     if (flashListRef.current) {
       flashListRef.current.scrollToOffset({ offset: 1000000, animated: true });
+    }
+  };
+
+  const handleScroll = (event: any) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const isAtBottom =
+      contentOffset.y + layoutMeasurement.height >= contentSize.height - 100;
+
+    if (isAtBottom) {
+      setShowButton(false);
+    } else {
+      setShowButton(true);
     }
   };
 
@@ -251,14 +265,14 @@ const ChatTurbo = ({ fromPath }: any) => {
 
       const urlLocal =
         template == "finance"
-          ? `http://192.168.225.188:8000/chat/finance`
+          ? `http://192.168.0.101:8000/chat/finance`
           : template == "forex"
-          ? `http://192.168.225.188:8000/chat/forex`
+          ? `http://192.168.0.101:8000/chat/forex`
           : template == "scanner"
-          ? `http://192.168.225.188:8000/chat/screener`
+          ? `http://192.168.0.101:8000/chat/screener`
           : template == "portfolio"
-          ? `http://192.168.225.188:8000/chat/portfolio`
-          : `http://192.168.225.188:8000/chat/pro`;
+          ? `http://192.168.0.101:8000/chat/portfolio`
+          : `http://192.168.0.101:8000/chat/pro`;
 
       es = new EventSource(isRunningInExpoGo ? urlLocal : url, {
         ...options,
@@ -306,15 +320,16 @@ const ChatTurbo = ({ fromPath }: any) => {
                   ])
                     .then(function (responses) {
                       const { data } = responses[0];
-                      if (messages.length > 0) {
-                        setRelatedPrompts([
-                          ...data,
-                          {
-                            label: "বাংলায় এই স্টকের বিষয়ে বল",
-                            prompt: "বাংলায় এই স্টকের বিষয়ে বল",
-                          },
-                        ]);
-                      }
+
+                      // if (messages.length > 0) {
+                      setRelatedPrompts([
+                        ...data,
+                        {
+                          label: "বাংলায় এই স্টকের বিষয়ে বল",
+                          prompt: "বাংলায় এই স্টকের বিষয়ে বল",
+                        },
+                      ]);
+                      // }
                     })
                     .catch(function (error) {
                       console.log(error);
@@ -334,9 +349,9 @@ const ChatTurbo = ({ fromPath }: any) => {
                   ])
                     .then(function (responses) {
                       const { data } = responses[0];
-                      if (messages.length > 0) {
-                        setRelatedPrompts(data);
-                      }
+                      // if (messages.length > 0) {
+                      setRelatedPrompts(data);
+                      // }
                     })
                     .catch(function (error) {
                       console.log(error);
@@ -358,9 +373,9 @@ const ChatTurbo = ({ fromPath }: any) => {
                   .then(function (responses) {
                     const { data } = responses[0];
                     console.log(data);
-                    if (messages.length > 0) {
-                      setRelatedPrompts(data);
-                    }
+                    // if (messages.length > 0) {
+                    setRelatedPrompts(data);
+                    // }
                   })
                   .catch(function (error) {
                     console.log(error);
@@ -950,7 +965,9 @@ const ChatTurbo = ({ fromPath }: any) => {
           contentContainerStyle={styles.messagesList}
           estimatedItemSize={200}
           onContentSizeChange={() => setTimeout(scrollToBottom, 100)}
-          onLayout={() => setTimeout(scrollToBottom, 100)}
+          // onLayout={() => setTimeout(scrollToBottom, 100)}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
           ListFooterComponent={() => {
             return (
               <View style={{ backgroundColor: "transparent" }}>
@@ -988,7 +1005,46 @@ const ChatTurbo = ({ fromPath }: any) => {
             );
           }}
         />
-        <View>
+        <View
+          style={{
+            position: "relative",
+          }}>
+          {showButton && messages?.length > 0 && (
+            <Animated.View
+              style={{
+                width: "100%",
+                marginHorizontal: "auto",
+                zIndex: 999,
+                position: "absolute",
+                top: -60,
+                backgroundColor: "transparent",
+                alignItems: "center",
+              }}>
+              <TouchableOpacity
+                onPress={() => setTimeout(scrollToBottom, 100)}
+                style={{
+                  height: 52,
+                  width: 52,
+                  backgroundColor: isDark ? "#2A2D35" : "#F5F6F8",
+                  borderRadius: 99,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "auto",
+                  shadowColor: "rgba(0,0,0,0)",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  elevation: 5,
+                }}>
+                <Feather
+                  name="chevron-down"
+                  size={24}
+                  color={isDark ? "white" : "black"}
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+
           <View
             style={{
               flexDirection: "row",

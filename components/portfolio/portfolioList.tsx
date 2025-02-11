@@ -22,11 +22,6 @@ export default function PortfolioList({
 
   const logoUrl = `https://s3-api.bayah.app/cdn/symbol/logo/${item?.stock?.symbol}.svg`;
 
-  const formatPercentage = (value: number) => {
-    const formatted = (value * 100).toFixed(2); // Convert to percentage and fix to 2 decimal places
-    return `${formatted.startsWith("-") ? "" : "+"}${formatted}%`;
-  };
-
   return (
     <TouchableOpacity
       onPress={() => {
@@ -140,7 +135,7 @@ export default function PortfolioList({
               fontWeight: "medium",
               textAlign: "right",
             }}>
-            ৳{item?.stock?.close} (
+            ৳{formatFloat(item?.stock?.close)} (
             {item?.stock?.change?.startsWith("-") ? "" : "+"}
             {formatFloat(item?.stock?.change)}%)
           </Text>

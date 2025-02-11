@@ -4,7 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import { format } from "date-fns";
 import { router } from "expo-router";
-import { playButtonSound } from "@/lib/utils";
+import { formatFloat, playButtonSound } from "@/lib/utils";
 
 export default function TransactionTabContent({
   activeTab,
@@ -133,7 +133,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#28A745" : "#28A745",
                   }}>
-                  +৳{Math.abs(item?.profit).toFixed(2)}
+                  +৳{formatFloat(Math.abs(item?.profit))}
                 </Text>
               </View>
             </View>
@@ -258,7 +258,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#FF6347" : "#FF4500",
                   }}>
-                  -৳{Math.abs(item?.loss).toFixed(2)}
+                  -৳{formatFloat(Math.abs(item?.loss))}
                 </Text>
               </View>
             </View>
@@ -336,7 +336,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#FF6347" : "#0F0F0F",
                   }}>
-                  -৳{Math.abs(item?.amount).toFixed(2)}
+                  -৳{formatFloat(Math.abs(item?.amount))}
                 </Text>
               </View>
             </View>
@@ -414,7 +414,7 @@ export default function TransactionTabContent({
                     fontWeight: "medium",
                     color: isDark ? "#FFFFFF" : "#0F0F0F",
                   }}>
-                  +৳{Math.abs(item?.amount).toFixed(2)}
+                  +৳{formatFloat(Math.abs(item?.amount))}
                 </Text>
               </View>
             </View>

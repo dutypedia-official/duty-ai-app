@@ -21,7 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
 import { apiClientPortfolio } from "@/lib/api";
-import { playButtonSound } from "@/lib/utils";
+import { formatFloat, playButtonSound } from "@/lib/utils";
 
 export default function StockPortfolio() {
   const colorScheme = useColorScheme();
@@ -36,6 +36,8 @@ export default function StockPortfolio() {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
+
+  const isBuyDisabled = formatFloat(freeBalance) === "0.00";
 
   const fetchData = async (init: boolean = true) => {
     try {
@@ -189,7 +191,7 @@ export default function StockPortfolio() {
           )}
 
           <TouchableOpacity
-            disabled={parseFloat(freeBalance) === 0}
+            disabled={isBuyDisabled}
             onPress={() => {
               playButtonSound(require("@/assets/ipad_click.mp3"));
               router.push("/main/portfolio/buy-stock");
@@ -204,7 +206,7 @@ export default function StockPortfolio() {
             }}>
             <LinearGradient
               colors={
-                parseFloat(freeBalance) === 0
+                isBuyDisabled
                   ? isDark
                     ? ["#3C3C47", "#3C3C47"]
                     : ["#E0E0E0", "#E0E0E0"]
@@ -228,12 +230,11 @@ export default function StockPortfolio() {
               <Text
                 style={{
                   fontSize: 14,
-                  color:
-                    parseFloat(freeBalance) === 0
-                      ? isDark
-                        ? "#A0A0A0"
-                        : "#666666"
-                      : "#FFFFFF",
+                  color: isBuyDisabled
+                    ? isDark
+                      ? "#A0A0A0"
+                      : "#666666"
+                    : "#FFFFFF",
                   fontWeight: "bold",
                 }}>
                 {isBn ? "স্টক কিনুন" : "Buy Stock"}

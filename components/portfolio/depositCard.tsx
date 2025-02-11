@@ -13,19 +13,17 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { TextInput } from "react-native-paper";
 import { SvgXml } from "react-native-svg";
 import * as z from "zod";
 import { radialBg } from "../svgs/radialBg";
 import AnimatedInput from "./AnimatedInput";
 import { Audio } from "expo-av";
-import { formattedBalance, playButtonSound } from "@/lib/utils";
+import { formatFloat, playButtonSound } from "@/lib/utils";
 import useLang from "@/lib/hooks/useLang";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
 import { useIsFocused } from "@react-navigation/native";
 import { apiClientPortfolio } from "@/lib/api";
-import { formattedBalanceNew } from "./assetsBalCard";
 
 export default function DepositCard({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
@@ -43,6 +41,7 @@ export default function DepositCard({ open, setOpen }: any) {
   const [customErr, setCustomErr] = useState<any>(null);
 
   console.log("balance--------", balance);
+
   const schema = z.object({
     amount: z.coerce
       .number()
@@ -191,26 +190,22 @@ export default function DepositCard({ open, setOpen }: any) {
       visible={open}
       animationType="fade"
       transparent={true}
-      statusBarTranslucent={true}
-    >
+      statusBarTranslucent={true}>
       <KeyboardAvoidingView
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         <TouchableWithoutFeedback
           onPress={() => {
             Keyboard.dismiss();
             setIsFocused(false);
-          }}
-        >
+          }}>
           <View
             style={{
               flex: 1,
               justifyContent: "center",
               alignContent: "center",
-            }}
-          >
+            }}>
             <SvgXml
               xml={radialBg}
               width="100%"
@@ -238,8 +233,7 @@ export default function DepositCard({ open, setOpen }: any) {
                 margin: 12,
                 borderRadius: 24,
                 overflow: "hidden",
-              }}
-            >
+              }}>
               <LinearGradient
                 colors={
                   isDark ? ["#2A2B36", "#1C1C28"] : ["#E6E6E6", "#F9F9F9"]
@@ -249,20 +243,17 @@ export default function DepositCard({ open, setOpen }: any) {
                   paddingHorizontal: 12,
                   alignItems: "center",
                   gap: 40,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     gap: 16,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       color: isDark ? "#B0B0C3" : "#6B6B6B",
                       fontSize: 16,
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     {isBn ? "বর্তমান ব্যালেন্স" : "Current Balance"}
                   </Text>
                   <Text
@@ -276,17 +267,15 @@ export default function DepositCard({ open, setOpen }: any) {
                       fontSize: 28,
                       fontWeight: "bold",
                       textAlign: "center",
-                    }}
-                  >
-                    ৳{formattedBalanceNew(balance)}
+                    }}>
+                    ৳{formatFloat(balance)}
                   </Text>
                 </View>
                 <View
                   style={{
                     gap: 13,
                     width: "100%",
-                  }}
-                >
+                  }}>
                   <Controller
                     control={control}
                     name="amount"
@@ -295,7 +284,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       fieldState: { error },
                     }) => (
                       <AnimatedInput
-                        inputMode="numeric"
+                        inputMode="decimal"
                         label={
                           isBn ? "জমার পরিমাণ লিখুন" : "Enter Deposit Amount"
                         }
@@ -353,8 +342,7 @@ export default function DepositCard({ open, setOpen }: any) {
                     paddingVertical: 16,
                     paddingHorizontal: 12,
                     borderRadius: 20,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flex: 1,
@@ -362,8 +350,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       justifyContent: "space-between",
                       alignItems: "center",
                       gap: 12,
-                    }}
-                  >
+                    }}>
                     <TouchableOpacity
                       disabled={isSubmitting}
                       onPress={() => {
@@ -373,8 +360,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       style={{
                         flex: 1,
                         borderRadius: 12,
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           shadowColor: "#FF4500",
@@ -382,8 +368,7 @@ export default function DepositCard({ open, setOpen }: any) {
                           shadowOpacity: 0.4,
                           shadowRadius: 6,
                           elevation: 4,
-                        }}
-                      >
+                        }}>
                         <LinearGradient
                           colors={
                             isDark
@@ -397,21 +382,19 @@ export default function DepositCard({ open, setOpen }: any) {
                             paddingHorizontal: 8,
                             borderRadius: 8,
                             alignItems: "center",
-                          }}
-                        >
+                          }}>
                           <Text
                             style={{
                               fontSize: 14,
                               color: isDark ? "#FFFFFF" : "#FFFFFF",
-                            }}
-                          >
+                            }}>
                             {isBn ? "বাতিল করুন" : "Cancel"}
                           </Text>
                         </LinearGradient>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      // disabled={!isFormValid}
+                      disabled={isSubmitting}
                       onPress={() => {
                         playButtonSound(require("@/assets/ipad_click.mp3"));
                         handleSubmit(onSubmit)();
@@ -420,8 +403,7 @@ export default function DepositCard({ open, setOpen }: any) {
                       style={{
                         flex: 1,
                         borderRadius: 12,
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           shadowColor:
@@ -435,8 +417,7 @@ export default function DepositCard({ open, setOpen }: any) {
                           shadowOpacity: !isFormValid ? 0 : 0.7,
                           shadowRadius: !isFormValid ? 0 : 6,
                           elevation: !isFormValid ? 0 : 4,
-                        }}
-                      >
+                        }}>
                         <LinearGradient
                           colors={
                             !isFormValid || isSubmitting
@@ -456,8 +437,7 @@ export default function DepositCard({ open, setOpen }: any) {
                             // borderColor: "#FFD700",
                             borderRadius: 8,
                             alignItems: "center",
-                          }}
-                        >
+                          }}>
                           {isSubmitting ? (
                             <ActivityIndicator size={"small"} />
                           ) : (
@@ -471,8 +451,7 @@ export default function DepositCard({ open, setOpen }: any) {
                                   : isDark
                                   ? "#FFFFFF"
                                   : "#FFFFFF",
-                              }}
-                            >
+                              }}>
                               {isBn ? "জমা করুন" : "Deposit"}
                             </Text>
                           )}
