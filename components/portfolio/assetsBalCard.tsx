@@ -59,7 +59,8 @@ export default function AssetsBalCard() {
       <View
         style={{
           gap: 24,
-        }}>
+        }}
+      >
         <LinearGradient
           colors={isDark ? ["#1A1A1A", "#1A1A1A"] : ["#FFFFFF", "#F8F9FA"]}
           style={{
@@ -69,7 +70,8 @@ export default function AssetsBalCard() {
             borderWidth: 1,
             borderColor: isDark ? "#262626" : "#E0E0E0",
             borderRadius: 20,
-          }}>
+          }}
+        >
           <Image
             source={
               isDark
@@ -90,26 +92,30 @@ export default function AssetsBalCard() {
           <View
             style={{
               paddingHorizontal: 12,
-            }}>
+            }}
+          >
             <View
               style={{
                 backgroundColor: "transparent",
                 flex: 1,
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <View
                 style={{
                   backgroundColor: "transparent",
                   flex: 1,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: "transparent",
                     flexDirection: "row",
                     alignItems: "flex-start",
                     gap: 8,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       borderRadius: 999,
@@ -118,7 +124,8 @@ export default function AssetsBalCard() {
                       shadowOpacity: 0.1,
                       shadowRadius: 4,
                       elevation: 4,
-                    }}>
+                    }}
+                  >
                     <LinearGradient
                       colors={
                         isDark ? ["#FFD700", "#FFA500"] : ["#FFD700", "#FFD700"]
@@ -132,7 +139,8 @@ export default function AssetsBalCard() {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: 3,
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           width: "100%",
@@ -141,7 +149,8 @@ export default function AssetsBalCard() {
                           borderRadius: 999,
                           alignContent: "center",
                           justifyContent: "center",
-                        }}>
+                        }}
+                      >
                         {!logoUrl && (
                           <Text
                             style={{
@@ -150,7 +159,8 @@ export default function AssetsBalCard() {
                               color: "#1E1E1E",
                               textAlign: "center",
                               textAlignVertical: "center",
-                            }}>
+                            }}
+                          >
                             {user?.firstName![0]}
                           </Text>
                         )}
@@ -175,13 +185,15 @@ export default function AssetsBalCard() {
                       justifyContent: "space-between",
                       flex: 1,
                       gap: 8,
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         fontSize: 14,
                         color: isDark ? "#fff" : "#777777",
                       }}
-                      numberOfLines={1}>
+                      numberOfLines={1}
+                    >
                       Hello
                     </Text>
                     <Text
@@ -190,7 +202,8 @@ export default function AssetsBalCard() {
                         fontWeight: "bold",
                         color: isDark ? "#FFFFFF" : "#2C3E50",
                       }}
-                      numberOfLines={1}>
+                      numberOfLines={1}
+                    >
                       {user?.firstName} {user?.lastName}
                     </Text>
                   </View>
@@ -199,7 +212,8 @@ export default function AssetsBalCard() {
               <View
                 style={{
                   backgroundColor: "transparent",
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   onPress={() => {
                     playButtonSound(require("@/assets/ipad_click.mp3"));
@@ -209,7 +223,8 @@ export default function AssetsBalCard() {
                     padding: 8,
                     backgroundColor: "transparent",
                     borderRadius: 999,
-                  }}>
+                  }}
+                >
                   <Entypo
                     name="dots-three-vertical"
                     size={20}
@@ -234,13 +249,15 @@ export default function AssetsBalCard() {
                     borderColor: isDark ? "#FFCE01" : "#D9D9D9",
                     borderRadius: 4,
                     zIndex: 100000000,
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: 14,
                       color: isDark ? "#333333" : "#333333",
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     {isBn ? "পোর্টফলিও রিসেট করুন" : "Reset portfolio"}
                   </Text>
                 </TouchableOpacity>
@@ -262,13 +279,15 @@ export default function AssetsBalCard() {
                 margin: "auto",
                 gap: 8,
                 paddingVertical: 24,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   textAlign: "center",
                   color: isDark ? "#718096" : "#718096",
                   fontSize: 14,
-                }}>
+                }}
+              >
                 {isBn ? "মোট বিনিয়োগ" : "Total Investment"}
               </Text>
               <Text
@@ -277,7 +296,8 @@ export default function AssetsBalCard() {
                   color: isDark ? "#FFFFFF" : "#000",
                   fontWeight: "bold",
                   fontSize: 28,
-                }}>
+                }}
+              >
                 ৳{formatFloat(Number(totalInvestment))}
               </Text>
               <Text
@@ -286,7 +306,8 @@ export default function AssetsBalCard() {
                   color: currentProfit >= 0 ? "#28A745" : "#CE1300",
                   fontWeight: "medium",
                   fontSize: 16,
-                }}>
+                }}
+              >
                 {currentProfit === 0.0
                   ? `৳${formatFloat(Math.abs(currentProfit))}`
                   : currentProfit >= 0
@@ -311,23 +332,27 @@ export default function AssetsBalCard() {
                 },
                 shadowRadius: isDark ? 0 : 12,
                 shadowOpacity: isDark ? 0 : 0.1,
-              }}>
+              }}
+            >
               <View
                 style={{
                   gap: 12,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <View>
                     <Text
                       style={{
                         color: isDark ? "#fff" : "#4A5568",
                         fontSize: 14,
-                      }}>
+                      }}
+                    >
                       {isBn ? "লেনদেনের ব্যালেন্স" : "Trading Balance"}
                     </Text>
                   </View>
@@ -337,7 +362,8 @@ export default function AssetsBalCard() {
                         color: isDark ? "#fff" : "#2D3748",
                         fontSize: 20,
                         fontWeight: "medium",
-                      }}>
+                      }}
+                    >
                       ৳{formatFloat(balance)}
                     </Text>
                   </View>
@@ -347,13 +373,15 @@ export default function AssetsBalCard() {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <View>
                     <Text
                       style={{
                         color: isDark ? "#D4AF37" : "#2E7582",
                         fontSize: 14,
-                      }}>
+                      }}
+                    >
                       {isBn ? "ফ্রি ক্যাশ" : "Free cash"}
                     </Text>
                   </View>
@@ -362,7 +390,8 @@ export default function AssetsBalCard() {
                       style={{
                         color: isDark ? "#D4AF37" : "#2E7582",
                         fontSize: 14,
-                      }}>
+                      }}
+                    >
                       ৳{formatFloat(freeBalance)}
                     </Text>
                   </View>
@@ -374,7 +403,8 @@ export default function AssetsBalCard() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   gap: 12,
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   disabled={depositDisable}
                   onPress={() => {
@@ -391,7 +421,8 @@ export default function AssetsBalCard() {
                     shadowOpacity: depositDisable ? 1 : 0.4,
                     shadowRadius: depositDisable ? 0 : 4,
                     elevation: depositDisable ? 0 : 4,
-                  }}>
+                  }}
+                >
                   <LinearGradient
                     colors={
                       depositDisable
@@ -414,12 +445,14 @@ export default function AssetsBalCard() {
                       alignItems: "center",
                       paddingHorizontal: 8,
                       paddingVertical: 8,
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         fontSize: 14,
                         color: "#FFFFFF",
-                      }}>
+                      }}
+                    >
                       {isBn ? "জমা করুন" : "Deposit"}
                     </Text>
                   </LinearGradient>
@@ -437,7 +470,8 @@ export default function AssetsBalCard() {
                     shadowOpacity: isWithdrawDisabled ? 0 : 0.4,
                     shadowRadius: 4,
                     elevation: 4,
-                  }}>
+                  }}
+                >
                   <LinearGradient
                     colors={
                       isWithdrawDisabled
@@ -460,12 +494,14 @@ export default function AssetsBalCard() {
                       alignItems: "center",
                       paddingHorizontal: 8,
                       paddingVertical: 8,
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         fontSize: 14,
                         color: isWithdrawDisabled ? "#A0A0A0" : "#FFFFFF",
-                      }}>
+                      }}
+                    >
                       {isBn ? "উত্তোলন করুন" : "Withdraw"}
                     </Text>
                   </LinearGradient>

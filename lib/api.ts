@@ -18,7 +18,7 @@ export const BACKUP_SERVER_URL = "https://api-backup.dutyai.app";
 export const apiClient = () => {
   const isRunningInExpoGo = Constants.appOwnership === "expo";
   const BASE_URL = isRunningInExpoGo
-    ? "http://192.168.0.101:8000"
+    ? "http://192.168.0.103:8000"
     : `https://api.dutyai.app`;
   const addBaseUrl = (url: string, mainServer: boolean) => {
     console.log("API-------", url);
@@ -88,7 +88,7 @@ export const apiClient = () => {
 };
 
 export const apiClientPortfolio = () => {
-  const BASE_URL = `http://ncsowwksks0g8gg4gscw0w0o.195.26.252.202.sslip.io`;
+  const BASE_URL = `https://heart.dutyai.app`;
   const addBaseUrl = (url: string) => {
     console.log("API PORTFOLIO-------", url);
     return `${BASE_URL}${url}`;

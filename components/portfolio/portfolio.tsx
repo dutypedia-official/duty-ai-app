@@ -3,7 +3,12 @@ import { apiClientPortfolio } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
 import React, { useEffect } from "react";
-import { ScrollView, TouchableWithoutFeedback, View } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import AssetsBalCard from "./assetsBalCard";
 import StockPortfolio from "./stockPortfolio";
 import TransactionCard from "./transactionCard";
@@ -67,15 +72,17 @@ export default function Portfolio() {
     <TouchableWithoutFeedback onPress={() => setResetPortfolioDrop(false)}>
       <SafeAreaView>
         <ScrollView>
-          <View
+          <TouchableOpacity
+            activeOpacity={1}
             style={{
               gap: 20,
               paddingBottom: 24,
-            }}>
+            }}
+          >
             <AssetsBalCard />
             <StockPortfolio />
             <TransactionCard />
-          </View>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
