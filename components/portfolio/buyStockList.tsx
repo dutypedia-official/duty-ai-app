@@ -22,6 +22,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgUri } from "react-native-svg";
 
 const SignalList = ({
@@ -43,16 +44,14 @@ const SignalList = ({
     <View
       style={{
         backgroundColor: "transparent",
-      }}
-    >
+      }}>
       <LinearGradient
         colors={isDark ? ["#23290E", "#1E1E1E"] : ["#FFD700", "#F0F2F5"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
           opacity: 1,
-        }}
-      >
+        }}>
         <LinearGradient
           colors={isDark ? ["#171717", "#0D0D0D"] : [cardBgColor, cardBgColor]}
           start={{ x: 0, y: 0 }}
@@ -63,15 +62,13 @@ const SignalList = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-          }}
-        >
+          }}>
           <View
             style={{
               flexDirection: "row",
               gap: 8,
               alignItems: "center",
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 24,
@@ -80,8 +77,7 @@ const SignalList = ({
                 overflow: "hidden",
                 backgroundColor: "transparent",
                 position: "relative",
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 24,
@@ -92,15 +88,13 @@ const SignalList = ({
                   position: "absolute",
                   left: 0,
                   top: 0,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontWeight: "700",
                     fontSize: 12,
                     color: "#1E1E1E",
-                  }}
-                >
+                  }}>
                   {name?.[0]}
                 </Text>
               </View>
@@ -122,8 +116,7 @@ const SignalList = ({
                     fontWeight: "normal",
                     color: isDark ? "#F0F0F0" : "#6B6B6B",
                     fontSize: 14,
-                  }}
-                >
+                  }}>
                   {name}
                 </Text>
               </Text>
@@ -146,16 +139,14 @@ const SignalList = ({
                 borderWidth: 1,
                 borderColor: isDark ? "#B08D57" : "#D4AF37",
                 borderRadius: 36,
-              }}
-            >
+              }}>
               <LinearGradient
                 colors={["transparent", "transparent"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={{
                   borderRadius: 36,
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -163,13 +154,11 @@ const SignalList = ({
                     paddingHorizontal: 12,
                     paddingVertical: 8,
                     gap: 10,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       color: "#8B7500",
-                    }}
-                  >
+                    }}>
                     {isBn ? "কিনুন" : "Buy"}
                   </Text>
                   <FontAwesome name="angle-right" size={20} color="#8B7500" />
@@ -195,6 +184,7 @@ export const BuyStockList = () => {
   const client = apiClient();
   const [refreash, setRefreash] = useState(false);
   const { socket } = useSocket();
+  const insets = useSafeAreaInsets();
 
   const fetchData = async () => {
     try {
@@ -261,8 +251,7 @@ export const BuyStockList = () => {
           paddingVertical: 10,
           paddingHorizontal: 12,
           gap: 28,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             playButtonSound(require("@/assets/ipad_click.mp3"));
@@ -281,8 +270,7 @@ export const BuyStockList = () => {
             elevation: 5,
             width: 36,
             height: 36,
-          }}
-        >
+          }}>
           <Text>
             <Ionicons
               name="chevron-back"
@@ -296,8 +284,7 @@ export const BuyStockList = () => {
             flex: 1,
             backgroundColor: "transparent",
             paddingHorizontal: 10,
-          }}
-        >
+          }}>
           <LinearGradient
             colors={isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"]}
             start={{ x: 0, y: 0 }}
@@ -305,8 +292,7 @@ export const BuyStockList = () => {
             style={{
               borderRadius: 100,
               padding: 1,
-            }}
-          >
+            }}>
             <View
               style={{
                 flexDirection: "row",
@@ -316,8 +302,7 @@ export const BuyStockList = () => {
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
-              }}
-            >
+              }}>
               <Feather name="search" size={20} color={"#8B7500"} />
               <TextInput
                 style={{
@@ -343,8 +328,7 @@ export const BuyStockList = () => {
           style={{
             paddingHorizontal: 10,
             flex: 1,
-          }}
-        >
+          }}>
           <LinearGradient
             colors={isDark ? ["#333333", "#0F0F0F"] : ["#FFD700", "#F0F2F5"]}
             start={{ x: 0, y: 0 }}
@@ -352,16 +336,16 @@ export const BuyStockList = () => {
             style={{
               flex: 1,
               borderRadius: 12,
-            }}
-          >
+            }}>
             <View
               style={{
                 flex: 1,
                 padding: 1,
                 overflow: "hidden",
-                borderRadius: 14,
-              }}
-            >
+                borderRadius: 12,
+                backgroundColor: isDark ? "#0D0D0D" : "#F5F5F5",
+                margin: 1,
+              }}>
               <FlashList
                 estimatedItemSize={60}
                 contentContainerStyle={{
@@ -383,8 +367,7 @@ export const BuyStockList = () => {
                     }
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    style={{ height: 1 }}
-                  ></LinearGradient>
+                    style={{ height: 1 }}></LinearGradient>
                 )}
                 ListEmptyComponent={() => {
                   if (loadingData) {
@@ -393,9 +376,12 @@ export const BuyStockList = () => {
                         style={{
                           backgroundColor: "transparent",
                           padding: 12,
-                          height: Dimensions.get("window").height,
-                        }}
-                      >
+                          height:
+                            Dimensions.get("window").height -
+                            (insets.bottom + insets.top + 200),
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
                         <View>
                           <ActivityIndicator />
                         </View>
@@ -407,17 +393,19 @@ export const BuyStockList = () => {
                       style={{
                         backgroundColor: "transparent",
                         padding: 12,
-                        height: Dimensions.get("window").height,
-                      }}
-                    >
+                        height:
+                          Dimensions.get("window").height -
+                          (insets.bottom + insets.top + 200),
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}>
                       <View>
                         <Text
                           style={{
                             color: isDark ? "#F0F0F0" : "#6B6B6B",
                             fontSize: 16,
                             textAlign: "center",
-                          }}
-                        >
+                          }}>
                           No stock found
                         </Text>
                       </View>

@@ -28,6 +28,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Modal, Portal } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgUri } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import WebView from "react-native-webview";
@@ -216,6 +217,7 @@ const List = () => {
   console.log("pathname", pathname);
   const router = useRouter();
   const client = apiClient();
+  const insets = useSafeAreaInsets();
 
   const fetchData = async () => {
     try {
@@ -435,7 +437,9 @@ const List = () => {
                 flex: 1,
                 padding: 1,
                 overflow: "hidden",
-                borderRadius: 14,
+                borderRadius: 12,
+                backgroundColor: isDark ? "#0D0D0D" : "#F5F5F5",
+                margin: 1,
               }}>
               <FlashList
                 estimatedItemSize={60}
@@ -469,7 +473,11 @@ const List = () => {
                         style={{
                           backgroundColor: "transparent",
                           padding: 12,
-                          height: Dimensions.get("window").height,
+                          height:
+                            Dimensions.get("window").height -
+                            (insets.bottom + insets.top + 262),
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}>
                         <View>
                           <ActivityIndicator />
@@ -482,7 +490,11 @@ const List = () => {
                       style={{
                         backgroundColor: "transparent",
                         padding: 12,
-                        height: Dimensions.get("window").height,
+                        height:
+                          Dimensions.get("window").height -
+                          (insets.bottom + insets.top + 262),
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}>
                       <View>
                         <Text

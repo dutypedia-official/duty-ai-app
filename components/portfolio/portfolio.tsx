@@ -3,7 +3,7 @@ import { apiClientPortfolio } from "@/lib/api";
 import useUi from "@/lib/hooks/useUi";
 import { useAuth } from "@clerk/clerk-expo";
 import React, { useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, TouchableWithoutFeedback, View } from "react-native";
 import AssetsBalCard from "./assetsBalCard";
 import StockPortfolio from "./stockPortfolio";
 import TransactionCard from "./transactionCard";
@@ -22,6 +22,7 @@ export default function Portfolio() {
     setIsLoading,
     refreash,
     setRefreash,
+    setResetPortfolioDrop,
   } = useUi();
 
   const fetchData = async (init: boolean = true) => {
@@ -63,19 +64,20 @@ export default function Portfolio() {
   }, [socket]);
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View
-          style={{
-            gap: 20,
-            paddingBottom: 24,
-          }}
-        >
-          <AssetsBalCard />
-          <StockPortfolio />
-          <TransactionCard />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={() => setResetPortfolioDrop(false)}>
+      <SafeAreaView>
+        <ScrollView>
+          <View
+            style={{
+              gap: 20,
+              paddingBottom: 24,
+            }}>
+            <AssetsBalCard />
+            <StockPortfolio />
+            <TransactionCard />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }

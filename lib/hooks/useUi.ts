@@ -32,6 +32,8 @@ interface Store {
   setRefreshHold: (refreshHold: boolean) => void;
   portfolioStatus: any;
   setPortfolioStatus: (portfolioStatus: any) => void;
+  resetPortfolioDrop: boolean;
+  setResetPortfolioDrop: (resetPortfolioDrop: boolean) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -69,6 +71,9 @@ const useUi = create<Store>((set, get) => ({
   setRefreshHold: (refreshHold: boolean) => set({ refreshHold }),
   portfolioStatus: null,
   setPortfolioStatus: (portfolioStatus: any) => set({ portfolioStatus }),
+  resetPortfolioDrop: false,
+  setResetPortfolioDrop: (resetPortfolioDrop: boolean) =>
+    set({ resetPortfolioDrop }),
 }));
 
 export default useUi;
