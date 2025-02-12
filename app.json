@@ -17,7 +17,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "37",
+      "buildNumber": "38",
       "bundleIdentifier": "com.easinarafat.dutyai",
       "entitlements": {
         "com.apple.developer.applesignin": ["Default"]
