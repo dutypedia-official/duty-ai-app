@@ -114,8 +114,7 @@ export default function NotiDetails() {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: isDark ? "#171B26" : "#FFFFFF",
-        }}
-      >
+        }}>
         <ActivityIndicator
           size="large"
           color={isDark ? "#FFFFFF" : "#171B26"}
@@ -129,8 +128,7 @@ export default function NotiDetails() {
       keyboardVerticalOffset={400}
       style={{
         flex: 1,
-      }}
-    >
+      }}>
       <View
         style={{
           position: "absolute",
@@ -143,8 +141,7 @@ export default function NotiDetails() {
           paddingBottom: 10,
           paddingHorizontal: 12,
           gap: 25,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             router.back();
@@ -162,8 +159,7 @@ export default function NotiDetails() {
             elevation: 5,
             width: 36,
             height: 36,
-          }}
-        >
+          }}>
           <Text>
             <Ionicons
               name="chevron-back"
@@ -180,8 +176,7 @@ export default function NotiDetails() {
             fontSize: 24,
             fontWeight: "bold",
             textAlign: "center",
-          }}
-        >
+          }}>
           {data?.companyName}
         </Text>
         <View style={{ backgroundColor: "transparent", width: 36 }}></View>
@@ -192,8 +187,7 @@ export default function NotiDetails() {
           backgroundColor: isDark ? "#171B26" : "#FFFFFF",
           height: "100%",
           flex: 1,
-        }}
-      >
+        }}>
         <StatusBar backgroundColor={isDark ? "#171B26" : "#FFFFFF"} />
 
         <View
@@ -201,8 +195,7 @@ export default function NotiDetails() {
             backgroundColor: "transparent",
             height: "100%",
             marginTop: Platform.OS === "ios" ? insets.top : insets.top + 64,
-          }}
-        >
+          }}>
           <Portal>
             <Modal visible={visible} transparent={true} onDismiss={hideModal}>
               <TouchableWithoutFeedback onPress={hideModal}>
@@ -275,8 +268,7 @@ export default function NotiDetails() {
           <View
             style={{
               flex: 1,
-            }}
-          >
+            }}>
             <View style={{ backgroundColor: "transparent", gap: 32 }}>
               {data?.photoLight && data?.photoDark && (
                 <Image
@@ -301,8 +293,7 @@ export default function NotiDetails() {
                   paddingHorizontal: 12,
                   paddingTop: 32,
                   backgroundColor: "transparent",
-                }}
-              >
+                }}>
                 <Text style={{ fontSize: 20 }}>{data?.companyName}</Text>
                 {data?.price && (
                   <>
@@ -328,8 +319,7 @@ export default function NotiDetails() {
                   style={{
                     position: "relative",
                     backgroundColor: "transparent",
-                  }}
-                >
+                  }}>
                   <View style={{ paddingVertical: 10 }}>
                     {loading2 && (
                       <ActivityIndicator
@@ -370,8 +360,7 @@ export default function NotiDetails() {
                           position: "relative",
                           aspectRatio: 360 / 260,
                           width: "100%",
-                        }}
-                      >
+                        }}>
                         <Image
                           style={{
                             height: "100%",
@@ -399,8 +388,7 @@ export default function NotiDetails() {
                               position: "absolute",
                               bottom: 20,
                               right: 20,
-                            }}
-                          >
+                            }}>
                             <Pressable onPress={showModal}>
                               <FontAwesome6
                                 name="expand"
@@ -420,8 +408,7 @@ export default function NotiDetails() {
                 style={{
                   backgroundColor: "transparent",
                   gap: 24,
-                }}
-              >
+                }}>
                 <Pressable
                   onPress={() => setExpanded(!expanded)}
                   onLongPress={async () => {
@@ -439,8 +426,7 @@ export default function NotiDetails() {
                     // gap: 16,
                     paddingHorizontal: 12,
                     flex: 1,
-                  }}
-                >
+                  }}>
                   <MdxContent data={data} expanded={expanded} />
                 </Pressable>
 
@@ -450,30 +436,26 @@ export default function NotiDetails() {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     marginHorizontal: 12,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       borderRadius: 100,
                       position: "relative",
                       overflow: "hidden",
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
                         position: "relative",
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           flexDirection: "row",
                           alignContent: "space-between",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <TouchableOpacity
                           style={{
                             paddingLeft: 12,
@@ -491,8 +473,7 @@ export default function NotiDetails() {
                             giveReaction("Like");
                             setLikeByMe(!likeByMe);
                             setDislikeByMe(false);
-                          }}
-                        >
+                          }}>
                           <AntDesign
                             name={likeByMe ? "like1" : "like2"}
                             size={20}
@@ -504,8 +485,7 @@ export default function NotiDetails() {
                             fontSize: 16,
                             color: isDark ? "white" : "#999999",
                             marginRight: 12,
-                          }}
-                        >
+                          }}>
                           {totalLikes}
                         </Text>
                       </View>
@@ -514,8 +494,7 @@ export default function NotiDetails() {
                           width: 1.5,
                           height: "50%",
                           backgroundColor: "white",
-                        }}
-                      ></View>
+                        }}></View>
                       <TouchableOpacity
                         onPress={() => {
                           if (likeByMe) {
@@ -531,8 +510,7 @@ export default function NotiDetails() {
                           paddingRight: 12,
                           paddingLeft: 12,
                           paddingVertical: 8,
-                        }}
-                      >
+                        }}>
                         <AntDesign
                           name={dislikeByMe ? "dislike1" : "dislike2"}
                           size={20}
@@ -551,24 +529,21 @@ export default function NotiDetails() {
                         height: "100%",
                         opacity: 0.2,
                         pointerEvents: "none",
-                      }}
-                    ></View>
+                      }}></View>
                   </View>
                   <TouchableOpacity
                     style={{
                       borderRadius: 100,
                       position: "relative",
                       overflow: "hidden",
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: 14,
                         paddingHorizontal: 12,
                         paddingVertical: 8,
                         color: isDark ? "white" : "#999999",
-                      }}
-                    >
+                      }}>
                       {totalComments} Comments
                     </Text>
                     <View
@@ -578,8 +553,7 @@ export default function NotiDetails() {
                         width: "100%",
                         height: "100%",
                         opacity: 0.2,
-                      }}
-                    ></View>
+                      }}></View>
                   </TouchableOpacity>
                 </View>
 
@@ -589,8 +563,7 @@ export default function NotiDetails() {
                     marginHorizontal: 12,
                     gap: 24,
                     paddingBottom: insets.bottom + 40,
-                  }}
-                >
+                  }}>
                   <NotiInput analysisId={data?.id} />
                   <Comments analysisId={data?.id} />
                 </View>

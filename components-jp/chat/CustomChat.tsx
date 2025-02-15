@@ -432,8 +432,7 @@ export default function CustomChat({ fromPath }: any) {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={stopEventSource}
-      >
+        onPress={stopEventSource}>
         <Ionicons name="stop-circle-outline" size={32} color="red" />
       </TouchableOpacity>
     );
@@ -501,16 +500,14 @@ export default function CustomChat({ fromPath }: any) {
       style={{
         flex: 1,
         marginTop: fromPath ? -50 : 0,
-      }}
-    >
+      }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 15 : 0}
         style={{
           flex: 1,
           justifyContent: "flex-end",
-        }}
-      >
+        }}>
         <View>
           <View
             style={{
@@ -518,8 +515,7 @@ export default function CustomChat({ fromPath }: any) {
               justifyContent: "space-between",
               padding: 10,
               // backgroundColor: primaryColor,
-            }}
-          >
+            }}>
             {renderActions("")}
             {/* <View style={{ flex: 1, backgroundColor: "transparent" }}> */}
             {renderInputToolbar("")}

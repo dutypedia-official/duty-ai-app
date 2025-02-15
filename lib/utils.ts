@@ -247,3 +247,18 @@ export const playButtonSound = async (soundFile: any) => {
     console.log("Error playing sound:", error);
   }
 };
+
+// Function to format the length of the string
+export const formatLength = (str: string) => {
+  const length = str.length;
+
+  if (length >= 1_000_000_000) {
+    return `${(length / 1_000_000_000).toFixed(1)}b`; // Billions
+  } else if (length >= 1_000_000) {
+    return `${(length / 1_000_000).toFixed(1)}m`; // Millions
+  } else if (length >= 1_000) {
+    return `${(length / 1_000).toFixed(1)}k`; // Thousands
+  } else {
+    return length.toString(); // Less than 1000
+  }
+};

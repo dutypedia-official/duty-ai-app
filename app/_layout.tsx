@@ -36,6 +36,7 @@ import useMarket from "@/lib/hooks/useMarket";
 import Toast from "react-native-toast-message";
 import * as Localization from "expo-localization";
 import * as Network from "expo-network";
+import LowBalance from "@/components/low-balance";
 
 const CURRENT_IOS_VERSION = 12;
 const CURRENT_ANDROID_VERSION = 12;
@@ -218,6 +219,8 @@ function RootLayoutNav() {
     mainServerAvailable,
     setMainServerAvailable,
     setPortfolioStatus,
+    alertBalance,
+    setAlertBalance,
   } = useUi();
   const [expoPushToken, setExpoPushToken] = useState("");
   const { user } = useUser();
@@ -307,37 +310,6 @@ function RootLayoutNav() {
       saveToken();
     }
   }, [expoPushToken, user]);
-
-  // const [isOffline, setIsOffline] = useState(false);
-
-  // const getNetwork = async () => {
-  //   const networkState = await Network.getNetworkStateAsync();
-  //   console.log("networkState---------", JSON.stringify(networkState));
-  //   if (!networkState.isConnected) {
-  //     Alert.alert(
-  //       "Network Error",
-  //       "You are offline. Please check your internet connection."
-  //     );
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getNetwork();
-  // }, [isOffline]);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on(`connect`, () => {
-  //       console.log("You are offline...");
-  //       setIsOffline(!isOffline);
-  //     });
-  //   }
-  //   return () => {
-  //     if (socket) {
-  //       socket.off(`connect`);
-  //     }
-  //   };
-  // }, [socket]);
 
   const [isOffline, setIsOffline] = useState(false);
   const [hasAlerted, setHasAlerted] = useState(false);
@@ -496,6 +468,7 @@ function RootLayoutNav() {
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           </Stack>
           <Toast />
+          <LowBalance open={alertBalance} setOpen={setAlertBalance} />
         </PaperProvider>
       </GestureHandlerRootView>
     </ThemeProvider>

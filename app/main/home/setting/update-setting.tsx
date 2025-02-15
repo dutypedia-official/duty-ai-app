@@ -7,6 +7,7 @@ import { fb, file, shield, yt } from "@/assets/icons/socials";
 import { trash, trash_dark } from "@/assets/icons/trash";
 import LowBalance from "@/components/low-balance";
 import { SafeAreaView, useThemeColor } from "@/components/Themed";
+import useUi from "@/lib/hooks/useUi";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { differenceInSeconds } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
@@ -31,7 +32,7 @@ export default function UpdateSetting() {
   const bgColor = useThemeColor({}, "background");
   const expiryDate = new Date("2025-01-26T00:00:00");
   const [timeLeft, setTimeLeft] = useState("");
-  const [alertBalance, setAlertBalance] = useState(false);
+  const { alertBalance, setAlertBalance } = useUi();
 
   useEffect(() => {
     const calculateTimeLeft = () => {

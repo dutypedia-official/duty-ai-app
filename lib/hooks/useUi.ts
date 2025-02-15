@@ -34,6 +34,8 @@ interface Store {
   setPortfolioStatus: (portfolioStatus: any) => void;
   resetPortfolioDrop: boolean;
   setResetPortfolioDrop: (resetPortfolioDrop: boolean) => void;
+  alertBalance: boolean;
+  setAlertBalance: (alertBalance: boolean) => void;
 }
 
 const useUi = create<Store>((set, get) => ({
@@ -74,6 +76,8 @@ const useUi = create<Store>((set, get) => ({
   resetPortfolioDrop: false,
   setResetPortfolioDrop: (resetPortfolioDrop: boolean) =>
     set({ resetPortfolioDrop }),
+  alertBalance: false,
+  setAlertBalance: (alertBalance: boolean) => set({ alertBalance }),
 }));
 
 export default useUi;

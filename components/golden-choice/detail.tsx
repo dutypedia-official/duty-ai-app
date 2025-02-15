@@ -1,19 +1,14 @@
 import { SafeAreaView, Text, useThemeColor } from "@/components/Themed";
-import { apiClient } from "@/lib/api";
-import useUi from "@/lib/hooks/useUi";
-import { useAuth } from "@clerk/clerk-expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useIsFocused } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ScrollView,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
-import Markdown from "react-native-markdown-display";
 import { ActivityIndicator } from "react-native-paper";
 
 export default function Details() {
@@ -21,29 +16,20 @@ export default function Details() {
   const isDark = colorScheme === "dark";
   const bgColor = useThemeColor({}, "background");
   const params = useLocalSearchParams();
-  const data = JSON.parse(`${params?.id}`);
+  const data: any = JSON.parse(`${params?.id}`);
   const borderColor = useThemeColor({}, "border");
 
-  // console.log(data?.details?.technical_analysis);
-
-  if (!data) {
-    return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: bgColor,
-        }}>
-        <ActivityIndicator
-          size="large"
-          color={isDark ? "#FFFFFF" : "#171B26"}
-        />
-      </SafeAreaView>
-    );
-  }
-
-  return (
+  return !data ? (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: bgColor,
+      }}>
+      <ActivityIndicator size="large" color={isDark ? "#FFFFFF" : "#171B26"} />
+    </SafeAreaView>
+  ) : (
     <SafeAreaView
       style={{
         backgroundColor: bgColor,

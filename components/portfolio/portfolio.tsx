@@ -69,22 +69,20 @@ export default function Portfolio() {
   }, [socket]);
 
   return (
-    <TouchableWithoutFeedback onPress={() => setResetPortfolioDrop(false)}>
-      <SafeAreaView>
-        <ScrollView>
-          <TouchableOpacity
-            activeOpacity={1}
+    <SafeAreaView>
+      <ScrollView>
+        <TouchableWithoutFeedback onPress={() => setResetPortfolioDrop(false)}>
+          <View
             style={{
               gap: 20,
               paddingBottom: 24,
-            }}
-          >
+            }}>
             <AssetsBalCard />
             <StockPortfolio />
             <TransactionCard />
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

@@ -9,6 +9,9 @@ import {
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { SvgXml } from "react-native-svg";
+import { lowBg, lowBgLight } from "./svgs/lowBg";
+import { BlurView } from "expo-blur";
 
 export default function LowBalance({ open, setOpen }: any) {
   const colorscheme = useColorScheme();
@@ -24,22 +27,46 @@ export default function LowBalance({ open, setOpen }: any) {
           flex: 1,
           justifyContent: "center",
           alignContent: "center",
-          backgroundColor: isDark
-            ? "rgba(26,26,26,0.6)"
-            : "rgba(255,255,255,0.6)",
+          // backgroundColor: isDark
+          //   ? "rgba(26,26,26,0.6)"
+          //   : "rgba(255,255,255,0.6)",
         }}>
+        <BlurView
+          intensity={16}
+          style={{
+            pointerEvents: "none",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
+        {/* <SvgXml
+          xml={isDark ? lowBg : lowBgLight}
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid slice"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            pointerEvents: "none",
+          }}
+        /> */}
         <View
           style={{
             shadowColor: "#000000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 5,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 12,
+            elevation: 12,
             borderWidth: 1,
             borderColor: isDark ? "transparent" : "#EDEDED",
-            margin: 12,
+            marginHorizontal: 12,
             borderRadius: 24,
-            overflow: "hidden",
           }}>
           <LinearGradient
             colors={isDark ? ["#1A1A1A", "#2A2A2A"] : ["#FFFFFF", "#FFFFFF"]}
@@ -47,6 +74,7 @@ export default function LowBalance({ open, setOpen }: any) {
               padding: 32,
               alignItems: "center",
               gap: 32,
+              borderRadius: 24,
             }}>
             <TouchableOpacity
               style={{
